@@ -65,6 +65,31 @@ foreach ($user in $userArray) {
         $property = $_ | ConvertFrom-StringData
         $certHash += $property
     }
+    switch ($certType) {
+        'EmailSAN' {
+            # set cert identifier to SAN email of cert
+            $sanID = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -ext subjectAltName -noout"
+            $regex = 'email:(.*?)$'
+            $subjMatch = Select-String -InputObject "$($sanID)" -Pattern $regex
+            $certIdentifier = $subjMatch.matches.Groups[1].value
+            # in macOS search user certs by email
+            $macCertSearch = 'e'
+        }
+        'EmailDN' {
+            # Else set cert identifier to email of cert subject
+            $regex = 'emailAddress = (.*?),'
+            $subjMatch = Select-String -InputObject "$($certHash.Subject)" -Pattern $regex
+            $certIdentifier = $subjMatch.matches.Groups[1].value
+            # in macOS search user certs by email
+            $macCertSearch = 'e'
+        }
+        'UsernameCn' {
+            # if username just set cert identifier to username
+            $certIdentifier = $($user.userName)
+            # in macOS search user certs by common name (username)
+            $macCertSearch = 'c'
+        }
+    }
     # Create the zip
     Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
     # Find OS of System
@@ -92,7 +117,7 @@ currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certHash.serial)"
 if [[ `$currentUser ==  $($user.userName) ]]; then
-    certs=`$(security find-certificate -a -c "$($user.userName)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
+    certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
     regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
     regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
     global_rematch() {
@@ -236,7 +261,7 @@ if (`$CurrentUser -eq "$($user.userName)") {
         `$certs = Get-ChildItem Cert:\CurrentUser\My\
 
         foreach (`$cert in `$certs){
-            if (`$cert.subject -match "$($user.userName)") {
+            if (`$cert.subject -match "$($certIdentifier)") {
                 if (`$(`$cert.serialNumber) -eq "$($certHash.serial)"){
                     write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
                 } else {

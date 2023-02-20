@@ -44,7 +44,7 @@ foreach ($user in $groupMembers) {
         if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
         } else {
-            Generate-UserCert -JCORGID $JCORGID -JCUSERCERTVALIDITY $JCUSERCERTVALIDITY -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
         }
     } else {
         Write-Host "[status] $($MatchedUser.username) not found in users.json"
