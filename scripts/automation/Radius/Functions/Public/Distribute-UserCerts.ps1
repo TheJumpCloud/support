@@ -183,6 +183,15 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
     fi
 else
     echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry"
+    # Finally clean up files
+    if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
+        echo "Removing Temp Zip"
+        rm "/tmp/$($user.userName)-client-signed.zip"
+    fi
+    if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
+        echo "Removing Temp Pfx"
+        rm "/tmp/$($user.userName)-client-signed.pfx"
+    fi
     exit 4
 fi
 
@@ -277,8 +286,22 @@ if (`$CurrentUser -eq "$($user.userName)") {
     Write-Host "Cleaning Up Previously Installed Certs for $($user.userName)"
     `$certCleanup = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockCleanup -CaptureOutput
     `$certCleanup
+    # finally clean up temp files:
+    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
+        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
+    }
+    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.pfx"){
+        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
+    }
 } else {
     Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
+    # finally clean up temp files:
+    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
+        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
+    }
+    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.pfx"){
+        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
+    }
     exit 4
 }
 "@
