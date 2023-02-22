@@ -8,7 +8,7 @@ This automation has been tested with OpenSSL 3.0.7 at the time of this writing. 
 
 - PowerShell 7.x.x ([PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3))
 - OpenSSL 3.x.x (Tested with 3.0.7)
-- [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud) 
+- [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 
 ### MacOS Requirements
 
@@ -101,7 +101,7 @@ After successfully running the script the openssl extension files should each be
 
 Within the `/Cert` directory, two files should have been created:
 
-`selfsigned-ca-cert.pem` and `selfsigned-ca-key.pem`
+`radius-ca-cert.pem` and `radius-key.pem`
 
 The certificate in this directory is to be uploaded to JumpCloud to act as the certificate authority for subsequently generated user certificates.
 
@@ -144,6 +144,22 @@ Output for re-running commands:
 ### End User Experience
 
 After a user's certificate has been distributed to a system, those users can then connect to a radius network with certificate based authentication.
+### Importing a certificate
+
+If you have your own self-signed certificate, you can import the certificate and key to `~/Radius/Cert` folder. Note: Please make sure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)
+
+### Importing a certificate with a .pfx file
+
+In order to import a certificate from a .pfx file, the certificate and key needs to be extracted from .pfx file.
+
+1. Extract the private key: `pkcs12 -in certfile.pfx -nocerts -out ~/Radius/radius_ca_key.pem -nodes`
+   * Replace certfile.pfx to the file path of your .pfx file. Make sure the `radius_ca_key.pem` is saved or moved to `~/Radius/Certs/` directory
+   * This command will prompt for the .pfx password. NOTE: Please DO NOT FORGET the password as you will need it when generating user certificates.
+2. Extract the certificate: `pkcs12 -in certfile.pfx -nokeys -out ~/Radius/Cert/radius_ca_cert.pem`
+   *  Replace certfile.pfx to the file path of your .pfx file. Make sure the  `radius_ca_cert.pem` is saved or moved to `~/Radius/Certs/`  directory
+   *  Again, this command will prompt for the .pfx password
+
+NOTE: You will get prompted with the Key password Generating user certificates. The password will be saved as an Environment Variable.
 
 ### MacOS
 

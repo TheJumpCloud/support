@@ -1,11 +1,9 @@
 # READ/ WRITE API KEY
-$JCAPIKEY = 'yourApiKey'
+$JCAPIKEY = 'YOURAPIKEY'
 # JUMPCLOUD ORGID
-$JCORGID = 'yourOrgId'
+$JCORGID = 'YOURORGID'
 # JUMPCLOUD USER GROUP
-$JCUSERGROUP = '635079e21490b90001eb275b'
-# USER CERT PASSWORD (user must enter this when importing cert)
-$JCUSERCERTPASS = 'secret1234!'
+$JCUSERGROUP = 'YOURJCUSERGROUP'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
 # OpenSSLBinary by default this is (openssl)
@@ -86,8 +84,8 @@ function Get-OpenSSLVersion {
 Get-OpenSSLVersion -opensslBinary $opensslBinary
 
 # Validate no spaces in $Subj
-foreach ($subjObj in $subj.psObject.Properties){
-    if ($subjObj.value -match " "){
+foreach ($subjObj in $subj.psObject.Properties) {
+    if ($subjObj.value -match " ") {
         throw "Subject Header: $($subjObj.Name):$($subjObj.value) Contains a space character. subject headers cannot contain spaces, please remove and re-run"
     }
 }

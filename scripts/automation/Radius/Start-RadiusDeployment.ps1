@@ -18,7 +18,7 @@ do {
     $selection = Read-Host "Please make a selection"
     switch ($selection) {
         '1' {
-            . "$JCScriptRoot/Functions/Public/Cert-GenerateOrImport.ps1"
+            . "$JCScriptRoot/Functions/Public/Generate-RootCert.ps1"
         } '2' {
             . "$JCScriptRoot/Functions/Public/Generate-UserCerts.ps1"
         } '3' {

@@ -18,16 +18,14 @@ function Output-CertsInfo {
                         $date = $property.notAfter
                         $date = $date.replace('GMT', '').Trim()
                     }
-
                     $certHash += $property
                 }
                 $certObj += $certHash
             }
         }
     } else {
-        Write-Host "No certs found, please press '1' to Generate or Import certificates"
+        Write-Host "NOTE: No certs found, in the 'cert' directory, either press 1 to generate a Self Signed CA or import your own (Link will be added from the README.md file).)"
     }
-
     return $certObj
 }
 

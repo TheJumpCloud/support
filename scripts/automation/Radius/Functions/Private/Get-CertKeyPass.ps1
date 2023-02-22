@@ -12,14 +12,15 @@ function Get-CertKeyPass {
             if ($foundKeyPem) {
                 # Create a loop to ask for the password
                 do {
-                    Write-Output "The key is encrypted"
-                    $keypassword = Read-Host "Please enter the password import cert key"
-                    $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($keypassword) 2>&1
+                    Write-Debug "The key is encrypted"
+                    $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
+                    $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+                    $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($certKeyPass) 2>&1
                     $checkKey
                     if ($checkKey -match "RSA key ok") {
                         # Save password to ENV variable
-                        Write-Host "Saving password to env"
-                        Set-Item -Path "env:Import_key_password" -Value $keypassword
+                        Write-Host "Saving password as Environment Variable"
+                        Set-Item -Path "env:certKeyPassword" -Value $keypassword
 
                     }
                 } until ($checkKey -match "RSA key ok")
