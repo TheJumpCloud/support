@@ -77,7 +77,7 @@ foreach ($user in $userArray) {
         }
         'EmailDN' {
             # Else set cert identifier to email of cert subject
-            $regex = 'emailAddress = (.*?),'
+            $regex = 'emailAddress = (.*?)$'
             $subjMatch = Select-String -InputObject "$($certHash.Subject)" -Pattern $regex
             $certIdentifier = $subjMatch.matches.Groups[1].value
             # in macOS search user certs by email
@@ -286,6 +286,12 @@ if (`$CurrentUser -eq "$($user.userName)") {
     Write-Host "Cleaning Up Previously Installed Certs for $($user.userName)"
     `$certCleanup = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockCleanup -CaptureOutput
     `$certCleanup
+
+    if (`$certCleanup -notMatch "$($certHash.serial)"){
+        throw "cert was not installed"
+    } else {
+        Write-Host "Cert was installed"
+    }
     # finally clean up temp files:
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
