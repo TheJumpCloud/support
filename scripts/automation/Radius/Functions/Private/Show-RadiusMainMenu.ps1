@@ -23,7 +23,7 @@ function Show-RadiusMainMenu {
         Write-Host "$([char]0x1b)[32mRoot CA Expiration: $($rootCAInfo.notAfter)`n"
     }
     if ($expiringCerts) {
-        Write-Host "$([char]0x1b)[91m$($expiringCerts.Count) user certs will expire in 15 days `n"
+        Write-Host "$([char]0x1b)[91m$($($expiringCerts.subject).Count) user certs will expire in 15 days `n"
     }
 
     Write-Host "1: Press '1' to generate your Root Certificate."
