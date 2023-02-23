@@ -281,6 +281,13 @@ if (`$CurrentUser -eq "$($user.userName)") {
             }
         }
     }
+    `$scriptBlockValidate = {
+        if (Get-ChildItem Cert:\CurrentUser\My\`$(`$imported.thumbrprint)){
+            return `$true
+        } else {
+            return `$false
+        }
+    }
     Write-Host "Importing Pfx Certificate for $($user.userName)"
     `$certInstall = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockInstall -CaptureOutput
     `$certInstall
@@ -298,12 +305,12 @@ if (`$CurrentUser -eq "$($user.userName)") {
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.pfx"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
     }
-    `$scriptBlockValidate = {
-        if (Get-ChildItem Cert:\CurrentUser\My\`$(`$imported.thumbrprint)){
-            return `$true
-        } else {
-            return `$false
-        }
+
+    # Lastly validate if the cert was installed
+    if (`$certValidate){
+        Write-Host "Cert was installed"
+    } else {
+        Throw "Cert was not installed"
     }
 } else {
     Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
