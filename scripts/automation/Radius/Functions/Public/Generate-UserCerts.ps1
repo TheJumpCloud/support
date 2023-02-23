@@ -14,6 +14,13 @@ $SystemHash = Get-JCSystem -returnProperties displayName, os
 if (Test-Path -Path "$JCScriptRoot/users.json" -PathType Leaf) {
     Write-Host "[status] Found user.json file"
     $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
+    # If the json is a single item, explicitly make it a list so we can add to it
+    If ($userArray.count -eq 1) {
+        $array = New-Object System.Collections.ArrayList
+        $array.add($userArray)
+        $userArray = $array
+    }
+
 } else {
     Write-Host "[status] users.json file not found"
     $userArray = @()
