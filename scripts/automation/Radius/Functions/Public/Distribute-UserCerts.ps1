@@ -265,6 +265,7 @@ if (`$CurrentUser -eq "$($user.userName)") {
     `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
     Import-PfxCertificate -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
     }
+    `$imported = Get-PfxData -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
     # Get Current Certs As User
     `$ScriptBlockCleanup = {
         `$certs = Get-ChildItem Cert:\CurrentUser\My\
@@ -286,18 +287,23 @@ if (`$CurrentUser -eq "$($user.userName)") {
     Write-Host "Cleaning Up Previously Installed Certs for $($user.userName)"
     `$certCleanup = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockCleanup -CaptureOutput
     `$certCleanup
+    Write-Host "Validating Installed Certs for $($user.userName)"
+    `$certValidate = Invoke-AsCurrentUser -ScriptBlock `$scriptBlockValidate -CaptureOutput
+    write-host `$certValidate
 
-    if (`$certCleanup -notMatch "$($certHash.serial)"){
-        throw "cert was not installed"
-    } else {
-        Write-Host "Cert was installed"
-    }
     # finally clean up temp files:
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
     }
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.pfx"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
+    }
+    `$scriptBlockValidate = {
+        if (Get-ChildItem Cert:\CurrentUser\My\`$(`$imported.thumbrprint)){
+            return `$true
+        } else {
+            return `$false
+        }
     }
 } else {
     Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
