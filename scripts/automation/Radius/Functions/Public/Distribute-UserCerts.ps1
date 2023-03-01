@@ -265,9 +265,8 @@ if (`$CurrentUser -eq "$($user.userName)") {
     } else {
         New-Item "C:\RadiusCert" -itemType Directory
     }
-    # expand archive as root
+    # expand archive as root and copy to temp location
     Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\RadiusCert -Force
-    # copy to a temp location
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
     `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
     Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
