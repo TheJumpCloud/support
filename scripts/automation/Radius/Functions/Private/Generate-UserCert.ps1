@@ -51,7 +51,7 @@ function Generate-UserCert {
                 Write-Host "[status] Get CSR & Key"
                 Invoke-Expression "$opensslBinary req -newkey rsa:2048 -nodes -keyout $userKey -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)`" -out $userCSR"
                 # take signing request, make cert # specify extensions requests
-                Write-Host "[status] take signing request, make cert # specify extensions requets"
+                Write-Host "[status] take signing request, make cert # specify extensions requests"
                 Invoke-Expression "$opensslBinary x509 -req -extfile $ExtensionPath -days $JCUSERCERTVALIDITY -in $userCSR -CA $rootCA -CAkey $rootCAKey -passin pass:$($JCORGID) -CAcreateserial -out $userCert -extensions v3_req"
                 # validate the cert we cant see it once it goes to pfx
                 Write-Host "[status] validate the cert we cant see it once it goes to pfx"
