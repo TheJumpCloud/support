@@ -1,31 +1,38 @@
 # Generate Radius Certificates for users
 
-The PowerShell automations in this directory are designed to help administrators generate user certificates for passwordless Radius Server Authentication.
+This set of PowerShell automations are designed to help administrators generate user certificates for [passwordless Radius Server Authentication](https://support.jumpcloud.com/support/s/article/configuring-radius-servers-in-jumpcloud1).
 
 ## Requirements
 
-This automation has been tested with OpenSSL 3.0.7 at the time of this writing. OpenSSL 3.x.x is required to generate the Radius Authentication certificates. The following items are required to use this automation workflow
+This automation has been tested with OpenSSL 3.0.7. OpenSSL 3.x.x is required to generate the Radius Authentication user certificates. The following items are required to use this automation workflow
 
 - PowerShell 7.x.x ([PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3))
-- OpenSSL 3.x.x (Tested with 3.0.7)
-- [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud) 
+- OpenSSL 3.x.x (Tested with 3.0.7) (see macOS/ Windows requirements below)
+- [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
+- Certificate Authority (CA) (either from a vendor or self-generated)
+- Variables in `config.ps1` updated
 
-### MacOS Requirements
+### macOS Requirements
 
-MacOS ships with a version of OpenSSL under the distribution name LibreSSL. LibreSSL is sufficient to generate the `usernameCN` and `emailDN` type certificates but not the `emailSAN` type certificate (due to the inclusion of x509 subject headers in the certificate body). As such a distribution of OpenSSL 3.x.x is required to run these scripts.
+macOS ships with a version of OpenSSL titled LibreSSL. LibreSSL is sufficient to generate the `usernameCN` and `emailDN` type certificates but not the `emailSAN` type certificate (due to the inclusion of x509 subject headers in the certificate body). As such, a distribution of OpenSSL 3.x.x is required to run these scripts. While running the application, you'll be prompted to locate Openssl 3.x.x if it is not found.
 
 To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
 
-Some packages or applications in MacOS will rely on the pre-configured LibreSSL distribution. To use the Homebrew version of OpenSSL in this project, simply change the `$openSSLBinary` variable to point to the Homebrew bin location ex:
+Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$openSSLBinary` variable to point to the Homebrew bin location ex:
 
 In `Config.ps1` change `$opensslBinary` to point to `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'`
+
+ex:
+
+```powershell
 $opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+```
 
 ### Windows Requirements
 
-Windows does not typically ship with a preconfigured version of OpenSSL but a pre-compiled version of OpenSSL can be installed from [Shining Light Productions](https://slproweb.com/products/Win32OpenSSL.html). OpenSSL can of course be downloaded and configured from [source](https://www.openssl.org/source) if desired.
+Windows does not typically ship with a preconfigured version of OpenSSL but a pre-compiled version of OpenSSL can be installed from [Shining Light Productions](https://slproweb.com/products/Win32OpenSSL.html). These automations have been tested with the full installer (i.e. not the "Light") version of the tool. OpenSSL can of course be downloaded and configured from [source](https://www.openssl.org/source) if desired.
 
-If the pre-compiled version of OpenSSL was installed, the OpenSSL should be installed in `C:\Program Files\OpenSSL-Win64\bin\`. There should exist an `openssl.exe` in that directory. In addition there should also exist a `legacy.dll` file in that same directory.
+If the pre-compiled version of OpenSSL was installed, the OpenSSL should be installed in `C:\Program Files\OpenSSL-Win64\bin\`. There should exist an `openssl.exe` binary in that directory. In addition, there should also exist a `legacy.dll` file in that same directory which is required if generating `$emailSAN` user certificates.
 
 To set the required system environment variables for this automation
 
@@ -46,17 +53,15 @@ The `openssl` command should be available in new PowerShell terminal windows.
 
 ## Setup
 
-Ensure that you are these commands in a PowerShell 7 envirionment. Within your PowerShell terminal window run `$PSVersionTable`, PSVersion should be version 7.x.x. If 5.1.x is running you need to install [PowerShell 7 from Microsoft](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3)
+Ensure that you are these commands in a PowerShell 7 environment. Within your PowerShell terminal window run `$PSVersionTable`, PSVersion should be version 7.x.x. If 5.1.x is running you need to install [PowerShell 7 from Microsoft](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3)
 
 After installing PowerShell 7.x.x, install the [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud) in the PowerShell terminal window. This can be done by running `Install-Module -Name JumpCloud`
 
 At the time of this writing JumpCloud Module 2.1.3 was the latest version. Please ensure you are at least running this version of the PowerShell Module.
 
-To generate a set of Radius certificates. The two scripts `Generate-RootCert.ps1` and `Generate-UserCerts.ps1` must be used. A configuration file `Config.ps1` must also be edited prior to running the cert generation scripts.
+### Set the Radius Config File
 
-### Set the Radius Config
-
-Before Running either the `Generate-RootCert.ps1` and `Generate-UserCerts.ps1` scripts the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
+Before Running the `Start-RadiusDeployment.ps1` script, the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
 
 #### Set Your API Key ID
 
@@ -75,15 +80,56 @@ After selecting the User Group, view the url for the user group it should look s
 
 The ID of the selected userGroup is the 24 character string between `/user/` and `/details`: `5f808a1bb544064831f7c9fb`
 
+#### Set the openSSL Binary location
+
+Depending on the host system and how OpenSSL is installed, this variable can either point to a path or call the binary with just the name `openssl`.
+
+[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'` if installed through Homebrew.
+
+Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$opensslBinary` necessary)
+
 #### Set Your Certificate Subject Headers
 
-Change the default values provided in the `$Subj` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization.
+Change the default values provided in the `$Subj` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
 
 #### Set Desired User Certificate Type
 
 Change the `$certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
 
+##### Email Subject Alternative Name (EmailSAN)
+
+User certificates generated with this identification method will contain the JumpCloud user email within the subject alternative name header.
+
+A generated EmailSAN certificate will embed the user's email within the subject alternative name X509 extension header:
+![emailSAN](./images/emailSAN.png)
+When a EmailSAN user certificate authorizes to a JumpCloud managed radius network, the user's email will be recoded from the email subject alternative name metadata:
+![Radius emailSAN](./images/Radius_emailSAN.png)
+
+##### Email Distinguished Name (EmailDN)
+
+User certificates generated with this identification method will contain the JumpCloud user email within the subject distinguished name.
+
+A generated EmailDN certificate will embed the user's email within the certificate's subject distinguished name:
+![emailDN](./images/emailDN.png)
+When a EmailDN user certificate authorizes to a JumpCloud managed radius network, the user's email will be recoded from the email address metadata:
+![Radius emailDN](./images/Radius_emailDN.png)
+
+##### Username Common Name (UsernameCN)
+
+User certificates generated with this identification method will contain the JumpCloud username within the subject common name.
+
+A generated UsernameCN certificate will embed the user's username within the certificate's subject common name:
+![usernameCN](./images/usernameCN.png)
+When a UsernameCN user certificate authorizes to a JumpCloud managed radius network, the user's username will be recoded from the common name metadata.
+![Radius usernameCN](./images/Radius_usernameCN.png)
+
 ## Certificate Generation
+
+The entire certificate generate process is managed through a PowerShell menu based script `Start-RadiusDeployment.ps1`. To run the main program simply open a PowerShell 7 terminal session, cd to the location where this automation is stored and run:
+
+```PowerShell
+./Start-RadiusDeployment.ps1
+```
 
 ### Certificate Authority Generation
 
