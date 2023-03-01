@@ -52,9 +52,45 @@ if ($RadiusCertCommands.Count -ge 1) {
 # Create commands for each user
 foreach ($user in $userArray) {
     # Get certificate and zip to upload to Commands
-    $userPfx = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.pfx"
+    $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)*"
+    # set crt and pfx filepaths
+    $userCrt = ($userCertFiles | Where-Object { $_.Name -match "crt" }).FullName
+    $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
+    # define .zip name
     $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
-
+    # get certInfo for commands:
+    $certInfo = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -enddate -serial -subject -issuer -noout"
+    $certHash = @{}
+    $certInfo | ForEach-Object {
+        $property = $_ | ConvertFrom-StringData
+        $certHash += $property
+    }
+    switch ($certType) {
+        'EmailSAN' {
+            # set cert identifier to SAN email of cert
+            $sanID = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -ext subjectAltName -noout"
+            $regex = 'email:(.*?)$'
+            $subjMatch = Select-String -InputObject "$($sanID)" -Pattern $regex
+            $certIdentifier = $subjMatch.matches.Groups[1].value
+            # in macOS search user certs by email
+            $macCertSearch = 'e'
+        }
+        'EmailDN' {
+            # Else set cert identifier to email of cert subject
+            $regex = 'emailAddress = (.*?)$'
+            $subjMatch = Select-String -InputObject "$($certHash.Subject)" -Pattern $regex
+            $certIdentifier = $subjMatch.matches.Groups[1].value
+            # in macOS search user certs by email
+            $macCertSearch = 'e'
+        }
+        'UsernameCn' {
+            # if username just set cert identifier to username
+            $certIdentifier = $($user.userName)
+            # in macOS search user certs by common name (username)
+            $macCertSearch = 'c'
+        }
+    }
+    # Create the zip
     Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
     # Find OS of System
     if ($user.systemAssociations.osFamily -contains 'Mac OS X') {
@@ -69,6 +105,7 @@ foreach ($user in $userArray) {
             continue
         }
 
+        # TODO: is common name the same depending on the CertType?
         # Create new Command and upload the signed pfx
         try {
             $CommandBody = @{
@@ -78,10 +115,83 @@ set -e
 unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
+currentCertSN="$($certHash.serial)"
 if [[ `$currentUser ==  $($user.userName) ]]; then
-    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+    certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
+    regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
+    regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
+    global_rematch() {
+        # Set local variables
+        local s=`$1 regex=`$2
+        # While string matches regex expression
+        while [[ `$s =~ `$regex ]]; do
+            # Echo out the match
+            echo "`${BASH_REMATCH[1]}"
+            # Remove the string
+            s=`${s#*"`${BASH_REMATCH[1]}"}
+        done
+    }
+    # Save results
+    # Get Text Results
+    textSHA=`$(global_rematch "`$certs" "`$regexSHA")
+    # Set as array for SHA results
+    arraySHA=(`$textSHA)
+    # Get Text Results
+    textSN=`$(global_rematch "`$certs" "`$regexSN")
+    # Set as array for SN results
+    arraySN=(`$textSN)
+    # set import var
+    import=true
+    if [[ `${#arraySN[@]} == `${#arraySHA[@]} ]]; then
+        len=`${#arraySN[@]}
+        for (( i=0; i<`$len; i++ )); do
+            if [[ `$currentCertSN == `${arraySN[`$i]} ]]; then
+                echo "Found Cert: SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                # if cert is installed, no need to update
+                import=false
+            else
+                echo "Removing previously installed radius cert:"
+                echo "SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.userName)/Library/Keychains/login.keychain
+            fi
+        done
+
+    else
+        echo "array length mismatch, will not delete old certs"
+    fi
+
+    if [[ `$import == true ]]; then
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+        if [[ `$? -eq 0 ]]; then
+            echo "Import Success"
+        else
+            echo "import failed"
+            exit 4
+        fi
+    else
+        echo "cert already imported"
+    fi
+
+    # Finally clean up files
+    if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
+        echo "Removing Temp Zip"
+        rm "/tmp/$($user.userName)-client-signed.zip"
+    fi
+    if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
+        echo "Removing Temp Pfx"
+        rm "/tmp/$($user.userName)-client-signed.pfx"
+    fi
 else
     echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry"
+    # Finally clean up files
+    if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
+        echo "Removing Temp Zip"
+        rm "/tmp/$($user.userName)-client-signed.zip"
+    fi
+    if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
+        echo "Removing Temp Pfx"
+        rm "/tmp/$($user.userName)-client-signed.pfx"
+    fi
     exit 4
 fi
 
@@ -149,16 +259,74 @@ if (`$CurrentUser -eq "$($user.userName)") {
         Write-Host "RunAsUser Module installed, importing into session..."
         Import-Module RunAsUser -Force
     }
-    Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
+    # create temp new radius directory
+    If (Test-Path "C:\RadiusCert"){
+        Write-Host "Radius Temp Cert Directory Exists"
+    } else {
+        New-Item "C:\RadiusCert" -itemType Directory
+    }
+    # expand archive as root and copy to temp location
+    Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\RadiusCert -Force
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
-    `$ScriptBlock = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
-     Import-PfxCertificate -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
-}
-     Write-Host "Importing Pfx Certificate for $($user.userName)"
-    `$JSON = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlock -CaptureOutput
-    `$JSON
+    `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
+    Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
+    }
+    `$imported = Get-PfxData -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx"
+    # Get Current Certs As User
+    `$ScriptBlockCleanup = {
+        `$certs = Get-ChildItem Cert:\CurrentUser\My\
+
+        foreach (`$cert in `$certs){
+            if (`$cert.subject -match "$($certIdentifier)") {
+                if (`$(`$cert.serialNumber) -eq "$($certHash.serial)"){
+                    write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
+                } else {
+                    write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
+                    Get-ChildItem "Cert:\CurrentUser\My\`$(`$cert.thumbprint)" | remove-item
+                }
+            }
+        }
+    }
+    `$scriptBlockValidate = {
+        if (Get-ChildItem Cert:\CurrentUser\My\`$(`$imported.thumbrprint)){
+            return `$true
+        } else {
+            return `$false
+        }
+    }
+    Write-Host "Importing Pfx Certificate for $($user.userName)"
+    `$certInstall = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockInstall -CaptureOutput
+    `$certInstall
+    Write-Host "Cleaning Up Previously Installed Certs for $($user.userName)"
+    `$certCleanup = Invoke-AsCurrentUser -ScriptBlock `$ScriptBlockCleanup -CaptureOutput
+    `$certCleanup
+    Write-Host "Validating Installed Certs for $($user.userName)"
+    `$certValidate = Invoke-AsCurrentUser -ScriptBlock `$scriptBlockValidate -CaptureOutput
+    write-host `$certValidate
+
+    # finally clean up temp files:
+    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
+        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
+    }
+    If (Test-Path "C:\RadiusCert\$($user.userName)-client-signed.pfx"){
+        Remove-Item "C:\RadiusCert\$($user.userName)-client-signed.pfx"
+    }
+
+    # Lastly validate if the cert was installed
+    if (`$certValidate){
+        Write-Host "Cert was installed"
+    } else {
+        Throw "Cert was not installed"
+    }
 } else {
     Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
+    # finally clean up temp files:
+    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
+        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
+    }
+    If (Test-Path "C:\RadiusCert\$($user.userName)-client-signed.pfx"){
+        Remove-Item "C:\RadiusCert\$($user.userName)-client-signed.pfx"
+    }
     exit 4
 }
 "@
@@ -202,6 +370,7 @@ while ($confirmation -ne 'y') {
         Write-Host "[status] Returning to main menu"
         exit
     }
+    $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
 }
 
 $invokeCommands = Invoke-CommandsRetry -jsonFile "$JCScriptRoot\users.json"
