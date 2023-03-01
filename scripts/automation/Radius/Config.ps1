@@ -4,6 +4,8 @@ $JCAPIKEY = 'YOURAPIKEY'
 $JCORGID = 'YOURORGID'
 # JUMPCLOUD USER GROUP
 $JCUSERGROUP = 'YOURJCUSERGROUP'
+# USER CERT PASSWORD (user must enter this when importing cert)
+$JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
 # OpenSSLBinary by default this is (openssl)

@@ -60,7 +60,7 @@ function Generate-UserCert {
                 Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
                 # legacy needed if we take a cert like this then pass it out
                 Write-Host "[status] legacy needed if we take a cert like this then pass it out"
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($env:certKeyPassword) -legacy"
+                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCUSERCERTPASS) -legacy"
             }
             'EmailDn' {
                 # Create Client cert with email in the subject distinguished name
@@ -73,10 +73,10 @@ function Generate-UserCert {
                 Invoke-Expression "$opensslBinary x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extfile $ExtensionPath"
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($env:certKeyPassword)) -legacy"
+                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCUSERCERTPASS) -legacy"
                 # Output
                 Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
-                # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($env:certKeyPassword))"
+                # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)"
             }
             'UsernameCN' {
                 # Create Client cert with email in the subject distinguished name
@@ -89,10 +89,10 @@ function Generate-UserCert {
                 Invoke-Expression "$opensslBinary x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -CAcreateserial -passin pass:$($env:certKeyPassword) -out $userCert -extfile $ExtensionPath"
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($env:certKeyPassword) -legacy"
+                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($JCUSERCERTPASS) -legacy"
                 # Output
                 Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
-                # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($env:certKeyPassword))"
+                # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)"
             }
         }
 
