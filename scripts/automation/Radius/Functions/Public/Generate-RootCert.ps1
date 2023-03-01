@@ -18,8 +18,19 @@ Write-Host "Generating Self Signed Root CA Certificate"
 if (Test-Path -Path "$JCScriptRoot/Cert") {
     Write-Host "Cert Path Exists"
 } else {
-    Write-Host "Createing Cert Path"
+    Write-Host "Creating Cert Path"
     New-Item -ItemType Directory -Path "$JCScriptRoot/Cert"
+}
+# Check if cert exists, prompt user to overwrite with a while loop
+if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
+    Write-Host "CA Cert already exists"
+    $overwrite = Read-Host "Do you want to overwrite the existing CA Cert? (y/n)"
+    if ($overwrite -eq "y") {
+        Write-Host "Overwriting CA Cert..."
+    } else {
+        Write-Host "Exiting "
+        break
+    }
 }
 $CertPath = Resolve-Path "$JCScriptRoot/Cert"
 $outKey = "$CertPath/radius_ca_key.pem"
