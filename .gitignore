@@ -15,3 +15,5 @@
 /scripts/automation/Radius/*/*.zip
 /scripts/automation/Radius/*/*.srl
 /scripts/automation/Radius/commands.json
+scripts/automation/Radius/Config.ps1
+scripts/automation/Radius/users.json
