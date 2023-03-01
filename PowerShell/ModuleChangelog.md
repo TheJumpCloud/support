@@ -1,25 +1,88 @@
-## 2.0.2
+## 2.2.0
 
-Release Date: October 12, 2022
+Release Date: February 7, 2023
 
 #### RELEASE NOTES
 
 ```
-- This release fixes an issue to Set-JCCommand where commandType, launchType, and timeout goes back to default values
-- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files
+This release adds new function Get-JCSystemApp which enables admins to search for 'x' software and 'y' version on specific device, devices in a specific os, or all managed JumpCloud devices.
 ```
 
 #### FEATURES:
 
-N/A
+- Get-JCSystemApp command enables search by:
+  - applications installed in a specific system
+  - applications installed from all the systems specified by OS
+  - Software Name and or Version
 
-#### IMPROVEMENTS:
+## 2.1.3
 
-N/A
+Release Date: January 5, 2023
+
+#### RELEASE NOTES
+
+```
+- Restored a missing id field for users and systems
+```
 
 #### BUG FIXES:
 
-Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+- Get-JCSystem/ User functions were missing the .id data field on PowerShell versions 7+. This release restores this field. The .\_id filed is unaffected but you can choose to reference either $system.id or $system.\_id.
+
+## 2.1.2
+
+Release Date: November 30, 2022
+
+#### RELEASE NOTES
+
+```
+- Fixed an issue with passing pipeline data from Get-JCSystem to Set-JCsystem
+```
+
+#### BUG FIXES:
+
+- Set-JCSystem would throw error regarding systemInsights when using data passed via Get-JCSystem pipeline
+
+## 2.1.1
+
+Release Date: November 22, 2022
+
+#### RELEASE NOTES
+
+```
+- Fixed an issue with Get-JCObject
+```
+
+#### BUG FIXES:
+
+- Removed an incorrect unicode character that was causing a failure with Importing the module, specifically with the Get-JCObject function
+
+## 2.1.0
+
+Release Date: November 9, 2022
+
+#### RELEASE NOTES
+
+```
+- This release adds description field parameter to Set-JCSystem and search by description to Get-JCSystem
+```
+
+#### FEATURES:
+
+Get/Set-JCSystem support for description field
+
+#### IMPROVEMENTS:
+
+- Description parameter added to Get and Set-JCSystem
+- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
+- Additional reporting added to Backup-JCOrganization. If failed tasks are detected, the status of the function should report which tasks failed
+- Get-JCSystem -filterDateProperty lastContact will now return active systems
+
+#### BUG FIXES:
+
+- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values
+- Bug fix for Get-JCObject where some endpoints(radius_server, cloud directory) output incorrect values
+- Bug fix for Get-JCRadiusServer/ Set-JCRadiusServer where authID was being reset
 
 ## 2.0.1
 

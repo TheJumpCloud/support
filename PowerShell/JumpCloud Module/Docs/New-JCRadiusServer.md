@@ -14,7 +14,7 @@ Creates a JumpCloud radius server.
 
 ```
 New-JCRadiusServer [-Force] [-Name] <String[]> [-networkSourceIp] <String> [[-sharedSecret] <String>]
- [<CommonParameters>]
+ [[-authIdp] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,6 +30,22 @@ PS C:\> New-JCRadiusServer -Name:('RadiusServer1') -networkSourceIp:('111.111.11
 Create a radius server in a JumpCloud tenet.
 
 ## PARAMETERS
+
+### -authIdp
+How your users will authenticate into this RADIUS server.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: AZURE, JUMPCLOUD
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
 
 ### -Force
 Bypass user prompts and dynamic ValidateSet.

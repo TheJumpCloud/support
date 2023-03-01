@@ -32,7 +32,7 @@ parameters:
     description: "Release Type. Accepted values [ Major, Minor, Patch ]"
     type: enum
     enum: ["Major", "Minor", "Patch"]
-    default: "Patch"
+    default: "Minor"
   RequiredModulesRepo:
     description: "PowerShell Repository for JumpCloud SDKs"
     type: enum
@@ -101,6 +101,11 @@ workflows:
             - Initial Setup
             - Build Modules
           context: aws-credentials
+      - Invoke Git Commit:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
       - Module Validation Tests:
           requires:
             - Initial Setup
@@ -108,11 +113,6 @@ workflows:
             - Build Nuspec
             - Invoke Git Commit
           context: aws-credentials
-      - Invoke Git Commit:
-          requires:
-            - Initial Setup
-            - Build Help and Test Files
-            - Build Nuspec
       - Pester Tests Windows:
           requires:
             - Initial Setup
@@ -149,6 +149,7 @@ workflows:
     jobs:
       - Prepare for release
       - draft-github-release:
+          context: github-credentials-sa-releases
           requires:
             - Prepare for release
       - Approve Module:
@@ -310,7 +311,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - checkout
       - run:
           name: Set URLs
@@ -413,7 +414,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - attach_workspace:
           at: .
       - run:
@@ -427,7 +428,7 @@ commands:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "24:54:e1:c2:70:c6:f7:61:71:4b:c5:52:9f:20:b9:63"
+            - "c9:0f:56:c9:00:42:98:3c:03:59:24:1e:a7:e7:08:7f"
       - attach_workspace:
           at: .
       - run:
@@ -607,3 +608,4 @@ commands:
           root: .
           paths:
             - .
+# VS Code Extension Version: 1.5.1

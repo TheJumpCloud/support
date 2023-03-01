@@ -1,15 +1,16 @@
 #### Latest Version
 
 ```
-2.0.2
+2.1.0
 ```
 
 #### Banner Current
 
 ```
-- This release fixes linting/formatting issues for PSModule code and added OTBS code formatting to Powershell files.
-
-- Bug fix for Set-JCCommand where commandType, launchType, and timeout gets changed to default values.
+- This release adds description field parameter to Set-JCSystem and search by description to Get-JCSystem
+- Added -Force switch parameter that populates New-JCImportTemplate with all headers when user update or new user CSV is created
+- Additional reporting added to Backup-JCOrganization. If failed tasks are detected, the status of the function should report which tasks failed
+- Get-JCSystem -filterDateProperty lastContact will now return active systems
 ```
 
 #### Banner Old

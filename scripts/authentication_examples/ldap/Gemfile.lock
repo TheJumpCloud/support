@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     highline (1.7.10)
-    net-ldap (0.16.1)
+    net-ldap (0.16.2)
 
 PLATFORMS
   ruby

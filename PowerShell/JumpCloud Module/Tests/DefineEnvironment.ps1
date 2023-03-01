@@ -29,24 +29,30 @@ $OS = If ($env:AGENT_OS) {
 # Set test parameters bases on os
 $PesterParamsHash_OS = If ($OS -eq 'Windows_NT') {
     @{
-        OrgIdMsp1              = "5d2f6ff0e7aad925fc317577"
-        OrgIdMsp2              = "5d2f6ffd8910770b8545756a"
-        networkSourceIpInitial = '250.250.250.250'
-        networkSourceIpUpdate  = '250.250.250.251'
+        OrgIdMsp1                   = "5d2f6ff0e7aad925fc317577"
+        OrgIdMsp2                   = "5d2f6ffd8910770b8545756a"
+        networkSourceIpInitial      = '250.250.250.250'
+        networkSourceIpUpdate       = '250.250.250.251'
+        azureNetworkSourceIpInitial = '250.253.250.251'
+        azureNetworkSourceIpUpdate  = '250.253.250.251'
     }
 } ElseIf ($OS -eq 'Darwin') {
     @{
-        OrgIdMsp1              = "5d2f7011f3b0a039b65f4e8b"
-        OrgIdMsp2              = "5d2f701be7aad925fc317667"
-        networkSourceIpInitial = '250.251.250.251'
-        networkSourceIpUpdate  = '250.251.250.252'
+        OrgIdMsp1                   = "5d2f7011f3b0a039b65f4e8b"
+        OrgIdMsp2                   = "5d2f701be7aad925fc317667"
+        networkSourceIpInitial      = '250.251.250.251'
+        networkSourceIpUpdate       = '250.251.250.252'
+        azureNetworkSourceIpInitial = '250.254.250.252'
+        azureNetworkSourceIpUpdate  = '250.254.250.252'
     }
 } ElseIf ($OS -eq 'Linux') {
     @{
-        OrgIdMsp1              = "5d2f7024f0e1526be4df38e7"
-        OrgIdMsp2              = "5d35e14eb90ad46e65ba0739"
-        networkSourceIpInitial = '250.252.250.252'
-        networkSourceIpUpdate  = '250.252.250.253'
+        OrgIdMsp1                   = "5d2f7024f0e1526be4df38e7"
+        OrgIdMsp2                   = "5d35e14eb90ad46e65ba0739"
+        networkSourceIpInitial      = '250.252.250.252'
+        networkSourceIpUpdate       = '250.252.250.253'
+        azureNetworkSourceIpInitial = '250.255.250.253'
+        azureNetworkSourceIpUpdate  = '250.255.250.253'
     }
 } Else {
     Write-Error ("Unknown OS: $($OS)")
@@ -54,7 +60,9 @@ $PesterParamsHash_OS = If ($OS -eq 'Windows_NT') {
 # Configure for local testing
 If ($env:USERNAME -ne 'VssAdministrator') {
     $PesterParamsHash_OS.networkSourceIpInitial = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
-    $PesterParamsHash_OS.networkSourceIpUpdate = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+    $PesterParamsHash_OS.networkSourceIpInitial = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+    $PesterParamsHash_OS.azureNetworkSourceIpInitial = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+    $PesterParamsHash_OS.azureNetworkSourceIpUpdate = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
 }
 # Parameters that are not Org specific
 $PesterParamsHash_Common = @{
@@ -83,7 +91,7 @@ $PesterParamsHash_Common = @{
 $RandomString1 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
 $RandomString2 = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
 $PesterParamsHash_Definitions = @{
-    NewUser1        = @{
+    NewUser1             = @{
         allow_public_key         = $false
         alternateEmail           = "$($RandomString1)ae@DeleteMe.com"
         Attribute1_name          = 'One1'
@@ -124,7 +132,7 @@ $PesterParamsHash_Definitions = @{
         work_state               = 'work_state_1'
         work_streetAddress       = 'work_streetAddress_1'
     };
-    NewUser2        = @{
+    NewUser2             = @{
         allow_public_key         = $false
         alternateEmail           = "$($RandomString2)ae@DeleteMe.com"
         Attribute1_name          = 'One2'
@@ -165,18 +173,24 @@ $PesterParamsHash_Definitions = @{
         work_state               = 'work_state_2'
         work_streetAddress       = 'work_streetAddress_2'
     };
-    NewSystemGroup  = @{
+    NewSystemGroup       = @{
         GroupName = 'PesterTest_SystemGroup'
     };
-    NewUserGroup    = @{
+    NewUserGroup         = @{
         GroupName = 'PesterTest_UserGroup'
     };
-    NewRadiusServer = @{
+    NewRadiusServer      = @{
         networkSourceIp = $PesterParamsHash_OS.networkSourceIpInitial
         sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
         name            = 'PesterTest_RadiusServer'
     };
-    NewCommand1     = @{
+    NewAzureRadiusServer = @{
+        networkSourceIp = $PesterParamsHash_OS.azureNetworkSourceIpInitial
+        sharedSecret    = '96d#@wyNXZ2IA5xfniSYv%H8jzGM4Cp'
+        name            = 'PesterTest_AzureRadiusServer'
+        authIdp         = 'AZURE'
+    };
+    NewCommand1          = @{
         name        = 'GetJCAgentLog'
         trigger     = 'GetJCAgentLog'
         commandType = 'linux'
@@ -184,14 +198,14 @@ $PesterParamsHash_Definitions = @{
         launchType  = 'trigger'
         timeout     = 120
     };
-    NewCommand2     = @{
+    NewCommand2          = @{
         name        = 'Invoke JCDeployment Test'
         commandType = 'linux'
         command     = 'echo $One echo $Two'
         launchType  = 'manual'
         timeout     = 0
     };
-    NewCommand3     = @{
+    NewCommand3          = @{
         name        = 'Pester Set-JCCommand'
         commandType = 'linux'
         command     = 'Not updated command'
@@ -199,7 +213,7 @@ $PesterParamsHash_Definitions = @{
         timeout     = 0
         trigger     = 'pesterTrigger'
     };
-    NewCommand4     = @{
+    NewCommand4          = @{
         name        = 'Invoke Pester One Variable'
         commandType = 'linux'
         command     = 'echo $One'
@@ -207,7 +221,7 @@ $PesterParamsHash_Definitions = @{
         timeout     = 120
         trigger     = 'onetrigger'
     };
-    NewCommand5     = @{
+    NewCommand5          = @{
         name        = 'Invoke Pester Two Variable'
         commandType = 'linux'
         command     = "echo `$One`necho `$Two"
@@ -215,7 +229,7 @@ $PesterParamsHash_Definitions = @{
         timeout     = 120
         trigger     = 'twotrigger'
     };
-    NewCommand6     = @{
+    NewCommand6          = @{
         name        = 'Invoke Pester Three Variable'
         commandType = 'linux'
         command     = "echo `$One`necho `$Two`necho `$Three"
