@@ -259,13 +259,20 @@ if (`$CurrentUser -eq "$($user.userName)") {
         Write-Host "RunAsUser Module installed, importing into session..."
         Import-Module RunAsUser -Force
     }
-
-    Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\Windows\Temp -Force
+    # create temp new radius directory
+    If (Test-Path "C:\RadiusCert"){
+        Write-Host "Radius Temp Cert Directory Exists"
+    } else {
+        New-Item "C:\RadiusCert" -itemType Directory
+    }
+    # expand archive as root
+    Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\RadiusCert -Force
+    # copy to a temp location
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
     `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
-    Import-PfxCertificate -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
+    Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
     }
-    `$imported = Get-PfxData -Password `$password -FilePath "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
+    `$imported = Get-PfxData -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx"
     # Get Current Certs As User
     `$ScriptBlockCleanup = {
         `$certs = Get-ChildItem Cert:\CurrentUser\My\
@@ -302,8 +309,8 @@ if (`$CurrentUser -eq "$($user.userName)") {
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
     }
-    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.pfx"){
-        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
+    If (Test-Path "C:\RadiusCert\$($user.userName)-client-signed.pfx"){
+        Remove-Item "C:\RadiusCert\$($user.userName)-client-signed.pfx"
     }
 
     # Lastly validate if the cert was installed
@@ -318,8 +325,8 @@ if (`$CurrentUser -eq "$($user.userName)") {
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
     }
-    If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.pfx"){
-        Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.pfx"
+    If (Test-Path "C:\RadiusCert\$($user.userName)-client-signed.pfx"){
+        Remove-Item "C:\RadiusCert\$($user.userName)-client-signed.pfx"
     }
     exit 4
 }
