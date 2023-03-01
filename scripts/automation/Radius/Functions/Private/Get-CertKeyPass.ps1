@@ -2,7 +2,7 @@ function Get-CertKeyPass {
     $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
     Write-Host "Found key: $($foundKeyPem)"
 
-    if ($foundKeyPem -match "ca-key") {
+    if ($foundKeyPem -match "ca_key") {
         # Check if the key is encrypted
         $checkKey = openssl rsa -in $foundKeyPem -check -passin pass: 2>&1
         if ($LASTEXITCODE -eq 0) {
@@ -20,7 +20,8 @@ function Get-CertKeyPass {
                     if ($checkKey -match "RSA key ok") {
                         # Save password to ENV variable
                         Write-Host "Saving password as Environment Variable"
-                        Set-Item -Path "env:certKeyPassword" -Value $keypassword
+                        $env:certKeyPassword = $certKeyPass
+
 
                     }
                 } until ($checkKey -match "RSA key ok")

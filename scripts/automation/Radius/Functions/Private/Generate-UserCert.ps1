@@ -22,8 +22,9 @@ function Generate-UserCert {
     )
     begin {
         . "$JCScriptRoot/config.ps1"
+        Write-Host "$($rootCAKey) test"
         if (-Not (Test-Path -Path $rootCAKey)) {
-            Throw "RootCAKey could not be found in project direcotry, have you run Generate-Cert.ps1?"
+            Throw "RootCAKey could not be found in project directory, have you run Generate-Cert.ps1?"
             exit 1
         }
         if (-Not (Test-Path -Path $rootCA)) {
@@ -69,7 +70,7 @@ function Generate-UserCert {
                 Invoke-Expression "$opensslBinary req -new -key $userKey -out $userCsr -config $ExtensionPath -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=/emailAddress=$($user.email)`""
 
                 # Gennerate User Cert
-                Invoke-Expression "$opensslBinary x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -passin pass:$($env:certKeyPassword)) -CAcreateserial -out $userCert -extfile $ExtensionPath"
+                Invoke-Expression "$opensslBinary x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extfile $ExtensionPath"
 
                 # Combine key and cert to create pfx file
                 Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($env:certKeyPassword)) -legacy"
@@ -81,14 +82,14 @@ function Generate-UserCert {
                 # Create Client cert with email in the subject distinguished name
                 Invoke-Expression "$opensslBinary genrsa -out $userKey 2048"
                 # Generate User CSR
-                Invoke-Expression "$opensslBinary req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword)) -out $($userCSR) -subj /C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
+                Invoke-Expression "$opensslBinary req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword) -out $($userCSR) -subj /C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
                 Invoke-Expression "$opensslBinary req -new -key $userKey -out $userCSR -config $ExtensionPath -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($user.username)`""
 
                 # Gennerate User Cert
-                Invoke-Expression "$opensslBinary x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -CAcreateserial -passin pass:$($env:certKeyPassword)) -out $userCert -extfile $ExtensionPath"
+                Invoke-Expression "$opensslBinary x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -CAcreateserial -passin pass:$($env:certKeyPassword) -out $userCert -extfile $ExtensionPath"
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($env:certKeyPassword)) -legacy"
+                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($env:certKeyPassword) -legacy"
                 # Output
                 Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
                 # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($env:certKeyPassword))"

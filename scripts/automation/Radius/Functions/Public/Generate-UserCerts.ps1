@@ -69,7 +69,7 @@ foreach ($user in $groupMembers) {
         if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem"
         }
     } else {
         Write-Host "[status] $($MatchedUser.username) not found in users.json"
@@ -99,7 +99,7 @@ foreach ($user in $groupMembers) {
         if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) has certs generated... adding to users.json"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius-ca-key.pem" -rootCA "$JCScriptRoot/Cert/radius-ca-cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem"
         }
         $userArray += $userTable
     }
