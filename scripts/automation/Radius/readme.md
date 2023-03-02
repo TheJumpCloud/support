@@ -88,7 +88,7 @@ The ID of the selected userGroup is the 24 character string between `/user/` and
 
 Depending on the host system and how OpenSSL is installed, this variable can either point to a path or call the binary with just the name `openssl`.
 
-[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'` if installed through Homebrew.
+[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'` if installed through Homebrew.
 
 Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$opensslBinary` necessary)
 
@@ -156,11 +156,11 @@ A Certificate Authority (CA) is required for passwordless Radius Authentication.
 
 #### Generating a self-signed certificate
 
-The first option in the menu will present options to generate a self-signed CA. The resulting file `radius_ca_cert.pem` in the `projectDir/Radius/Cert` directory. When generating a self signed CA, a password prompt is displayed, this password is used to protect the CA from unauthorized access. Choose a secure but memorable password, during the session this password will be stored as an environment variable as it is required to generate user certificates.
+The first option in the menu will present options to generate a self-signed CA. The resulting file `radius_ca_cert.pem` in the `projectDirectory/Radius/Cert` directory. When generating a self signed CA, a password prompt is displayed, this password is used to protect the CA from unauthorized access. Choose a secure but memorable password, during the session this password will be stored as an environment variable as it is required to generate user certificates.
 
 #### Importing a certificate
 
-To Import your own CA, the certificate and key files can be copied to the `projectDir/Radius/Cert` directory. **Note: Please ensure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)**
+To Import your own CA, the certificate and key files can be copied to the `projectDirectory/Radius/Cert` directory. **Note: Please ensure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)**
 
 In order to import a certificate from a .pfx file, the certificate and key needs to be extracted from .pfx file.
 
@@ -178,13 +178,13 @@ After successful import or generation of a self signed CA, the CA's serial numbe
 
 ### User Cert Generation
 
-With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDir/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
+With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
 If local user certificates are set to expire within 15 days, a notification is displayed on the main menu:
 
 ![certs due to expire](./images/expireCert.png)
 
-At any time user certificates can be manually removed from the `/projectDir/Radius/UserCerts/` directory and regenerated using option 2 from the main menu. User certificates can be continuously re-applied to devices using option 3 to distribute user certificates.
+At any time user certificates can be manually removed from the `/projectDirectory/Radius/UserCerts/` directory and regenerated using option 2 from the main menu. User certificates can be continuously re-applied to devices using option 3 to distribute user certificates.
 
 ## Certificate Distribution
 
