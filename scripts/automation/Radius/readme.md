@@ -105,8 +105,11 @@ Change the `$certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
 User certificates generated with this identification method will contain the JumpCloud user email within the subject alternative name header.
 
 A generated EmailSAN certificate will embed the user's email within the subject alternative name X509 extension header:
+
 ![emailSAN](./images/emailSAN.png)
+
 When a EmailSAN user certificate authorizes to a JumpCloud managed radius network, the user's email will be recoded from the email subject alternative name metadata:
+
 ![Radius emailSAN](./images/Radius_emailSAN.png)
 
 ##### Email Distinguished Name (EmailDN)
@@ -114,8 +117,11 @@ When a EmailSAN user certificate authorizes to a JumpCloud managed radius networ
 User certificates generated with this identification method will contain the JumpCloud user email within the subject distinguished name.
 
 A generated EmailDN certificate will embed the user's email within the certificate's subject distinguished name:
+
 ![emailDN](./images/emailDN.png)
+
 When a EmailDN user certificate authorizes to a JumpCloud managed radius network, the user's email will be recoded from the email address metadata:
+
 ![Radius emailDN](./images/Radius_emailDN.png)
 
 ##### Username Common Name (UsernameCN)
@@ -123,8 +129,11 @@ When a EmailDN user certificate authorizes to a JumpCloud managed radius network
 User certificates generated with this identification method will contain the JumpCloud username within the subject common name.
 
 A generated UsernameCN certificate will embed the user's username within the certificate's subject common name:
+
 ![usernameCN](./images/usernameCN.png)
+
 When a UsernameCN user certificate authorizes to a JumpCloud managed radius network, the user's username will be recoded from the common name metadata.
+
 ![Radius usernameCN](./images/Radius_usernameCN.png)
 
 ## Certificate Generation
@@ -141,7 +150,7 @@ An interactive menu will be presented displaying the following:
 
 ### Certificate Authority Generation or Import
 
-A Certificate Authority (CA) is required for passwordless Radius Authentication. This file is to be uploaded to JumpCloud to serve as the Certificate Authority for subsequently generated user certificates.
+A Certificate Authority (CA) is required for passwordless Radius Authentication. This `radius_ca_cert.pem` file is to be uploaded to JumpCloud to serve as the Certificate Authority for subsequently generated user certificates.
 
 ![Passwordless Auth Pem Cert](./images/radiusCertAuth.png)
 
@@ -152,6 +161,17 @@ The first option in the menu will present options to generate a self-signed CA. 
 #### Importing a certificate
 
 To Import your own CA, the certificate and key files can be copied to the `projectDir/Radius/Cert` directory. **Note: Please ensure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)**
+
+In order to import a certificate from a .pfx file, the certificate and key needs to be extracted from .pfx file.
+
+1. Extract the private key: `openssl pkcs12 -in certfile.pfx -nocerts -out /projectDirectory/Radius/Cert/radius_ca_key.pem`
+   - Replace certfile.pfx to the file path of your .pfx file. Make sure the `radius_ca_key.pem` is saved or moved to `/projectDirectory/Radius/Cert/` directory
+   - This command will prompt for the .pfx password. NOTE: Please DO NOT FORGET the password as you will need it when generating user certificates.
+2. Extract the certificate: `openssl pkcs12 -in certfile.pfx -nokeys -out /projectDirectory/Radius/Cert/radius_ca_cert.pem`
+   - Replace certfile.pfx to the file path of your .pfx file. Make sure the `radius_ca_cert.pem` is saved or moved to `/projectDirectory/Radius/Cert/` directory
+   - Again, this command will prompt for the .pfx password
+
+**NOTE: You will get prompted with the Key password Generating user certificates. The password will be saved as an Environment Variable.**
 
 After successful import or generation of a self signed CA, the CA's serial number and expiration date will be displayed on the main menu.
 ![main menu](./images/mainMenu.png)
@@ -203,26 +223,10 @@ After logging into the user account `Farmer_142` on `SE0PU00ABEXY-darwin` system
 ### End User Experience
 
 After a user's certificate has been distributed to a system, those users can then connect to a radius network with certificate based authentication.
-### Importing a certificate
 
-If you have your own self-signed certificate, you can import the certificate and key to `/projectDirectory/Radius/Cert/` folder. Note: Please make sure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)
+### macOS
 
-### Importing a certificate with a .pfx file
-
-In order to import a certificate from a .pfx file, the certificate and key needs to be extracted from .pfx file.
-
-1. Extract the private key: `openssl pkcs12 -in certfile.pfx -nocerts -out /projectDirectory/Radius/Cert/radius_ca_key.pem`
-   * Replace certfile.pfx to the file path of your .pfx file. Make sure the `radius_ca_key.pem` is saved or moved to `/projectDirectory/Radius/Cert/` directory
-   * This command will prompt for the .pfx password. NOTE: Please DO NOT FORGET the password as you will need it when generating user certificates.
-2. Extract the certificate: `openssl pkcs12 -in certfile.pfx -nokeys -out /projectDirectory/Radius/Cert/radius_ca_cert.pem`
-   *  Replace certfile.pfx to the file path of your .pfx file. Make sure the  `radius_ca_cert.pem` is saved or moved to `/projectDirectory/Radius/Cert/`  directory
-   *  Again, this command will prompt for the .pfx password
-
-NOTE: You will get prompted with the Key password Generating user certificates. The password will be saved as an Environment Variable.
-
-### MacOS
-
-In MacOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
+In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 
 ![select network](./images/mac_radiusNetwork_step1.png)
 
