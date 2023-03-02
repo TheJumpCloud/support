@@ -266,6 +266,8 @@ The user should then be connected to the radius network.
 
 If needed, you can clear out your entire commands queue. Copy and paste the following code to a PowerShell terminal window where you've already run `Connect-JCOnline`
 
+This function will only clear commands from the queue that match `'RadiusCert-Install:*'` in the name.
+
 ```powershell
 function Get-JCQueuedCommands {
     begin {
@@ -284,9 +286,14 @@ function Get-JCQueuedCommands {
             $skip += $limit
             $resultsArray += $response.results
         }
+        foreach ($queue in $resultsArray) {
+            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/commands/$($queue.command)?fields=name" -Method GET -Headers $headers
+            $queue | Add-Member -MemberType "NoteProperty" -Name "Name" -Value $response.name
+        }
     }
     end {
-        return $resultsArray
+        $filteredQueue = $resultsArray | Where-Object { $_.name -match "RadiusCert-Install:*" }
+        return $filteredQueue
     }
 }
 $headers = @{
