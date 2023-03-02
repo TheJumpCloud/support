@@ -146,17 +146,17 @@ Output for re-running commands:
 After a user's certificate has been distributed to a system, those users can then connect to a radius network with certificate based authentication.
 ### Importing a certificate
 
-If you have your own self-signed certificate, you can import the certificate and key to `~/Radius/Cert` folder. Note: Please make sure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)
+If you have your own self-signed certificate, you can import the certificate and key to `/projectDirectory/Radius/Cert/` folder. Note: Please make sure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)
 
 ### Importing a certificate with a .pfx file
 
 In order to import a certificate from a .pfx file, the certificate and key needs to be extracted from .pfx file.
 
-1. Extract the private key: `pkcs12 -in certfile.pfx -nocerts -out ~/Radius/radius_ca_key.pem -nodes`
-   * Replace certfile.pfx to the file path of your .pfx file. Make sure the `radius_ca_key.pem` is saved or moved to `~/Radius/Certs/` directory
+1. Extract the private key: `openssl pkcs12 -in certfile.pfx -nocerts -out /projectDirectory/Radius/Cert/radius_ca_key.pem`
+   * Replace certfile.pfx to the file path of your .pfx file. Make sure the `radius_ca_key.pem` is saved or moved to `/projectDirectory/Radius/Cert/` directory
    * This command will prompt for the .pfx password. NOTE: Please DO NOT FORGET the password as you will need it when generating user certificates.
-2. Extract the certificate: `pkcs12 -in certfile.pfx -nokeys -out ~/Radius/Cert/radius_ca_cert.pem`
-   *  Replace certfile.pfx to the file path of your .pfx file. Make sure the  `radius_ca_cert.pem` is saved or moved to `~/Radius/Certs/`  directory
+2. Extract the certificate: `openssl pkcs12 -in certfile.pfx -nokeys -out /projectDirectory/Radius/Cert/radius_ca_cert.pem`
+   *  Replace certfile.pfx to the file path of your .pfx file. Make sure the  `radius_ca_cert.pem` is saved or moved to `/projectDirectory/Radius/Cert/`  directory
    *  Again, this command will prompt for the .pfx password
 
 NOTE: You will get prompted with the Key password Generating user certificates. The password will be saved as an Environment Variable.

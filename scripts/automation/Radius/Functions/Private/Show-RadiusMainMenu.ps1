@@ -26,7 +26,7 @@ function Show-RadiusMainMenu {
         Write-Host "$([char]0x1b)[91m$($($expiringCerts.subject).Count) user certs will expire in 15 days `n"
     }
 
-    Write-Host "1: Press '1' to generate or import your Root Certificate."
+    Write-Host "1: Press '1' to generate your Root Certificate."
     Write-Host "2: Press '2' to generate/update your User Certificate(s)."
     Write-Host "3: Press '3' to distribute your User Certificate(s)."
     Write-Host "4: Press '4' to monitor your User Certification Distribution."
