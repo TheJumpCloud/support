@@ -91,3 +91,13 @@ foreach ($subjObj in $subj.psObject.Properties) {
         throw "Subject Header: $($subjObj.Name):$($subjObj.value) Contains a space character. subject headers cannot contain spaces, please remove and re-run"
     }
 }
+# Validate API KEY, OrgID, SystemGroupID, length
+if (($JCAPIKEY).Length -ne 40) {
+    throw "The entered JumpCloud Api Key is not the expected length"
+}
+if (($JCORGID).Length -ne 24) {
+    throw "The entered JumpCloud Organization ID is not the expected length"
+}
+if (($JCUSERGROUP).Length -ne 24) {
+    throw "The entered JumpCloud UserGroup ID is not the expected length"
+}
