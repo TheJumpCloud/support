@@ -13,6 +13,7 @@ Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableName
 
 # Show user selection
 do {
+    #Output-Certs
     Show-RadiusMainMenu
     $selection = Read-Host "Please make a selection"
     switch ($selection) {

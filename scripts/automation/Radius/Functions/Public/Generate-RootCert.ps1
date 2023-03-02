@@ -18,13 +18,31 @@ Write-Host "Generating Self Signed Root CA Certificate"
 if (Test-Path -Path "$JCScriptRoot/Cert") {
     Write-Host "Cert Path Exists"
 } else {
-    Write-Host "Createing Cert Path"
+    Write-Host "Creating Cert Path"
     New-Item -ItemType Directory -Path "$JCScriptRoot/Cert"
 }
+# Check if cert exists, prompt user to overwrite with a while loop
+if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
+    Write-Host "CA Cert already exists"
+    $overwrite = Read-Host "Do you want to overwrite the existing CA Cert? (y/n)"
+    if ($overwrite -eq "y") {
+        Write-Host "Overwriting CA Cert..."
+    } else {
+        Write-Host "Exiting "
+        break
+    }
+}
 $CertPath = Resolve-Path "$JCScriptRoot/Cert"
-$outKey = "$CertPath/selfsigned-ca-key.pem"
-$outCA = "$CertPath/selfsigned-ca-cert.pem"
-Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($JCORGID) -subj /C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
+$outKey = "$CertPath/radius_ca_key.pem"
+$outCA = "$CertPath/radius_ca_cert.pem"
+# Ask the user to enter a pass phrase for the CA key:
+# Clear the pass phrase from the env:
+$env:certKeyPassword = ""
+$secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
+$certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+# Save the pass phrase in the env:
+$env:certKeyPassword = $certKeyPass
+Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($env:certKeyPassword) -subj /C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
 # REM PEM pass phrase: myorgpass
 Invoke-Expression "$opensslBinary x509 -in $outCA -noout -text"
 # openssl x509 -in ca-cert.pem -noout -text

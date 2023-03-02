@@ -6,6 +6,24 @@ Connect-JCOnline $JCAPIKEY -force
 # Do not modify below
 ################################################################################
 
+# Check if CA-Key is saved in env
+if ($env:certKeyPassword) {
+    Write-Host "Found CA-Key password in env"
+    # Check if the key.pem works with the password
+    $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
+    $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($env:certKeyPassword) 2>&1
+    if ($checkKey -match "RSA key ok") {
+        Write-Debug "ENV CA-Key password is works with the current key"
+    } else {
+        Write-Host "CA-Key password is incorrect"
+        Get-CertKeyPass
+    }
+} else {
+    # Get CA-Key password
+    Write-Host "CA-Key password not found in the ENV"
+    Get-CertKeyPass
+}
+
 # Import the functions
 Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
 
@@ -51,7 +69,7 @@ foreach ($user in $groupMembers) {
         if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem"
         }
     } else {
         Write-Host "[status] $($MatchedUser.username) not found in users.json"
@@ -81,7 +99,7 @@ foreach ($user in $groupMembers) {
         if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) has certs generated... adding to users.json"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/selfsigned-ca-key.pem" -rootCA "$JCScriptRoot/Cert/selfsigned-ca-cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem"
         }
         $userArray += $userTable
     }
