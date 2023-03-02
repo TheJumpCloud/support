@@ -11,6 +11,9 @@ This automation has been tested with OpenSSL 3.0.7. OpenSSL 3.x.x is required to
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 - Certificate Authority (CA) (either from a vendor or self-generated)
 - Variables in `config.ps1` updated
+  - JumpCloud API Key Set (Read/ Write Access Required)
+  - JumpCloud ORG ID Set
+  - JumpCloud User Group containing users and assigned to a Radius Server
 
 ### macOS Requirements
 
@@ -131,61 +134,70 @@ The entire certificate generate process is managed through a PowerShell menu bas
 ./Start-RadiusDeployment.ps1
 ```
 
-### Certificate Authority Generation
+An interactive menu will be presented displaying the following:
 
-After setting environment variables in the `config.ps1` file. The `Generate-RootCert.ps1` file should then be ran in order to generate the self-signed Radius authentication certificate.
+![main menu](./images/mainMenuNoCA.png)
 
-In a PowerShell terminal or environment navigate to this directory:
+### Certificate Authority Generation or Import
 
-`cd "~/Path/To/support/scripts/automation/Radius/"`
+A Certificate Authority (CA) is required for passwordless Radius Authentication. This file is to be uploaded to JumpCloud to serve as the Certificate Authority for subsequently generated user certificates.
 
-Run the `Generate-RootCert.ps1` file
+![Passwordless Auth Pem Cert](./images/radiusCertAuth.png)
 
-`./Generate-RootCert.ps1`
+#### Generating a self-signed certificate
 
-After successfully running the script the openssl extension files should each be updated with your subject headers set from the `config.ps1` file.
+The first option in the menu will present options to generate a self-signed CA. The resulting file `radius_ca_cert.pem` in the `projectDir/Radius/Cert` directory. When generating a self signed CA, a password prompt is displayed, this password is used to protect the CA from unauthorized access. Choose a secure but memorable password, during the session this password will be stored as an environment variable as it is required to generate user certificates.
 
-Within the `/Cert` directory, two files should have been created:
+#### Importing a certificate
 
-`selfsigned-ca-cert.pem` and `selfsigned-ca-key.pem`
+To Import your own CA, the certificate and key files can be copied to the `projectDir/Radius/Cert` directory. **Note: Please ensure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)**
 
-The certificate in this directory is to be uploaded to JumpCloud to act as the certificate authority for subsequently generated user certificates.
+After successful import or generation of a self signed CA, the CA's serial number and expiration date will be displayed on the main menu.
+![main menu](./images/mainMenu.png)
 
 ### User Cert Generation
 
-With the certificate authority generated, the user certs can then be generated. Run the `Generate-UserCerts.ps1` file:
+With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDir/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
-`./Generate-UserCerts.ps1`
+If local user certificates are set to expire within 15 days, a notification is displayed on the main menu:
 
-The script will go fetch all users found in the user group specified in `config.ps1`. For each user in the group, a `.pfx` certificate will be generated in the `/UserCerts` directory.
+![certs due to expire](./images/expireCert.png)
 
-Each user will then need to install their respective certificate on their devices.
+At any time user certificates can be manually removed from the `/projectDir/Radius/UserCerts/` directory and regenerated using option 2 from the main menu. User certificates can be continuously re-applied to devices using option 3 to distribute user certificates.
 
 ## Certificate Distribution
 
-### Distribute Certificates
+Option 3 in the main menu will enable admins to distribute user certificates to end user devices. Commands will be generated in your JumpCloud Tenant for each user in the Radius User Group and their corresponding system associations. This script will prompt you to kick off the generated commands. If the commands are invoked, they should be queued for all users in the Radius User Group. These commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCLoud console and wait for the device to come online before attempting to run.
 
-After Generating all the user certificates, the `Distribute-UserCerts.ps1` file is used to create commands in the JumpCloud Console for distribution to end users.
+On the device, certificates are replaced if a command is sent to a device with a newer certificate. i.e.
 
-In a PowerShell terminal or environment navigate to this directory:
+![radius re-issue workflow](./images/Radius_ReIssue_Workflow.png)
 
-`cd "~/Path/To/support/scripts/automation/Radius/"`
+In this example, users Bob and Ali were connected to a radius network with their individual certificates. newly generated certificates are issued to Bob and Ali via generated JumpCloud Commands. Bob's new user certificate with serial number `XYZ1` would be installed and the older certificate with serial number `ABC1` would then be removed from the device. Ali's user certificate with serial number `HIJ2` would be installed and the older certificate with serial number `EFG1` would be removed from the device.
 
-Run the `Distribute-UserCerts.ps1` file
+Replacement of user certificates can occur while a device is actively connected to the radius network protected by passwordless certificate based authentication due to the fact that authentication is session based. If Bob in this example authenticated to the radius network with cert serial number `ABC1` the network session between Bob and the radius network is instantiated. During that session, the certificate `ABC1` can be replaced with certificate `XYZ2` from Bob's computer without network interruption. Upon next authentication, the system should default to using the new certificate.
 
-`./Distribute-UserCerts.ps1`
-
-Commands will be generated in your JumpCloud Tenant for each user in the Radius User Group and their corresponding system associations. This script will prompt you to kick off the generated commands. If the commands are invoked, they should be queued for all users in the Radius User Group. These commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCLoud console and wait for the device to come online before attempting to run.
+The generated JumpCloud commands for Bob will only remove certificate `ABC1` if `XYZ2` is installed successfully.
 
 ### Monitor Certificate Deployment Status
 
-After creating the commands to distribute the certificates to users, you can view the overall progress of the deployment through the `Monitor-CertDeployment.ps1` script. This script will query the deployment status of each generated command and display a table of the command status. If a command is no longer queued (Either through cancellation or the TTL timeout of 10 days exceeded) or if the command failed (either through some standard error or end user not being logged in (exit code 4)) running the `Monitor-CertDeployment.ps1` script will prompt you to retry those dequeued or failed commands.
+After creating the commands to distribute the certificates to users, you can view the overall progress of the deployment through option 4 in the main menu. This automation will query the deployment status of each generated command and display a table of the command status. If a command is no longer queued (Either through cancellation or the TTL timeout of 10 days exceeded) or if the command failed (either through some standard error or end user not being logged in (exit code 4)) these commands can be reissued using the menu options
 
-Output for pending commands:
-![pending and successful commands](./images/monitor_pending.png)
+After issuing commands to devices, the list of commands issued to devices can be viewed:
 
-Output for re-running commands:
-![rerunning commands](./images/monitor_retry.png)
+![commands overview](./images/resultOverview.png)
+
+Individual failed commands can be explored with option 2 from the certificate deployment menu. In this example a different user other than the intended user was logged in at time of execution. If the failed commands are re-issued using option 3:
+
+![commands overview](./images/resultDetail.png)
+
+If the failed commands are re-issued using option 3:
+
+![commands overview](./images/commandReissue.png)
+
+After logging into the user account `Farmer_142` on `SE0PU00ABEXY-darwin` system and reissuing the command, the certificate is installed successfully:
+
+![commands overview](./images/resultOverviewPostIssue.png)
 
 ### End User Experience
 
@@ -193,17 +205,39 @@ After a user's certificate has been distributed to a system, those users can the
 
 ### MacOS
 
-In MacOS a user simply needs to select the radius network from the wireless networks dialog prompt. An option to authenticate with a certificate should be presented. After selecting the user's certificate, the MacOS user is prompted to enter their system password. They can do this and select "Always Allow" or will otherwise be prompted to enter their password three times.
+In MacOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
+
+![select network](./images/mac_radiusNetwork_step1.png)
+
+The user is prompted to validate the certificate, click "Continue"
+
+![select network](./images/mac_radiusNetwork_step2.png)
+
+After validating the certificate, the user is prompted to enter their password to assign the Radius SSID to the selected certificate:
+
+![select network](./images/mac_radiusNetwork_step3.png)
+
+After entering the password, the user as asked again to sign using this certificate, enter the password and select "Always Allow"
+
+![select network](./images/mac_radiusNetwork_step4.png)
+
+After entering the password, the user as asked again to access using this certificate, enter the password and select "Always Allow"
+
+![select network](./images/mac_radiusNetwork_step5.png)
+
+The user should then be connected to the radius network.
 
 ### Windows
 
-In Windows, select the radius network from the wireless networks dialog prompt, an option to select a certificate should be displayed. Select the certificate which corresponds with the user on the device. Select "OK"
+In Windows, select the radius network from the wireless networks dialog prompt, an option to select a certificate should be displayed. Select the certificate which corresponds with the user on the device. Select "OK":
 
 ![select network](./images/windows_select_network.png)
 
 Before Connecting, users can view the authentication source. Click "Connect" to connect to the network, no password is necessary.
 
 ![select network](./images/windows_auth.png)
+
+The user should then be connected to the radius network.
 
 ### Troubleshooting
 
