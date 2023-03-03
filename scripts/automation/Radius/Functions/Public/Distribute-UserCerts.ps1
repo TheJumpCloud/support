@@ -116,6 +116,7 @@ unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certHash.serial)"
+networkSsid="$($NETWORKSSID)"
 if [[ `$currentUser ==  $($user.userName) ]]; then
     certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
     regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
@@ -161,12 +162,19 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
     fi
 
     if [[ `$import == true ]]; then
-        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
         if [[ `$? -eq 0 ]]; then
             echo "Import Success"
         else
             echo "import failed"
             exit 4
+        fi
+        # set ssid info; this prevents multiple password prompts
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$networkSsid" -$($macCertSearch) "$($certIdentifier)"
+        if [[ `$? -eq 0 ]]; then
+            echo "SSID and certificate linked"
+        else
+            echo "Could not associate SSID and certifiacte"
         fi
     else
         echo "cert already imported"

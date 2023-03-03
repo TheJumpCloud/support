@@ -84,6 +84,10 @@ After selecting the User Group, view the url for the user group it should look s
 
 The ID of the selected userGroup is the 24 character string between `/user/` and `/details`: `5f808a1bb544064831f7c9fb`
 
+#### Set your network SSID Name
+
+Change the variable `$NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network.
+
 #### Set the openSSL Binary location
 
 Depending on the host system and how OpenSSL is installed, this variable can either point to a path or call the binary with just the name `openssl`.
@@ -225,6 +229,8 @@ After logging into the user account `Farmer_142` on `SE0PU00ABEXY-darwin` system
 After a user's certificate has been distributed to a system, those users can then connect to a radius network with certificate based authentication.
 
 ### macOS
+
+If the `$NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
 
 In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 

@@ -8,6 +8,8 @@ $JCUSERGROUP = 'YOURJCUSERGROUP'
 $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
+# NETWORK SSID (optional)
+$NETWORKSSID = 'YOUR_SSID'
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
