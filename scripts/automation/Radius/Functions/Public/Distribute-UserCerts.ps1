@@ -105,7 +105,6 @@ foreach ($user in $userArray) {
             continue
         }
 
-        # TODO: is common name the same depending on the CertType?
         # Create new Command and upload the signed pfx
         try {
             $CommandBody = @{
@@ -170,12 +169,14 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
             exit 4
         fi
         # set ssid info; this prevents multiple password prompts
-        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$networkSsid" -$($macCertSearch) "$($certIdentifier)"
-        if [[ `$? -eq 0 ]]; then
-            echo "SSID and certificate linked"
-        else
-            echo "Could not associate SSID and certifiacte"
-        fi
+        for i in `${networkSsid[@]}; do
+            /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -$($macCertSearch) "$($certIdentifier)"
+            if [[ `$? -eq 0 ]]; then
+                echo "SSID: `$i and certificate linked"
+            else
+                echo "Could not associate SSID: `$i and certifiacte"
+            fi
+        done
     else
         echo "cert already imported"
     fi
