@@ -1,13 +1,17 @@
 # READ/ WRITE API KEY
-$JCAPIKEY = 'yourApiKey'
+$JCAPIKEY = 'YOURAPIKEY'
 # JUMPCLOUD ORGID
-$JCORGID = 'yourOrgId'
+$JCORGID = 'YOURORGID'
 # JUMPCLOUD USER GROUP
-$JCUSERGROUP = '635079e21490b90001eb275b'
+$JCUSERGROUP = 'YOURJCUSERGROUP'
 # USER CERT PASSWORD (user must enter this when importing cert)
 $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
+# List Of Radius Network SSID(s)
+# For Multiple SSIDs enter as a single string seperated by spaces ex:
+# "CorpNetwork_Denver CorpNetwork_Boulder"
+$NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
@@ -86,8 +90,18 @@ function Get-OpenSSLVersion {
 Get-OpenSSLVersion -opensslBinary $opensslBinary
 
 # Validate no spaces in $Subj
-foreach ($subjObj in $subj.psObject.Properties){
-    if ($subjObj.value -match " "){
+foreach ($subjObj in $subj.psObject.Properties) {
+    if ($subjObj.value -match " ") {
         throw "Subject Header: $($subjObj.Name):$($subjObj.value) Contains a space character. subject headers cannot contain spaces, please remove and re-run"
     }
+}
+# Validate API KEY, OrgID, SystemGroupID, length
+if (($JCAPIKEY).Length -ne 40) {
+    throw "The entered JumpCloud Api Key is not the expected length"
+}
+if (($JCORGID).Length -ne 24) {
+    throw "The entered JumpCloud Organization ID is not the expected length"
+}
+if (($JCUSERGROUP).Length -ne 24) {
+    throw "The entered JumpCloud UserGroup ID is not the expected length"
 }
