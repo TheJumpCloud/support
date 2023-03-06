@@ -86,7 +86,7 @@ The ID of the selected userGroup is the 24 character string between `/user/` and
 
 #### Set your network SSID Name
 
-Change the variable `$NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a space, ex: "CorpNetwork_Denver CorpNetwork_Boulder".
+Change the variable `$NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a space, ex: "CorpNetwork_Denver CorpNetwork_Boulder". **Note: The SSID and user certificate are only associated with macOS system commands are generated. This parameter does not affect windows generated commands**
 
 #### Set the openSSL Binary location
 
