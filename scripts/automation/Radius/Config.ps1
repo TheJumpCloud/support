@@ -37,6 +37,12 @@ $CertType = "UsernameCn"
 # Do not modify below
 ################################################################################
 
+UserAgent_ModuleVersion='1.0.0'
+UserAgent_ModuleName='PasswordlessRadiusConfig'
+#Build the UserAgent string
+$UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"
+$Template_UserAgent = "{0}/{1}"
+$UserAgent = $Template_UserAgent -f $UserAgent_ModuleName, $UserAgent_ModuleVersion
 # When we import this config, this function will run and validate the openSSL binary location
 function Get-OpenSSLVersion {
     [CmdletBinding()]
