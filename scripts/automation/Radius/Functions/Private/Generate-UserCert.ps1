@@ -52,7 +52,7 @@ function Generate-UserCert {
 
                 # take signing request, make cert # specify extensions requets
                 Write-Host "[status] take signing request, make cert # specify extensions requets"
-                Invoke-Expression "$opensslBinary x509 -req -extfile $ExtensionPath -days $JCUSERCERTVALIDITY -in $userCSR -CA $rootCA -CAkey $rootCAKey -passin pass:$($env:certKeyPassword)) -CAcreateserial -out $userCert -extensions v3_req"
+                Invoke-Expression "$opensslBinary x509 -req -extfile $ExtensionPath -days $JCUSERCERTVALIDITY -in $userCSR -CA $rootCA -CAkey $rootCAKey -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extensions v3_req"
 
                 # validate the cert we cant see it once it goes to pfx
                 Write-Host "[status] validate the cert we cant see it once it goes to pfx"
@@ -65,7 +65,7 @@ function Generate-UserCert {
                 # Create Client cert with email in the subject distinguished name
                 Invoke-Expression "$opensslBinary genrsa -out $userKey 2048"
                 # Generate User CSR
-                Invoke-Expression "$opensslBinary req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword)) -out $($userCSR) -subj /C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
+                Invoke-Expression "$opensslBinary req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword) -out $($userCSR) -subj /C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
                 Invoke-Expression "$opensslBinary req -new -key $userKey -out $userCsr -config $ExtensionPath -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=/emailAddress=$($user.email)`""
 
                 # Gennerate User Cert
