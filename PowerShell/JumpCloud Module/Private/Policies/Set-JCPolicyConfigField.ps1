@@ -30,7 +30,7 @@ function Set-JCPolicyConfigField {
         # TODO: set this globally
         $configMapping = @{
             checkbox       = 'boolean'
-            singlelistbox  = 'exclude'
+            singlelistbox  = 'listbox'
             table          = 'exclude'
             customRegTable = 'table'
             textarea       = 'string'
@@ -162,11 +162,95 @@ function Set-JCPolicyConfigField {
                     }
                     $field.value = $rows
                 }
-                Default {
+                'listbox' {
+                    # List current values if they existing
+                    do {
+                        if ($policyValues[$fieldIndex].value) {
+                            if ($ValueObject) {
+                                $valueDisplay = New-Object System.Collections.ArrayList
+                                for ($i = 0; $i -lt $ValueObject.Count; $i++) {
+                                    $valueDisplay.Add([PSCustomObject]@{
+                                            row   = $i
+                                            value = $ValueObject[$i]
+                                        })
+                                }
+                                $valueDisplay | Out-Host
+                            } else {
+                                # If values, populate value display
+                                $ValueObject = New-Object System.Collections.ArrayList
+                                $valueDisplay = New-Object System.Collections.ArrayList
+                                for ($i = 0; $i -lt $policyValues[$fieldIndex].value.Count; $i++) {
+                                    $valueDisplay.Add([PSCustomObject]@{
+                                            row   = $i
+                                            value = $policyValues[$fieldIndex].value[$i]
+                                        })
+                                    $ValueObject.Add($policyValues[$fieldIndex].value[$i])
+                                }
+                                $valueDisplay | Out-Host
+                            }
+                            $userChoice = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
+                        } else {
+                            $values = @()
+                            if ($ValueObject) {
+                                $valueDisplay = New-Object System.Collections.ArrayList
+                                for ($i = 0; $i -lt $ValueObject.Count; $i++) {
+                                    $valueDisplay.Add([PSCustomObject]@{
+                                            row   = $i
+                                            value = $ValueObject[$i]
+                                        })
+                                }
+                                $valueDisplay | Out-Host
+                                $userChoice = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
+                            } else {
+                                # No values, just prompt to enter new value (todo, skip to enterting new value)
+                                $userChoice = (Read-Host "Select an Action:`nAdd (A) - add new table rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
+                                $ValueObject = New-Object System.Collections.ArrayList
+                            }
+                        }
+                        # List available actions:
+                        # M modify existing row
+                        # A add new value
+                        # R remove existing value
+                        # C continue
+                        switch ($userChoice) {
+                            'M' {
+                                # modify existing:
+                                do {
+                                    $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)): ")
+                                } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
+                                $singleListBoxValue = Read-Host "Please enter a text value: "
+                                $ValueObject[$rowNum] = $singleListBoxValue
+                            }
+                            'A' {
+                                # Add new row
+                                $singleListBoxValue = Read-Host "Please enter a text value: "
+                                $ValueObject.add($singleListBoxValue)
+                            }
+                            'R' {
+                                # remove existing:
+                                [System.Collections.ARRAYList]$ValueObjectCopy = $ValueObject
+                                do {
+                                    $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)): ")
+                                } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
+                                $ValueObjectCopy.RemoveAt($rowNum)
+                                $ValueObject = $ValueObjectCopy
+                            }
+                            'C' {
+                                break
+                                # $output = [PSCustomObject]@{
+                                #     configFieldID = $templateObject.configFieldID
+                                #     value         = $policyValues
+                                # }
+                                # Write-Host "updating Policy..."
+                            }
+                            # return $output
+
+                        }
+                    } While ($userChoice -ne 'C')
+                    # finally update values
+                    $policyValues[$fieldIndex].value = $ValueObject
                 }
             }
-
-
         }
         if ($registry) {
             # $field = $templateObject[$fieldIndex]
