@@ -19,7 +19,7 @@ function Invoke-CommandRun {
         $body = @{
             _id = $commandID
         } | ConvertTo-Json
-        $response = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/runCommand' -Method POST -Headers $headers -ContentType 'application/json' -Body $body
+        $response = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/runCommand' -Method POST -Headers $headers -ContentType 'application/json' -Body $body -UserAgent $UserAgent
     }
     end {
         if (!$response.queueIds) {
