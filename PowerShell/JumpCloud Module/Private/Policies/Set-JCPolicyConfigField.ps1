@@ -35,7 +35,7 @@ function Set-JCPolicyConfigField {
             customRegTable = 'table'
             textarea       = 'string'
             text           = 'string'
-            file           = 'exclude'
+            file           = 'file'
             select         = 'multi'
             number         = 'int'
         }
@@ -249,6 +249,19 @@ function Set-JCPolicyConfigField {
                     } While ($userChoice -ne 'C')
                     # finally update values
                     $policyValues[$fieldIndex].value = $ValueObject
+                }
+                'file' {
+                    # TODOs
+                    # What's the file path? (require user input)
+                    # can we validate it (is the path a real path, is it a file, not a directory)
+                    # can we turn it into a b64 string (try catch to turn it into a base64 string)
+                    # else, error correct
+                    # $fp = Read-Host "what's the file path"
+                    $fp = "/Users/username/Downloads/fonts/MavenPro-Black.ttf"
+
+                    $b64font = [convert]::ToBase64String((Get-Content -Path $fp -AsByteStream))
+                    # Return the policy value here:
+                    $policyValues[$fieldIndex].value = $b64font
                 }
             }
         }

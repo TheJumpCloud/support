@@ -17,7 +17,7 @@ function Get-JCPolicyTemplateConfigField {
             customRegTable = 'table'
             textarea       = 'string'
             text           = 'string'
-            file           = 'exclude'
+            file           = 'file'
             select         = 'multi'
             number         = 'int'
         }
