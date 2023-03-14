@@ -20,10 +20,7 @@ function Set-JCPolicyConfigField {
         # The field to edit
         [Parameter(Mandatory = $false)]
         [System.String]
-        $fieldIndex,
-        [Parameter(Mandatory = $false)]
-        [switch]
-        $registry
+        $fieldIndex
     )
     begin {
         # TODO: validate templateID
@@ -153,11 +150,6 @@ function Set-JCPolicyConfigField {
                                 $ValueObject = New-Object System.Collections.ArrayList
                             }
                         }
-                        # List available actions:
-                        # M modify existing row
-                        # A add new value
-                        # R remove existing value
-                        # C continue
                         switch ($userChoice) {
                             'M' {
                                 # modify existing:
@@ -183,13 +175,7 @@ function Set-JCPolicyConfigField {
                             }
                             'C' {
                                 break
-                                # $output = [PSCustomObject]@{
-                                #     configFieldID = $templateObject.configFieldID
-                                #     value         = $policyValues
-                                # }
-                                # Write-Host "updating Policy..."
                             }
-                            # return $output
 
                         }
                     } While ($userChoice -ne 'C')
@@ -214,168 +200,89 @@ function Set-JCPolicyConfigField {
                     # Return the policy value here:
                     $policyValues[$fieldIndex].value = $base64File
                 }
-            }
-        }
-        if ($registry) {
-            if ($policyValues) {
-                # Determine action
-                $path = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
-                switch ($path) {
-                    'M' {
-                        # Modify existing:
-                        do {
-                            $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $(($policyValues.value).Count - 1)) ")
-                        } While (0..[int](($policyValues.value).Count - 1) -notcontains $rownum)
-                        $tableRow = New-CustomRegistryTableRow
-                        $policyValues.value[$rowNum] = $tableRow
-                    }
-                    'A' {
-                        # Add new row
-                        $rows = [System.Collections.ArrayList]@()
-                        if ($policyValues.value -ne $null) {
-                            $rows = $policyValues.value
+                'table' {
+                    Do {
+                        if ($policyValues[$fieldIndex].value) {
+                            if ($ValueObject) {
+                                $valueDisplay = New-Object System.Collections.ArrayList
+                                for ($i = 0; $i -lt $ValueObject.Count; $i++) {
+                                    $valueDisplay.Add([PSCustomObject]@{
+                                            row   = $i
+                                            value = $ValueObject[$i]
+                                        })
+                                }
+                                $valueDisplay | Out-Host
+                            } else {
+                                # If values, populate value display
+                                $ValueObject = New-Object System.Collections.ArrayList
+                                $valueDisplay = New-Object System.Collections.ArrayList
+                                for ($i = 0; $i -lt $policyValues[$fieldIndex].value.Count; $i++) {
+                                    $valueDisplay.Add([PSCustomObject]@{
+                                            row   = $i
+                                            value = $policyValues[$fieldIndex].value[$i]
+                                        })
+                                    $ValueObject.Add($policyValues[$fieldIndex].value[$i])
+                                }
+                                $valueDisplay | Out-Host
+                            }
+                            $userChoice = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
+                        } else {
+                            $values = @()
+                            if ($ValueObject) {
+                                $valueDisplay = New-Object System.Collections.ArrayList
+                                for ($i = 0; $i -lt $ValueObject.Count; $i++) {
+                                    $valueDisplay.Add([PSCustomObject]@{
+                                            row   = $i
+                                            value = $ValueObject[$i]
+                                        })
+                                }
+                                $valueDisplay | Out-Host
+                                $userChoice = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
+                            } else {
+                                # No values, just prompt to enter new value (todo, skip to enterting new value)
+                                # Case for new tables
+                                $tableRow = New-CustomRegistryTableRow
+                                $ValueObject = New-Object System.Collections.ArrayList
+                                $ValueObject.Add($tableRow) | Out-Null
+                            }
                         }
-                        $tableRow = New-CustomRegistryTableRow
-                        $rows.Add($tableRow) | Out-Null
-                        $policyValues.value = $rows
-                    }
-                    'R' {
-                        # Remove existing:
-                        $rows = $policyValues.value
-                        do {
-                            $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $(($policyValues.value).Count - 1)) ")
-                        } While (0..[int](($policyValues.value).Count - 1) -notcontains $rownum)
-                        $rows.RemoveAt($rowNum) | Out-Null
-                        $policyValues.value = $rows
-                    }
-                    'C' {
-                        break
-                    }
+                        switch ($userChoice) {
+                            'M' {
+                                # Modify existing:
+                                do {
+                                    $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)) ")
+                                } While (0..[int](($ValueObject.value).Count - 1) -notcontains $rownum)
+                                $tableRow = New-CustomRegistryTableRow
+                                $ValueObject[$rowNum] = $tableRow
+                            }
+                            'A' {
+                                # Add new row
+                                $tableRow = New-CustomRegistryTableRow
+                                $ValueObject.add($tableRow)
+                            }
+                            'R' {
+                                # Remove existing:
+                                [System.Collections.ARRAYList]$ValueObjectCopy = $ValueObject
+                                do {
+                                    $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)): ")
+                                } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
+                                $ValueObjectCopy.RemoveAt($rowNum)
+                                $ValueObject = $ValueObjectCopy
+                            }
+                            'C' {
+                                break
+                            }
+                        }
+                    } While ($userChoice -ne 'C')
+                    # finally update values
+                    $policyValues[$fieldIndex].value = $ValueObject
                 }
-            } else {
-                # Case for new tables
-                $tableRow = New-CustomRegistryTableRow
-                $rows = New-Object System.Collections.ArrayList
-                $rows.Add($tableRow) | Out-Null
             }
         }
-        # Do {
-        #     $rowPrompt = (Read-Host "Please enter the row number for the field you'd like to change")
-        #     Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID -row $rowPrompt
-
-        # } Until (($rowPrompt -match 'c'))
-        #Then instead of prompting user to update each field in the template object, just update that single field.
-
-        #If no specific row was chosen, update all fields:
-        # foreach ($field in $templateObject) {
-        #     switch ($field.type) {
-        #         'boolean' {
-        #             Do {
-        #                 $fieldValue = (Read-Host "Please enter the $($field.type) value for the $($field.configFieldName) setting (t/f) (true/false)")
-        #                 try {
-        #                     if (($fieldValue -eq 't') -or ($fieldValue -eq 'true')) {
-        #                         $fieldValue = $true
-        #                     } elseif (($fieldValue -eq 'f') -or ($fieldValue -eq 'false')) {
-        #                         $fieldValue = $false
-        #                     } else {
-        #                         $fieldValue = [System.Convert]::ToBoolean($fieldValue)
-        #                     }
-        #                 } catch {
-        #                     Write-Host "enter a boolean you hooligan"
-        #                 }
-        #                 $field.value = $fieldValue
-        #                 break
-        #             } While (($fieldValue -ne $true) -or ($fieldValue -ne $false))
-        #         }
-        #         'string' {
-        #             Do {
-        #                 $fieldValue = (Read-Host "Please enter the $($field.type) value for the $($field.configFieldName) setting")
-        #                 $field.value = $fieldValue
-        #                 break
-        #             } While (([string]::IsNullOrEmpty($fieldValue)))
-
-        #         }
-        #         'int' {
-        #             Do {
-        #                 $fieldValue = (Read-Host "Please enter the $($field.type) value for the $($field.configFieldName) setting")
-        #                 $field.value = $fieldValue
-        #                 break
-        #             } While ($fieldValue -isnot [int])
-        #         }
-        #         'multi' {
-        #             $field.validation | Format-Table | Out-Host
-        #             do {
-        #                 $rownum = (Read-Host "Please enter the desired $($field.label) setting value (0 - $($field.validation.length - 1))")
-        #                 $field.value = $rownum
-
-        #             } While (0..[int]($field.validation.values.length - 1) -notcontains $rownum)
-        #         }
-        #         'table' {
-        #             if ($policyValues) {
-        #                 # Determine action
-        #                 $path = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
-        #                 switch ($path) {
-        #                     'M' {
-        #                         # modify existing:
-        #                         do {
-        #                             $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($policyValues.length - 1)) ")
-        #                         } While (0..[int]($policyValues.length - 1) -notcontains $rownum)
-        #                         $tableRow = New-CustomRegistryTableRow
-        #                         $policyValues[$rowNum] = $tableRow
-        #                         # TODO: is there a better way to do this vs. recursively calling this function?
-        #                         Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID
-        #                     }
-        #                     'A' {
-        #                         # Add new row
-        #                         [System.Collections.ArrayList]$rows = $policyValues
-        #                         $tableRow = New-CustomRegistryTableRow
-        #                         $rows.Add($tableRow) | Out-Null
-        #                         # TODO: is there a better way to do this vs. recursively calling this function?
-        #                         Set-JCPolicyConfigField -templateObject $templateObject -policyValues $rows -policyName $policyName -policyTemplateID $policyTemplateID
-
-        #                     }
-        #                     'R' {
-        #                         # modify existing:
-        #                         [System.Collections.ArrayList]$rows = $policyValues
-        #                         do {
-        #                             $rowNum = (Read-Host "Please enter row number you wish to remove: ")
-        #                             break
-        #                         } While ($rowNum -isnot [int])
-        #                         $rows.RemoveAt($rowNum)
-        #                         Write-Host $rowNum
-        #                         # TODO: is there a better way to do this vs. recursively calling this function?
-        #                         Set-JCPolicyConfigField -templateObject $templateObject -policyValues $rows -policyName $policyName -policyTemplateID $policyTemplateID
-
-        #                     }
-        #                     'C' {
-        #                         $output = [PSCustomObject]@{
-        #                             configFieldID = $templateObject.configFieldID
-        #                             value         = $policyValues
-        #                         }
-        #                         Write-Host "updating Policy..."
-        #                         return $output
-        #                     }
-        #                 }
-        #             } else {
-        #                 # Case for new tables
-        #                 $tableRow = New-CustomRegistryTableRow
-        #                 $rows = New-Object System.Collections.ArrayList
-        #                 $rows.Add($tableRow) | Out-Null
-        #             }
-        #             $field.value = $rows
-        #         }
-        #         Default {
-        #         }
-        #     }
-        # TODO: validate other types (file, singleListBox)
-        # TODO: singleListBox templateID 62e2ae60ab9878000167ca7a (encrypted DNS over HTTPS)
-        # TODO: font policy, templateID 631f44bc2630c900017ed834
-        # TODO: custom MDM policy, templateID 5f21c4d3b544067fd53ba0af
     }
     end {
 
         return $policyValues
-        # TODO: return the new policy values here:
     }
 }
 
