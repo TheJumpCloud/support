@@ -108,60 +108,6 @@ function Set-JCPolicyConfigField {
 
                     } While (0..[int]($field.validation.values.length - 1) -notcontains $rownum)
                 }
-                'table' {
-                    if ($policyValues) {
-                        # Determine action
-                        $path = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
-                        switch ($path) {
-                            'M' {
-                                # modify existing:
-                                do {
-                                    $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($policyValues.length - 1)) ")
-                                } While (0..[int]($policyValues.length - 1) -notcontains $rownum)
-                                $tableRow = New-CustomRegistryTableRow
-                                $policyValues[$rowNum] = $tableRow
-                                # TODO: is there a better way to do this vs. recursively calling this function?
-                                Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID
-                            }
-                            'A' {
-                                # Add new row
-                                [System.Collections.ArrayList]$rows = $policyValues
-                                $tableRow = New-CustomRegistryTableRow
-                                $rows.Add($tableRow) | Out-Null
-                                # TODO: is there a better way to do this vs. recursively calling this function?
-                                Set-JCPolicyConfigField -templateObject $templateObject -policyValues $rows -policyName $policyName -policyTemplateID $policyTemplateID
-
-                            }
-                            'R' {
-                                # modify existing:
-                                [System.Collections.ArrayList]$rows = $policyValues
-                                do {
-                                    $rowNum = (Read-Host "Please enter row number you wish to remove: ")
-                                    break
-                                } While ($rowNum -isnot [int])
-                                $rows.RemoveAt($rowNum)
-                                Write-Host $rowNum
-                                # TODO: is there a better way to do this vs. recursively calling this function?
-                                Set-JCPolicyConfigField -templateObject $templateObject -policyValues $rows -policyName $policyName -policyTemplateID $policyTemplateID
-
-                            }
-                            'C' {
-                                $output = [PSCustomObject]@{
-                                    configFieldID = $templateObject.configFieldID
-                                    value         = $policyValues
-                                }
-                                Write-Host "updating Policy..."
-                                return $output
-                            }
-                        }
-                    } else {
-                        # Case for new tables
-                        $tableRow = New-CustomRegistryTableRow
-                        $rows = New-Object System.Collections.ArrayList
-                        $rows.Add($tableRow) | Out-Null
-                    }
-                    $field.value = $rows
-                }
                 'listbox' {
                     # List current values if they existing
                     do {
@@ -266,50 +212,39 @@ function Set-JCPolicyConfigField {
             }
         }
         if ($registry) {
-            # $field = $templateObject[$fieldIndex]
             if ($policyValues) {
                 # Determine action
                 $path = (Read-Host "Select an Action:`nModify (M) - edit existing rows`nAdd (A) - add new table rows`nRemove (R) - remove existing rows`nContinue (C) - save/ update policy`nEnter Action Choice: ")
                 switch ($path) {
                     'M' {
-                        # modify existing:
+                        # Modify existing:
                         do {
-                            $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($policyValues.length - 1)) ")
-                        } While (0..[int]($policyValues.length - 1) -notcontains $rownum)
+                            $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $(($policyValues.value).Count - 1)) ")
+                        } While (0..[int](($policyValues.value).Count - 1) -notcontains $rownum)
                         $tableRow = New-CustomRegistryTableRow
-                        $policyValues[$rowNum] = $tableRow
-                        # TODO: is there a better way to do this vs. recursively calling this function?
-                        Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID
+                        $policyValues.value[$rowNum] = $tableRow
                     }
                     'A' {
                         # Add new row
-                        $rows = @()
-                        $rows += $policyValues.value
+                        $rows = [System.Collections.ArrayList]@()
+                        if ($policyValues.value -ne $null) {
+                            $rows = $policyValues.value
+                        }
                         $tableRow = New-CustomRegistryTableRow
-                        $rows += $tableRow
+                        $rows.Add($tableRow) | Out-Null
+                        $policyValues.value = $rows
                     }
                     'R' {
-                        # modify existing:
-                        [System.Collections.Hashtable]$rows = $policyValues
+                        # Remove existing:
+                        $rows = $policyValues.value
                         do {
-                            $rowNum = (Read-Host "Please enter row number you wish to remove: ")
-                            break
-                        } While ($rowNum -isnot [int])
-                        $rows.RemoveAt($rowNum)
-                        Write-Host $rowNum
-                        $policyValues = $rows
-                        # TODO: is there a better way to do this vs. recursively calling this function?
-                        Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID
-
+                            $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $(($policyValues.value).Count - 1)) ")
+                        } While (0..[int](($policyValues.value).Count - 1) -notcontains $rownum)
+                        $rows.RemoveAt($rowNum) | Out-Null
+                        $policyValues.value = $rows
                     }
                     'C' {
                         break
-                        # $output = [PSCustomObject]@{
-                        #     configFieldID = $templateObject.configFieldID
-                        #     value         = $policyValues
-                        # }
-                        # Write-Host "updating Policy..."
-                        # return $output
                     }
                 }
             } else {
@@ -318,7 +253,6 @@ function Set-JCPolicyConfigField {
                 $rows = New-Object System.Collections.ArrayList
                 $rows.Add($tableRow) | Out-Null
             }
-            $policyValues.value += $rows
         }
         # Do {
         #     $rowPrompt = (Read-Host "Please enter the row number for the field you'd like to change")
