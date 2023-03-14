@@ -197,17 +197,22 @@ function Set-JCPolicyConfigField {
                     $policyValues[$fieldIndex].value = $ValueObject
                 }
                 'file' {
-                    # TODOs
-                    # What's the file path? (require user input)
-                    # can we validate it (is the path a real path, is it a file, not a directory)
-                    # can we turn it into a b64 string (try catch to turn it into a base64 string)
-                    # else, error correct
-                    # $fp = Read-Host "what's the file path"
-                    $fp = "/Users/username/Downloads/fonts/MavenPro-Black.ttf"
-
-                    $b64font = [convert]::ToBase64String((Get-Content -Path $fp -AsByteStream))
+                    do {
+                        $filePath = Read-Host "Enter the file path location of the file for this policy"
+                        # write-host "testing pasth:$($filePath):"
+                        $path = Test-Path -path $filePath
+                        if ($path) {
+                            # convert file path to base64 string
+                            $base64File = [convert]::ToBase64String((Get-Content -Path $filePath -AsByteStream))
+                        }
+                        if ($path -and (-not [string]::IsNullOrEmpty(($base64File)))) {
+                            $fileValidated = $true
+                        } else {
+                            $fileValidated = $false
+                        }
+                    } Until ($fileValidated)
                     # Return the policy value here:
-                    $policyValues[$fieldIndex].value = $b64font
+                    $policyValues[$fieldIndex].value = $base64File
                 }
             }
         }
