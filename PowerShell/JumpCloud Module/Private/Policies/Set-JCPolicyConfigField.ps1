@@ -18,7 +18,7 @@ function Set-JCPolicyConfigField {
         [System.String]
         $policyTemplateID,
         # The field to edit
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $fieldIndex
     )
@@ -28,7 +28,7 @@ function Set-JCPolicyConfigField {
         $configMapping = @{
             checkbox       = 'boolean'
             singlelistbox  = 'listbox'
-            table          = 'exclude'
+            table          = 'table'
             customRegTable = 'table'
             textarea       = 'string'
             text           = 'string'
