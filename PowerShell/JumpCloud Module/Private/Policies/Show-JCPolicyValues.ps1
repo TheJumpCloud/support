@@ -1,10 +1,10 @@
 function Show-JCPolicyValues {
     [CmdletBinding()]
     param (
-        # Policy Values Object
+        # Policy Object
         [Parameter(Mandatory = $true)]
         [System.Object]
-        $policyValues
+        $policyObject
     )
     begin {
         # Array to store custom policy objects for display
@@ -15,11 +15,19 @@ function Show-JCPolicyValues {
         $counter = 0
 
         # Create custom object containing counter/label/value
-        $policyValues | ForEach-Object {
-            $policyValue = [PSCustomObject]@{
-                fieldIndex = $counter
-                field      = $_.label
-                value      = $_.value
+        $policyObject | ForEach-Object {
+            if ($_ -contains "label") {
+                $policyValue = [PSCustomObject]@{
+                    fieldIndex = $counter
+                    field      = $_.label
+                    value      = $_.value
+                }
+            } else {
+                $policyValue = [PSCustomObject]@{
+                    fieldIndex = $counter
+                    field      = $_.configFieldName
+                    value      = $_.value
+                }
             }
 
             # Add object to object array and increment counter
@@ -28,7 +36,7 @@ function Show-JCPolicyValues {
         }
 
         # Display policy object array
-        $policyArray | Format-Table
+        $policyArray | Format-Table | Out-Host
 
         # Prompt for user input
         do {
