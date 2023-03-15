@@ -4,7 +4,11 @@ function Show-JCPolicyValues {
         # Policy Object
         [Parameter(Mandatory = $true)]
         [System.Object]
-        $policyObject
+        $policyObject,
+        # optional values object
+        [Parameter(Mandatory = $false)]
+        [System.Object]
+        $policyValues
     )
     begin {
         # Array to store custom policy objects for display
@@ -16,17 +20,13 @@ function Show-JCPolicyValues {
 
         # Create custom object containing counter/label/value
         $policyObject | ForEach-Object {
-            if ($_ -contains "label") {
-                $policyValue = [PSCustomObject]@{
-                    fieldIndex = $counter
-                    field      = $_.label
-                    value      = $_.value
-                }
-            } else {
-                $policyValue = [PSCustomObject]@{
-                    fieldIndex = $counter
-                    field      = $_.configFieldName
-                    value      = $_.value
+            $policyValue = [PSCustomObject]@{
+                fieldIndex = $counter
+                field      = $_.label
+                value      = If ($policyValues) {
+                    $cid = $_.configFieldID; ($policyValues | Where-Object { $_.configFieldID -eq $cid }).value
+                } else {
+                    $_.value
                 }
             }
 
