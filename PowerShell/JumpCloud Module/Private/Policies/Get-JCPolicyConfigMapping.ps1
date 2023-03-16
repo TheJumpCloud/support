@@ -19,6 +19,6 @@ function Enumerate-JCPolicyConfigMapping {
     }
 
     end {
-
+        return $configMapping
     }
 }

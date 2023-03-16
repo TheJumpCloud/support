@@ -12,12 +12,12 @@ function Get-JCPolicyTemplateConfigField {
         # TODO: set this globally
         $configMapping = @{
             checkbox       = 'boolean'
-            singlelistbox  = 'exclude'
+            singlelistbox  = 'listbox'
             table          = 'table'
             customRegTable = 'table'
             textarea       = 'string'
             text           = 'string'
-            file           = 'exclude'
+            file           = 'file'
             select         = 'multi'
             number         = 'int'
         }
