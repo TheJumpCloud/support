@@ -9,14 +9,6 @@ function Set-JCPolicyConfigField {
         [Parameter(Mandatory = $false)]
         [System.Object]
         $policyValues,
-        # The policy name
-        [Parameter(Mandatory = $false)]
-        [System.String]
-        $policyName,
-        # The policy templateID
-        [Parameter(Mandatory = $true)]
-        [System.String]
-        $policyTemplateID,
         # The field to edit
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -54,8 +46,6 @@ function Set-JCPolicyConfigField {
         #     # $templateObject | Format-Table @{label = "Row"; expression = { $TemplateObject.indexof($_) } }, @{label = "Value"; expression = { $PolicyValues[$TemplateObject.indexof($_)] } }, Label | Out-Host
         # }
 
-        #TODO: after showing the current values for the policy, prompt user if they want to update JUST one specific field by row:
-        # EX: enter the row # you wish to update: 1-9
         if ($fieldIndex) {
             $field = $templateObject[$fieldIndex]
             # $field = $templateObject | Where-Object { $_.position -eq $row }
@@ -186,7 +176,7 @@ function Set-JCPolicyConfigField {
                     do {
                         $filePath = Read-Host "Enter the file path location of the file for this policy"
                         # write-host "testing pasth:$($filePath):"
-                        $path = Test-Path -path $filePath
+                        $path = Test-Path -Path $filePath
                         if ($path) {
                             # convert file path to base64 string
                             $base64File = [convert]::ToBase64String((Get-Content -Path $filePath -AsByteStream))
