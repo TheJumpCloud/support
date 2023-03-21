@@ -5,20 +5,20 @@ Release Date: March 20, 2023
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release improves the functionality of the Add/Remove GroupMember functions and adds a full text query parameter to Get-JCEvent
 ```
 
-#### FEATURES:
+### FEATURES:
 
-{{Fill in the Features}}
+- Get-JCEvent has a new full text query parameter, -Q
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
+- Replaced Invoke-WebRequest calls in the following functions with SDK functions to improve TTC and remove
+    - Add-JCSystemGroupMember
+    - Remove-JCSystemGroupMember
+    - Add-JCUserGroupMember
+    - Remove-JCUserGroupMember
 
 ## 2.2.0
 
