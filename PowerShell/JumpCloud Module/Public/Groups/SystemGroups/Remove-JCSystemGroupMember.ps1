@@ -23,7 +23,7 @@ The SystemID will be the 24 character string populated for the _id field. System
     begin {
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         Write-Debug 'Populating API headers'
@@ -70,15 +70,11 @@ The SystemID will be the 24 character string populated for the _id field. System
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-
-            $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
-            Write-Debug $GroupsURL
-
-            try {
-                $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            $GroupRemove = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
+            if ($removeError) {
+                $Status = $removeError.ErrorDetails.Message
+            } else {
                 $Status = 'Removed'
-            } catch {
-                $Status = $_.ErrorDetails
             }
 
             $FormattedResults = [PSCustomObject]@{
@@ -114,14 +110,11 @@ The SystemID will be the 24 character string populated for the _id field. System
             Write-Debug $jsonbody
 
 
-            $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
-            Write-Debug $GroupsURL
-
-            try {
-                $GroupRemove = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            $GroupRemove = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
+            if ($removeError) {
+                $Status = $removeError.ErrorDetails.Message
+            } else {
                 $Status = 'Removed'
-            } catch {
-                $Status = $_.ErrorDetails
             }
 
             $FormattedResults = [PSCustomObject]@{

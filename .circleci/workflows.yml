@@ -49,7 +49,7 @@ parameters:
   PublishToPSGallery:
     description: "When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery"
     type: boolean
-    default: false
+    default: true
   ManualModuleVersion:
     description: "When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file"
     type: boolean

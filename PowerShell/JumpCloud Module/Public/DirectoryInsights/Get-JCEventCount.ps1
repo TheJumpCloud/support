@@ -43,6 +43,7 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [EndTime <DateTime?>]: optional query end time, UTC in RFC3339 format
   [Fields <String[]>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
+  [Q <String>]: optional string for specifying a full text query
   [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
   [SearchTermAnd <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
     [(Any) <Object>]: This indicates any property can be added to this object.
@@ -82,6 +83,12 @@ Function Get-JCEventCount
     [System.String[]]
     # optional list of fields to return from query
     ${Fields},
+
+    [Parameter(ParameterSetName='GetExpanded')]
+    [JumpCloud.SDK.DirectoryInsights.Category('Body')]
+    [System.String]
+    # optional string for specifying a full text query
+    ${Q},
 
     [Parameter(ParameterSetName='GetExpanded')]
     [AllowEmptyCollection()]

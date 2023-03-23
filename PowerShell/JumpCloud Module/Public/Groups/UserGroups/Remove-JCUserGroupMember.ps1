@@ -25,7 +25,7 @@ The UserID will be the 24 character string populated for the _id field. UserID h
     begin {
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         Write-Debug 'Populating API headers'
@@ -68,34 +68,26 @@ The UserID will be the 24 character string populated for the _id field. UserID h
             $UserID = $UserNameHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
 
             $body = @{
-
                 type = "user"
                 op   = "remove"
                 id   = $UserID
-
             }
 
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-
-            $GroupsURL = "$JCUrlBasePath/api/v2/usergroups/$GroupID/members"
-            Write-Debug $GroupsURL
-
-            try {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            $GroupRemove = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
+            if ($removeError) {
+                $Status = $removeError.ErrorDetails.Message
+            } else {
                 $Status = 'Removed'
-            } catch {
-                $Status = $_.ErrorDetails
             }
 
             $FormattedResults = [PSCustomObject]@{
-
                 'GroupName' = $GroupName
                 'Username'  = $Username
                 'UserID'    = $UserID
                 'Status'    = $Status
-
             }
 
             $resultsArray += $FormattedResults
@@ -109,29 +101,22 @@ The UserID will be the 24 character string populated for the _id field. UserID h
             }
 
             $body = @{
-
                 type = "user"
                 op   = "remove"
                 id   = $UserID
-
             }
 
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-
-            $GroupsURL = "$JCUrlBasePath/api/v2/usergroups/$GroupID/members"
-            Write-Debug $GroupsURL
-
-            try {
-                $GroupRemove = $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            $GroupRemove = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
+            if ($removeError) {
+                $Status = $removeError.ErrorDetails.Message
+            } else {
                 $Status = 'Removed'
-            } catch {
-                $Status = $_.ErrorDetails
             }
 
             $FormattedResults = [PSCustomObject]@{
-
                 'GroupID' = $GroupID
                 'UserID'  = $UserID
                 'Status'  = $Status
