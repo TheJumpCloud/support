@@ -7,7 +7,7 @@
 .NOTES
     Name: FixWindowsAgent.ps1
     Author: www.jumpcloud.com
-    Date Updated: 2019-12-09
+    Date Updated: 2023-03-23
 .LINK
     http://support.jumpcloud.com
 .EXAMPLE
