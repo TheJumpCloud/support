@@ -7,7 +7,7 @@
 .NOTES
     Name: FixWindowsAgent.ps1
     Author: www.jumpcloud.com
-    Date Updated: 2019-12-09
+    Date Updated: 2023-03-23
 .LINK
     http://support.jumpcloud.com
 .EXAMPLE
@@ -31,16 +31,14 @@ $msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
 $msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
 $AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
 $AGENT_BINARY_NAME = "JumpCloud-agent.exe"
-$AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/JumpCloudInstaller.exe"
-$AGENT_INSTALLER_PATH = "C:\windows\Temp\JumpCloudInstaller.exe"
 
 $AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
-$AGENT_BINARY_NAME = "jumpcloud-agent.exe"
+$AGENT_BINARY_NAME = "jcagent-msi-signed.msi"
 
 $AGENT_SERVICE_NAME = "jumpcloud-agent"
 
-$AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/JumpCloudInstaller.exe"
-$AGENT_INSTALLER_PATH = "$env:TEMP\JumpCloudInstaller.exe"
+$AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/jcagent-msi-signed.msi"
+$AGENT_INSTALLER_PATH = "C:\windows\Temp\jcagent-msi-signed.msi"
 
 
 $EVENT_LOGGER_KEY_NAME = "hklm:\SYSTEM\CurrentControlSet\services\eventlog\Application\jumpcloud-agent"
@@ -61,8 +59,7 @@ Function AgentInstallerExists() {
 }
 
 Function InstallAgent() {
-    $params = ("${AGENT_INSTALLER_PATH}", "-k ${CONNECT_KEY}", "/VERYSILENT", "/NORESTART", "/SUPRESSMSGBOXES", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
-    Invoke-Expression "$params"
+    msiexec /i $AGENT_INSTALLER_PATH /quiet JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey /VERYSILENT /NORESTART /NOCLOSEAPPLICATIONS /L*V "C:\Windows\Temp\jcUpdate.log"`"
 }
 
 Function UninstallAgent() {
@@ -121,8 +118,8 @@ Function DeleteAgent() {
 
 
 Function InstallAgent() {
-    $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
-    Invoke-Expression "$params"
+    msiexec /i $AGENT_INSTALLER_PATH /quiet JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey /VERYSILENT /NORESTART /NOCLOSEAPPLICATIONS /L*V "C:\Windows\Temp\jcUpdate.log"`"
+
 }
 Function DownloadAgentInstaller() {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
