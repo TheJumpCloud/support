@@ -40,8 +40,8 @@ function Show-JCPolicyValues {
 
         # Prompt for user input
         do {
-            $fieldSelection = (Read-Host "Please enter field index you wish to modify (0 - $($policyArray.Count - 1))")
-        } While ($policyArray.fieldIndex -notcontains $fieldSelection)
+            $fieldSelection = (Read-Host "Please enter field index you wish to modify (0 - $($policyArray.Count - 1)).`nPress C to complete")
+        } until (($policyArray.fieldIndex -contains $fieldSelection) -or ($fieldSelection -eq 'C'))
     }
     end {
         # Returns field index
