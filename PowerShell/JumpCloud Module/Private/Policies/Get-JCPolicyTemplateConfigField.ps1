@@ -43,11 +43,11 @@ function Get-JCPolicyTemplateConfigField {
                     # TODO: Joe to review here is this necessary for non-sdk calls?
                     try {
                         [int]$val1 | Out-Null
-                        write-host "$($val1) is an int in first position"
+                        # write-host "$($val1) is an int in first position"
                         $validationObject += @{$val1 = $val2 }
                     } catch {
                         [int]$val2 | Out-Null
-                        write-host "$($val2) is an int in second position"
+                        # write-host "$($val2) is an int in second position"
                         $validationObject += @{$val2 = $val1 }
                     }
                 }

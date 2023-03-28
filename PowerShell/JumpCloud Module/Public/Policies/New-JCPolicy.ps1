@@ -72,6 +72,31 @@ function New-JCPolicy {
     }
     process {
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
+            # write-host "yep we here"
+            $params = $PSBoundParameters
+
+            $newObject = New-Object System.Collections.ArrayList
+            for ($i = 0; $i -lt $templateObject.length; $i++) {
+                # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
+                if ($templateObject[$i].configFieldName -in $params.keys) {
+                    $keyName = $params.keys | where-object { $_ -eq $templateObject[$i].configFieldName }
+                    # write-host "Setting value from $($keyName)"
+                    $keyValue = $params.$KeyName
+                    if ($templateObject[$i].type -eq 'multi') {
+                        $templateObject[$i].value = $(($templateObject[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                    } else {
+                        # TODO: cast as boolean if just "fasle/true"
+                        $templateObject[$i].value = $($keyValue)
+                    }
+                    $newObject.Add($templateObject[$i]) | Out-Null
+                } else {
+                    # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
+                    $templateObject[$i].value = $templateObject[$i].defaultValue
+                    $newObject.Add($templateObject[$i]) | Out-Null
+                }
+            }
+            $updatedPolicyObject = $newObject | select configFieldID, configFieldName, value
+            write-host $updatedPolicyObject
             #TODO: Create object containing values set using dynamicParams
             #TODO: Pass object into policies endpoint to create new policy
         } else {
@@ -83,17 +108,17 @@ function New-JCPolicy {
                     $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $userInput
                 } while ($userInput -ne 'C')
             }
-            $headers = @{}
-            $headers.Add("x-api-key", $env:JCApiKey)
-            $headers.Add("x-org-id", $env:JCOrgId)
-            $headers.Add("content-type", "application/json")
-            $body = [PSCustomObject]@{
-                name     = $Name
-                template = @{id = $templateID}
-                values   = @($updatedPolicyObject)
-            } | ConvertTo-Json -Depth 99
-            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
         }
+        $headers = @{}
+        $headers.Add("x-api-key", $env:JCApiKey)
+        $headers.Add("x-org-id", $env:JCOrgId)
+        $headers.Add("content-type", "application/json")
+        $body = [PSCustomObject]@{
+            name     = $Name
+            template = @{id = $templateID }
+            values   = @($updatedPolicyObject)
+        } | ConvertTo-Json -Depth 99
+        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {
         return $response.Template
