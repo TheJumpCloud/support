@@ -8,7 +8,11 @@ function Get-JCPolicyTemplateConfigField {
     )
     begin {
         # TODO: validate templateID
-        $template = Get-JcSdkPolicyTemplate -Id $templateID
+        # $template = Get-JcSdkPolicyTemplate -Id $templateID
+        $headers = @{}
+        $headers.Add("x-api-key", $env:JCApiKey)
+        $headers.Add("x-org-id", $env:JCOrgId)
+        $template = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policytemplates/$templateID" -Method GET -Headers $headers
         # TODO: set this globally
         $configMapping = @{
             checkbox       = 'boolean'
@@ -30,20 +34,21 @@ function Get-JCPolicyTemplateConfigField {
             # if ($field.DisplayOptions.Values.values)
             if ($Field.DisplayType -eq 'select') {
                 $ValidationObject = @()
-                $validationRows = $field.DisplayOptions.Values.Values.Count / 2
+                $validationRows = $field.DisplayOptions.select.Count
                 for ($i = 0; $i -lt $validationRows; $i++) {
                     # Get Both Values:
-                    $val1 = $field.DisplayOptions.Values.values[$i + $i]
-                    $val2 = $field.DisplayOptions.Values.values[$i + $i + 1]
+                    $val1 = $field.DisplayOptions.select[$i].text
+                    $val2 = $field.DisplayOptions.select[$i].value
                     # Determine which one is an int
+                    # TODO: Joe to review here is this necessary for non-sdk calls?
                     try {
                         [int]$val1 | Out-Null
-                        # "$($val1) is an int in first position"
-                        $validationObject += @{$field.DisplayOptions.Values.values[$i + $i] = $field.DisplayOptions.Values.values[$i + $i + 1] }
+                        write-host "$($val1) is an int in first position"
+                        $validationObject += @{$val1 = $val2 }
                     } catch {
                         [int]$val2 | Out-Null
-                        # "$($val2) is an int in second position"
-                        $validationObject += @{$field.DisplayOptions.Values.values[$i + $i + 1] = $field.DisplayOptions.Values.values[$i + $i] }
+                        write-host "$($val2) is an int in second position"
+                        $validationObject += @{$val2 = $val1 }
                     }
                 }
             }
@@ -60,6 +65,7 @@ function Get-JCPolicyTemplateConfigField {
                     $null
                 }
                 value           = $null
+                defaultValue    = $field.defaultValue
             }
             $objectMap.Add($templateObject) | out-null
         }
