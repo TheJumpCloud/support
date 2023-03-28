@@ -42,7 +42,7 @@ function Dispatch-JCPolicyConfigField {
                 # If custom registry table, display all rows
                 $policyValues | Format-Table -Property @{label = "Row"; Expression = { $policyvalues.indexOf($_) } }, * | Out-Host
                 $rowPrompt = (Read-Host "Please enter the row number for the field you'd like to change")
-                $templateObject, $policyValues = Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID -registry
+                $templateObject, $policyValues = Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName-registry
 
             } else {
                 # If not table, display just the row #, the name and value pairs
@@ -59,7 +59,7 @@ function Dispatch-JCPolicyConfigField {
                 $rowPrompt = (Read-Host "Please enter the row number for the field you'd like to change")
                 try {
                     $rowPrompt = [int]$rowPrompt
-                    $templateObject, $policyValues = Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -policyTemplateID $policyTemplateID -row $rowPrompt
+                    $templateObject, $policyValues = Set-JCPolicyConfigField -templateObject $templateObject -policyValues $policyValues -policyName $policyName -row $rowPrompt
                 } catch {
                     #TODO: throw generic message
                 }
