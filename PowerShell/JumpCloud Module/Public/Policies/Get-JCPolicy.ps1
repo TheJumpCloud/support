@@ -26,7 +26,9 @@ Function Get-JCPolicy () {
 
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JCOnline }
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
+        }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -45,7 +47,9 @@ Function Get-JCPolicy () {
 
     process {
         $URLs = switch ($PSCmdlet.ParameterSetName) {
-            "ReturnAll" { "$JCUrlBasePath/api/v2/policies" }
+            "ReturnAll" {
+                "$JCUrlBasePath/api/v2/policies"
+            }
             "ByID" {
                 ForEach ($Item In $PolicyID) {
                     "$JCUrlBasePath/api/v2/policies/$Item"

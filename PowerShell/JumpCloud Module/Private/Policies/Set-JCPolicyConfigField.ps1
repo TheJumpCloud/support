@@ -276,9 +276,3 @@ function Set-JCPolicyConfigField {
     }
 }
 
-
-. "/Users/gwein/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/New-CustomRegistryTableRow.ps1"
-$templateObject = Get-JCPolicyTemplateConfigField -templateID 5f07273cb544065386e1ce6f
-$firstPass = Set-JCPolicyConfigField -templateObject $templateObject -policyTemplateID 5f07273cb544065386e1ce6f -registry
-$secondPass = Set-JCPolicyConfigField -templateObject $templateObject -policyValues $firstPass -policyTemplateID 5f07273cb544065386e1ce6f -registry
-$secondPass

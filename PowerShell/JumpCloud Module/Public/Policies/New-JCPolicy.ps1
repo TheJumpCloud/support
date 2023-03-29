@@ -72,7 +72,6 @@ function New-JCPolicy {
     }
     process {
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
-            # write-host "yep we here"
             $params = $PSBoundParameters
 
             $newObject = New-Object System.Collections.ArrayList
@@ -96,7 +95,7 @@ function New-JCPolicy {
                 }
             }
             $updatedPolicyObject = $newObject | select configFieldID, configFieldName, value
-            write-host $updatedPolicyObject
+            # write-host $updatedPolicyObject
             #TODO: Create object containing values set using dynamicParams
             #TODO: Pass object into policies endpoint to create new policy
         } else {
