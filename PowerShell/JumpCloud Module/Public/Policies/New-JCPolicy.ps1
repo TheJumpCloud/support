@@ -1,15 +1,15 @@
 function New-JCPolicy {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $templateID,
         [Parameter(Mandatory)]
         [System.String]
         $Name,
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [System.object[]]
-        $policyObject
+        $values
     )
     DynamicParam {
         if ($templateID) {
@@ -68,9 +68,9 @@ function New-JCPolicy {
         }
     }
     begin {
-        $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
     }
     process {
+        $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
             $params = $PSBoundParameters
 
@@ -98,6 +98,8 @@ function New-JCPolicy {
             # write-host $updatedPolicyObject
             #TODO: Create object containing values set using dynamicParams
             #TODO: Pass object into policies endpoint to create new policy
+        } elseif ($values) {
+            $updatedPolicyObject = $values
         } else {
             $initialUserInput = Show-JCPolicyValues -policyObject $templateObject
             if ($initialUserInput -ne 'C') {

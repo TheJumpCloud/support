@@ -1,19 +1,21 @@
 function Set-JCPolicy {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = 'The ID of the JumpCloud Policy you wish to modify')]
+        [Alias("id")]
         [System.String]
         $policyID,
-        [Parameter()]
         [System.String]
         $Name,
-        [Parameter()]
+        [Parameter(ValueFromPipelineByPropertyName = $true)]
         [System.object[]]
-        $policyObject
+        $values
     )
     DynamicParam {
         if ($policyID) {
-            $policy = Get-JcPolicy -Id $policyID
+            $policy = Get-JcPolicy -PolicyID $policyID
             $object = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
@@ -69,10 +71,10 @@ function Set-JCPolicy {
         }
     }
     begin {
-        $policy = Get-JcPolicy -Id $policyID
-        $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
     }
     process {
+        $policy = Get-JcPolicy -PolicyID $policyID
+        $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
             $params = $PSBoundParameters
 
@@ -100,6 +102,8 @@ function Set-JCPolicy {
             # write-host $updatedPolicyObject
             #TODO: Create object containing values set using dynamicParams
             #TODO: Pass object into policies endpoint to create new policy
+        } elseif ($values) {
+            $updatedPolicyObject = $values
         } else {
             $initialUserInput = Show-JCPolicyValues -policyObject $templateObject -policyValues $policy.values
             if ($initialUserInput -ne 'C') {

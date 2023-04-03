@@ -64,6 +64,7 @@ Function Get-JCPolicy () {
         ForEach ($URL In $URLs) {
 
             $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+            $Result | Add-Member -MemberType NoteProperty -Name "TemplateID" -Value $Result.template.id
             $Results += $Result
         }
     }
