@@ -38,7 +38,7 @@ function New-JCPolicy {
                         $AttributeCollection.Add($ValidateSetAttribute)
                     }
                     'file' {
-                        Continue
+                        $paramType = 'string'
                     }
                     'customRegTable' {
                         Continue
@@ -81,11 +81,21 @@ function New-JCPolicy {
                     $keyName = $params.keys | where-object { $_ -eq $templateObject[$i].configFieldName }
                     # write-host "Setting value from $($keyName)"
                     $keyValue = $params.$KeyName
-                    if ($templateObject[$i].type -eq 'multi') {
-                        $templateObject[$i].value = $(($templateObject[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
-                    } else {
-                        # TODO: cast as boolean if just "fasle/true"
-                        $templateObject[$i].value = $($keyValue)
+                    switch ($templateObject[$i].type) {
+                        'multi' {
+                            $templateObject[$i].value = $(($templateObject[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                            $templateObject[$i].value = $(($templateObject[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                        }
+                        'file' {
+                            $path = Test-Path -Path $keyValue
+                            if ($path) {
+                                # convert file path to base64 string
+                                $templateObject[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
+                            }
+                        }
+                        Default {
+                            $templateObject[$i].value = $($keyValue)
+                        }
                     }
                     $newObject.Add($templateObject[$i]) | Out-Null
                 } else {
