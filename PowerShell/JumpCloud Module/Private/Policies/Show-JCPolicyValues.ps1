@@ -8,7 +8,15 @@ function Show-JCPolicyValues {
         # optional values object
         [Parameter(Mandatory = $false)]
         [System.Object]
-        $policyValues
+        $policyValues,
+        # only output table
+        [Parameter(Mandatory = $false)]
+        [boolean]
+        $ShowTable = $false,
+        # hide all option
+        [Parameter(Mandatory = $false)]
+        [boolean]
+        $HideAll = $false
     )
     begin {
         # Array to store custom policy objects for display
@@ -38,13 +46,59 @@ function Show-JCPolicyValues {
         # Display policy object array
         $policyArray | Format-Table | Out-Host
 
-        # Prompt for user input
-        do {
-            $fieldSelection = (Read-Host "Please enter field index you wish to modify (0 - $($policyArray.Count - 1)).`nPress C to complete")
-        } until (($policyArray.fieldIndex -contains $fieldSelection) -or ($fieldSelection -eq 'C'))
+        if ($ShowTable -eq $false) {
+            $fieldCount = $policyArray.Count - 1
+
+            # Prompt for user input
+            $Title = "JumpCloud Policy Field Editor"
+            $Message = "How would you like to edit the policy values?"
+            $All = New-Object System.Management.Automation.Host.ChoiceDescription "&All Fields", "All"
+            $Individual = New-Object System.Management.Automation.Host.ChoiceDescription "&Individual Field", "Individual"
+            $Save = New-Object System.Management.Automation.Host.ChoiceDescription "&Save Edits", "Individual"
+
+            if ($HideAll -eq $true) {
+                $Options = [System.Management.Automation.Host.ChoiceDescription[]]($Individual, $Save)
+            } else {
+                $Options = [System.Management.Automation.Host.ChoiceDescription[]]($Individual, $All, $Save)
+            }
+
+            $choice = $host.ui.PromptForChoice($title, $message, $options, 0)
+
+            if ($HideAll -eq $true) {
+                switch ($choice) {
+                    0 {
+                        do {
+                            $fieldSelection = (Read-Host "Please enter field index you wish to modify (0 - $fieldCount)")
+                        } until ($policyArray.fieldIndex -contains $fieldSelection)
+                    }
+                    1 {
+                        $fieldSelection = 'C'
+                    }
+                }
+            } else {
+                switch ($choice) {
+                    0 {
+                        do {
+                            $fieldSelection = (Read-Host "Please enter field index you wish to modify (0 - $fieldCount)")
+                        } until ($policyArray.fieldIndex -contains $fieldSelection)
+                    }
+                    1 {
+                        $fieldSelection = 'A'
+                    }
+                    2 {
+                        $fieldSelection = 'C'
+                    }
+                }
+            }
+        }
     }
     end {
-        # Returns field index
-        return $fieldSelection
+        if ($ShowTable -eq $false) {
+            # Returns field index
+            return [PSCustomObject]@{
+                fieldSelection = $fieldSelection
+                fieldCount     = $fieldCount
+            }
+        }
     }
 }
