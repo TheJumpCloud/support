@@ -14,7 +14,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $PesterMacStringText = New-JCPolicy -templateID 5ade0cfd1f24754c6c5dc9f2 -Name "Pester - Mac - Login Window Text Policy" -LoginwindowText "Pester Test"
 
             $PesterMacNotifySettings = New-JCPolicy -templateID 62a76bdbdbe570000196253b -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
-            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
+            $PesterMacNotifySettingsTemplate, $defaultPesterMacNotifySettingsTempalteName = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
         }
         It 'Sets a policy with a string type dynamic parameter' {
             # define a text value to change the current value:
@@ -156,7 +156,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # Update the policy name
             $updatedPolicy = $policy | Set-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload Updated"
             # policy name shoud be updated
-            # TODO: this fails
             $updatedPolicy.name | Should -Be "Pester - Pipeline Policy String Bool Payload Updated"
         }
     }

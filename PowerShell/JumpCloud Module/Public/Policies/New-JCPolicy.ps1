@@ -4,7 +4,7 @@ function New-JCPolicy {
         [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true)]
         [System.String]
         $templateID,
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $false)]
         [System.String]
         $Name,
         [Parameter(ValueFromPipelineByPropertyName = $true)]
@@ -13,7 +13,7 @@ function New-JCPolicy {
     )
     DynamicParam {
         if ($templateID) {
-            $object = Get-JCPolicyTemplateConfigField -templateID $templateID
+            $object, $defaultName = Get-JCPolicyTemplateConfigField -templateID $templateID
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $object) {
@@ -74,7 +74,12 @@ function New-JCPolicy {
         $headers = @{}
     }
     process {
-        $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
+        $templateObject, $defaultName = Get-JCPolicyTemplateConfigField -templateID $templateID
+        $policyName = if ($PSBoundParameters["name"]) {
+            $Name
+        } else {
+            $defaultName
+        }
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
             $params = $PSBoundParameters
 
@@ -147,7 +152,7 @@ function New-JCPolicy {
         $headers.Add("x-org-id", $env:JCOrgId)
         $headers.Add("content-type", "application/json")
         $body = [PSCustomObject]@{
-            name     = $Name
+            name     = $policyName
             template = @{id = $templateID }
             values   = @($updatedPolicyObject)
         } | ConvertTo-Json -Depth 99

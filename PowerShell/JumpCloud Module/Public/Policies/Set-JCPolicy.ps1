@@ -7,6 +7,7 @@ function Set-JCPolicy {
         [Alias("id")]
         [System.String]
         $policyID,
+        [Parameter(Mandatory = $false)]
         [System.String]
         $Name,
         [Parameter(ValueFromPipelineByPropertyName = $true)]
@@ -16,7 +17,7 @@ function Set-JCPolicy {
     DynamicParam {
         if ($policyID) {
             $policy = Get-JCPolicy -PolicyID $policyID
-            $object = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
+            $object, $defaultName = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $object) {
@@ -76,8 +77,16 @@ function Set-JCPolicy {
     begin {
     }
     process {
+        # Get Existing Policy Data
         $policy = Get-JCPolicy -PolicyID $policyID
-        $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
+        # Get Config Field Values #TODO: no need to do this if we speficy values
+        $templateObject, $defaultName = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
+        # First set the name from PSParamSet if set; else set from policy
+        $policyName = if ($PSBoundParameters["name"]) {
+            $Name
+        } else {
+            $policy.name
+        }
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
             $params = $PSBoundParameters
 
@@ -141,7 +150,7 @@ function Set-JCPolicy {
         $headers.Add("x-org-id", $env:JCOrgId)
         $headers.Add("content-type", "application/json")
         $body = [PSCustomObject]@{
-            name     = $policy.Name
+            name     = $policyName
             template = @{id = $policy.Template.Id }
             values   = @($updatedPolicyObject)
         } | ConvertTo-Json -Depth 99

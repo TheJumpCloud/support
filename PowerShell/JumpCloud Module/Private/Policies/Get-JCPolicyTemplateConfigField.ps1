@@ -73,7 +73,7 @@ function Get-JCPolicyTemplateConfigField {
     }
     end {
         # Return template config field
-        return $objectMap
+        return $objectMap, $template.displayName
     }
 }
 
