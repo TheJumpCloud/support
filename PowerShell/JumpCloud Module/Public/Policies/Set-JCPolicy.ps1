@@ -15,7 +15,7 @@ function Set-JCPolicy {
     )
     DynamicParam {
         if ($policyID) {
-            $policy = Get-JcPolicy -PolicyID $policyID
+            $policy = Get-JCPolicy -PolicyID $policyID
             $object = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
@@ -76,7 +76,7 @@ function Set-JCPolicy {
     begin {
     }
     process {
-        $policy = Get-JcPolicy -PolicyID $policyID
+        $policy = Get-JCPolicy -PolicyID $policyID
         $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
             $params = $PSBoundParameters
@@ -85,7 +85,7 @@ function Set-JCPolicy {
             for ($i = 0; $i -lt $templateObject.length; $i++) {
                 # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
                 if ($templateObject[$i].configFieldName -in $params.keys) {
-                    $keyName = $params.keys | where-object { $_ -eq $templateObject[$i].configFieldName }
+                    $keyName = $params.keys | Where-Object { $_ -eq $templateObject[$i].configFieldName }
                     # write-host "Setting value from $($keyName)"
                     $keyValue = $params.$KeyName
                     switch ($templateObject[$i].type) {
@@ -110,7 +110,7 @@ function Set-JCPolicy {
                     $newObject.Add($templateObject[$i]) | Out-Null
                 }
             }
-            $updatedPolicyObject = $newObject | select configFieldID, configFieldName, value
+            $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
             # write-host $updatedPolicyObject
             #TODO: Create object containing values set using dynamicParams
             #TODO: Pass object into policies endpoint to create new policy
@@ -118,12 +118,22 @@ function Set-JCPolicy {
             $updatedPolicyObject = $values
         } else {
             $initialUserInput = Show-JCPolicyValues -policyObject $templateObject -policyValues $policy.values
-            if ($initialUserInput -ne 'C') {
-                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $initialUserInput -policyValues $policy.values
+            # User selects edit all fields
+            if ($initialUserInput.fieldSelection -eq 'A') {
+                for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $i -policyValues $policy.values
+                }
+                # Display policy values
+                Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
+            }
+            # User selects edit individual field
+            elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $initialUserInput.fieldSelection -policyValues $policy.values
                 Do {
-                    $userInput = Show-JCPolicyValues -policyObject $templateObject -policyValues $policy.values
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $userInput -policyValues $policy.values
-                } while ($userInput -ne 'C')
+                    # Hide option to edit all fields
+                    $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $policy.values
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $userInput.fieldSelection -policyValues $policy.values
+                } while ($userInput.fieldSelection -ne 'C')
             }
         }
         $headers = @{}

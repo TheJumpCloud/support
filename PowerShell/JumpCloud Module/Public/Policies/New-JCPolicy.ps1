@@ -71,6 +71,7 @@ function New-JCPolicy {
         }
     }
     begin {
+        $headers = @{}
     }
     process {
         $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
@@ -81,7 +82,7 @@ function New-JCPolicy {
             for ($i = 0; $i -lt $templateObject.length; $i++) {
                 # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
                 if ($templateObject[$i].configFieldName -in $params.keys) {
-                    $keyName = $params.keys | where-object { $_ -eq $templateObject[$i].configFieldName }
+                    $keyName = $params.keys | Where-Object { $_ -eq $templateObject[$i].configFieldName }
                     # write-host "Setting value from $($keyName)"
                     $keyValue = $params.$KeyName
                     switch ($templateObject[$i].type) {
@@ -107,7 +108,7 @@ function New-JCPolicy {
                     $newObject.Add($templateObject[$i]) | Out-Null
                 }
             }
-            $updatedPolicyObject = $newObject | select configFieldID, configFieldName, value
+            $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
             # write-host $updatedPolicyObject
             #TODO: Create object containing values set using dynamicParams
             #TODO: Pass object into policies endpoint to create new policy
@@ -115,15 +116,33 @@ function New-JCPolicy {
             $updatedPolicyObject = $values
         } else {
             $initialUserInput = Show-JCPolicyValues -policyObject $templateObject
-            if ($initialUserInput -ne 'C') {
-                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $initialUserInput
+            # User selects edit all fields
+            if ($initialUserInput.fieldSelection -eq 'A') {
+                for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $i
+                }
+                # Display policy values
+                Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
+            }
+            # User selects edit individual field
+            elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $initialUserInput.fieldSelection
                 Do {
-                    $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $userInput
-                } while ($userInput -ne 'C')
+                    # Hide option to edit all fields
+                    $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $userInput.fieldSelection
+                } while ($userInput.fieldSelection -ne 'C')
             }
         }
-        $headers = @{}
+
+        # Validate PolicyObject
+        $updatedPolicyObject | ForEach-Object {
+            # Check to see if value property is set, if not set to defaultValue
+            if ($_.value -eq $null) {
+                $_.value = $_.defaultValue
+            }
+        }
+
         $headers.Add("x-api-key", $env:JCApiKey)
         $headers.Add("x-org-id", $env:JCOrgId)
         $headers.Add("content-type", "application/json")
