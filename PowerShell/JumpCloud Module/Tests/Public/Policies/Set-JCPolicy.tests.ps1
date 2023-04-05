@@ -2,6 +2,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     BeforeAll {
         # Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         . "$($PSSCRIPTROOT)/../../..//Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
+        # Clean Up Pester Policy Tests:
+        $policies = Get-JCPolicy
+        $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
     }
     Context 'Sets policies using the dynamic parameter set' {
         BeforeAll {
@@ -69,23 +72,42 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy using the values object where a policy has a boolean type' {
             # TODO: implement test
         }
+        It 'Sets a policy using the values object where a policy has a file type' {
+            # first add a policy with a file payload
+        }
         It 'Sets a policy using the values object where a policy has a singlelistbox type' {
             # TODO: implement test
         }
         It 'Sets a policy using the values object where a policy has a multi selection type' {
             # TODO: implement test
         }
-        It 'Sets a policy using the values object where a policy has a multi table type' {
+        It 'Sets a policy using the values object where a policy has a table type' {
             # TODO: implement test
         }
-        It 'Sets a policy using the values object where a policy has a multi customRegTable type' {
+        It 'Sets a policy using the values object where a policy has a customRegTable type' {
             # TODO: implement test
         }
 
     }
     Context 'Sets policies using the pipeline parameters' {
-        It 'sets a policy using the pipeline input from Get-JCPolicy' {
-            # TODO: implement test
+        It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' {
+            # you should be able to set a policy with no payload
+            # TODO: this errors, should we include a $templateID in the New/Set-JCpolicy output so we can always pipe to another function?
+            { $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID 60636bce232e115560b632e9 } | Should -Not -Throw
+            $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -Name "Pester - Pipeline Policy No Payload Updated"
+            # the name should be updated:
+            $updatedNoPayloadPolicy.Name | Should -Be "Pester - Pipeline Policy No Payload Updated"
+        }
+        It 'Sets a policy using the pipeline inpput from Get-JCPolicy where the policy has a string payload' {
+            # create a policy
+            { $stringPayloadPolicy = New-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true } | Should -Not -Throw
+            # Get the policy object
+            $policy = Get-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload"
+            # Update the policy name
+            $updatedPolicy = $policy | Set-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload Updated"
+            # policy name shoud be updated
+            # TODO: this fails
+            $updatedPolicy.name | Should -Be "Pester - Pipeline Policy String Bool Payload Updated"
         }
     }
 }
