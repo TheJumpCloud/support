@@ -57,6 +57,15 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy with a listbox, dynamic parameter' {
             #TODO: implement test
         }
+        It 'Sets a policy with a table, dynamic parameter' {
+            #TODO: implement test
+        }
+        It 'Sets a policy with a customRegTable, dynamic parameter' {
+            #TODO: implement test
+        }
+        It 'Sets a policy with a file, dynamic parameter' {
+            #TODO: implement test
+        }
     }
     Context 'Sets policies using the values parameter set' {
         It 'sets a policy using the values object where a policy only has a string type' {
