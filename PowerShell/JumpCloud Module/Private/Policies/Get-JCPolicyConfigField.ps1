@@ -55,4 +55,3 @@ function Get-JCPolicyConfigField {
 
 
 
-. "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/New-CustomRegistryTableRow.ps1"

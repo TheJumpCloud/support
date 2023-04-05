@@ -73,9 +73,8 @@ function Dispatch-JCPolicyConfigField {
     }
 }
 
-
-. "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Set-JCPolicyConfigField.ps1"
-. "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/New-CustomRegistryTableRow.ps1"
+# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Set-JCPolicyConfigField.ps1"
+# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/New-CustomRegistryTableRow.ps1"
 
 
 # $policyValues | Format-Table @{label = "Row"; expression = { $policyValues.indexof($_) } }, @{label = "Value"; expression = { $policyValues[$policyValues.indexof($_)].value } }, @{label = "Value2"; expression = { ($templateObject | Where-Object $_.configFieldId -eq $policyValues[$policyValues.indexof($_)].configFieldID).label } } | Out-Host

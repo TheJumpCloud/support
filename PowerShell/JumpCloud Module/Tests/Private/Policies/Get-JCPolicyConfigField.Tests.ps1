@@ -3,8 +3,8 @@ BeforeAll {
 Describe -tag 'Get config fields tests' 'JCPolicy' {
 
     Context 'Test Config Fields for all possible types' {
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Enumerate-JCPolicyConfigMapping.ps1"
-        . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
+        # . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Enumerate-JCPolicyConfigMapping.ps1"
+        # . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
         $configMappint = Enumerate-JCPolicyConfigMapping
         It 'Get-JCPolicyConfigField should return all types of available policy types' {
             foreach ($configType in $configMappint) {
