@@ -103,7 +103,13 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $updatedValuesMacLoginPolicy.values.value | Should -Be $updatedText
         }
         It 'Sets a policy using the values object where a policy has a boolean type' {
-            # TODO: implement test
+            $valuesAllowUseBiometrics = New-JCPolicy -templateID !CHANGE -Name "Pester - Boolean" -ALLOWUSEOFBIOMETRICS $false
+            # Update the first text boolean value to true
+            # Change the value
+            $valuesAllowUseBiometrics.values.value = $true
+            $updateAllowUserBiometrics = Set-JCPolicy -templateId $valuesAllowUseBiometrics.id -values $valuesAllowUseBiometrics.values
+            # the policy should be updated from the policy values object
+            $updateAllowUserBiometrics.values.value | Should -Be $true
         }
         It 'Sets a policy using the values object where a policy has a file type' {
             # first add a policy with a file payload
@@ -111,8 +117,19 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy using the values object where a policy has a singlelistbox type' {
             # TODO: implement test
         }
+
+        #TODO: NEED TO TEST
         It 'Sets a policy using the values object where a policy has a multi selection type' {
-            # TODO: implement test
+            $valuesSystemPreferenceControl = new-jcpolicy -templateID !CHANGe -name "Pester - Mac System Preference Control" -pipelineVariable 0 -appstore $false -icloud $true
+            #Update the values to true
+            $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "appstore" } | ForEach-Object { $_.value = $true }
+            $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" } | ForEach-Object { $_.value = $false }
+            $updatedValuesSystemPreferenceControl = Set-JCPolicy -policyID $valuesSystemPreferenceControl.id -values $valuesSystemPreferenceControl.values
+
+            # the policy should be updated from the policy values object
+            ($updatedValuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "appstore" }).value | Should -Be $true
+            ($updatedValuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" }).value | Should -Be $true
+
         }
         It 'Sets a policy using the values object where a policy has a table type' {
             # TODO: implement test
