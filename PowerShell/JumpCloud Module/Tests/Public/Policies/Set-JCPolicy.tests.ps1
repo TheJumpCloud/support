@@ -58,10 +58,34 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             #TODO: implement test
         }
         It 'Sets a policy with a table, dynamic parameter' {
-            #TODO: implement test
-        }
-        It 'Sets a policy with a customRegTable, dynamic parameter' {
-            #TODO: implement test
+            # Add a new policy with table type:
+            # Define a list
+            $policyValueList = New-Object System.Collections.ArrayList
+            # Define list Values:
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'data'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            # add values to list
+            $policyValueList.add($policyValue)
+            # create the policy
+            $TablePolicy = New-JCPolicy -templateID 5f07273cb544065386e1ce6f -customRegTable $policyValueList -Name "Pester - Registry"
+            # add another value to the policy
+            $policyValue2 = [pscustomobject]@{
+                'customData'      = 'data2'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location2'
+                'customValueName' = 'CustomValue2'
+            }
+            # add new values to list
+            $policyValueList.add($policyValue2)
+            $UpdatedTablePolicy = Set-JCPolicy -PolicyID $TablePolicy.id -customRegTable $policyValueList
+            # Assert statements
+            # there should be two values in the registry table list
+            $UpdatedTablePolicy.values.value.count | Should -Be 2
+
         }
         It 'Sets a policy with a file, dynamic parameter' {
             #TODO: implement test
