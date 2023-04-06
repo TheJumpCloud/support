@@ -138,6 +138,13 @@ function Set-JCPolicy {
             # User selects edit individual field
             elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
                 $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $policy.values
+                # For set-jcpolicy, add the help & label options
+                $updatedPolicyObject | ForEach-Object {
+                    if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
+                        $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
+                        $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
+                    }
+                }
                 Do {
                     # Hide option to edit all fields
                     $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $policy.values
