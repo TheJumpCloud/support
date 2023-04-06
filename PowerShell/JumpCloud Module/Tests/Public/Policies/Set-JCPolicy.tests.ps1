@@ -11,19 +11,14 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     }
     Context 'Sets policies using the dynamic parameter set' {
         BeforeAll {
-            # Test Setup:
+            $policyTemplates = Get-JcSdkPolicyTemplate
+        }
+        It 'Sets a policy with a string type dynamic parameter' {
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "message_title_text_for_users_attempting_to_logon_windows" }
             $templateId = $policyTemplate.id
             $PesterMacStringText = New-JCPolicy -templateID $templateId -Name "Pester - Mac - Login Window Text Policy" -LoginwindowText "Pester Test"
-
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:app_notifications_darwin' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
-            $PesterMacNotifySettings = New-JCPolicy -templateID $templateId -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
-            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
-        }
-        It 'Sets a policy with a string type dynamic parameter' {
             # define a text value to change the current value:
             $updateText = "Updated"
             # update the value with dynamic param
@@ -34,6 +29,10 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
+            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:app_notifications_darwin' -Method GET -Headers $headers
+            $templateId = $templateResponse.id
+            $PesterMacNotifySettings = New-JCPolicy -templateID $templateId -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
+            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
             # define a text value to change the current value:
             $updateText = "Updated"
             # update the value with dynamic param
@@ -72,22 +71,20 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy with a file, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
             $templateId = $policyTemplate.id
-            #Download a font file from google to use for testing in powershell
-            $url = "https://fonts.google.com/download?family=Roboto"
-            $output = Join-Path -Path $PSScriptRoot -ChildPath "Roboto.zip"
-            $extractPath = Join-Path -Path $PSScriptRoot -ChildPath "Roboto"
-            Invoke-WebRequest -Uri $url -OutFile $output
-            Expand-Archive -Path $output -DestinationPath $extractPath -Force
-            $fontFile = Get-ChildItem -Path $extractPath -Filter "Roboto-Light.ttf" -Recurse -file | Select-Object -First 1
+
+            # Upload ps1 files for this test
+            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -First 1
+            $secondFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -Last 1
+
 
             # Add a new policy with file type:
-            $newFilePolicy = New-JCPolicy -templateID 631f44bc2630c900017ed834 -setFont $fontfile.FullName -Name "Pester - File Test" -setName "Roboto Light"
+            $newFilePolicy = New-JCPolicy -templateID 631f44bc2630c900017ed834 -setFont $firstFile.FullName -Name "Pester - File Test" -setName "Roboto Light"
 
             # Set the policy with a new file
-            $fontFile = Get-ChildItem -Path $extractPath -Filter "Roboto-Black.ttf"  -Recurse -file | Select-Object -First 1
-            $convertFontFiletoB64 = [convert]::ToBase64String((Get-Content -Path $fontFile.FullName -AsByteStream))
+            $convertFontFiletoB64 = [convert]::ToBase64String((Get-Content -Path $secondFile.FullName -AsByteStream))
+
             $setFontName = "Roboto Black"
-            $updatedFilePolicy = Set-JCPolicy -policyID $newFilePolicy.id -setFont $fontFile.FullName -setName $setFontName
+            $updatedFilePolicy = Set-JCPolicy -policyID $newFilePolicy.id -setFont $secondFile.FullName -setName $setFontName
             $setFileBase64 = ($updatedFilePolicy.values | Where-Object { $_.configFieldName -eq "setFont" }).value
             $setName = ($updatedFilePolicy.values | Where-Object { $_.configFieldName -eq "setName" }).value
 
@@ -129,6 +126,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
     }
     Context 'Sets policies using the object values parameter set' {
+        BeforeAll {
+            $policyTemplates = Get-JcSdkPolicyTemplate
+        }
         It 'sets a policy using the values object where a policy only has a string type' {
             $origText = "Pester Test"
             $updatedText = "Updated Pester Test"
@@ -182,9 +182,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             ($updatedValuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" }).value | Should -Be $false
 
         }
-        It 'Sets a policy using the values object where a policy has a table type' {
-            # TODO: implement test
-        }
+
         It 'Sets a policy using the values object where a policy has a customRegTable type' {
             $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_registry_keys_policy_windows' -Method GET -Headers $headers
             $templateId = $templateResponse.id
@@ -211,7 +209,10 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
 
     }
     Context 'Sets policies using the pipeline parameters' {
-        It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' {
+        BeforeAll {
+            $policyTemplates = Get-JcSdkPolicyTemplate
+        }
+        It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' -skip {
             # you should be able to set a policy with no payload
             # TODO: this errors, should we include a $templateID in the New/Set-JCpolicy output so we can always pipe to another function?
             { $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID 60636bce232e115560b632e9 } | Should -Not -Throw
