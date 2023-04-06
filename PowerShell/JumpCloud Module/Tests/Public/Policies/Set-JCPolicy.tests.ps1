@@ -40,7 +40,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $UpdatedPesterMacNotifySettings = Set-JCPolicy -policyID $PesterMacNotifySettings.id -AlertType "Persistent Banner" -PreviewType "Never" -BadgesEnabled $true -ShowInNotificationCenter $true -BundleIdentifier $updateText -SoundsEnabled $true -CriticalAlertEnabled $true -ShowInLockScreen $true -NotificationsEnabled $true
             # the orig policy should have only set the AlertType, all other settings were set to the default value
             ($PesterMacNotifySettings.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be "0"
-            $objsToTest = $PesterMacNotifySettingsTemplate | Where-Object { $_.configFieldName -ne "AlertType" }
+            $objsToTest = $PesterMacNotifySettingsTemplate.objectMap | Where-Object { $_.configFieldName -ne "AlertType" }
             foreach ($obj in $objsToTest) {
                 # write-host "$($PesterMacNotifySettings.values[$($obj.position) - 1].configFieldName) with value: $($PesterMacNotifySettings.values[$($obj.position) - 1].value) | Should be $($obj.defaultValue)"
                 # test that the other values were set to the default value
@@ -53,7 +53,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # finally test that the policy boolean settings can be flipped to false
             $UpdatedBooleanPesterMacNotifySettings = Set-JCPolicy -policyID $PesterMacNotifySettings.id -BadgesEnabled $false -ShowInNotificationCenter $false -BundleIdentifier $updateText -SoundsEnabled $false -CriticalAlertEnabled $false -ShowInLockScreen $false -NotificationsEnabled $false
 
-            $objsToTest = $PesterMacNotifySettingsTemplate | Where-Object { $_.type -eq "boolean" }
+            $objsToTest = $PesterMacNotifySettingsTemplate.objectMap | Where-Object { $_.type -eq "boolean" }
             foreach ($obj in $objsToTest) {
                 # write-host "$($PesterMacNotifySettings.values[$($obj.position) - 1].configFieldName) with value: $($PesterMacNotifySettings.values[$($obj.position) - 1].value) | Should be $($obj.defaultValue)"
                 # test that the other values were set to the default value
@@ -150,6 +150,22 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # the policy should be updated from the policy values object
             $updateAllowUserBiometrics.values.value | Should -Be $true
         }
+        It 'Sets a policy with a single value and does not overwrite unspecified values' {
+            $resetPolicyByValue = New-JCPolicy -Name "Pester - Values Policy Set Values" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.2.3.4" -setPort "222" -setResourcePath "/this/path/" -setForceTLS $true
+            $s = [PSCustomObject]@{
+                configFieldID = "6308ccfc21c21b000185379a"
+                value         = "128.138.220.205"
+            }
+            # Update the policy with only one value
+            $updatedPolicy = Set-JCPolicy -policyID $resetPolicyByValue.id -Values $s
+            # Only the first value should be changed
+            $resetPolicyByValue.values[0].value | Should -Not -Be $updatedPolicy.values[0].value
+            $updatedPolicy.values[0].value | Should -Be "128.138.220.205"
+            # the remaining values should be the same and unchanged after this update
+            $resetPolicyByValue.values[1].value | Should -Be $updatedPolicy.values[1].value
+            $resetPolicyByValue.values[2].value | Should -Be $updatedPolicy.values[2].value
+            $resetPolicyByValue.values[3].value | Should -Be $updatedPolicy.values[3].value
+        }
 
         #TODO: NEED TO TEST
         It 'Sets a policy using the values object where a policy has a multi selection type' {
@@ -211,7 +227,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # Update the policy name
             $updatedPolicy = $policy | Set-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload Updated"
             # policy name shoud be updated
-            # TODO: this fails
             $updatedPolicy.name | Should -Be "Pester - Pipeline Policy String Bool Payload Updated"
         }
     }
