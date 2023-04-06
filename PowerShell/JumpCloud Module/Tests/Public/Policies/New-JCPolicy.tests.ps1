@@ -1,4 +1,4 @@
-Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
+Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     BeforeAll {
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
 
@@ -6,26 +6,31 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         $headers = @{}
         $headers.Add("x-org-id", $PesterParams_OrgId)
         $headers.Add("x-api-key", $PesterParams_ApiKey)
+        #TODO: Pester - name
+        #LIstbox https://console.jumpcloud.com/#/configurations/configure/darwin/62e2ae60ab9878000167ca7a
+        # Set-JCpolicy -policyid adsfklsdf -singleListBoxPolicy @('1','2','3')
+        $policyTemplates = Get-JcSdkPolicyTemplate
     }
 
     Context 'Creates policies with dynamic parameters' {
         It 'Creates a new policy that tests textbox string' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:rename_local_administrator_account_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
-            $stringPolicy = New-JCPolicy -name "Test textbox" -templateID $templateId -ADMINISTRATORSTRING "Test String"
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "rename_local_administrator_account_windows" }
+            $templateId = $policyTemplate.id
+            $stringPolicy = New-JCPolicy -name "Pester - textbox" -templateID $templateId -ADMINISTRATORSTRING "Test String"
             # Should not be null
             $stringPolicy.values.value | Should -Be "Test String"
         }
         It 'Creates a new policy that tests boolean' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:allow_the_use_of_biometrics_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "allow_the_use_of_biometrics_windows" }
+            $templateId = $policyTemplate.id
             $booleanPolicy = New-JCPolicy -name "Test textbox" -templateID $templateId -ALLOWUSEOFBIOMETRICS $true
             # Should not be null???
             $booleanPolicy.values.value | Should -be $true
         }
         #TODO: Registry
         It 'Creates a new policy that tests registry' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_registry_keys_policy_windows' -Method GET -Headers $headers
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $templateId = $policyTemplate.id
             $policyValueList = New-Object System.Collections.ArrayList
             # Define list Values:
             $policyValue = [pscustomobject]@{
@@ -36,21 +41,20 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             }
             # add values to list
             $policyValueList.add($policyValue)
-            $templateId = $templateResponse.id
             $tablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
             $tablePolicy | Should -Be 1
         }
         #TODO
         It 'Creates a new policy that tests upload file' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_mdm_profile_darwin' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_mdm_profile_darwin" }
+            $templateId = $policyTemplate.id
             $newPolicy = New-JCPolicy -name "Test file" -templateID $templateId -file ???
             # Should not be null???
             $newPolicy | Should -Not -BeNullOrEmpty
         }
         It 'Creates a new policy that select, string, boolean' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=id:eq:app_notifications_darwin' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
+            $templateId = $policyTemplate.id
             $policyName = "Pester Test Policy boolean"
             $multipleValPolicy = New-JCPolicy -name "Test textbsdox" -templateID $templateId -AlertType "Temporary Banner" -BundleIdentifier "Test" -PreviewType "Always" -BadgesEnabled $true
             #Test each param
@@ -62,33 +66,33 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     }
     Context 'Sets policies using the pipeline parameters' {
         It 'Creates a policy using the pipeline parameters boolean' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:allow_the_use_of_biometrics_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "allow_the_use_of_biometrics_windows" }
+            $templateId = $policyTemplate.id
             $policyName = "Pester Test Policy boolean"
-            $newPolicy = New-JCPolicy -name "Test boolean" -templateID $templateId -ALLOWUSEOFBIOMETRICS $false
+            $newPolicy = New-JCPolicy -name "Pester - pipeline boolean" -templateID $templateId -ALLOWUSEOFBIOMETRICS $false
             $pipelinePolicy = $newPolicy | New-JCPolicy -name "Pipeline New Policy Boolean Test"
             $pipelinePolicy.value.values | Should -Be "Pipeline New Policy Boolean Test"
         }
         #TODO: Registry
         It 'Creates a new policy that tests pipeline registry' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_registry_keys_policy_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $templateId = $policyTemplate.id
             $policyName = "Pester Test Policy boolean"
             $pipelinePolicy = $newPolicy | New-JCPolicy -name "Pipeline Registry Test"
             $pipelinePolicy | Should -Be "Test Registry" #??
         }
         #Todo
         It 'Creates a new policy that tests pipeline upload file' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_mdm_profile_darwin' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_mdm_profile_darwin" }
+            $templateId = $policyTemplate.id
             $policyName = "Pester Test Policy file"
             $newPolicy = New-JCPolicy -name "Test file" -templateID $templateId -file ???
             # Should not be null???
             $newPolicy | Should -Not -BeNullOrEmpty
         }
         It 'Creates a new policy that tests pipeline parameters string' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:rename_local_administrator_account_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "rename_local_administrator_account_windows" }
+            $templateId = $policyTemplate.id
             $policyName = "Pester Test Policy"
             $newPolicy = New-JCPolicy -name "Test textbox" -templateID $templateId -ADMINISTRATORSTRING "Test String"
             # Should not be null
@@ -96,5 +100,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $pipelinePolicy.value.values | Should -Be "Pipeline New Policy String Test"
         }
     }
+
+    #TODO: Create tests for Objects
 
 }

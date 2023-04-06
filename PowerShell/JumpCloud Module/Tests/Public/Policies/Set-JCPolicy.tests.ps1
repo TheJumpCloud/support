@@ -5,15 +5,22 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         # Clean Up Pester Policy Tests:
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
+
+
+        $policyTemplates = Get-JcSdkPolicyTemplate
     }
     Context 'Sets policies using the dynamic parameter set' {
         BeforeAll {
             # Test Setup:
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
-            $PesterMacStringText = New-JCPolicy -templateID 5ade0cfd1f24754c6c5dc9f2 -Name "Pester - Mac - Login Window Text Policy" -LoginwindowText "Pester Test"
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "message_title_text_for_users_attempting_to_logon_windows" }
+            $templateId = $policyTemplate.id
+            $PesterMacStringText = New-JCPolicy -templateID $templateId -Name "Pester - Mac - Login Window Text Policy" -LoginwindowText "Pester Test"
 
-            $PesterMacNotifySettings = New-JCPolicy -templateID 62a76bdbdbe570000196253b -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
+            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:app_notifications_darwin' -Method GET -Headers $headers
+            $templateId = $templateResponse.id
+            $PesterMacNotifySettings = New-JCPolicy -templateID $templateId -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
             $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
         }
         It 'Sets a policy with a string type dynamic parameter' {
@@ -55,9 +62,43 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             }
         }
         It 'Sets a policy with a listbox, dynamic parameter' {
-            #TODO: implement test
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "encrypted_dns_https_darwin" }
+            $templateId = $policyTemplate.id
+            $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
+            $listboxSet = Set-JCpolicy -policyid $listboxPolicy.Id -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
+
+            $listboxSet.values.value | Should -Be @('Test Pester Address1', 'Test URL2', 'Test Domain3')
         }
+        It 'Sets a policy with a file, dynamic parameter' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
+            $templateId = $policyTemplate.id
+            #Download a font file from google to use for testing in powershell
+            $url = "https://fonts.google.com/download?family=Roboto"
+            $output = Join-Path -Path $PSScriptRoot -ChildPath "Roboto.zip"
+            $extractPath = Join-Path -Path $PSScriptRoot -ChildPath "Roboto"
+            Invoke-WebRequest -Uri $url -OutFile $output
+            Expand-Archive -Path $output -DestinationPath $extractPath -Force
+            $fontFile = Get-ChildItem -Path $extractPath -Filter "Roboto-Light.ttf" -Recurse -file | Select-Object -First 1
+
+            # Add a new policy with file type:
+            $newFilePolicy = New-JCPolicy -templateID 631f44bc2630c900017ed834 -setFont $fontfile.FullName -Name "Pester - File Test" -setName "Roboto Light"
+
+            # Set the policy with a new file
+            $fontFile = Get-ChildItem -Path $extractPath -Filter "Roboto-Black.ttf"  -Recurse -file | Select-Object -First 1
+            $convertFontFiletoB64 = [convert]::ToBase64String((Get-Content -Path $fontFile.FullName -AsByteStream))
+            $setFontName = "Roboto Black"
+            $updatedFilePolicy = Set-JCPolicy -policyID $newFilePolicy.id -setFont $fontFile.FullName -setName $setFontName
+            $setFileBase64 = ($updatedFilePolicy.values | Where-Object { $_.configFieldName -eq "setFont" }).value
+            $setName = ($updatedFilePolicy.values | Where-Object { $_.configFieldName -eq "setName" }).value
+
+            # test that the file was updated
+            $setFileBase64 | Should -Be $convertFontFiletoB64
+            $setName | Should -Be $setFontName
+        }
+        # TODO: Check
         It 'Sets a policy with a table, dynamic parameter' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $templateId = $policyTemplate.id
             # Add a new policy with table type:
             # Define a list
             $policyValueList = New-Object System.Collections.ArrayList
@@ -71,7 +112,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # add values to list
             $policyValueList.add($policyValue)
             # create the policy
-            $TablePolicy = New-JCPolicy -templateID 5f07273cb544065386e1ce6f -customRegTable $policyValueList -Name "Pester - Registry"
+            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
             # add another value to the policy
             $policyValue2 = [pscustomobject]@{
                 'customData'      = 'data2'
@@ -85,13 +126,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # Assert statements
             # there should be two values in the registry table list
             $UpdatedTablePolicy.values.value.count | Should -Be 2
-
-        }
-        It 'Sets a policy with a file, dynamic parameter' {
-            #TODO: implement test
         }
     }
-    Context 'Sets policies using the values parameter set' {
+    Context 'Sets policies using the object values parameter set' {
         It 'sets a policy using the values object where a policy only has a string type' {
             $origText = "Pester Test"
             $updatedText = "Updated Pester Test"
@@ -103,7 +140,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $updatedValuesMacLoginPolicy.values.value | Should -Be $updatedText
         }
         It 'Sets a policy using the values object where a policy has a boolean type' {
-            $valuesAllowUseBiometrics = New-JCPolicy -templateID !CHANGE -Name "Pester - Boolean" -ALLOWUSEOFBIOMETRICS $false
+            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:allow_the_use_of_biometrics_windows' -Method GET -Headers $headers
+            $templateId = $templateResponse.id
+            $valuesAllowUseBiometrics = New-JCPolicy -templateID $templateId -Name "Pester - Boolean" -ALLOWUSEOFBIOMETRICS $false
             # Update the first text boolean value to true
             # Change the value
             $valuesAllowUseBiometrics.values.value = $true
@@ -111,16 +150,12 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # the policy should be updated from the policy values object
             $updateAllowUserBiometrics.values.value | Should -Be $true
         }
-        It 'Sets a policy using the values object where a policy has a file type' {
-            # first add a policy with a file payload
-        }
-        It 'Sets a policy using the values object where a policy has a singlelistbox type' {
-            # TODO: implement test
-        }
 
         #TODO: NEED TO TEST
         It 'Sets a policy using the values object where a policy has a multi selection type' {
-            $valuesSystemPreferenceControl = new-jcpolicy -templateID !CHANGe -name "Pester - Mac System Preference Control" -pipelineVariable 0 -appstore $false -icloud $true
+            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:system_preferences_panes_darwin' -Method GET -Headers $headers
+            $templateId = $templateResponse.id
+            $valuesSystemPreferenceControl = new-jcpolicy -templateID $templateId -name "Pester - Mac System Preference Control" -pipelineVariable 0 -appstore $false -icloud $true
             #Update the values to true
             $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "appstore" } | ForEach-Object { $_.value = $true }
             $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" } | ForEach-Object { $_.value = $false }
@@ -128,14 +163,34 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
 
             # the policy should be updated from the policy values object
             ($updatedValuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "appstore" }).value | Should -Be $true
-            ($updatedValuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" }).value | Should -Be $true
+            ($updatedValuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" }).value | Should -Be $false
 
         }
         It 'Sets a policy using the values object where a policy has a table type' {
             # TODO: implement test
         }
         It 'Sets a policy using the values object where a policy has a customRegTable type' {
-            # TODO: implement test
+            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_registry_keys_policy_windows' -Method GET -Headers $headers
+            $templateId = $templateResponse.id
+            # Add a new policy with table type:
+            # Define a list
+            $policyValueList = New-Object System.Collections.ArrayList
+            # Define list Values:
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'data'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            # add values to list
+            $policyValueList.add($policyValue)
+            # create the policy
+            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
+            # Update the first value from the orig policy
+            $TablePolicy.values[0].customData = "Updated Data"
+            $updatedTablePolicy = Set-JCPolicy -policyID $TablePolicy.id -values $TablePolicy.values
+            # the policy should be updated from the policy values object
+            $updatedTablePolicy.values.customData | Should -Be "Updated Data"
         }
 
     }
