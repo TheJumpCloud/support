@@ -120,11 +120,18 @@ function Set-JCPolicy {
                 }
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
-            # write-host $updatedPolicyObject
-            #TODO: Create object containing values set using dynamicParams
-            #TODO: Pass object into policies endpoint to create new policy
         } elseif ($values) {
-            $updatedPolicyObject = $values
+            $updatedPolicyObject = New-Object System.Collections.ArrayList
+            # Add each value into the object to set the policy
+            foreach ($value in $values) {
+                $updatedPolicyObject.add($value)
+            }
+            # If only one or a few of the config fields were set, add the remaining items from $policy.values
+            $policy.values | ForEach-Object {
+                if ($_.configFieldID -notin $updatedPolicyObject.configFieldID) {
+                    $updatedPolicyObject.Add($_) | Out-Null
+                }
+            }
         } else {
             $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $policy.values
             # User selects edit all fields

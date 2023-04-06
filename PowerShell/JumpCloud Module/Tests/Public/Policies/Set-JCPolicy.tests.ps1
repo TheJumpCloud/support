@@ -117,6 +117,22 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy using the values object where a policy has a singlelistbox type' {
             # TODO: implement test
         }
+        It 'Sets a policy with a single value and does not overwrite unspecified values' {
+            $resetPolicyByValue = New-JCPolicy -Name "Pester - Values Policy Set Values" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.2.3.4" -setPort "222" -setResourcePath "/this/path/" -setForceTLS $true
+            $s = [PSCustomObject]@{
+                configFieldID = "6308ccfc21c21b000185379a"
+                value         = "128.138.220.205"
+            }
+            # Update the policy with only one value
+            $updatedPolicy = Set-JCPolicy -policyID $resetPolicyByValue.id -Values $s
+            # Only the first value should be changed
+            $resetPolicyByValue.values[0].value | Should -Not -Be $updatedPolicy.values[0].value
+            $updatedPolicy.values[0].value | Should -Be "128.138.220.205"
+            # the remaining values should be the same and unchanged after this update
+            $resetPolicyByValue.values[1].value | Should -Be $updatedPolicy.values[1].value
+            $resetPolicyByValue.values[2].value | Should -Be $updatedPolicy.values[2].value
+            $resetPolicyByValue.values[3].value | Should -Be $updatedPolicy.values[3].value
+        }
 
         #TODO: NEED TO TEST
         It 'Sets a policy using the values object where a policy has a multi selection type' {
