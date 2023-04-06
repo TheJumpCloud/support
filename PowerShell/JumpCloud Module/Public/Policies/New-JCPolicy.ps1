@@ -13,10 +13,10 @@ function New-JCPolicy {
     )
     DynamicParam {
         if ($templateID) {
-            $object, $defaultName = Get-JCPolicyTemplateConfigField -templateID $templateID
+            $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
-            foreach ($key in $object) {
+            foreach ($key in $templateObject.objectMap) {
                 # Set the dynamic parameters' name
                 $ParamName_Filter = "$($key.configFieldName)"
                 # Create the collection of attributes
@@ -74,43 +74,43 @@ function New-JCPolicy {
         $headers = @{}
     }
     process {
-        $templateObject, $defaultName = Get-JCPolicyTemplateConfigField -templateID $templateID
+        $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
         $policyName = if ($PSBoundParameters["name"]) {
             $Name
         } else {
-            $defaultName
+            $templateObject.defaultName
         }
         if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
             $params = $PSBoundParameters
 
             $newObject = New-Object System.Collections.ArrayList
-            for ($i = 0; $i -lt $templateObject.length; $i++) {
+            for ($i = 0; $i -lt $templateObject.objectMap.count; $i++) {
                 # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
-                if ($templateObject[$i].configFieldName -in $params.keys) {
-                    $keyName = $params.keys | Where-Object { $_ -eq $templateObject[$i].configFieldName }
-                    # write-host "Setting value from $($keyName)"
+                if ($templateObject.objectMap[$i].configFieldName -in $params.keys) {
+                    $keyName = $params.keys | Where-Object { $_ -eq $templateObject.objectMap[$i].configFieldName }
                     $keyValue = $params.$KeyName
-                    switch ($templateObject[$i].type) {
+                    # write-host "Setting value from $($keyName) $($KeyValue)"
+                    switch ($templateObject.objectMap[$i].type) {
                         'multi' {
-                            $templateObject[$i].value = $(($templateObject[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
-                            $templateObject[$i].value = $(($templateObject[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                            $templateObject.objectMap[$i].value = $(($templateObject.objectMap[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                            $templateObject.objectMap[$i].value = $(($templateObject.objectMap[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
                         }
                         'file' {
                             $path = Test-Path -Path $keyValue
                             if ($path) {
                                 # convert file path to base64 string
-                                $templateObject[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
+                                $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
                         }
                         Default {
-                            $templateObject[$i].value = $($keyValue)
+                            $templateObject.objectMap[$i].value = $($keyValue)
                         }
                     }
-                    $newObject.Add($templateObject[$i]) | Out-Null
+                    $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 } else {
                     # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
-                    $templateObject[$i].value = $templateObject[$i].defaultValue
-                    $newObject.Add($templateObject[$i]) | Out-Null
+                    $templateObject.objectMap[$i].value = $templateObject.objectMap[$i].defaultValue
+                    $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 }
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
@@ -120,22 +120,22 @@ function New-JCPolicy {
         } elseif ($values) {
             $updatedPolicyObject = $values
         } else {
-            $initialUserInput = Show-JCPolicyValues -policyObject $templateObject
+            $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap
             # User selects edit all fields
             if ($initialUserInput.fieldSelection -eq 'A') {
                 for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $i
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i
                 }
                 # Display policy values
                 Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
             }
             # User selects edit individual field
             elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $initialUserInput.fieldSelection
+                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection
                 Do {
                     # Hide option to edit all fields
                     $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject -fieldIndex $userInput.fieldSelection
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection
                 } while ($userInput.fieldSelection -ne 'C')
             }
         }
@@ -147,7 +147,6 @@ function New-JCPolicy {
                 $_.value = $_.defaultValue
             }
         }
-
         $headers.Add("x-api-key", $env:JCApiKey)
         $headers.Add("x-org-id", $env:JCOrgId)
         $headers.Add("content-type", "application/json")

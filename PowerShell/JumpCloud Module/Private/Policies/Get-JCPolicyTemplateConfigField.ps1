@@ -69,11 +69,15 @@ function Get-JCPolicyTemplateConfigField {
             }
             $objectMap.Add($templateObject) | out-null
         }
-
+        # Build object to return, including template displayname
+        $templateObject = [PSCustomObject]@{
+            defaultName = $template.displayName
+            objectMap   = $objectMap
+        }
     }
     end {
         # Return template config field
-        return $objectMap, $template.displayName
+        return $templateObject
     }
 }
 
