@@ -29,13 +29,14 @@ function Show-JCPolicyValues {
         # Create custom object containing counter/label/value
         $policyObject | ForEach-Object {
             $policyValue = [PSCustomObject]@{
-                fieldIndex = $counter
-                field      = $_.label
-                value      = If ($policyValues) {
+                fieldIndex  = $counter
+                field       = $_.label
+                value       = If ($policyValues) {
                     $cid = $_.configFieldID; ($policyValues | Where-Object { $_.configFieldID -eq $cid }).value
                 } else {
                     $_.value
                 }
+                helpMessage = $_.help
             }
 
             # Add object to object array and increment counter

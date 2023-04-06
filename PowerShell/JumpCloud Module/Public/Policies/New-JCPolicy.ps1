@@ -59,7 +59,7 @@ function New-JCPolicy {
                 $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
                 $ParameterAttribute.Mandatory = $false
                 $ParameterAttribute.ParameterSetName = 'DynamicParam'
-                $ParameterAttribute.HelpMessage = "sets the $($key.label) settings"
+                $ParameterAttribute.HelpMessage = "$($key.help)"
                 # Add the attributes to the attributes collection
                 $AttributeCollection.Add($ParameterAttribute)
                 # Add the param

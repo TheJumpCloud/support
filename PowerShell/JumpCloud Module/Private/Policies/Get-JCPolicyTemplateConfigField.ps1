@@ -58,6 +58,7 @@ function Get-JCPolicyTemplateConfigField {
                 label           = $field.Label
                 position        = $field.Position
                 configFieldName = $field.Name
+                help            = $field.tooltip.variables.message
                 type            = "$($configMapping[$field.DisplayType])"
                 validation      = if ($Field.DisplayType -eq 'select') {
                     $ValidationObject
