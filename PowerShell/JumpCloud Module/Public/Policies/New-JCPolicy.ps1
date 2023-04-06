@@ -44,7 +44,7 @@ function New-JCPolicy {
                         $paramType = [system.string[]]
                     }
                     'table' {
-                        $paramType = [system.string[]]
+                        $paramType = [system.object[]]
                     }
                     'exclude' {
                         Continue
@@ -105,6 +105,13 @@ function New-JCPolicy {
                                 # convert file path to base64 string
                                 $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
+                        }
+                        'table' {
+                            $regRows = New-Object System.Collections.ArrayList
+                            foreach ($regItem in $keyValue) {
+                                $regRows.Add($regItem)
+                            }
+                            $templateObject.objectMap[$i].value = $regRows
                         }
                         Default {
                             $templateObject.objectMap[$i].value = $($keyValue)
