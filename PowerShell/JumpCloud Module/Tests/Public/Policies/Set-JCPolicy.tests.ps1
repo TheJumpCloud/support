@@ -14,7 +14,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $PesterMacStringText = New-JCPolicy -templateID 5ade0cfd1f24754c6c5dc9f2 -Name "Pester - Mac - Login Window Text Policy" -LoginwindowText "Pester Test"
 
             $PesterMacNotifySettings = New-JCPolicy -templateID 62a76bdbdbe570000196253b -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
-            $PesterMacNotifySettingsTemplate, $defaultPesterMacNotifySettingsTempalteName = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
+            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
         }
         It 'Sets a policy with a string type dynamic parameter' {
             # define a text value to change the current value:
@@ -33,7 +33,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $UpdatedPesterMacNotifySettings = Set-JCPolicy -policyID $PesterMacNotifySettings.id -AlertType "Persistent Banner" -PreviewType "Never" -BadgesEnabled $true -ShowInNotificationCenter $true -BundleIdentifier $updateText -SoundsEnabled $true -CriticalAlertEnabled $true -ShowInLockScreen $true -NotificationsEnabled $true
             # the orig policy should have only set the AlertType, all other settings were set to the default value
             ($PesterMacNotifySettings.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be "0"
-            $objsToTest = $PesterMacNotifySettingsTemplate | Where-Object { $_.configFieldName -ne "AlertType" }
+            $objsToTest = $PesterMacNotifySettingsTemplate.objectMap | Where-Object { $_.configFieldName -ne "AlertType" }
             foreach ($obj in $objsToTest) {
                 # write-host "$($PesterMacNotifySettings.values[$($obj.position) - 1].configFieldName) with value: $($PesterMacNotifySettings.values[$($obj.position) - 1].value) | Should be $($obj.defaultValue)"
                 # test that the other values were set to the default value
@@ -46,7 +46,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # finally test that the policy boolean settings can be flipped to false
             $UpdatedBooleanPesterMacNotifySettings = Set-JCPolicy -policyID $PesterMacNotifySettings.id -BadgesEnabled $false -ShowInNotificationCenter $false -BundleIdentifier $updateText -SoundsEnabled $false -CriticalAlertEnabled $false -ShowInLockScreen $false -NotificationsEnabled $false
 
-            $objsToTest = $PesterMacNotifySettingsTemplate | Where-Object { $_.type -eq "boolean" }
+            $objsToTest = $PesterMacNotifySettingsTemplate.objectMap | Where-Object { $_.type -eq "boolean" }
             foreach ($obj in $objsToTest) {
                 # write-host "$($PesterMacNotifySettings.values[$($obj.position) - 1].configFieldName) with value: $($PesterMacNotifySettings.values[$($obj.position) - 1].value) | Should be $($obj.defaultValue)"
                 # test that the other values were set to the default value
