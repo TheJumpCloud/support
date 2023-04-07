@@ -3,6 +3,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         # Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         . "$($PSSCRIPTROOT)/../../..//Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
         # Clean Up Pester Policy Tests:
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
 
@@ -16,9 +17,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy with a string type dynamic parameter' {
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "message_title_text_for_users_attempting_to_logon_windows" }
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "login_window_text_darwin" }
             $templateId = $policyTemplate.id
-            $PesterMacStringText = New-JCPolicy -templateID $templateId -Name "Pester - Mac - Login Window Text Policy" -LoginwindowText "Pester Test"
+            $PesterMacStringText = New-JCPolicy -Name "Pester - Mac - Login Window Text Policy" -templateID $templateId  -LoginwindowText "Pester Test"
             # define a text value to change the current value:
             $updateText = "Updated"
             # update the value with dynamic param
@@ -29,10 +30,10 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:app_notifications_darwin' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
+            $templateId = $policyTemplate.id
             $PesterMacNotifySettings = New-JCPolicy -templateID $templateId -Name "Pester - Mac - App Notification Settings Policy" -AlertType None
-            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID 62a76bdbdbe570000196253b
+            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID $templateId
             # define a text value to change the current value:
             $updateText = "Updated"
             # update the value with dynamic param
@@ -140,13 +141,14 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $updatedValuesMacLoginPolicy.values.value | Should -Be $updatedText
         }
         It 'Sets a policy using the values object where a policy has a boolean type' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:allow_the_use_of_biometrics_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "allow_the_use_of_biometrics_windows" }
+            $templateId = $policyTemplate.id
             $valuesAllowUseBiometrics = New-JCPolicy -templateID $templateId -Name "Pester - Boolean" -ALLOWUSEOFBIOMETRICS $false
             # Update the first text boolean value to true
             # Change the value
-            $valuesAllowUseBiometrics.values.value = $true
-            $updateAllowUserBiometrics = Set-JCPolicy -templateId $valuesAllowUseBiometrics.id -values $valuesAllowUseBiometrics.values
+            $valuesAllowUseBiometrics.values[0].value = $true
+
+            $updateAllowUserBiometrics = Set-JCPolicy -policyId $valuesAllowUseBiometrics.id -values $valuesAllowUseBiometrics.values
             # the policy should be updated from the policy values object
             $updateAllowUserBiometrics.values.value | Should -Be $true
         }
@@ -168,8 +170,8 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
 
         It 'Sets a policy using the values object where a policy has a multi selection type' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:system_preferences_panes_darwin' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "system_preferences_panes_darwin" }
+            $templateId = $policyTemplate.id
             $valuesSystemPreferenceControl = new-jcpolicy -templateID $templateId -name "Pester - Mac System Preference Control" -pipelineVariable 0 -appstore $false -icloud $true
             #Update the values to true
             $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "appstore" } | ForEach-Object { $_.value = $true }
@@ -183,8 +185,8 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
 
         It 'Sets a policy using the values object where a policy has a customRegTable type' {
-            $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:custom_registry_keys_policy_windows' -Method GET -Headers $headers
-            $templateId = $templateResponse.id
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $templateId = $policyTemplate.id
             # Add a new policy with table type:
             # Define a list
             $policyValueList = New-Object System.Collections.ArrayList
@@ -198,12 +200,15 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # add values to list
             $policyValueList.add($policyValue)
             # create the policy
-            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
+            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry Values Set"
             # Update the first value from the orig policy
-            $TablePolicy.values[0].customData = "Updated Data"
+            $updateCustomDataString = "Updated Custom Data"
+            #Replace the first value loop through
+            $tablePolicy.values.value[0].customData = $updateCustomDataString
+
             $updatedTablePolicy = Set-JCPolicy -policyID $TablePolicy.id -values $TablePolicy.values
             # the policy should be updated from the policy values object
-            $updatedTablePolicy.values.customData | Should -Be "Updated Data"
+            $updatedTablePolicy.values.value.customData | Should -Be $updateCustomDataString
         }
 
     }
@@ -213,13 +218,16 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
         It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' -skip {
             # you should be able to set a policy with no payload
-            # TODO: this errors, should we include a $templateID in the New/Set-JCpolicy output so we can always pipe to another function?
-            { $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID 60636bce232e115560b632e9 } | Should -Not -Throw
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
+            $templateId = $policyTemplate.id
+            { $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID $templateId } | Should -Not -Throw
             $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -Name "Pester - Pipeline Policy No Payload Updated"
             # the name should be updated:
             $updatedNoPayloadPolicy.Name | Should -Be "Pester - Pipeline Policy No Payload Updated"
         }
         It 'Sets a policy using the pipeline inpput from Get-JCPolicy where the policy has a string payload' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
+            $templateId = $policyTemplate.id
             # create a policy
             { $stringPayloadPolicy = New-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true } | Should -Not -Throw
             # Get the policy object
