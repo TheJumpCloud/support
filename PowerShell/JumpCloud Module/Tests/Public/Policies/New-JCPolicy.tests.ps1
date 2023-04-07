@@ -1,11 +1,10 @@
 Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     BeforeAll {
-        Connect-JCOnline 6ef51a1f78e68ec71a06e00c6203e6b37795fe20 -force | Out-Null
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
 
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
         $policyTemplates = Get-JcSdkPolicyTemplate
-        #https://console.jumpcloud.com/#/configurations/configure/darwin/634583650757f90001431726
     }
 
     Context 'Creates policies with dynamic parameters' {
