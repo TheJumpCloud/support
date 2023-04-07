@@ -1,20 +1,17 @@
 Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     BeforeAll {
-        # Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         . "$($PSSCRIPTROOT)/../../..//Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
         # Clean Up Pester Policy Tests:
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
-
-
         $policyTemplates = Get-JcSdkPolicyTemplate
     }
     Context 'Sets policies using the dynamic parameter set' {
         BeforeAll {
             $policyTemplates = Get-JcSdkPolicyTemplate
         }
-        It 'Sets a policy with a string type dynamic parameter' {
+        It 'Sets a policy with a string/text type dynamic parameter' {
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "login_window_text_darwin" }
@@ -29,6 +26,17 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # updated policy value should be equal to $updateText
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
+        #TODO: Uncomment
+        # It 'Sets a  policy that tests integer' {
+        #     $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
+        #     $templateId = $policyTemplate.id
+        #     $intValue = 45
+        #     $stringPolicy = New-JCPolicy -name "Pester - textbox" -templateID $templateId -inteValue $intValue
+        #     $updatedIntValue = 55
+        #     $updatedStringPolicy = Set-JCPolicy -policyID $stringPolicy.id -inteValue $updatedIntValue
+        #     # Should not be null
+        #     $updatedStringPolicy.values.value | Should -Be $stringPolicy.values.value
+        # }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
             $templateId = $policyTemplate.id
@@ -110,7 +118,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # add values to list
             $policyValueList.add($policyValue)
             # create the policy
-            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
+            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry Table Set Test"
             # add another value to the policy
             $policyValue2 = [pscustomobject]@{
                 'customData'      = 'data2'
@@ -119,11 +127,15 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
                 'customValueName' = 'CustomValue2'
             }
             # add new values to list
-            $policyValueList.add($policyValue2)
-            $UpdatedTablePolicy = Set-JCPolicy -PolicyID $TablePolicy.id -customRegTable $policyValueList
+            $policyValueListSet = New-Object System.Collections.ArrayList
+            $policyValueListSet.add($policyValue2)
+            $UpdatedTablePolicy = Set-JCPolicy -PolicyID $TablePolicy.id -customRegTable $policyValueListSet
             # Assert statements
             # there should be two values in the registry table list
-            $UpdatedTablePolicy.values.value.count | Should -Be 2
+            $policyValueListSet.customData | Should -Be $policyValue2.customData
+            $policyValueListSet.customRegType | Should -Be $policyValue2.customRegType
+            $policyValueListSet.customLocation | Should -Be $policyValue2.customLocation
+            $policyValueListSet.customValueName | Should -Be $policyValue2.customValueName
         }
     }
     Context 'Sets policies using the object values parameter set' {
