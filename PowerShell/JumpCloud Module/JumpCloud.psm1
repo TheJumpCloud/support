@@ -52,52 +52,22 @@ If ($PSVersionTable.PSEdition -eq 'Core') {
 # Set function aliases
 Set-Alias -Name:('New-JCAssociation') -Value:('Add-JCAssociation')
 # Argument completers
-# Populate values for function parameters. "Dynamic ValidateSet"
+# set Argument Completer(s) which no not require authentication
 $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
-$SystemInsightsDataSet = [Ordered]@{}
-Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*") | ForEach-Object {
-    $Help = Get-Help -Name:($_.Name);
-    $Table = $_.Name.Replace($SystemInsightsPrefix, '')
-    $HelpDescription = $Help.Description.Text
-    $FilterDescription = ($Help.parameters.parameter | Where-Object { $_.Name -eq 'filter' }).Description.Text
-    $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
-    $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
-    If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators)) {
-        Write-Error ('Get-JCSystemInsights parameter help info is missing.')
-    } Else {
-        $Filters = $FilterNames | ForEach-Object {
-            $FilterName = $_
-            $Operators | ForEach-Object {
-                $Operator = $_
-                ("'{0}:{1}:{2}'" -f $FilterName, $Operator, '[SearchValue <String>]');
-            }
-        }
-        $SystemInsightsDataSet.Add($Table, $Filters )
+$sdkCommands = Get-Command -Module:('JumpCloud.SDK.V2') -Name:("$($SystemInsightsPrefix)*")
+$global:SystemInsightsDataSet = New-Object System.Collections.ArrayList
+foreach ($command in $sdkCommands) {
+    $templateHashObject = [PSCustomObject]@{
+        Name = $command.Name.Replace($SystemInsightsPrefix, '')
+        Id   = $template.Id
     }
-};
+    $SystemInsightsDataSet.Add($templateHashObject) | Out-Null
+}
 Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Table -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-    $FilterFilter = $fakeBoundParameter.Filter;
-    $SystemInsightsDataSet.Keys | Where-Object { $_ -like "${wordToComplete}*" } | Where-Object { $SystemInsightsDataSet.$_ -like "${FilterFilter}*" } | ForEach-Object {
-        New-Object System.Management.Automation.CompletionResult (
-            $_,
-            $_,
-            'ParameterValue',
-            $_
-        )
-    }
-}
-Register-ArgumentCompleter -CommandName Get-JCSystemInsights -ParameterName Filter -ScriptBlock {
-    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-    $TypeFilter = $fakeBoundParameter.Table;
-    $SystemInsightsDataSet.Keys | Where-Object { $_ -like "${TypeFilter}*" } | ForEach-Object { $SystemInsightsDataSet.$_ | Where-Object { $_ -like "${wordToComplete}*" } } | Sort-Object -Unique | ForEach-Object {
-        New-Object System.Management.Automation.CompletionResult (
-            $_,
-            $_,
-            'ParameterValue',
-            $_
-        )
-    }
+
+    $TypeFilter = $fakeBoundParameter.Name;
+    $SystemInsightsDataSet.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" }  | Sort-Object -Unique | ForEach-Object { $_ }
 }
 # Export module member
 Export-ModuleMember -Function $Public.BaseName -Alias *
