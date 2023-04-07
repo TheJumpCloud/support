@@ -1,11 +1,15 @@
 function New-JCPolicy {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The ID of the policy template to create as a new JumpCloud Policy')]
         [System.String]
-        $templateID,
+        $TemplateID,
+        [Parameter(Mandatory = $false,
+            HelpMessage = 'The Name of the policy template to create as a new JumpCloud Policy')]
+        [System.String]
+        $TemplateName,
         [Parameter(Mandatory = $false,
             HelpMessage = 'The name of the policy to create')]
         [System.String]
@@ -81,6 +85,10 @@ function New-JCPolicy {
         $headers = @{}
     }
     process {
+        # If TemplateName was specified get ID from hashed table
+        if ($TemplateName) {
+            $TemplateID = $templateNameList[$templateNameList.Name.IndexOf($TemplateName)].id
+        }
         $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
         $policyName = if ($PSBoundParameters["name"]) {
             $Name
@@ -175,3 +183,6 @@ function New-JCPolicy {
         return $response
     }
 }
+
+
+
