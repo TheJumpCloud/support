@@ -44,13 +44,18 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $tablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
             $tablePolicy | Should -Be 1
         }
-        #TODO
         It 'Creates a new policy that tests upload file' {
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_mdm_profile_darwin" }
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
             $templateId = $policyTemplate.id
-            $newPolicy = New-JCPolicy -name "Test file" -templateID $templateId -file ???
-            # Should not be null???
-            $newPolicy | Should -Not -BeNullOrEmpty
+
+            # Upload ps1 files for this test
+            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -First 1
+            $fileBase64 = [convert]::ToBase64String((Get-Content -Path $firstFile.FullName -AsByteStream))
+
+            # Add a new policy with file type:
+            $newFilePolicy = New-JCPolicy -templateID $templateId -setFont $firstFile.FullName -Name "Pester - File Test" -setName "Roboto Light"
+
+            $newFilePolicy.values.value | Should -Be $fileBase64
         }
         It 'Creates a new policy that select, string, boolean' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
@@ -58,9 +63,9 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $policyName = "Pester Test Policy boolean"
             $multipleValPolicy = New-JCPolicy -name "Test textbsdox" -templateID $templateId -AlertType "Temporary Banner" -BundleIdentifier "Test" -PreviewType "Always" -BadgesEnabled $true
             #Test each param
-            ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be "Temporary Banner"
-            ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "-BundleIdentifier" }).value | Should -Be "Test"
-            ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "PreviewType" }).value | Should -Be "Always"
+            ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be 1 # 1 is the value for Temporary Banner on the dropdown
+            ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "BundleIdentifier" }).value | Should -Be "Test"
+            ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "PreviewType" }).value | Should -Be 0 # 0 is the value for Always on the dropdown
             ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "BadgesEnabled" }).value | Should -Be $true
         }
     }
@@ -69,35 +74,48 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "allow_the_use_of_biometrics_windows" }
             $templateId = $policyTemplate.id
             $policyName = "Pester Test Policy boolean"
-            $newPolicy = New-JCPolicy -name "Pester - pipeline boolean" -templateID $templateId -ALLOWUSEOFBIOMETRICS $false
+            $firstPolicy = New-JCPolicy -name "Pester - pipeline boolean" -templateID $templateId -ALLOWUSEOFBIOMETRICS $false
             $pipelinePolicy = $newPolicy | New-JCPolicy -name "Pipeline New Policy Boolean Test"
-            $pipelinePolicy.value.values | Should -Be "Pipeline New Policy Boolean Test"
+            $pipelinePolicy.value.values | Should -Be $firstPolicy.value.values
         }
         #TODO: Registry
         It 'Creates a new policy that tests pipeline registry' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
             $templateId = $policyTemplate.id
-            $policyName = "Pester Test Policy boolean"
-            $pipelinePolicy = $newPolicy | New-JCPolicy -name "Pipeline Registry Test"
-            $pipelinePolicy | Should -Be "Test Registry" #??
+            $policyValueList = New-Object System.Collections.ArrayList
+            # Define list Values:
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'data'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            # add values to list
+            $policyValueList.add($policyValue)
+            $tablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry"
+            $pipelineRegistryPolicy = $tablePolicy | New-JCPolicy -name "Pipeline New Policy Registry Test"
+            $pipelineRegistryPolicy.value.values | Should -Be $tablePolicy.value.values
         }
-        #Todo
         It 'Creates a new policy that tests pipeline upload file' {
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_mdm_profile_darwin" }
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
             $templateId = $policyTemplate.id
-            $policyName = "Pester Test Policy file"
-            $newPolicy = New-JCPolicy -name "Test file" -templateID $templateId -file ???
-            # Should not be null???
-            $newPolicy | Should -Not -BeNullOrEmpty
+
+            # Upload ps1 files for this test
+            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -First 1
+
+            # Add a new policy with file type:
+            $newFilePolicy = New-JCPolicy -templateID $templateId -setFont $firstFile.FullName -Name "Pester - File Test" -setName "Roboto Light"
+
+            $pipelineFilePolicy = $newFilePolicy | New-JCPolicy -name "Pipeline New Policy File Test"
+            $pipelineFilePolicy.value.values | Should -Be $newFilePolicy.value.values
         }
         It 'Creates a new policy that tests pipeline parameters string' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "rename_local_administrator_account_windows" }
             $templateId = $policyTemplate.id
-            $policyName = "Pester Test Policy"
             $newPolicy = New-JCPolicy -name "Test textbox" -templateID $templateId -ADMINISTRATORSTRING "Test String"
             # Should not be null
             $pipelinePolicy = $newPolicy | New-JCPolicy -name "Pipeline New Policy String Test"
-            $pipelinePolicy.value.values | Should -Be "Pipeline New Policy String Test"
+            $pipelinePolicy.value.values | Should -Be $newPolicy.value.values
         }
     }
 
