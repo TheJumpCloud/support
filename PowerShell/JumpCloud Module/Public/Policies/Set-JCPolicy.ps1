@@ -3,14 +3,16 @@ function Set-JCPolicy {
     param (
         [Parameter(Mandatory = $true,
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = 'The ID of the JumpCloud Policy you wish to modify')]
+            HelpMessage = 'The ID of the JumpCloud Policy to modify')]
         [Alias("id")]
         [System.String]
         $policyID,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false,
+            HelpMessage = 'The new name to set on the existing JumpCloud Policy')]
         [System.String]
         $Name,
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [Parameter(ValueFromPipelineByPropertyName = $true,
+            HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
         $values
     )

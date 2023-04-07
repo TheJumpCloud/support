@@ -1,13 +1,17 @@
 function New-JCPolicy {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true,
+            HelpMessage = 'The ID of the policy template to create as a new JumpCloud Policy')]
         [System.String]
         $templateID,
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false,
+            HelpMessage = 'The name of the policy to create')]
         [System.String]
         $Name,
-        [Parameter(ValueFromPipelineByPropertyName = $true)]
+        [Parameter(ValueFromPipelineByPropertyName = $true,
+            HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
         $values
     )
@@ -23,7 +27,6 @@ function New-JCPolicy {
                 $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                 # If ValidateSet is specified in the config file, set the value here:
                 # If the type of value is a bool, create a custom validateSet attribute here:
-                # TODO: this should be a case statement list
                 $paramType = $($key.type)
                 switch ($paramType) {
                     'boolean' {
