@@ -167,7 +167,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $resetPolicyByValue.values[3].value | Should -Be $updatedPolicy.values[3].value
         }
 
-        #TODO: NEED TO TEST
         It 'Sets a policy using the values object where a policy has a multi selection type' {
             $templateResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/v2/policytemplates?filter=name:eq:system_preferences_panes_darwin' -Method GET -Headers $headers
             $templateId = $templateResponse.id
