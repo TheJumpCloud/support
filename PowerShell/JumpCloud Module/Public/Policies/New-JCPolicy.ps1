@@ -17,7 +17,7 @@ function New-JCPolicy {
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
-        $values
+        $Values
     )
     DynamicParam {
         if ($templateID) {

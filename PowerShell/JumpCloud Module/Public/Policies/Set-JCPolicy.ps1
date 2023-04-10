@@ -1,24 +1,52 @@
 function Set-JCPolicy {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ByID')]
     param (
         [Parameter(Mandatory = $true,
+            ParameterSetName = 'ByID',
             ValueFromPipelineByPropertyName = $true,
-            HelpMessage = 'The ID of the JumpCloud Policy to modify')]
+            HelpMessage = 'The ID of the existing JumpCloud Policy to modify')]
         [Alias("id")]
         [System.String]
-        $policyID,
+        $PolicyID,
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'ByName',
+            HelpMessage = 'The name of the existing JumpCloud Poliicy template to modify')]
+        [System.String]
+        $PolicyName,
         [Parameter(Mandatory = $false,
             HelpMessage = 'The new name to set on the existing JumpCloud Policy')]
         [System.String]
-        $Name,
+        $NewName,
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
-        $values
+        $Values
     )
     DynamicParam {
-        if ($policyID) {
-            $policy = Get-JCPolicy -PolicyID $policyID
+
+        if ($PolicyID) {
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            $ParameterAttribute.ParameterSetName = "ByID"
+            # Get the policy by ID
+            $policy = Get-JCPolicy -PolicyID $PolicyID
+            if ([string]::IsNullOrEmpty($policy.ID)) {
+                throw "Could not find policy by ID"
+            }
+
+        } elseif ($PolicyName) {
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            $ParameterAttribute.ParameterSetName = "ByName"
+            # Get the policy by Name
+            $policy = Get-JCPolicy -Name $PolicyName
+            if ([string]::IsNullOrEmpty($policy.ID)) {
+                throw "Could not find policy by specified Name"
+            }
+        }
+        # If policy is identified, get the dynamic policy set
+        if ($policy.id -And ($policyName -OR $policyID)) {
+            # Set the policy template object based on policy
             $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
@@ -29,7 +57,6 @@ function Set-JCPolicy {
                 $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                 # If ValidateSet is specified in the config file, set the value here:
                 # If the type of value is a bool, create a custom validateSet attribute here:
-                # TODO: this should be a case statement list
                 $paramType = $($key.type)
                 switch ($paramType) {
                     'boolean' {
@@ -59,12 +86,7 @@ function Set-JCPolicy {
                         $paramType = 'string'
                     }
                 }
-                # TODO: case for string types
-                # TODO: case for registry table types/ skip this param set
-                # Create and set the parameters' attributes
-                $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-                $ParameterAttribute.Mandatory = $false
-                $ParameterAttribute.ParameterSetName = 'DynamicParam'
+                # Set the help message
                 if ([String]::isNullorEmpty($($key.help))) {
                     $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
                 } else {
@@ -83,19 +105,35 @@ function Set-JCPolicy {
     begin {
     }
     process {
-        # Get Existing Policy Data
-        $policy = Get-JCPolicy -PolicyID $policyID
-        # Get Config Field Values #TODO: no need to do this if we speficy values
+        # Get Existing Policy Data if not set through dynamic param
+        if (([string]::IsNullOrEmpty($policy.ID)) -And ($policyID)) {
+            # Get the policy by ID
+            $policy = Get-JCPolicy -PolicyID $PolicyID
+            if ([string]::IsNullOrEmpty($policy.ID)) {
+                throw "Could not find policy by ID"
+            }
+        }
+        # Get Config Field Values #TODO: no need to do this if we specify values
         $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
         # First set the name from PSParamSet if set; else set from policy
-        $policyName = if ($PSBoundParameters["name"]) {
-            $Name
+        $policyName = if ($PSBoundParameters["NewName"]) {
+            $NewName
         } else {
             $policy.name
         }
-        if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
-            $params = $PSBoundParameters
-
+        $params = $PSBoundParameters
+        $paramterSet = $params.keys
+        $DynamicParamSet = $false
+        $requiredSet = @('PolicyID', 'PolicyName', 'NewName' , 'Values')
+        foreach ($parameter in $paramterSet) {
+            $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
+            if ($parameterComparison | Where-Object { $_.sideindicator -eq "=>" }) {
+                $DynamicParamSet = $true
+                break
+            }
+        }
+        if ($DynamicParamSet) {
+            # begin dynamic param set
             $newObject = New-Object System.Collections.ArrayList
             for ($i = 0; $i -lt $templateObject.objectMap.count; $i++) {
                 # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
@@ -121,12 +159,13 @@ function Set-JCPolicy {
                     $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 } else {
                     # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
-                    $templateObject.objectMap[$i].value = ($policy.values | Where-Object { $_.configFieldName -eq $templateObject.objectMap[$i].configFieldName }).value
+                    $templateObject.objectMap[$i].value = ($policy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
                     $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 }
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
         } elseif ($values) {
+            # begin value param set
             $updatedPolicyObject = New-Object System.Collections.ArrayList
             # Add each value into the object to set the policy
             foreach ($value in $values) {
@@ -139,6 +178,7 @@ function Set-JCPolicy {
                 }
             }
         } else {
+            # Begin user prompt
             $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $policy.values
             # User selects edit all fields
             if ($initialUserInput.fieldSelection -eq 'A') {
@@ -174,7 +214,7 @@ function Set-JCPolicy {
             template = @{id = $policy.Template.Id }
             values   = @($updatedPolicyObject)
         } | ConvertTo-Json -Depth 99
-        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$policyID" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
+        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($policy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {
         return $response

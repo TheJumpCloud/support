@@ -221,11 +221,11 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
             $templateId = $policyTemplate.id
             { $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID $templateId } | Should -Not -Throw
-            $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -Name "Pester - Pipeline Policy No Payload Updated"
+            $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -NewName "Pester - Pipeline Policy No Payload Updated"
             # the name should be updated:
             $updatedNoPayloadPolicy.Name | Should -Be "Pester - Pipeline Policy No Payload Updated"
         }
-        It 'Sets a policy using the pipeline inpput from Get-JCPolicy where the policy has a string payload' {
+        It 'Sets a policy using the pipeline input from Get-JCPolicy where the policy has a string payload' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
             $templateId = $policyTemplate.id
             # create a policy
@@ -233,7 +233,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # Get the policy object
             $policy = Get-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload"
             # Update the policy name
-            $updatedPolicy = $policy | Set-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload Updated"
+            $updatedPolicy = $policy | Set-JCPolicy -NewName "Pester - Pipeline Policy String Bool Payload Updated"
             # policy name shoud be updated
             $updatedPolicy.name | Should -Be "Pester - Pipeline Policy String Bool Payload Updated"
         }
