@@ -1,6 +1,6 @@
 #### Name
 
-Linux - remote-assist - Enable wayland windowing system | v2.0 JCCG
+Linux - remote-assist - Enable wayland windowing system | v1.0 JCCG
 
 #### commandType
 
