@@ -180,9 +180,6 @@ function New-JCPolicy {
         $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {
-        return $response
+        return $response.template
     }
 }
-
-
-
