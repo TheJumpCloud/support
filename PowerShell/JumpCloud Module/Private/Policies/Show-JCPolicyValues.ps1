@@ -50,6 +50,12 @@ function Show-JCPolicyValues {
         if ($ShowTable -eq $false) {
             $fieldCount = $policyArray.Count - 1
 
+            # Check to see if there is only one editable field
+            if ($fieldCount -eq 0) {
+                $fieldSelection = 'A'
+                return
+            }
+
             # Prompt for user input
             $Title = "JumpCloud Policy Field Editor"
             $Message = "How would you like to edit the policy values?"

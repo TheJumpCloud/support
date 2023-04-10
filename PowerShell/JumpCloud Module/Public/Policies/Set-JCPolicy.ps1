@@ -217,6 +217,6 @@ function Set-JCPolicy {
         $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($policy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {
-        return $response
+        return $response.template
     }
 }
