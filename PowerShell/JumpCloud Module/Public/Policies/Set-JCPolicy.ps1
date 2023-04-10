@@ -178,42 +178,52 @@ function Set-JCPolicy {
                 }
             }
         } else {
-            # Begin user prompt
-            $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $policy.values
-            # User selects edit all fields
-            if ($initialUserInput.fieldSelection -eq 'A') {
-                for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $policy.values
-                }
-                # Display policy values
-                Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
-            }
-            # User selects edit individual field
-            elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $policy.values
-                # For set-jcpolicy, add the help & label options
-                $updatedPolicyObject | ForEach-Object {
-                    if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
-                        $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
-                        $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
+            if (($template.objectMap).count -gt 0) {
+                # Begin user prompt
+                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $policy.values
+                # User selects edit all fields
+                if ($initialUserInput.fieldSelection -eq 'A') {
+                    for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $policy.values
                     }
+                    # Display policy values
+                    # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
                 }
-                Do {
-                    # Hide option to edit all fields
-                    $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $policy.values
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $policy.values
-                } while ($userInput.fieldSelection -ne 'C')
+                # User selects edit individual field
+                elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $policy.values
+                    # For set-jcpolicy, add the help & label options
+                    $updatedPolicyObject | ForEach-Object {
+                        if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
+                            $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
+                            $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
+                        }
+                    }
+                    Do {
+                        # Hide option to edit all fields
+                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $policy.values
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $policy.values
+                    } while ($userInput.fieldSelection -ne 'C')
+                }
             }
         }
-        $headers = @{}
-        $headers.Add("x-api-key", $env:JCApiKey)
-        $headers.Add("x-org-id", $env:JCOrgId)
-        $headers.Add("content-type", "application/json")
-        $body = [PSCustomObject]@{
-            name     = $policyName
-            template = @{id = $policy.Template.Id }
-            values   = @($updatedPolicyObject)
-        } | ConvertTo-Json -Depth 99
+        if ($updatedPolicyObject) {
+            $body = [PSCustomObject]@{
+                name     = $policyName
+                template = @{id = $policy.Template.Id }
+                values   = @($updatedPolicyObject)
+            } | ConvertTo-Json -Depth 99
+        } else {
+            $body = [PSCustomObject]@{
+                name     = $policyName
+                template = @{id = $policy.Template.Id }
+            } | ConvertTo-Json -Depth 99
+        }
+        $headers = @{
+            'x-api-key'    = $env:JCApiKey
+            'x-org-id'     = $env:JCOrgId
+            'content-type' = "application/json"
+        }
         $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($policy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {

@@ -48,7 +48,12 @@ function Show-JCPolicyValues {
         $policyArray | Format-Table | Out-Host
 
         if ($ShowTable -eq $false) {
-            $fieldCount = $policyArray.Count - 1
+            # if policy w/o payload return, else continue
+            if ($policyArray.count -eq 0) {
+                return
+            } else {
+                $fieldCount = $policyArray.Count - 1
+            }
 
             # Check to see if there is only one editable field
             if ($fieldCount -eq 0) {

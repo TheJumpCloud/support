@@ -142,41 +142,54 @@ function New-JCPolicy {
         } elseif ($values) {
             $updatedPolicyObject = $values
         } else {
-            $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap
-            # User selects edit all fields
-            if ($initialUserInput.fieldSelection -eq 'A') {
-                for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i
+            if (($template.objectMap).count -gt 0) {
+                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap
+                # User selects edit all fields
+                if ($initialUserInput.fieldSelection -eq 'A') {
+                    for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i
+                    }
+                    # Display policy values
+                    Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
                 }
-                # Display policy values
-                Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
-            }
-            # User selects edit individual field
-            elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection
-                Do {
-                    # Hide option to edit all fields
-                    $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection
-                } while ($userInput.fieldSelection -ne 'C')
+                # User selects edit individual field
+                elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection
+                    Do {
+                        # Hide option to edit all fields
+                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection
+                    } while ($userInput.fieldSelection -ne 'C')
+                }
             }
         }
 
         # Validate PolicyObject
-        $updatedPolicyObject | ForEach-Object {
-            # Check to see if value property is set, if not set to defaultValue
-            if ($_.value -eq $null) {
-                $_.value = $_.defaultValue
+        if ($updatedPolicyObject) {
+            $updatedPolicyObject | ForEach-Object {
+                # Check to see if value property is set, if not set to defaultValue
+                if ($_.value -eq $null) {
+                    $_.value = $_.defaultValue
+                }
             }
+            $body = [PSCustomObject]@{
+                name     = $policyName
+                template = @{id = $templateID }
+                values   = $updatedPolicyObject
+            } | ConvertTo-Json -Depth 99
+        } else {
+            # for policies w/o payloads, just pass in the name & template
+            $body = [PSCustomObject]@{
+                name     = $policyName
+                template = @{id = $templateID }
+            } | ConvertTo-Json -Depth 99
+
         }
-        $headers.Add("x-api-key", $env:JCApiKey)
-        $headers.Add("x-org-id", $env:JCOrgId)
-        $headers.Add("content-type", "application/json")
-        $body = [PSCustomObject]@{
-            name     = $policyName
-            template = @{id = $templateID }
-            values   = @($updatedPolicyObject)
-        } | ConvertTo-Json -Depth 99
+        $headers = @{
+            'x-api-key'    = $env:JCApiKey
+            'x-org-id'     = $env:JCOrgId
+            'content-type' = "application/json"
+        }
         $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
     }
     end {

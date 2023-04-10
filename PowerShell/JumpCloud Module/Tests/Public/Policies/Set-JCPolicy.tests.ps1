@@ -228,18 +228,16 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         BeforeAll {
             $policyTemplates = Get-JcSdkPolicyTemplate
         }
-        It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' -skip {
+        It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' {
             # you should be able to set a policy with no payload
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
             $templateId = $policyTemplate.id
-            { $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID $templateId } | Should -Not -Throw
+            $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID $templateId
             $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -NewName "Pester - Pipeline Policy No Payload Updated"
             # the name should be updated:
             $updatedNoPayloadPolicy.Name | Should -Be "Pester - Pipeline Policy No Payload Updated"
         }
         It 'Sets a policy using the pipeline input from Get-JCPolicy where the policy has a string payload' {
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
-            $templateId = $policyTemplate.id
             # create a policy
             { $stringPayloadPolicy = New-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true } | Should -Not -Throw
             # Get the policy object
