@@ -7,7 +7,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
         $policyTemplates = Get-JcSdkPolicyTemplate
     }
-    Context 'Sets policies using the dynamic parameter set' {
+    Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
         BeforeAll {
             $policyTemplates = Get-JcSdkPolicyTemplate
         }
@@ -26,7 +26,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # updated policy value should be equal to $updateText
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
-        #TODO: Uncomment
+        #TODO: Uncomment and finish test
         # It 'Sets a  policy that tests integer' {
         #     $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
         #     $templateId = $policyTemplate.id
@@ -74,8 +74,12 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $templateId = $policyTemplate.id
             $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
             $listboxSet = Set-JCpolicy -policyid $listboxPolicy.Id -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
-
+            # TODO: Testing values here isn't correct
             $listboxSet.values.value | Should -Be @('Test Pester Address1', 'Test URL2', 'Test Domain3')
+            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType() | Should -BeOfType string
+            # TODO: add multiple values here and test
         }
         It 'Sets a policy with a file, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
@@ -137,6 +141,159 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $policyValueListSet.add($policyValue2)
             $policyValueListSet.add($policyValue3)
             $UpdatedTablePolicy = Set-JCPolicy -PolicyID $TablePolicy.id -customRegTable $policyValueListSet
+            # Assert statements
+            # value count for registry items should be correct
+            $TablePolicy.values.value.count | Should -Be 1
+            $TablePolicy.values.value[0].customLocation | Should -Be $policyValue.customLocation
+            $TablePolicy.values.value[0].customValueName | Should -Be $policyValue.customValueName
+            $TablePolicy.values.value[0].customData | Should -Be $policyValue.customData
+            $TablePolicy.values.value[0].customRegType | Should -Be $policyValue.customRegType
+            # value count for registry items should be correct
+            $UpdatedTablePolicy.values.value.count | Should -Be 2
+            # updated table should contain the orig value + new value
+            $UpdatedTablePolicy.values.value[0].customLocation | Should -Be $policyValue2.customLocation
+            $UpdatedTablePolicy.values.value[0].customValueName | Should -Be $policyValue2.customValueName
+            $UpdatedTablePolicy.values.value[0].customData | Should -Be $policyValue2.customData
+            $UpdatedTablePolicy.values.value[0].customRegType | Should -Be $policyValue2.customRegType
+            $UpdatedTablePolicy.values.value[1].customLocation | Should -Be $policyValue3.customLocation
+            $UpdatedTablePolicy.values.value[1].customValueName | Should -Be $policyValue3.customValueName
+            $UpdatedTablePolicy.values.value[1].customData | Should -Be $policyValue3.customData
+            $UpdatedTablePolicy.values.value[1].customRegType | Should -Be $policyValue3.customRegType
+        }
+    }
+    Context 'Sets policies using the dynamic parameter set using the ByName parameter set' {
+        BeforeAll {
+            $policyTemplates = Get-JcSdkPolicyTemplate
+        }
+        It 'Sets a policy with a string/text type dynamic parameter' {
+            # Define a policy with a string parameter
+            # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "login_window_text_darwin" }
+            $templateId = $policyTemplate.id
+            $PesterMacStringText = New-JCPolicy -Name "Pester - Mac - Login Window Text Policy byName" -templateID $templateId  -LoginwindowText "Pester Test"
+            # define a text value to change the current value:
+            $updateText = "Updated"
+            # update the value with dynamic param
+            $updatedPesterMacStringText = Set-JCPolicy -PolicyName $PesterMacStringText.Name -LoginwindowText $updateText
+            # orig policy def and new policy def should be different
+            $updatedPesterMacStringText.values.value | Should -not -Be $PesterMacStringText.values.value
+            # updated policy value should be equal to $updateText
+            $updatedPesterMacStringText.values.value | Should -Be $updateText
+        }
+        #TODO: Uncomment and finish test
+        # It 'Sets a  policy that tests integer' {
+        #     $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
+        #     $templateId = $policyTemplate.id
+        #     $intValue = 45
+        #     $stringPolicy = New-JCPolicy -name "Pester - textbox" -templateID $templateId -inteValue $intValue
+        #     $updatedIntValue = 55
+        #     $updatedStringPolicy = Set-JCPolicy -policyID $stringPolicy.id -inteValue $updatedIntValue
+        #     # Should not be null
+        #     $updatedStringPolicy.values.value | Should -Be $stringPolicy.values.value
+        # }
+        It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
+            $templateId = $policyTemplate.id
+            $PesterMacNotifySettings = New-JCPolicy -templateID $templateId -Name "Pester - Mac - App Notification Settings Policy byName" -AlertType None
+            $PesterMacNotifySettingsTemplate = Get-JCPolicyTemplateConfigField -templateID $templateId
+            # define a text value to change the current value:
+            $updateText = "Updated"
+            # update the value with dynamic param
+            $UpdatedPesterMacNotifySettings = Set-JCPolicy -PolicyName $PesterMacNotifySettings.Name -AlertType "Persistent Banner" -PreviewType "Never" -BadgesEnabled $true -ShowInNotificationCenter $true -BundleIdentifier $updateText -SoundsEnabled $true -CriticalAlertEnabled $true -ShowInLockScreen $true -NotificationsEnabled $true
+            # the orig policy should have only set the AlertType, all other settings were set to the default value
+            ($PesterMacNotifySettings.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be "0"
+            $objsToTest = $PesterMacNotifySettingsTemplate.objectMap | Where-Object { $_.configFieldName -ne "AlertType" }
+            foreach ($obj in $objsToTest) {
+                # write-host "$($PesterMacNotifySettings.values[$($obj.position) - 1].configFieldName) with value: $($PesterMacNotifySettings.values[$($obj.position) - 1].value) | Should be $($obj.defaultValue)"
+                # test that the other values were set to the default value
+                $PesterMacNotifySettings.values[$obj.position - 1].value | Should -Be $obj.defaultValue
+            }
+            # updated policy alertValue should be equal to 2
+            ($UpdatedPesterMacNotifySettings.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be "2"
+            # updated policy PreviewType should be equal to 2
+            ($UpdatedPesterMacNotifySettings.values | Where-Object { $_.configFieldName -eq "PreviewType" }).value | Should -Be "2"
+            # finally test that the policy boolean settings can be flipped to false
+            $UpdatedBooleanPesterMacNotifySettings = Set-JCPolicy -policyID $PesterMacNotifySettings.id -BadgesEnabled $false -ShowInNotificationCenter $false -BundleIdentifier $updateText -SoundsEnabled $false -CriticalAlertEnabled $false -ShowInLockScreen $false -NotificationsEnabled $false
+
+            $objsToTest = $PesterMacNotifySettingsTemplate.objectMap | Where-Object { $_.type -eq "boolean" }
+            foreach ($obj in $objsToTest) {
+                # write-host "$($PesterMacNotifySettings.values[$($obj.position) - 1].configFieldName) with value: $($PesterMacNotifySettings.values[$($obj.position) - 1].value) | Should be $($obj.defaultValue)"
+                # test that the other values were set to the default value
+                # test that each boolean type object in this policy is set to false
+                $UpdatedBooleanPesterMacNotifySettings.values[$obj.position - 1].value | Should -Be $false
+            }
+        }
+        It 'Sets a policy with a listbox, dynamic parameter' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "encrypted_dns_https_darwin" }
+            $templateId = $policyTemplate.id
+            $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy byName" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
+            $listboxSet = Set-JCpolicy -PolicyName $listboxPolicy.Name -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
+            # TODO: Testing values here isn't correct
+            $listboxSet.values.value | Should -Be @('Test Pester Address1', 'Test URL2', 'Test Domain3')
+            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType() | Should -BeOfType string
+            # TODO: add multiple values here and test
+        }
+        It 'Sets a policy with a file, dynamic parameter' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
+            $templateId = $policyTemplate.id
+
+            # Upload ps1 files for this test
+            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -First 1
+            $secondFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -Last 1
+
+            # Add a new policy with file type:
+            $newFilePolicy = New-JCPolicy -templateID 631f44bc2630c900017ed834 -setFont $firstFile.FullName -Name "Pester - File Test byName" -setName "Roboto Light"
+
+            # Set the policy with a new file
+            $convertFontFiletoB64 = [convert]::ToBase64String((Get-Content -Path $secondFile.FullName -AsByteStream))
+
+            $setFontName = "Roboto Black"
+            $updatedFilePolicy = Set-JCPolicy -PolicyName $newFilePolicy.Name -setFont $secondFile.FullName -setName $setFontName
+            $setFileBase64 = ($updatedFilePolicy.values | Where-Object { $_.configFieldName -eq "setFont" }).value
+            $setName = ($updatedFilePolicy.values | Where-Object { $_.configFieldName -eq "setName" }).value
+
+            # test that the file was updated
+            $setFileBase64 | Should -Be $convertFontFiletoB64
+            $setName | Should -Be $setFontName
+        }
+        # TODO: Check
+        It 'Sets a policy with a table, dynamic parameter' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $templateId = $policyTemplate.id
+            # Add a new policy with table type:
+            # Define a list
+            $policyValueList = New-Object System.Collections.ArrayList
+            # Define list Values:
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'data'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            # add values to list
+            $policyValueList.add($policyValue)
+            # create the policy
+            $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry Table Set Test byName"
+            # add another value to the policy
+            $policyValue2 = [pscustomobject]@{
+                'customData'      = 'data2'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location2'
+                'customValueName' = 'CustomValue2'
+            }
+            $policyValue3 = [pscustomobject]@{
+                'customData'      = 'data3'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location3'
+                'customValueName' = 'CustomValue3'
+            }
+            # add new values to list
+            $policyValueListSet = New-Object System.Collections.ArrayList
+            $policyValueListSet.add($policyValue2)
+            $policyValueListSet.add($policyValue3)
+            $UpdatedTablePolicy = Set-JCPolicy -PolicyName $TablePolicy.Name -customRegTable $policyValueListSet
             # Assert statements
             # value count for registry items should be correct
             $TablePolicy.values.value.count | Should -Be 1
