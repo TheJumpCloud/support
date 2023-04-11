@@ -77,7 +77,7 @@ function Set-JCPolicy {
                         $paramType = [system.string[]]
                     }
                     'table' {
-                        $paramType = [system.string[]]
+                        $paramType = [system.object[]]
                     }
                     'exclude' {
                         Continue
@@ -151,6 +151,13 @@ function Set-JCPolicy {
                                 # convert file path to base64 string
                                 $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
+                        }
+                        'table' {
+                            $regRows = New-Object System.Collections.ArrayList
+                            foreach ($regItem in $keyValue) {
+                                $regRows.Add($regItem)
+                            }
+                            $templateObject.objectMap[$i].value = $regRows
                         }
                         Default {
                             $templateObject.objectMap[$i].value = $($keyValue)
@@ -230,3 +237,8 @@ function Set-JCPolicy {
         return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
     }
 }
+# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Show-JCPolicyValues.ps1"
+# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
+# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/New-CustomRegistryTableRow.ps1"
+# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Set-JCPolicyConfigField.ps1"
+# set-jcpolicy -policyid 643480952d428d0001303121

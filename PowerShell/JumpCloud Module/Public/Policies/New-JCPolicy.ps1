@@ -175,7 +175,7 @@ function New-JCPolicy {
             $body = [PSCustomObject]@{
                 name     = $policyName
                 template = @{id = $templateID }
-                values   = $updatedPolicyObject
+                values   = @($updatedPolicyObject)
             } | ConvertTo-Json -Depth 99
         } else {
             # for policies w/o payloads, just pass in the name & template

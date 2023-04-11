@@ -126,16 +126,35 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
                 'customLocation'  = 'location2'
                 'customValueName' = 'CustomValue2'
             }
+            $policyValue3 = [pscustomobject]@{
+                'customData'      = 'data3'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location3'
+                'customValueName' = 'CustomValue3'
+            }
             # add new values to list
             $policyValueListSet = New-Object System.Collections.ArrayList
             $policyValueListSet.add($policyValue2)
+            $policyValueListSet.add($policyValue3)
             $UpdatedTablePolicy = Set-JCPolicy -PolicyID $TablePolicy.id -customRegTable $policyValueListSet
             # Assert statements
-            # there should be two values in the registry table list
-            $policyValueListSet.customData | Should -Be $policyValue2.customData
-            $policyValueListSet.customRegType | Should -Be $policyValue2.customRegType
-            $policyValueListSet.customLocation | Should -Be $policyValue2.customLocation
-            $policyValueListSet.customValueName | Should -Be $policyValue2.customValueName
+            # value count for registry items should be correct
+            $TablePolicy.values.value.count | Should -Be 1
+            $TablePolicy.values.value[0].customLocation | Should -Be $policyValue.customLocation
+            $TablePolicy.values.value[0].customValueName | Should -Be $policyValue.customValueName
+            $TablePolicy.values.value[0].customData | Should -Be $policyValue.customData
+            $TablePolicy.values.value[0].customRegType | Should -Be $policyValue.customRegType
+            # value count for registry items should be correct
+            $UpdatedTablePolicy.values.value.count | Should -Be 2
+            # updated table should contain the orig value + new value
+            $UpdatedTablePolicy.values.value[0].customLocation | Should -Be $policyValue2.customLocation
+            $UpdatedTablePolicy.values.value[0].customValueName | Should -Be $policyValue2.customValueName
+            $UpdatedTablePolicy.values.value[0].customData | Should -Be $policyValue2.customData
+            $UpdatedTablePolicy.values.value[0].customRegType | Should -Be $policyValue2.customRegType
+            $UpdatedTablePolicy.values.value[1].customLocation | Should -Be $policyValue3.customLocation
+            $UpdatedTablePolicy.values.value[1].customValueName | Should -Be $policyValue3.customValueName
+            $UpdatedTablePolicy.values.value[1].customData | Should -Be $policyValue3.customData
+            $UpdatedTablePolicy.values.value[1].customRegType | Should -Be $policyValue3.customRegType
         }
     }
     Context 'Sets policies using the object values parameter set' {
