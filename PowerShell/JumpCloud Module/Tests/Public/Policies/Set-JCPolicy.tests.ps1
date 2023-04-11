@@ -74,12 +74,28 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $templateId = $policyTemplate.id
             $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
             $listboxSet = Set-JCpolicy -policyid $listboxPolicy.Id -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
-            # TODO: Testing values here isn't correct
-            $listboxSet.values.value | Should -Be @('Test Pester Address1', 'Test URL2', 'Test Domain3')
-            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType() | Should -BeOfType string
-            # TODO: add multiple values here and test
+            # set should set the policies to the correct type
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            # since we set only one value the count for each of these objects should be 1
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
+            # add multiple values here and test
+            $multipleServerAddresses = @("Test Pester Address1", "Test Pester Address2")
+            $multipleSupplementalMatchDomains = @("Test Domain3", "Test Domain4")
+            $listboxSetMultipleValues = Set-JCpolicy -policyid $listboxPolicy.Id -ServerAddresses $multipleServerAddresses -ServerURL "Test URL2" -SupplementalMatchDomains $multipleSupplementalMatchDomains
+            # set should set the policies to the correct type
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            # Count for listbox policy should be 2
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
+            # validate that the items are correct:
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
+
         }
         It 'Sets a policy with a file, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
@@ -228,12 +244,27 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $templateId = $policyTemplate.id
             $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy byName" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
             $listboxSet = Set-JCpolicy -PolicyName $listboxPolicy.Name -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
-            # TODO: Testing values here isn't correct
-            $listboxSet.values.value | Should -Be @('Test Pester Address1', 'Test URL2', 'Test Domain3')
-            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values.value | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType() | Should -BeOfType string
-            # TODO: add multiple values here and test
+            # set should set the policies to the correct type
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            # since we set only one value the count for each of these objects should be 1
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
+            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
+            # add multiple values here and test
+            $multipleServerAddresses = @("Test Pester Address1", "Test Pester Address2")
+            $multipleSupplementalMatchDomains = @("Test Domain3", "Test Domain4")
+            $listboxSetMultipleValues = Set-JCpolicy -PolicyName $listboxPolicy.Name -ServerAddresses $multipleServerAddresses -ServerURL "Test URL2" -SupplementalMatchDomains $multipleSupplementalMatchDomains
+            # set should set the policies to the correct type
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            # Count for listbox policy should be 2
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
+            # validate that the items are correct:
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
+            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
         }
         It 'Sets a policy with a file, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }

@@ -151,6 +151,20 @@ function Set-JCPolicy {
                                 # convert file path to base64 string
                                 $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
+                            #TODO: else we should throw an error here that the filepath was not valid
+                        }
+                        'listbox' {
+                            if ($($keyValue).getType().name -eq 'String') {
+                                # Given case for single string passed in as dynamic input, convert to a list
+                                $listRows = New-Object System.Collections.ArrayList
+                                foreach ($regItem in $keyValue) {
+                                    $listRows.Add($regItem)
+                                }
+                                $templateObject.objectMap[$i].value = $listRows
+                            } elseif ($($keyValue).getType().name -eq 'Object[]') {
+                                # else if the object passed in is a list already, pass in list
+                                $templateObject.objectMap[$i].value = $($keyValue)
+                            }
                         }
                         'table' {
                             $regRows = New-Object System.Collections.ArrayList
