@@ -178,7 +178,7 @@ function Set-JCPolicy {
                 }
             }
         } else {
-            if (($template.objectMap).count -gt 0) {
+            if (($templateObject.objectMap).count -gt 0) {
                 # Begin user prompt
                 $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $policy.values
                 # User selects edit all fields
