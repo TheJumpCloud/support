@@ -207,6 +207,7 @@ function New-JCPolicy {
                         $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection
                     } while ($userInput.fieldSelection -ne 'C')
                 }
+                $updatedPolicyObject = $updatedPolicyObject | Select-Object configFieldID, configFieldName, value
             }
         }
 

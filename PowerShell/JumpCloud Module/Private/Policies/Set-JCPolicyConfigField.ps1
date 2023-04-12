@@ -62,12 +62,11 @@ function Set-JCPolicyConfigField {
                                 $fieldValue = [System.Convert]::ToBoolean($fieldValue)
                             }
                         } catch {
-                            Write-Host "enter a boolean you hooligan"
+                            Write-Warning "$fieldValue is not a boolean; please enter a boolean string value: (t/f) (true/false)"
                         }
                         $field.value = $fieldValue
                         ($policyValues | Where-Object { $_.configFieldID -eq $field.configFieldID }).value = $fieldValue
-                        break
-                    } While (($fieldValue -ne $true) -or ($fieldValue -ne $false))
+                    } Until (($fieldValue -eq $true) -or ($fieldValue -eq $false))
                 }
                 'string' {
                     Do {
@@ -81,15 +80,24 @@ function Set-JCPolicyConfigField {
                 'int' {
                     Do {
                         $fieldValue = (Read-Host "Please enter the $($field.type) value for the $($field.configFieldName) setting")
+                        try {
+                            $fieldValue = [int]$fieldValue
+                        } catch {
+                            Write-Warning "$fieldValue is not a int; please enter a int"
+                        }
                         $field.value = $fieldValue
                         ($policyValues | Where-Object { $_.configFieldID -eq $field.configFieldID }).value = $fieldValue
-                        break
-                    } While ($fieldValue -isnot [int])
+                    } until ($fieldValue -is [int])
                 }
                 'multi' {
                     $field.validation | Format-Table | Out-Host
                     do {
                         $rownum = (Read-Host "Please enter the desired $($field.label) setting value (0 - $($field.validation.length - 1))")
+                        try {
+                            $rownum = [int]$rownum
+                        } catch {
+                            Write-Warning "$rownum is not a int; please enter a int"
+                        }
                         $field.value = $rownum
                         ($policyValues | Where-Object { $_.configFieldID -eq $field.configFieldID }).value = $rownum
 
