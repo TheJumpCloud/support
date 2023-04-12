@@ -82,12 +82,19 @@ function New-JCPolicy {
         }
     }
     begin {
-        $headers = @{}
+        Write-Debug 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
+        }
     }
     process {
         # If TemplateName was specified get ID from hashed table
-        if ($TemplateName) {
-            $TemplateID = $templateNameList[$templateNameList.Name.IndexOf($TemplateName)].id
+        if ($PSBoundParameters["TemplateName"]) {
+            if ($TemplateName -in $templateNameList.Name) {
+                $TemplateID = $templateNameList[$templateNameList.Name.IndexOf($TemplateName)].id
+            } else {
+                throw "The template name: `"$templateName`" was not found in the list of available template names. To find the list of avaiable template names, type `"New-JCPolcy -TemplateName ` and press the tab key. If prompted, press `"y`" to view all availbale templates. Templates start with os type. To find the list of avaiable windows template names, type `"New-JCPolcy -TemplateName windows`" and press the tab key. To find the list of avaiable darwin template names, type `"New-JCPolcy -TemplateName darwin`" and press the tab key. To find the list of avaiable linux template names, type `"New-JCPolcy -TemplateName linux`" and press the tab key."
+            }
         }
         $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
         $policyName = if ($PSBoundParameters["name"]) {
@@ -135,7 +142,7 @@ function New-JCPolicy {
                             if ($templateObject.objectMap[$i].configFieldName -eq "customRegTable") {
                                 # TODO: validate that the objects passed in are valid
                                 # if ($keyValue.getType().Name -ne 'Object[]') {
-                                #     throw "The object passed in as values input does not match the expected value type. Data is expected to be formatted as a hashtable: @{customData='someString';customLocation='location';customRegType='DWORD';customValueName='registryKeyValue'} or ArrayList of PSCustomObjects"
+                                #     throw "The object passed in as values input does not match the expected value type. Data is expected to be formatted as a hashtable: @{customData = 'someString'; customLocation = 'location'; customRegType = 'DWORD'; customValueName = 'registryKeyValue' } or ArrayList of PSCustomObjects"
                                 # }
                                 # get default value properties
                                 $RegProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty

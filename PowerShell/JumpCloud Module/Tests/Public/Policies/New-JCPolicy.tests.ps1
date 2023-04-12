@@ -150,13 +150,15 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     }
     Context 'New-JCPolicy should error on specific conditions' {
         It 'When a user enters an ID for PolicyID parameter for a non-existant policy' {
-
+            { New-JCPolicy -templateID 123456 -Name "Pester - $(new-randomString -NumberOfChars 8)" } | Should -Throw
         }
-        It 'When a user enters a name for PolicyName parameter for a non-existant policy' {
-
+        It 'When a user enters a name for TempalteName parameter for a non-existant policy' {
+            { New-JCPolicy -templateName 123456 -Name "Pester - $(new-randomString -NumberOfChars 8)" } | Should -Throw
         }
         It 'When a user specifies a non-valid dynamicParameter' {
-
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "rename_local_administrator_account_windows" }
+            $templateId = $policyTemplate.id
+            { New-JCPolicy -name "Pester - Test textbox $(new-randomString -NumberOfChars 8)" -templateID $templateId -fakeParam "Test String" } | Should -Throw
         }
 
     }
@@ -208,6 +210,7 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
 
         }
         It 'customRegTable param should not throw if a list of objects is passed in with correct data types' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
             # Define list Values:
             $policyValueList = New-Object System.Collections.ArrayList
             $policyValue = [pscustomobject]@{
