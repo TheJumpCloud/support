@@ -21,6 +21,7 @@ function Show-JCPolicyValues {
     begin {
         # Array to store custom policy objects for display
         $policyArray = New-Object System.Collections.ArrayList
+
     }
     process {
         # counter for increments
@@ -44,8 +45,11 @@ function Show-JCPolicyValues {
             $counter++
         }
 
-        # Display policy object array
-        $policyArray | Format-Table | Out-Host
+        # If the policy is a registry policy, do not display value table
+        if ($policyObject.configFieldName -notcontains "customRegTable") {
+            # Display policy object array
+            $policyArray | Format-Table | Out-Host
+        }
 
         if ($ShowTable -eq $false) {
             # if policy w/o payload return, else continue
