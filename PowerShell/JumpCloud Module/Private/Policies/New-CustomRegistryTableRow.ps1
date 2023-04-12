@@ -15,8 +15,7 @@ function New-CustomRegistryTableRow {
         $customValueName
     )
     begin {
-        $validRegTypes = @('DWORD', 'EXPAND_SZ', 'MULTI_SZ', 'SZ', 'QWORD')
-
+        $validRegTypes = @('DWORD', 'expandString', 'multiString', 'QWORD', 'String')
     }
     process {
         if (-Not $customData) {
@@ -24,14 +23,14 @@ function New-CustomRegistryTableRow {
         }
         if (-Not $customRegType) {
             Do {
-                $customRegType = (Read-Host "Please enter the reg type (DWORD, EXPAND_SZ, MULTI_SZ, SZ, QWORD) value")
+                $customRegType = (Read-Host "Please enter a registry type ('DWORD', 'expandString', 'multiString', 'QWORD', 'String') value")
             } While ($customRegType -notin $validRegTypes)
         }
         if (-Not $customLocation) {
-            $customLocation = (Read-Host "Please enter the reg key location value")
+            $customLocation = (Read-Host "Please enter the registry key location value")
         }
         if (-Not $customValueName) {
-            $customValueName = (Read-Host "Please enter the reg key name value")
+            $customValueName = (Read-Host "Please enter the registry key name value")
         }
 
     }

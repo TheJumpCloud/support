@@ -117,7 +117,49 @@ function New-JCPolicy {
                                 $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
                         }
+                        'listbox' {
+                            if ($($keyValue).getType().name -eq 'String') {
+                                # Given case for single string passed in as dynamic input, convert to a list
+                                $listRows = New-Object System.Collections.ArrayList
+                                foreach ($regItem in $keyValue) {
+                                    $listRows.Add($regItem)
+                                }
+                                $templateObject.objectMap[$i].value = $listRows
+                            } elseif ($($keyValue).getType().name -eq 'Object[]') {
+                                # else if the object passed in is a list already, pass in list
+                                $templateObject.objectMap[$i].value = $($keyValue)
+                            }
+                        }
                         'table' {
+                            # For custom registry table, validate the object
+                            if ($templateObject.objectMap[$i].configFieldName -eq "customRegTable") {
+                                # TODO: validate that the objects passed in are valid
+                                # if ($keyValue.getType().Name -ne 'Object[]') {
+                                #     throw "The object passed in as values input does not match the expected value type. Data is expected to be formatted as a hashtable: @{customData='someString';customLocation='location';customRegType='DWORD';customValueName='registryKeyValue'} or ArrayList of PSCustomObjects"
+                                # }
+                                # get default value properties
+                                $RegProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
+                                # get passed in object properties
+                                $ObjectProperties = if ($keyValue | Get-Member -MemberType NoteProperty) {
+                                    # for lists get note properties
+                                    ($keyValue | Get-Member -MemberType NoteProperty).Name
+                                } else {
+                                    # for single objects, get keys
+                                    $keyValue.keys
+                                }
+                                $RegProperties | ForEach-Object {
+                                    if ($_.Name -notin $ObjectProperties) {
+                                        Throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                    }
+                                }
+                                # reg type validation
+                                $validRegTypes = @('DWORD', 'expandString', 'multiString', 'QWORD', 'String')
+                                $($keyValue).customRegType | ForEach-Object {
+                                    if ($_ -notin $validRegTypes) {
+                                        throw "Custom Registry Tables require the `"customRegType`" data string to be one of: $validRegTypes, found: $_"
+                                    }
+                                }
+                            }
                             $regRows = New-Object System.Collections.ArrayList
                             foreach ($regItem in $keyValue) {
                                 $regRows.Add($regItem)
@@ -136,13 +178,10 @@ function New-JCPolicy {
                 }
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
-            # write-host $updatedPolicyObject
-            #TODO: Create object containing values set using dynamicParams
-            #TODO: Pass object into policies endpoint to create new policy
         } elseif ($values) {
             $updatedPolicyObject = $values
         } else {
-            if (($template.objectMap).count -gt 0) {
+            if (($templateObject.objectMap).count -gt 0) {
                 $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap
                 # User selects edit all fields
                 if ($initialUserInput.fieldSelection -eq 'A') {

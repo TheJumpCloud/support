@@ -48,6 +48,32 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $tablePolicy = New-JCPolicy -Name "Pester - Registry Test" -templateID $templateId -customRegTable $policyValueList
             $tablePolicy.values.value.count | Should -Be 1
         }
+        It 'Creates a policy with a listbox using dynamic parameters' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "encrypted_dns_https_darwin" }
+            $templateId = $policyTemplate.id
+            $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy New" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
+            # set should set the policies to the correct type
+            ($listboxPolicy.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxPolicy.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxPolicy.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            # since we set only one value the count for each of these objects should be 1
+            ($listboxPolicy.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
+            ($listboxPolicy.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
+            # Create another policy w/ multiple values here and test
+            $multipleServerAddresses = @("Test Pester Address1", "Test Pester Address2")
+            $multipleSupplementalMatchDomains = @("Test Domain3", "Test Domain4")
+            $listboxPolicyMultiple = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy New Multiple" -templateID $templateId -ServerAddresses $multipleServerAddresses -ServerURL "Test URL" -SupplementalMatchDomains $multipleSupplementalMatchDomains
+            # set should set the policies to the correct type
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            # Count for listbox policy should be 2
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
+            # validate that the items are correct:
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
+            ($listboxPolicyMultiple.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
+        }
         It 'Creates a new policy that tests upload file' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
             $templateId = $policyTemplate.id
@@ -120,6 +146,131 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             # Should not be null
             $valuePolicy = New-JCPolicy -name "Pester - Values New Policy String Test" -templateID $templateId -values $newPolicy.values
             $valuePolicy.value.values | Should -Be $newPolicy.value.values
+        }
+    }
+    Context 'New-JCPolicy should error on specific conditions' {
+        It 'When a user enters an ID for PolicyID parameter for a non-existant policy' {
+
+        }
+        It 'When a user enters a name for PolicyName parameter for a non-existant policy' {
+
+        }
+        It 'When a user specifies a non-valid dynamicParameter' {
+
+        }
+
+    }
+    Context 'Custom Registry Table validation tests' {
+        It 'customRegTable param should throw if only a string is passed in' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable "string" -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+        }
+        It 'customRegTable param should throw if a list of strings is passed in' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable @("string", "string2") -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+        }
+        It 'customRegTable param should throw if a single object is passed in with incorrect data types' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $data = @{random = 'someString'; customLocation = 'location'; customRegType = 'String'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+            $data = @{customData = 'someString'; random = 'location'; customRegType = 'String'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; random = 'String'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'String'; random = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+        }
+        It 'customRegTable param should not throw if a single object is passed in with correct data types' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'String'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Not -Throw
+        }
+        It 'customRegTable param should throw if a list of objects is passed in with incorrect data types' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            # Define list Values:
+            $policyValueList = New-Object System.Collections.ArrayList
+            $policyValue = [pscustomobject]@{
+                'random'          = 'data'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            $policyValue2 = [pscustomobject]@{
+                'customData'      = 'data2'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location2'
+                'customValueName' = 'CustomValue2'
+            }
+            $policyValueList.add($policyValue) | Out-Null
+            $policyValueList.add($policyValue2) | Out-Null
+            # New Policy
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $policyValueList -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+
+        }
+        It 'customRegTable param should not throw if a list of objects is passed in with correct data types' {
+            # Define list Values:
+            $policyValueList = New-Object System.Collections.ArrayList
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'customData'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            $policyValue2 = [pscustomobject]@{
+                'customData'      = 'data2'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location2'
+                'customValueName' = 'CustomValue2'
+            }
+            $policyValueList.add($policyValue) | Out-Null
+            $policyValueList.add($policyValue2) | Out-Null
+            # New Policy
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $policyValueList -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Not -Throw
+        }
+        It 'customRegTable param should throw if an invalid customRegType is passed in' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'SZ'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'EXPAND_SZ'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'MULTI_SZ'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'RANDOM'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+        }
+        It 'customRegTable param should not throw if an invalid customRegType is passed in' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'DWORD'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation DWORD $(new-randomString -NumberOfChars 8)" } | Should -not -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'QWORD'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation QWORD $(new-randomString -NumberOfChars 8)" } | Should -not -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'multiString'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation multiString $(new-randomString -NumberOfChars 8)" } | Should -not -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'String'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation String $(new-randomString -NumberOfChars 8)" } | Should -not -Throw
+            $data = @{customData = 'someString'; customLocation = 'location'; customRegType = 'expandString'; customValueName = 'registryKeyValue' }
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $data -Name "Pester - Registry Validation expandString $(new-randomString -NumberOfChars 8)" } | Should -not -Throw
+        }
+        It 'customRegTable param should throw if a list of objects is passed in with an invalid customRegType type' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
+            # Define list Values:
+            $policyValueList = New-Object System.Collections.ArrayList
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'data'
+                'customRegType'   = 'SZ'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            $policyValue2 = [pscustomobject]@{
+                'customData'      = 'data2'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location2'
+                'customValueName' = 'CustomValue2'
+            }
+            $policyValueList.add($policyValue) | Out-Null
+            $policyValueList.add($policyValue2) | Out-Null
+            # New Policy
+            { New-JCPolicy -templateID $registryTemplate.id -customRegTable $policyValueList -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
         }
     }
 }

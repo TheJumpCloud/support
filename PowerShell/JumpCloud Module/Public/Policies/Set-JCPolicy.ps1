@@ -151,7 +151,7 @@ function Set-JCPolicy {
                                 # convert file path to base64 string
                                 $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
-                            #TODO: else we should throw an error here that the filepath was not valid
+                            #TODO: else we should throw an error here that the file path was not valid
                         }
                         'listbox' {
                             if ($($keyValue).getType().name -eq 'String') {
@@ -167,9 +167,38 @@ function Set-JCPolicy {
                             }
                         }
                         'table' {
+                            # For custom registry table, validate the object
+                            if ($templateObject.objectMap[$i].configFieldName -eq "customRegTable") {
+                                # TODO: validate that the objects passed in are valid
+                                # if ($keyValue.getType().Name -ne 'Object[]') {
+                                #     throw "The object passed in as values input does not match the expected value type. Data is expected to be formatted as a hashtable: @{customData='someString';customLocation='location';customRegType='DWORD';customValueName='registryKeyValue'} or ArrayList of PSCustomObjects"
+                                # }
+                                # get default value properties
+                                $RegProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
+                                # get passed in object properties
+                                $ObjectProperties = if ($keyValue | Get-Member -MemberType NoteProperty) {
+                                    # for lists get note properties
+                                    ($keyValue | Get-Member -MemberType NoteProperty).Name
+                                } else {
+                                    # for single objects, get keys
+                                    $keyValue.keys
+                                }
+                                $RegProperties | ForEach-Object {
+                                    if ($_.Name -notin $ObjectProperties) {
+                                        Throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                    }
+                                }
+                                # reg type validation
+                                $validRegTypes = @('DWORD', 'expandString', 'multiString', 'QWORD', 'String')
+                                $($keyValue).customRegType | ForEach-Object {
+                                    if ($_ -notin $validRegTypes) {
+                                        throw "Custom Registry Tables require the `"customRegType`" data string to be one of: $validRegTypes, found: $_"
+                                    }
+                                }
+                            }
                             $regRows = New-Object System.Collections.ArrayList
                             foreach ($regItem in $keyValue) {
-                                $regRows.Add($regItem)
+                                $regRows.Add($regItem) | Out-Null
                             }
                             $templateObject.objectMap[$i].value = $regRows
                         }
