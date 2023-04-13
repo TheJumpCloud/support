@@ -42,17 +42,23 @@ function New-CustomRegistryTableRow {
                 value = 'String'
             }
         )
+        $Title = "regType Selector"
+        $Message = "Please select the desired registry type"
+        $DWORD = New-Object System.Management.Automation.Host.ChoiceDescription "&DWORD", "DWORD"
+        $EXPAND_SZ = New-Object System.Management.Automation.Host.ChoiceDescription "&EXPAND_SZ", "expandString"
+        $MULTI_SZ = New-Object System.Management.Automation.Host.ChoiceDescription "&MULTI_SZ", "multiString"
+        $QWORD = New-Object System.Management.Automation.Host.ChoiceDescription "&QWORD", "QWORD"
+        $SZ = New-Object System.Management.Automation.Host.ChoiceDescription "&SZ", "String"
+        $Options = [System.Management.Automation.Host.ChoiceDescription[]]($DWORD, $EXPAND_SZ, $MULTI_SZ, $QWORD, $SZ)
     }
     process {
         if (-Not $customData) {
             $customData = (Read-Host "Please enter the registry data value")
         }
         if (-Not $customRegType) {
-            $validRegTypes | Format-Table -Property Row, Name | Out-Host
-            Do {
-                $customRegType = (Read-Host "Please enter a row number for a coresponding registry type (0 - 4)")
-                $customRegTypeValue = $validRegTypes[$customRegType].value
-            } While ($validRegTypes.Row -notcontains $customRegType)
+            # $validRegTypes | Format-Table -Property Row, Name | Out-Host
+            $choice = $host.ui.PromptForChoice($title, $message, $options, 0)
+            $customRegTypeValue = $validRegTypes[$choice].value
         }
         if (-Not $customLocation) {
             $customLocation = (Read-Host "Please enter the registry key location value")
