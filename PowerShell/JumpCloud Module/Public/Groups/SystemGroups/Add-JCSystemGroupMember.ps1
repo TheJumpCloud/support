@@ -54,7 +54,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
     begin {
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         Write-Debug 'Populating API headers'
@@ -103,14 +103,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
             Write-Debug $jsonbody
 
 
-            $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
-            Write-Debug $GroupsURL
-
-            try {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            $GroupAdd = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable addError -ErrorAction SilentlyContinue
+            if ($addError) {
+                $Status = $addError.ErrorDetails.Message
+            } else {
                 $Status = 'Added'
-            } catch {
-                $Status = $_.ErrorDetails
             }
 
             $FormattedResults = [PSCustomObject]@{
@@ -146,14 +143,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
             Write-Debug $jsonbody
 
 
-            $GroupsURL = "$JCUrlBasePath/api/v2/systemgroups/$GroupID/members"
-            Write-Debug $GroupsURL
-
-            try {
-                $GroupAdd = Invoke-RestMethod -Method POST -Body $jsonbody -Uri $GroupsURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+            $GroupAdd = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable addError -ErrorAction SilentlyContinue
+            if ($addError) {
+                $Status = $addError.ErrorDetails.Message
+            } else {
                 $Status = 'Added'
-            } catch {
-                $Status = $_.ErrorDetails
             }
 
             $FormattedResults = [PSCustomObject]@{

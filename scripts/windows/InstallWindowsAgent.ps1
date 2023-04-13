@@ -2,7 +2,6 @@
 # Example ./InstallWindowsAgent.ps1 -JumpCloudConnectKey "56b403784365r6o2n311cosr218u1762le4y9e9a"
 # Your JumpCloudConnectKey can be found on the systems tab within the JumpCloud admin console.
 
-
 Param (
     [Parameter (Mandatory = $true)]
     [string] $JumpCloudConnectKey
@@ -19,17 +18,15 @@ $TempPath = 'C:\Windows\Temp\'
 $msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
 $msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
 $AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
-$AGENT_BINARY_NAME = "JumpCloud-agent.exe"
-$AGENT_INSTALLER_URL = "https://s3.amazonaws.com/jumpcloud-windows-agent/production/JumpCloudInstaller.exe"
-$AGENT_INSTALLER_PATH = "C:\windows\Temp\JumpCloudInstaller.exe"
-
+$AGENT_BINARY_NAME = "jcagent-msi-signed.msi"
+$AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/jcagent-msi-signed.msi"
+$AGENT_INSTALLER_PATH = "C:\windows\Temp\jcagent-msi-signed.msi"
 # JumpCloud Agent Installation Functions
 Function AgentIsOnFileSystem() {
     Test-Path -Path:(${AGENT_PATH} + '/' + ${AGENT_BINARY_NAME})
 }
 Function InstallAgent() {
-    $params = ("${AGENT_INSTALLER_PATH}", "-k ${JumpCloudConnectKey}", "/VERYSILENT", "/NORESTART", "/NOCLOSEAPPLICATIONS", "/NORESTARTAPPLICATIONS", "/LOG=$env:TEMP\jcUpdate.log")
-    Invoke-Expression "$params"
+    msiexec /i $AGENT_INSTALLER_PATH /quiet JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey /VERYSILENT /NORESTART /NOCLOSEAPPLICATIONS /L*V "C:\Windows\Temp\jcUpdate.log"`"
 }
 Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")

@@ -1,3 +1,42 @@
+## 2.3.0
+
+Release Date: March 20, 2023
+
+#### RELEASE NOTES
+
+```
+This release improves the functionality of the Add/Remove GroupMember functions and adds a full text query parameter to Get-JCEvent
+```
+
+### FEATURES:
+
+- Get-JCEvent has a new full text query parameter, -Q
+
+#### IMPROVEMENTS:
+
+- Replaced Invoke-WebRequest calls in the following functions with SDK functions to improve TTC and remove
+    - Add-JCSystemGroupMember
+    - Remove-JCSystemGroupMember
+    - Add-JCUserGroupMember
+    - Remove-JCUserGroupMember
+
+## 2.2.0
+
+Release Date: February 7, 2023
+
+#### RELEASE NOTES
+
+```
+This release adds new function Get-JCSystemApp which enables admins to search for 'x' software and 'y' version on specific device, devices in a specific os, or all managed JumpCloud devices.
+```
+
+#### FEATURES:
+
+- Get-JCSystemApp command enables search by:
+  - applications installed in a specific system
+  - applications installed from all the systems specified by OS
+  - Software Name and or Version
+
 ## 2.1.3
 
 Release Date: January 5, 2023

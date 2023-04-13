@@ -14,7 +14,7 @@ Query the API for Directory Insights events
 
 ### GetExpanded (Default)
 ```
-Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
+Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>] [-Q <String>]
  [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermNot <Hashtable>]
  [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
@@ -123,6 +123,21 @@ optional list of fields to return from query
 
 ```yaml
 Type: System.String[]
+Parameter Sets: GetExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Q
+optional string for specifying a full text query
+
+```yaml
+Type: System.String
 Parameter Sets: GetExpanded
 Aliases:
 
