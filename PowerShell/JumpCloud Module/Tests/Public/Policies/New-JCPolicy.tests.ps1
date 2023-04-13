@@ -1,6 +1,6 @@
 Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey 48f6399a50d8d2f18e640846e89b36bebeac00c0 -force | Out-Null
+        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
 
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
