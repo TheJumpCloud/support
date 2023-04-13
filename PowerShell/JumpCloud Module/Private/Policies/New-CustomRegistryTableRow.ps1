@@ -43,7 +43,7 @@ function New-CustomRegistryTableRow {
             }
         )
         $Title = "regType Selector"
-        $Message = "Please select the desired registry type"
+        $Message = "Please select the desired registry type:"
         $DWORD = New-Object System.Management.Automation.Host.ChoiceDescription "&DWORD", "DWORD"
         $EXPAND_SZ = New-Object System.Management.Automation.Host.ChoiceDescription "&EXPAND_SZ", "expandString"
         $MULTI_SZ = New-Object System.Management.Automation.Host.ChoiceDescription "&MULTI_SZ", "multiString"
