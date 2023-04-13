@@ -159,7 +159,7 @@ function Set-JCPolicyConfigField {
                                 # modify existing:
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)) ")
-                                } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum)
+                                } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum -or '' -eq $rowNum)
                                 $singleListBoxValue = Read-Host "Please enter a text value for $($field.configFieldName)"
                                 $ValueObject[$rowNum] = $singleListBoxValue
                             }
@@ -173,7 +173,7 @@ function Set-JCPolicyConfigField {
                                 [System.Collections.ARRAYList]$ValueObjectCopy = $ValueObject
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)) ")
-                                } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum)
+                                } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum -or '' -eq $rowNum)
                                 $ValueObjectCopy.RemoveAt($rowNum)
                                 $ValueObject = $ValueObjectCopy
                             }
@@ -261,7 +261,7 @@ function Set-JCPolicyConfigField {
                                 # Modify existing:
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)) ")
-                                } While (0..[int](($ValueObject.value).Count - 1) -notcontains $rownum)
+                                } While (0..[int](($ValueObject.value).Count - 1) -notcontains $rownum -or '' -eq $rowNum)
                                 $tableRow = New-CustomRegistryTableRow
                                 $ValueObject[$rowNum] = $tableRow
                             }
@@ -275,7 +275,7 @@ function Set-JCPolicyConfigField {
                                 [System.Collections.ARRAYList]$ValueObjectCopy = $ValueObject
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)) ")
-                                } While (0..[int](($ValueObject.value).Count - 1) -notcontains $rownum)
+                                } While (0..[int](($ValueObject.value).Count - 1) -notcontains $rownum -or '' -eq $rowNum)
                                 $ValueObjectCopy.RemoveAt($rowNum) | Out-Null
                                 $ValueObject = $ValueObjectCopy
                             }
