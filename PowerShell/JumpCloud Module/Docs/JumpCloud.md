@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.3.0
+Help Version: 2.4.0
 Locale: en-US
 ---
 
@@ -126,6 +126,9 @@ A guided walk through that creates a command deployment CSV file on your local m
 ### [New-JCImportTemplate](New-JCImportTemplate.md)
 A guided walk through that creates a JumpCloud User Import CSV file on your local machine.
 
+### [New-JCPolicy](New-JCPolicy.md)
+{{ Fill in the Synopsis }}
+
 ### [New-JCRadiusServer](New-JCRadiusServer.md)
 Creates a JumpCloud radius server.
 
@@ -185,6 +188,9 @@ Updates an existing JumpCloud command
 
 ### [Set-JCOrganization](Set-JCOrganization.md)
 Allows a multi tenant admin to update their connection to a specific JumpCloud organization.
+
+### [Set-JCPolicy](Set-JCPolicy.md)
+{{ Fill in the Synopsis }}
 
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.
