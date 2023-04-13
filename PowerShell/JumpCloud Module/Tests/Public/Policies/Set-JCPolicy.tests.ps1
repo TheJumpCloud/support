@@ -1,7 +1,6 @@
 Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     BeforeAll {
         . "$($PSSCRIPTROOT)/../../..//Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
-        # Clean Up Pester Policy Tests:
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
@@ -26,17 +25,16 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # updated policy value should be equal to $updateText
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
-        #TODO: Uncomment and finish test
-        # It 'Sets a  policy that tests integer' {
-        #     $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
-        #     $templateId = $policyTemplate.id
-        #     $intValue = 45
-        #     $stringPolicy = New-JCPolicy -name "Pester - textbox" -templateID $templateId -inteValue $intValue
-        #     $updatedIntValue = 55
-        #     $updatedStringPolicy = Set-JCPolicy -policyID $stringPolicy.id -inteValue $updatedIntValue
-        #     # Should not be null
-        #     $updatedStringPolicy.values.value | Should -Be $stringPolicy.values.value
-        # }
+        It 'Sets a  policy that tests integer' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
+            $templateId = $policyTemplate.id
+            $intValue = 45
+            $intPolicy = New-JCPolicy -name "Pester - Integer" -templateID $templateId -timeout $intValue
+            $updatedIntValue = 55
+            $updatedStringPolicy = Set-JCPolicy -policyID $intPolicy.id -timeout $updatedIntValue
+            # Should not be null
+            $updatedStringPolicy.values.value | Should -Be $updatedIntValue
+        }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
             $templateId = $policyTemplate.id
@@ -121,7 +119,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $setFileBase64 | Should -Be $convertFontFiletoB64
             $setName | Should -Be $setFontName
         }
-        # TODO: Check
         It 'Sets a policy with a table, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
             $templateId = $policyTemplate.id
@@ -196,17 +193,16 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # updated policy value should be equal to $updateText
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
-        #TODO: Uncomment and finish test
-        # It 'Sets a  policy that tests integer' {
-        #     $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
-        #     $templateId = $policyTemplate.id
-        #     $intValue = 45
-        #     $stringPolicy = New-JCPolicy -name "Pester - textbox" -templateID $templateId -inteValue $intValue
-        #     $updatedIntValue = 55
-        #     $updatedStringPolicy = Set-JCPolicy -policyID $stringPolicy.id -inteValue $updatedIntValue
-        #     # Should not be null
-        #     $updatedStringPolicy.values.value | Should -Be $stringPolicy.values.value
-        # }
+        It 'Sets a policy that tests integer' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
+            $templateId = $policyTemplate.id
+            $intValue = 45
+            $stringPolicy = New-JCPolicy -name "Pester - Integer byName" -templateID $templateId -timeout $intValue
+            $updatedIntValue = 55
+            $updatedStringPolicy = Set-JCPolicy -PolicyName $stringPolicy.Name -timeout $updatedIntValue
+            # Should not be null
+            $updatedStringPolicy.values.value | Should -Be $updatedIntValue
+        }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
             $templateId = $policyTemplate.id
@@ -289,7 +285,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $setFileBase64 | Should -Be $convertFontFiletoB64
             $setName | Should -Be $setFontName
         }
-        # TODO: Check
         It 'Sets a policy with a table, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
             $templateId = $policyTemplate.id

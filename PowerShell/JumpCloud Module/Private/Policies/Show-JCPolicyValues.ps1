@@ -70,7 +70,7 @@ function Show-JCPolicyValues {
             $Message = "How would you like to edit the policy values?"
             $All = New-Object System.Management.Automation.Host.ChoiceDescription "&All Fields", "All"
             $Individual = New-Object System.Management.Automation.Host.ChoiceDescription "&Individual Field", "Individual"
-            $Save = New-Object System.Management.Automation.Host.ChoiceDescription "&Save Edits", "Individual"
+            $Save = New-Object System.Management.Automation.Host.ChoiceDescription "&Save Edits", "Save"
 
             if ($HideAll -eq $true) {
                 $Options = [System.Management.Automation.Host.ChoiceDescription[]]($Individual, $Save)
