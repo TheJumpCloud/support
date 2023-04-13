@@ -103,6 +103,10 @@ function Set-JCPolicy {
         }
     }
     begin {
+        Write-Debug 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
+        }
     }
     process {
         # Get Existing Policy Data if not set through dynamic param
@@ -280,8 +284,3 @@ function Set-JCPolicy {
         return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
     }
 }
-# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Show-JCPolicyValues.ps1"
-# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
-# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/New-CustomRegistryTableRow.ps1"
-# . "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private/Policies/Set-JCPolicyConfigField.ps1"
-# set-jcpolicy -policyid 643480952d428d0001303121
