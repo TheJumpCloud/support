@@ -1,6 +1,6 @@
 Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+        Connect-JCOnline -JumpCloudApiKey 48f6399a50d8d2f18e640846e89b36bebeac00c0 -force | Out-Null
 
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
@@ -15,15 +15,13 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             # Should not be null
             $stringPolicy.values.value | Should -Be "Test String"
         }
-        #TODO: Integer
-        # It 'Creates a new policy that tests integer' {
-        #     $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
-        #     $templateId = $policyTemplate.id
-        #     $intValue = 45
-        #     $stringPolicy = New-JCPolicy -name "Pester - textbox" -templateID $templateId -inteValue $intValue
-        #     # Should not be null
-        #     $stringPolicy.values.value | Should -Be $intValue
-        # }
+        It 'Creates a new policy that tests integer' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
+            $templateId = $policyTemplate.id
+            $intValue = 45
+            $intPolicy = New-JCPolicy -name "Pester - Integer Dynamic" -templateID $templateId -timeout $intValue
+            $intPolicy.values.value | Should -Be $intValue
+        }
 
         It 'Creates a new policy that tests boolean' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "allow_the_use_of_biometrics_windows" }
@@ -109,6 +107,14 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $firstPolicy = New-JCPolicy -name "Pester - value boolean" -templateID $templateId -ALLOWUSEOFBIOMETRICS $false
             $valuePolicy = New-JCPolicy -name "Pester - New Policy Value Boolean Test" -values $firstPolicy.values -templateID $templateId
             $valuePolicy.value.values | Should -Be $firstPolicy.value.values
+        }
+        It 'Creates a new policy that tests integer' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
+            $templateId = $policyTemplate.id
+            $intValue = 45
+            $firstIntPolicy = New-JCPolicy -name "Pester - Integer Values" -templateID $templateId -timeout $intValue
+            $valueIntPolicy = New-JCPolicy -name "Pester - Value Integer" -templateID $templateId -Values $firstIntPolicy.values
+            $valueIntPolicy.values.value | Should -Be $firstIntPolicy.values.value
         }
         It 'Creates a new policy that tests values registry' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_registry_keys_policy_windows" }
