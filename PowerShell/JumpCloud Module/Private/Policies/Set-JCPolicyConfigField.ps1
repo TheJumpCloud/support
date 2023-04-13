@@ -160,12 +160,12 @@ function Set-JCPolicyConfigField {
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)) ")
                                 } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum)
-                                $singleListBoxValue = Read-Host "Please enter a text value "
+                                $singleListBoxValue = Read-Host "Please enter a text value for $($field.configFieldName)"
                                 $ValueObject[$rowNum] = $singleListBoxValue
                             }
                             1 {
                                 # Add new row
-                                $singleListBoxValue = Read-Host "Please enter a text value "
+                                $singleListBoxValue = Read-Host "Please enter a text value for $($field.configFieldName)"
                                 $ValueObject.add($singleListBoxValue) | Out-Null
                             }
                             2 {
