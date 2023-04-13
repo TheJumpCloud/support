@@ -73,7 +73,6 @@ function Set-JCPolicyConfigField {
                         $fieldValue = (Read-Host "Please enter the $($field.type) value for the $($field.configFieldName) setting")
                         $field.value = $fieldValue
                         ($policyValues | Where-Object { $_.configFieldID -eq $field.configFieldID }).value = $fieldValue
-                        break
                     } While (([string]::IsNullOrEmpty($fieldValue)))
 
                 }
@@ -120,9 +119,9 @@ function Set-JCPolicyConfigField {
                                     $valueDisplay.Add([PSCustomObject]@{
                                             row   = $i
                                             value = $ValueObject[$i]
-                                        })
+                                        }) | Out-Null
                                 }
-                                $valueDisplay | Format-Table row, @{Label = "customData"; Expression = { $_.value | Select-Object -ExpandProperty customData } }, @{Label = "customRegType"; Expression = { $_.value | Select-Object -ExpandProperty customRegType } }, @{Label = "customLocation"; Expression = { $_.value | Select-Object -ExpandProperty customLocation } }, @{Label = "customValueName"; Expression = { $_.value | Select-Object -ExpandProperty customValueName } } | Out-Host
+                                $valueDisplay | Format-Table row, value | Out-Host
                             } else {
                                 # If values, populate value display
                                 $ValueObject = New-Object System.Collections.ArrayList
@@ -131,10 +130,10 @@ function Set-JCPolicyConfigField {
                                     $valueDisplay.Add([PSCustomObject]@{
                                             row   = $i
                                             value = $policyValues[$fieldIndex].value[$i]
-                                        })
-                                    $ValueObject.Add($policyValues[$fieldIndex].value[$i])
+                                        }) | Out-Null
+                                    $ValueObject.Add($policyValues[$fieldIndex].value[$i]) | Out-Null
                                 }
-                                $valueDisplay | Format-Table row, @{Label = "customData"; Expression = { $_.value | Select-Object -ExpandProperty customData } }, @{Label = "customRegType"; Expression = { $_.value | Select-Object -ExpandProperty customRegType } }, @{Label = "customLocation"; Expression = { $_.value | Select-Object -ExpandProperty customLocation } }, @{Label = "customValueName"; Expression = { $_.value | Select-Object -ExpandProperty customValueName } } | Out-Host
+                                $valueDisplay | Format-Table row, value | Out-Host
                             }
                             $userChoice = $host.ui.PromptForChoice($title, $message, $options, 0)
                         } else {
@@ -145,9 +144,9 @@ function Set-JCPolicyConfigField {
                                     $valueDisplay.Add([PSCustomObject]@{
                                             row   = $i
                                             value = $ValueObject[$i]
-                                        })
+                                        }) | Out-Null
                                 }
-                                $valueDisplay | Format-Table row, @{Label = "customData"; Expression = { $_.value | Select-Object -ExpandProperty customData } }, @{Label = "customRegType"; Expression = { $_.value | Select-Object -ExpandProperty customRegType } }, @{Label = "customLocation"; Expression = { $_.value | Select-Object -ExpandProperty customLocation } }, @{Label = "customValueName"; Expression = { $_.value | Select-Object -ExpandProperty customValueName } } | Out-Host
+                                $valueDisplay | Format-Table row, value | Out-Host
                                 $userChoice = $host.ui.PromptForChoice($title, $message, $options, 0)
                             } else {
                                 # No values, just prompt to enter new value (todo, skip to entering new value)
@@ -161,19 +160,19 @@ function Set-JCPolicyConfigField {
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)): ")
                                 } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
-                                $singleListBoxValue = Read-Host "Please enter a text value: "
+                                $singleListBoxValue = Read-Host "Please enter a text value "
                                 $ValueObject[$rowNum] = $singleListBoxValue
                             }
                             1 {
                                 # Add new row
-                                $singleListBoxValue = Read-Host "Please enter a text value: "
-                                $ValueObject.add($singleListBoxValue)
+                                $singleListBoxValue = Read-Host "Please enter a text value "
+                                $ValueObject.add($singleListBoxValue) | Out-Null
                             }
                             2 {
                                 # remove existing:
                                 [System.Collections.ARRAYList]$ValueObjectCopy = $ValueObject
                                 do {
-                                    $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)): ")
+                                    $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)) ")
                                 } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
                                 $ValueObjectCopy.RemoveAt($rowNum)
                                 $ValueObject = $ValueObjectCopy
