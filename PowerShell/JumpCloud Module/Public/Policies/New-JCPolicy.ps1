@@ -238,6 +238,10 @@ function New-JCPolicy {
             'content-type' = "application/json"
         }
         $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
+        if ($response) {
+            $response | Add-Member -MemberType NoteProperty -Name "templateID" -Value $response.template.id
+        }
+
     }
     end {
         return $response | Select-Object -Property "name", "id", "templateID", "values", "template"

@@ -450,4 +450,16 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $updatedPolicy.name | Should -Be "Pester - Pipeline Policy String Bool Payload Updated"
         }
     }
+    Context 'Set-JCPolicy should reutrn policies with the correct data types' {
+        It 'Set-JCPolicy returns expected parameters' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
+            usbLinuxPolicyUpdated = Set-JCPolicy -PolicyId $usbLinuxPolicy.Id -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
+            $usbLinuxPolicyUpdated.name | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicyUpdated.id | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicyUpdated.values | Should -BeNullOrEmpty
+            $usbLinuxPolicyUpdated.template | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicyUpdated.templateID | Should -Not -BeNullOrEmpty
+        }
+    }
 }

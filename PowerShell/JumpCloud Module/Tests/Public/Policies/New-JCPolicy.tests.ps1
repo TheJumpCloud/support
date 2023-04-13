@@ -282,4 +282,15 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             { New-JCPolicy -templateID $registryTemplate.id -customRegTable $policyValueList -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
         }
     }
+    Context 'New-JCPolicy should reutrn policies with the correct data types' {
+        It 'New-JCPolicy returns expected parameters' {
+            $usbTemplateLinux = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $usbTemplateLinux.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
+            $usbLinuxPolicy.name | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicy.id | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicy.values | Should -BeNullOrEmpty
+            $usbLinuxPolicy.template | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicy.templateID | Should -Not -BeNullOrEmpty
+        }
+    }
 }
