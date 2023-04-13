@@ -158,8 +158,8 @@ function Set-JCPolicyConfigField {
                             0 {
                                 # modify existing:
                                 do {
-                                    $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)): ")
-                                } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
+                                    $rowNum = (Read-Host "Please enter row number you wish to modify (0 - $($ValueObject.count - 1)) ")
+                                } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum)
                                 $singleListBoxValue = Read-Host "Please enter a text value "
                                 $ValueObject[$rowNum] = $singleListBoxValue
                             }
@@ -173,7 +173,7 @@ function Set-JCPolicyConfigField {
                                 [System.Collections.ARRAYList]$ValueObjectCopy = $ValueObject
                                 do {
                                     $rowNum = (Read-Host "Please enter row number you wish to remove (0 - $($ValueObject.count - 1)) ")
-                                } While (0..[int]($policyValues.count - 1) -notcontains $rownum)
+                                } While (0..[int](($ValueObject).Count - 1) -notcontains $rownum)
                                 $ValueObjectCopy.RemoveAt($rowNum)
                                 $ValueObject = $ValueObjectCopy
                             }
