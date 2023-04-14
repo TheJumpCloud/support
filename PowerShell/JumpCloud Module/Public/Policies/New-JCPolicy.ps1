@@ -1,12 +1,14 @@
 function New-JCPolicy {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'ByID')]
     param (
-        [Parameter(Mandatory = $false,
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'ByID',
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The ID of the policy template to create as a new JumpCloud Policy')]
         [System.String]
         $TemplateID,
-        [Parameter(Mandatory = $false,
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'ByName',
             HelpMessage = 'The Name of the policy template to create as a new JumpCloud Policy')]
         [System.String]
         $TemplateName,
@@ -20,8 +22,37 @@ function New-JCPolicy {
         $Values
     )
     DynamicParam {
-        if ($templateID) {
+        if ($TemplateID) {
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            $ParameterAttribute.ParameterSetName = "ByID"
+            # Get the policy template by ID
             $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
+            Write-Host $templateObject
+            if (-Not ($templateObject.objectMap)) {
+                throw "Could not find policy template by ID"
+            }
+
+        } elseif ($TemplateName) {
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            $ParameterAttribute.ParameterSetName = "ByName"
+            # Get the policy by Name
+            if ($TemplateName -in $global:TemplateNameList.Name) {
+                $matchedTemplate = $templateNameList[$templateNameList.Name.IndexOf($TemplateName)].id
+            } else {
+                throw "template list missing; have you run Connect-JCOnline"
+            }
+            write-host $matchedTemplate
+            $templateObject = Get-JCPolicyTemplateConfigField -templateID $matchedTemplate
+            Write-Host $templateObject
+            if (-Not ($templateObject.objectMap)) {
+                throw "Could not find policy template by specified Name"
+            }
+        }
+
+        if ($templateObject.objectMap -And ($TemplateName -OR $TemplateID)) {
+            # $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $templateObject.objectMap) {
@@ -60,12 +91,6 @@ function New-JCPolicy {
                         $paramType = 'string'
                     }
                 }
-                # TODO: case for string types
-                # TODO: case for registry table types/ skip this param set
-                # Create and set the parameters' attributes
-                $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-                $ParameterAttribute.Mandatory = $false
-                $ParameterAttribute.ParameterSetName = 'DynamicParam'
                 if ([String]::isNullorEmpty($($key.help))) {
                     $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
                 } else {
@@ -88,6 +113,17 @@ function New-JCPolicy {
         }
     }
     process {
+        $params = $PSBoundParameters
+        $paramterSet = $params.keys
+        $DynamicParamSet = $false
+        $requiredSet = @('TemplateID', 'TemplateName', 'Name' , 'Values')
+        foreach ($parameter in $paramterSet) {
+            $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
+            if ($parameterComparison | Where-Object { $_.sideindicator -eq "=>" }) {
+                $DynamicParamSet = $true
+                break
+            }
+        }
         # If TemplateName was specified get ID from hashed table
         if ($PSBoundParameters["TemplateName"]) {
             if ($TemplateName -in $templateNameList.Name) {
@@ -102,9 +138,7 @@ function New-JCPolicy {
         } else {
             $templateObject.defaultName
         }
-        if ($PSCmdlet.ParameterSetName -eq "DynamicParam") {
-            $params = $PSBoundParameters
-
+        if ($DynamicParamSet) {
             $newObject = New-Object System.Collections.ArrayList
             for ($i = 0; $i -lt $templateObject.objectMap.count; $i++) {
                 # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
