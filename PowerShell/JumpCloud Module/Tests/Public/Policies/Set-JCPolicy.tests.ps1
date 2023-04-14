@@ -441,7 +441,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
         It 'Sets a policy using the pipeline input from Get-JCPolicy where the policy has a string payload' {
             # create a policy
-            { $stringPayloadPolicy = New-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true } | Should -Not -Throw
+            $stringPayloadPolicy = New-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload $(new-randomString -NumberOfChars 8)" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true
             # Get the policy object
             $policy = Get-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload"
             # Update the policy name
@@ -454,7 +454,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Set-JCPolicy returns expected parameters' {
             $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
             $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
-            usbLinuxPolicyUpdated = Set-JCPolicy -PolicyId $usbLinuxPolicy.Id -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
+            $usbLinuxPolicyUpdated = Set-JCPolicy -PolicyId $usbLinuxPolicy.Id -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
             $usbLinuxPolicyUpdated.name | Should -Not -BeNullOrEmpty
             $usbLinuxPolicyUpdated.id | Should -Not -BeNullOrEmpty
             $usbLinuxPolicyUpdated.values | Should -BeNullOrEmpty
