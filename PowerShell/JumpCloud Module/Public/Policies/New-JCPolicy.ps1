@@ -28,8 +28,7 @@ function New-JCPolicy {
             $ParameterAttribute.ParameterSetName = "ByID"
             # Get the policy template by ID
             $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
-            Write-Host $templateObject
-            if (-Not ($templateObject.objectMap)) {
+            if ([String]::IsNullOrEmpty($templateObject.defaultName)) {
                 throw "Could not find policy template by ID"
             }
 
@@ -44,7 +43,7 @@ function New-JCPolicy {
                 throw "template list missing; have you run Connect-JCOnline"
             }
             $templateObject = Get-JCPolicyTemplateConfigField -templateID $matchedTemplate
-            if (-Not ($templateObject.objectMap)) {
+            if ([String]::IsNullOrEmpty($templateObject.defaultName)) {
                 throw "Could not find policy template by specified Name"
             }
         }
