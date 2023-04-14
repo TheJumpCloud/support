@@ -15,36 +15,12 @@ function Set-JCPolicyConfigField {
         $fieldIndex
     )
     begin {
-        # TODO: validate templateID
-        # TODO: set this globally
-        $configMapping = @{
-            checkbox       = 'boolean'
-            singlelistbox  = 'listbox'
-            table          = 'table'
-            customRegTable = 'table'
-            textarea       = 'string'
-            text           = 'string'
-            file           = 'file'
-            select         = 'multi'
-            number         = 'int'
-        }
-
         # Check to see if policyValues are explicitly stated, if not use the templateObject as current values
         if (!$policyValues) {
             $policyValues = $templateObject
         }
     }
     process {
-        # for each field in the object with a null value, prompt to enter the value
-        # print policy value
-        # if ('table' -in $templateObject.type) {
-        #     # If custom registry table, display all rows
-        #     $policyValues | Format-Table -Property @{label = "Row"; Expression = { $policyvalues.indexOf($_) } }, * | Out-Host
-        # } else {
-        #     # If not table, display just the row #, the name and value pairs
-        #     $templateobject | Format-Table @{label = "Row"; expression = { $TemplateObject.position -replace '\..+' } }, @{label = "Value"; expression = { $PolicyValues[$($TemplateObject.position) - 1].value } }, Label | Out-Host
-        #     # $templateObject | Format-Table @{label = "Row"; expression = { $TemplateObject.indexof($_) } }, @{label = "Value"; expression = { $PolicyValues[$TemplateObject.indexof($_)] } }, Label | Out-Host
-        # }
 
         if ($fieldIndex) {
             $field = $templateObject[$fieldIndex]
@@ -291,7 +267,6 @@ function Set-JCPolicyConfigField {
         }
     }
     end {
-
         return $policyValues
     }
 }

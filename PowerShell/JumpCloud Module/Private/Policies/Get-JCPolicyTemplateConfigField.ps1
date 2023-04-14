@@ -7,14 +7,12 @@ function Get-JCPolicyTemplateConfigField {
         $templateID
     )
     begin {
-        # TODO: validate templateID
-        # $template = Get-JcSdkPolicyTemplate -Id $templateID
         $headers = @{}
         $headers.Add("x-api-key", $env:JCApiKey)
         $headers.Add("x-org-id", $env:JCOrgId)
         $template = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policytemplates/$templateID" -Method GET -Headers $headers
-        # TODO: set this globally
-        $configMapping = @{
+        # define policy config field mapping
+        $PolicyConfigMapping = @{
             checkbox       = 'boolean'
             singlelistbox  = 'listbox'
             table          = 'table'
@@ -30,8 +28,7 @@ function Get-JCPolicyTemplateConfigField {
         # build object for templateID with validation of types
         $objectMap = New-Object System.Collections.ArrayList
         foreach ($field in $template.ConfigFields) {
-            # Write-Host "$($field.Name) accepts $($configMapping[$field.DisplayType]) input"
-            # if ($field.DisplayOptions.Values.values)
+            # Write-Host "$($field.Name) accepts $($PolicyConfigMapping[$field.DisplayType]) input"
             if ($Field.DisplayType -eq 'select') {
                 $ValidationObject = @()
                 $validationRows = $field.DisplayOptions.select.Count
@@ -59,7 +56,7 @@ function Get-JCPolicyTemplateConfigField {
                 position        = $field.Position
                 configFieldName = $field.Name
                 help            = $field.tooltip.variables.message
-                type            = "$($configMapping[$field.DisplayType])"
+                type            = "$($PolicyConfigMapping[$field.DisplayType])"
                 validation      = if ($Field.DisplayType -eq 'select') {
                     $ValidationObject
                 } else {
