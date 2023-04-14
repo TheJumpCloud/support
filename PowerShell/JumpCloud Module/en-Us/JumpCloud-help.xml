@@ -9977,11 +9977,13 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCPolicy</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>New-JCPolicy creates new JumpCloud Policies in an organization by TemplateID or TemplateNames. JumpCloud policies can be created in three different ways. The New/Set-JCPolicy functions each have a dynamic set of parameters specific to each policy template, this dynamic set of parameters is generated after specifying a valid TemplateID or TemplateName. New/Set-JCPolicy functions can also be set through a valid `value` parameter which is specific to each template policy. Lastly, New/Set-JCPolicy functions can be set through a guided interface.</maml:para>
+        <maml:para>TemplateIDs or TemplateNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL while creating new policies. TemplateNames can be dynamically pulled in while using the `New-JCPolicy` function by typing: `New-JCPolicy -TemplateName tab ` where the tab key is pressed in place of ` tab `, if prompted, press 'y' to list all policies. Policies by operating system can be 'searched' by typing `darwin` (macOS), `windows`, `linux`, `ios`. For example, `New-JCPolicy -TemplateName darwin tab ` where the tab key is pressed in place of ` tab `, the list of available macOS policies would then be displayed and can be autocompleted through further tab presses.</maml:para>
+        <maml:para>At a minimum to display the dynamic set of parameters per template, the `TemplateID` or `TemplateName` must be specified. Tab actions display the available dynamic parameters available per function. For example, `New-JCPolicy -TemplateName darwin_Login_Window_Text - tab ` where the tab key is pressed in place of ` tab `, would display available parameters specific to the `darwin_Login_Window_Text` policy. Dynamic parameters for templates are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>New-JCPolicy allows for the creation of new JumpCloud Policies via the JumpCloud PowerShell Module.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10149,9 +10151,37 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -LoginwindowText "Welcome to JumpCloud" -Name "macOS - Login Window Policy"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>This would create a new macOS Login Window Text policy with the login window text set to `Welcome to JumpCloud` the policy would be named `macOS - Login Window Policy`</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt;  New-JCPolicy -TemplateID 5ade0cfd1f24754c6c5dc9f2 -LoginwindowText "Welcome to JumpCloud"</dev:code>
+        <dev:remarks>
+          <maml:para>This would create a new macOS Login Window Text policy (the id of that template is `5ade0cfd1f24754c6c5dc9f2`) with the login window text set to `Welcome to JumpCloud` the policy would be created with the default policy name.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text
+
+fieldIndex field                              value helpMessage
+---------- -----                              ----- -----------
+         0 Set Text Displayed At Login Window       Optional text to display on the login window.
+
+Please enter the string value for the LoginwindowText setting: Welcome To JumpCloud</dev:code>
+        <dev:remarks>
+          <maml:para>This would create a new macOS Login Window Text policy and being the guided process to interactively edit the policy. In the example above, the interactive output is displayed. Pressing Enter after typing `Welcome To JumpCloud` would create the policy with the default policy name.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt;  $policyValue = @{'configFieldID'='5ade0cfd1f24754c6c5dc9f3';'value'='Welcome To JumpCloud'}
+PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyValue -Name "macOS - Login Window Policy"</dev:code>
+        <dev:remarks>
+          <maml:para>This would create a new macOS Login Window Text policy with the login window text set to `Welcome to JumpCloud` with the `macOS - Login Window Policy` name. The policy values are set using the `values` parameter. Objects passed into the `values` parameter set must contain the `value` for the policy config field and a `configFieldID`. To get a policy value object, search for any existing policy using `Get-JCPolicy` the `values` object returned from that cmdlet will contain the config fields required to build new policies or edit existing ones.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -14639,11 +14669,13 @@ Enter a value between 1 and 2:</dev:code>
       <command:verb>Set</command:verb>
       <command:noun>JCPolicy</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Set-JCPolicy updates existing JumpCloud Policies in an organization by PolicyID or PolicyName. JumpCloud policies can be updated in three different ways. The New/Set-JCPolicy functions each have a dynamic set of parameters specific to each policy template, this dynamic set of parameters is generated after specifying a valid TemplateID or PolicyName. New/Set-JCPolicy functions can also be set through a valid `value` parameter which is specific to each template policy. Lastly, New/Set-JCPolicy functions can be set through a guided interface.</maml:para>
+        <maml:para>PolicyIDs or PolicyNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL on existing policies or running `Get-JCpolicy -Name "Some Policy Name` to get the policy by ID. PolicyNames can be specified if you know the name of a policy you wish to update or by running `Get-JCpolicy -Name "Some Policy Name` to get the policy by Name</maml:para>
+        <maml:para>Set-JCPolicy can display the available parameters per policy if a `PolicyName` or `PolicyID` is specified. Tab actions display the available dynamic parameters available per function. For example, `Set-JCPolicy -PolicyName "macOS - Login Window Policy" - tab ` where the tab key is pressed in place of ` tab `, would display available parameters specific to the `macOS - Login Window Policy` policy. Dynamic parameters for policies are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Set-JCPolicy allows for the update of existing JumpCloud Policies via the JumpCloud PowerShell Module.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -14811,9 +14843,37 @@ Enter a value between 1 and 2:</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -LoginwindowText "Welcome to JumpCloud"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>This would update the policy named `macOS - Login Window Policy` with the login window text set to `Welcome to JumpCloud`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt;  Set-JCPolicy -PolicyID 643980a06ab0390001b5977c -LoginwindowText "Welcome to JumpCloud" -NewName "macOS Login Window Policy Welcome"</dev:code>
+        <dev:remarks>
+          <maml:para>This would update the macOS Login Window Text policy (the id of that policy is `643980a06ab0390001b5977c`) with the login window text set to `Welcome to JumpCloud` the policy would be renamed to `macOS Login Window Policy Welcome`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy"
+
+fieldIndex field                              value                helpMessage
+---------- -----                              -----                -----------
+         0 Set Text Displayed At Login Window Welcome to JumpCloud Optional text to display on the login window.
+
+Please enter the string value for the LoginwindowText setting: Welcome To JumpCloud!!!</dev:code>
+        <dev:remarks>
+          <maml:para>This would update the policy named `macOS - Login Window Policy` interactively. In the example above, the interactive output is displayed. Pressing Enter after typing `Welcome To JumpCloud!!!` would update the policy with the login text changed from `Welcome To JumpCloud` to `Welcome To JumpCloud!!!`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt;  $policyValue = @{'configFieldID'='5ade0cfd1f24754c6c5dc9f3';'value'='Welcome To JumpCloud'}
+PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $policyValue</dev:code>
+        <dev:remarks>
+          <maml:para>This would update the policy named `macOS - Login Window Policy` with the login window text set to `Welcome to JumpCloud`. The policy values are set using the `values` parameter. Objects passed into the `values` parameter set must contain the `value` for the policy config field and a `configFieldID`. To get a policy value object, search for any existing policy using `Get-JCPolicy` the `values` object returned from that cmdlet will contain the config fields required to build new policies or edit existing ones.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

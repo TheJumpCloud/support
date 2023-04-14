@@ -18,13 +18,11 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 ## SYNTAX
 
 ### ByID (Default)
-
 ```
 Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
 ### ByName
-
 ```
 Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
@@ -141,7 +139,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -153,7 +150,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
