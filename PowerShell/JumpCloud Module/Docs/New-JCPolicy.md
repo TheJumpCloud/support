@@ -17,9 +17,14 @@ At a minimum to display the dynamic set of parameters per template, the `Templat
 
 ## SYNTAX
 
+### ByID (Default)
 ```
-New-JCPolicy [[-TemplateID] <String>] [[-TemplateName] <String>] [[-Name] <String>] [[-Values] <Object[]>]
- [<CommonParameters>]
+New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
+```
+
+### ByName
+```
+New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -79,7 +84,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -91,11 +96,11 @@ The ID of the policy template to create as a new JumpCloud Policy
 
 ```yaml
 Type: System.String
-Parameter Sets: (All)
+Parameter Sets: ByID
 Aliases:
 
-Required: False
-Position: 0
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -107,11 +112,11 @@ The Name of the policy template to create as a new JumpCloud Policy
 
 ```yaml
 Type: System.String
-Parameter Sets: (All)
+Parameter Sets: ByName
 Aliases:
 
-Required: False
-Position: 1
+Required: True
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -127,7 +132,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
