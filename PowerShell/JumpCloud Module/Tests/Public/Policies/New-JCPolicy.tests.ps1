@@ -87,7 +87,6 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
         It 'Creates a new policy that select, string, boolean' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
             $templateId = $policyTemplate.id
-            $policyName = "Pester Test Policy boolean"
             $multipleValPolicy = New-JCPolicy -name "Pester - Test multiple" -templateID $templateId -AlertType "Temporary Banner" -BundleIdentifier "Test" -PreviewType "Always" -BadgesEnabled $true
             #Test each param
             ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "AlertType" }).value | Should -Be 1 # 1 is the value for Temporary Banner on the dropdown
@@ -95,15 +94,12 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "PreviewType" }).value | Should -Be 0 # 0 is the value for Always on the dropdown
             ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "BadgesEnabled" }).value | Should -Be $true
         }
-
-
     }
 
     Context 'Creates policies using the value parameters' {
         It 'Creates a policy using the pipeline parameters boolean' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "allow_the_use_of_biometrics_windows" }
             $templateId = $policyTemplate.id
-            $policyName = "Pester - Test Policy boolean"
             $firstPolicy = New-JCPolicy -name "Pester - value boolean" -templateID $templateId -ALLOWUSEOFBIOMETRICS $false
             $valuePolicy = New-JCPolicy -name "Pester - New Policy Value Boolean Test" -values $firstPolicy.values -templateID $templateId
             $valuePolicy.value.values | Should -Be $firstPolicy.value.values
