@@ -13,7 +13,7 @@ function New-JCPolicy {
         [System.String]
         $TemplateName,
         [Parameter(Mandatory = $false,
-            HelpMessage = 'The name of the policy to create')]
+            HelpMessage = 'The name of the policy to create. If left unspecified, the cmdlet will attempt to create the policy with the default name defined by the selected policy template.')]
         [System.String]
         $Name,
         [Parameter(ValueFromPipelineByPropertyName = $true,
@@ -43,9 +43,7 @@ function New-JCPolicy {
             } else {
                 throw "template list missing; have you run Connect-JCOnline"
             }
-            write-host $matchedTemplate
             $templateObject = Get-JCPolicyTemplateConfigField -templateID $matchedTemplate
-            Write-Host $templateObject
             if (-Not ($templateObject.objectMap)) {
                 throw "Could not find policy template by specified Name"
             }

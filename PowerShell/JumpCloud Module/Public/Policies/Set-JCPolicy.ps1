@@ -14,7 +14,7 @@ function Set-JCPolicy {
         [System.String]
         $PolicyName,
         [Parameter(Mandatory = $false,
-            HelpMessage = 'The new name to set on the existing JumpCloud Policy')]
+            HelpMessage = 'The new name to set on the existing JumpCloud Policy. If left unspecified, the cmdlet will not rename the existing policy.')]
         [System.String]
         $NewName,
         [Parameter(ValueFromPipelineByPropertyName = $true,
