@@ -1,4 +1,4 @@
-function Enumerate-JCPolicyConfigMapping {
+function Get-JCPolicyConfigMapping {
 
     begin {
         $templates = Get-JcSdkPolicyTemplate

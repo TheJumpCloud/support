@@ -223,7 +223,7 @@ function Set-JCPolicy {
             $updatedPolicyObject = New-Object System.Collections.ArrayList
             # Add each value into the object to set the policy
             foreach ($value in $values) {
-                $updatedPolicyObject.add($value)
+                $updatedPolicyObject.add($value) | Out-Null
             }
             # If only one or a few of the config fields were set, add the remaining items from $policy.values
             $policy.values | ForEach-Object {
