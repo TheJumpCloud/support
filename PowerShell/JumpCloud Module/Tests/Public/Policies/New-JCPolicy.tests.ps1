@@ -289,4 +289,11 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $usbLinuxPolicy.templateID | Should -Not -BeNullOrEmpty
         }
     }
+    Context 'Manual Test Cases' -skip {
+        It 'When you press *tab* after typing the TemplateName parameter, a list of policy templates are generated' {
+            # manual tasks (press tab key in place of *tab*)
+            # type New-JCPolicy -PolicyName *tab*
+            # a list of templates should be visible
+        }
+    }
 }

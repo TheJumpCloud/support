@@ -452,4 +452,94 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $usbLinuxPolicyUpdated.templateID | Should -Not -BeNullOrEmpty
         }
     }
+    Context 'Manual Test Cases' -skip {
+        # These test cases should be executed locally; Each manual task should be executed when prompted to edit the policy
+        It 'Policy with a string payload can be set interactivly' {
+            # Create a policy
+            $policyName = "Pester - Interactive $(new-randomString -NumberOfChars 8)"
+            $newPolicy = New-JCPolicy -TemplateName darwin_Login_Window_Text -Name $policyName -LoginWindowText "New"
+            # manual tasks
+            # Update Login Window Text to a new value (not "New")
+            $updatedPolicy = Set-JCPolicy -PolicyID $newPolicy.id
+            # Value should be updated
+            $updatedPolicy.values[0].value | Should -Not -Be $newPolicy.values[0].value
+        }
+        It 'Policy with a integer payload can be set interactivly' {
+            # Create a policy
+            $policyName = "Pester - Interactive $(new-randomString -NumberOfChars 8)"
+            $newPolicy = New-JCPolicy -TemplateName darwin_Lock_Screen -Name $policyName -timeout "120"
+            # manual tasks
+            # Update Login timeout to a new value ("140")
+            $updatedPolicy = Set-JCPolicy -PolicyID $newPolicy.id
+            # Value should be updated
+            $updatedPolicy.values[0].value | Should -Not -Be $newPolicy.values[0].value
+        }
+        It 'Policy with a integer payload can be set interactivly' {
+            # Create a policy
+            $policyName = "Pester - Interactive $(new-randomString -NumberOfChars 8)"
+            $newPolicy = New-JCPolicy -TemplateName darwin_Login_Window_Controls -Name $policyName -SHOWFULLNAME $false
+            # manual tasks
+            # Update boolean to a new value ("$true")
+            $updatedPolicy = Set-JCPolicy -PolicyID $newPolicy.id
+            # Value should be updated from false to true
+            $updatedPolicy.values[0].value | Should -Not -Be $newPolicy.values[0].value
+            # Value should be boolean
+            $updatedPolicy.values[0].value | Should -BeOfType boolean
+        }
+        It 'Policy with a listbox payload can be set interactivly' {
+            # Create a policy
+            $policyName = "Pester - Interactive $(new-randomString -NumberOfChars 8)"
+            $newPolicy = New-JCPolicy -TemplateName darwin_Encrypted_DNS_over_HTTPS -Name $policyName -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
+            # manual tasks:
+            # Update server address to contain two values
+            # update supplemental Match Domains to contain two values
+            $updatedPolicy = Set-JCPolicy -PolicyID $newPolicy.id
+            # Server addresses should have two values
+            $updatedPolicy.values[0].value.count | Should -Be 2
+            # supplemental Match Domains should have two values
+            $updatedPolicy.values[2].value.count | Should -Be 2
+        }
+        It 'Policy with a multiSelect payload can be set interactivly' {
+            # Create a policy
+            $policyName = "Pester - Interactive $(new-randomString -NumberOfChars 8)"
+            $newPolicy = New-JCPolicy -TemplateName darwin_App_Notification_Settings -Name $policyName -AlertType None -BadgesEnabled $true -BundleIdentifier "test" -CriticalAlertEnabled $true -NotificationsEnabled $true -PreviewType Never -ShowInNotificationCenter $true -SoundsEnabled $true -ShowInLockScreen $trueScreen $true
+            # manual tasks:
+            # Update AlertType from "None" to be "Persistent Banner"
+            # Update Preview Type from "Never" to be "Always"
+            $updatedPolicy = Set-JCPolicy -PolicyID $newPolicy.id
+            # AlertType should be 0 == "Persistent Banner"
+            $updatedPolicy.values[0].value | Should -Be 2
+            # Preview Type should be 0 == "Always"
+            $updatedPolicy.values[5].value | Should -Be 0
+        }
+        It 'Policy with a customRegTable payload can be set interactivly' {
+            # Create a policy
+            $policyValueList = New-Object System.Collections.ArrayList
+            # Define list Values:
+            $policyValue = [pscustomobject]@{
+                'customData'      = 'data'
+                'customRegType'   = 'DWORD'
+                'customLocation'  = 'location'
+                'customValueName' = 'CustomValue'
+            }
+            # add values to list
+            $policyValueList.add($policyValue)
+            $policyName = "Pester - Interactive $(new-randomString -NumberOfChars 8)"
+            $newPolicy = New-JCPolicy -TemplateName windows_Advanced:_Custom_Registry_Keys -Name $policyName -customRegTable $policyValueList
+            # manual tasks:
+            # add a two new rows of data
+            # modify each of the values in the first row of data, they should not be the same text values used to create the policy
+            # remove the second row (test that delete works)
+            # policy should have two rows when saved
+            $updatedPolicy = Set-JCPolicy -PolicyID $newPolicy.id
+            # Validate tests
+            # two rows of data
+            $updatedPolicy.values.value.count | Should -Be 2
+            # first row of data should have been changed
+            $updatedPolicy.values.value[0].customData | should -not -be $policyValue.customData
+            $updatedPolicy.values.value[0].customRegType | should -not -be $policyValue.customRegType
+            $updatedPolicy.values.value[0].customLocation | should -not -be $policyValue.customLocation
+            $updatedPolicy.values.value[0].customValueName | should -not -be $policyValue.customValueName
+        }
+    }
 }
