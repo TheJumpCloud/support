@@ -24,7 +24,6 @@ function Set-JCPolicyConfigField {
 
         if ($fieldIndex) {
             $field = $templateObject[$fieldIndex]
-            # $field = $templateObject | Where-Object { $_.position -eq $row }
             switch ($field.type) {
                 'boolean' {
                     Do {
@@ -38,7 +37,7 @@ function Set-JCPolicyConfigField {
                                 $fieldValue = [System.Convert]::ToBoolean($fieldValue)
                             }
                         } catch {
-                            Write-Warning "$fieldValue is not a boolean; please enter a boolean string value: (t/f) (true/false)"
+                            Write-Warning "$fieldValue is not a boolean; please enter a boolean value: (t/f) (true/false)"
                         }
                         $field.value = $fieldValue
                         ($policyValues | Where-Object { $_.configFieldID -eq $field.configFieldID }).value = $fieldValue
@@ -165,7 +164,6 @@ function Set-JCPolicyConfigField {
                 'file' {
                     do {
                         $filePath = Read-Host "Enter the file path location of the file for this policy"
-                        # write-host "testing pasth:$($filePath):"
                         $path = Test-Path -Path $filePath
                         if ($path) {
                             # convert file path to base64 string
@@ -226,7 +224,6 @@ function Set-JCPolicyConfigField {
                                 $valueDisplay | Format-Table row, @{Label = "customData"; Expression = { $_.value | Select-Object -ExpandProperty customData } }, @{Label = "customRegType"; Expression = { $_.value | Select-Object -ExpandProperty customRegType } }, @{Label = "customLocation"; Expression = { $_.value | Select-Object -ExpandProperty customLocation } }, @{Label = "customValueName"; Expression = { $_.value | Select-Object -ExpandProperty customValueName } } | Out-Host
                                 $userChoice = $host.ui.PromptForChoice($title, $message, $options, 0)
                             } else {
-                                # No values, just prompt to enter new value (todo, skip to entering new value)
                                 # Case for new tables
                                 $ValueObject = New-Object System.Collections.ArrayList
                                 $userChoice = 1

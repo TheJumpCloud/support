@@ -56,7 +56,6 @@ function New-CustomRegistryTableRow {
             $customData = (Read-Host "Please enter the registry data value")
         }
         if (-Not $customRegType) {
-            # $validRegTypes | Format-Table -Property Row, Name | Out-Host
             $choice = $host.ui.PromptForChoice($title, $message, $options, 0)
             $customRegTypeValue = $validRegTypes[$choice].value
         }

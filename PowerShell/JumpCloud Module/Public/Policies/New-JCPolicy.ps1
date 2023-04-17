@@ -49,7 +49,6 @@ function New-JCPolicy {
         }
 
         if ($templateObject.objectMap -And ($PSBoundParameters["TemplateName"] -OR $PSBoundParameters["TemplateID"])) {
-            # $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $templateObject.objectMap) {
@@ -171,10 +170,6 @@ function New-JCPolicy {
                         'table' {
                             # For custom registry table, validate the object
                             if ($templateObject.objectMap[$i].configFieldName -eq "customRegTable") {
-                                # TODO: validate that the objects passed in are valid
-                                # if ($keyValue.getType().Name -ne 'Object[]') {
-                                #     throw "The object passed in as values input does not match the expected value type. Data is expected to be formatted as a hashtable: @{customData = 'someString'; customLocation = 'location'; customRegType = 'DWORD'; customValueName = 'registryKeyValue' } or ArrayList of PSCustomObjects"
-                                # }
                                 # get default value properties
                                 $RegProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
                                 # get passed in object properties

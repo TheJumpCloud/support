@@ -36,8 +36,7 @@ function Get-JCPolicyTemplateConfigField {
                     # Get Both Values:
                     $val1 = $field.DisplayOptions.select[$i].text
                     $val2 = $field.DisplayOptions.select[$i].value
-                    # Determine which one is an int
-                    # TODO: Joe to review here is this necessary for non-sdk calls?
+                    # Determine which one is an int, these can sometimes be swapped
                     try {
                         [int]$val1 | Out-Null
                         # write-host "$($val1) is an int in first position"
