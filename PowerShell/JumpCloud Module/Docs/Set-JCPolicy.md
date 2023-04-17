@@ -113,7 +113,7 @@ The name of the existing JumpCloud Poliicy template to modify
 ```yaml
 Type: System.String
 Parameter Sets: ByName
-Aliases:
+Aliases: name
 
 Required: True
 Position: Named
