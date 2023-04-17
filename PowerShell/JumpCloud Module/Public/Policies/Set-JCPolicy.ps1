@@ -10,7 +10,9 @@ function Set-JCPolicy {
         $PolicyID,
         [Parameter(Mandatory = $true,
             ParameterSetName = 'ByName',
+            ValueFromPipelineByPropertyName = $false,
             HelpMessage = 'The name of the existing JumpCloud Poliicy template to modify')]
+        [Alias("name")]
         [System.String]
         $PolicyName,
         [Parameter(Mandatory = $false,
@@ -24,30 +26,30 @@ function Set-JCPolicy {
     )
     DynamicParam {
 
-        if ($PolicyID) {
+        if ($PSBoundParameters["PolicyID"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
             $ParameterAttribute.ParameterSetName = "ByID"
             # Get the policy by ID
-            $policy = Get-JCPolicy -PolicyID $PolicyID
-            if ([string]::IsNullOrEmpty($policy.ID)) {
+            $foundPolicy = Get-JCPolicy -PolicyID $PolicyID
+            if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
                 throw "Could not find policy by ID"
             }
 
-        } elseif ($PolicyName) {
+        } elseif ($PSBoundParameters["PolicyName"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
             $ParameterAttribute.ParameterSetName = "ByName"
             # Get the policy by Name
-            $policy = Get-JCPolicy -Name $PolicyName
-            if ([string]::IsNullOrEmpty($policy.ID)) {
+            $foundPolicy = Get-JCPolicy -Name $PolicyName
+            if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
                 throw "Could not find policy by specified Name"
             }
         }
         # If policy is identified, get the dynamic policy set
-        if ($policy.id -And ($policyName -OR $policyID)) {
+        if ($foundPolicy.id -And ($PSBoundParameters["PolicyName"] -OR $PSBoundParameters["PolicyID"])) {
             # Set the policy template object based on policy
-            $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
+            $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $templateObject.objectMap) {
@@ -110,20 +112,19 @@ function Set-JCPolicy {
     }
     process {
         # Get Existing Policy Data if not set through dynamic param
-        if (([string]::IsNullOrEmpty($policy.ID)) -And ($policyID)) {
+        if (([string]::IsNullOrEmpty($foundPolicy.ID)) -And ($policyID)) {
             # Get the policy by ID
-            $policy = Get-JCPolicy -PolicyID $PolicyID
-            if ([string]::IsNullOrEmpty($policy.ID)) {
+            $foundPolicy = Get-JCPolicy -PolicyID $PolicyID
+            if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
                 throw "Could not find policy by ID"
             }
         }
-        # Get Config Field Values #TODO: no need to do this if we specify values
-        $templateObject = Get-JCPolicyTemplateConfigField -templateID $policy.Template.Id
+        $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
         # First set the name from PSParamSet if set; else set from policy
-        $policyName = if ($PSBoundParameters["NewName"]) {
+        $policyNameFromProcess = if ($PSBoundParameters["NewName"]) {
             $NewName
         } else {
-            $policy.name
+            $foundPolicy.name
         }
         $params = $PSBoundParameters
         $paramterSet = $params.keys
@@ -213,7 +214,7 @@ function Set-JCPolicy {
                     $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 } else {
                     # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
-                    $templateObject.objectMap[$i].value = ($policy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
+                    $templateObject.objectMap[$i].value = ($foundPolicy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
                     $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 }
             }
@@ -225,8 +226,8 @@ function Set-JCPolicy {
             foreach ($value in $values) {
                 $updatedPolicyObject.add($value) | Out-Null
             }
-            # If only one or a few of the config fields were set, add the remaining items from $policy.values
-            $policy.values | ForEach-Object {
+            # If only one or a few of the config fields were set, add the remaining items from $foundPolicy.values
+            $foundPolicy.values | ForEach-Object {
                 if ($_.configFieldID -notin $updatedPolicyObject.configFieldID) {
                     $updatedPolicyObject.Add($_) | Out-Null
                 }
@@ -234,18 +235,18 @@ function Set-JCPolicy {
         } else {
             if (($templateObject.objectMap).count -gt 0) {
                 # Begin user prompt
-                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $policy.values
+                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
                 # User selects edit all fields
                 if ($initialUserInput.fieldSelection -eq 'A') {
                     for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $policy.values
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
                     }
                     # Display policy values
                     # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
                 }
                 # User selects edit individual field
                 elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $policy.values
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
                     # For set-jcpolicy, add the help & label options
                     $updatedPolicyObject | ForEach-Object {
                         if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
@@ -255,22 +256,22 @@ function Set-JCPolicy {
                     }
                     Do {
                         # Hide option to edit all fields
-                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $policy.values
-                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $policy.values
+                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
                     } while ($userInput.fieldSelection -ne 'C')
                 }
             }
         }
         if ($updatedPolicyObject) {
             $body = [PSCustomObject]@{
-                name     = $policyName
-                template = @{id = $policy.Template.Id }
+                name     = $policyNameFromProcess
+                template = @{id = $foundPolicy.Template.Id }
                 values   = @($updatedPolicyObject)
             } | ConvertTo-Json -Depth 99
         } else {
             $body = [PSCustomObject]@{
-                name     = $policyName
-                template = @{id = $policy.Template.Id }
+                name     = $policyNameFromProcess
+                template = @{id = $foundPolicy.Template.Id }
             } | ConvertTo-Json -Depth 99
         }
         $headers = @{
@@ -278,7 +279,7 @@ function Set-JCPolicy {
             'x-org-id'     = $env:JCOrgId
             'content-type' = "application/json"
         }
-        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($policy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
+        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($foundPolicy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
         if ($response) {
             $response | Add-Member -MemberType NoteProperty -Name "templateID" -Value $response.template.id
         }

@@ -7,9 +7,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         $policyTemplates = Get-JcSdkPolicyTemplate
     }
     Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
-        BeforeAll {
-            $policyTemplates = Get-JcSdkPolicyTemplate
-        }
         It 'Sets a policy with a string/text type dynamic parameter' {
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
@@ -175,9 +172,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
     }
     Context 'Sets policies using the dynamic parameter set using the ByName parameter set' {
-        BeforeAll {
-            $policyTemplates = Get-JcSdkPolicyTemplate
-        }
         It 'Sets a policy with a string/text type dynamic parameter' {
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
@@ -341,14 +335,11 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
     }
     Context 'Sets policies using the object values parameter set' {
-        BeforeAll {
-            $policyTemplates = Get-JcSdkPolicyTemplate
-        }
         It 'sets a policy using the values object where a policy only has a string type' {
             $origText = "Pester Test"
             $updatedText = "Updated Pester Test"
             $valuesMacLoginPolicy = New-JCPolicy -templateID 5ade0cfd1f24754c6c5dc9f2 -Name "Pester - Mac - Login Window Text Policy - values" -LoginwindowText $origText
-            # Update the first text value from the orig policy
+            # Update the first text value from the original policy
             $valuesMacLoginPolicy.values[$valuesMacLoginPolicy.values.count - 1].value = $updatedText
             $updatedValuesMacLoginPolicy = Set-JCPolicy -policyID $valuesMacLoginPolicy.id -values $valuesMacLoginPolicy.values
             # the policy should be updated from the policy values object
@@ -415,7 +406,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $policyValueList.add($policyValue)
             # create the policy
             $TablePolicy = New-JCPolicy -templateID $templateId -customRegTable $policyValueList -Name "Pester - Registry Values Set"
-            # Update the first value from the orig policy
+            # Update the first value from the original policy
             $updateCustomDataString = "Updated Custom Data"
             #Replace the first value loop through
             $tablePolicy.values.value[0].customData = $updateCustomDataString
@@ -427,27 +418,26 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
 
     }
     Context 'Sets policies using the pipeline parameters' {
-        BeforeAll {
-            $policyTemplates = Get-JcSdkPolicyTemplate
-        }
         It 'sets a policy using the pipeline input from New-JCPolicy where the policy has no payload' {
             # you should be able to set a policy with no payload
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "activation_lock_darwin" }
             $templateId = $policyTemplate.id
-            $noPayloadPolicy = New-JCpolicy -Name "Pester - Pipeline Policy No Payload" -templateID $templateId
-            $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -NewName "Pester - Pipeline Policy No Payload Updated"
+            $nameString = "Pester - Pipeline Policy No Payload $(new-randomString -NumberOfChars 8)"
+            $noPayloadPolicy = New-JCpolicy -Name $nameString -templateID $templateId
+            $updatedNoPayloadPolicy = $noPayloadPolicy | Set-JCPolicy -NewName "$($noPayloadPolicy.Name) Updated"
             # the name should be updated:
-            $updatedNoPayloadPolicy.Name | Should -Be "Pester - Pipeline Policy No Payload Updated"
+            $updatedNoPayloadPolicy.Name | Should -Be "$($noPayloadPolicy.Name) Updated"
         }
         It 'Sets a policy using the pipeline input from Get-JCPolicy where the policy has a string payload' {
             # create a policy
-            $stringPayloadPolicy = New-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload $(new-randomString -NumberOfChars 8)" -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true
+            $nameString = "Pester - Pipeline Policy String Bool Payload $(new-randomString -NumberOfChars 8)"
+            $stringPayloadPolicy = New-JCPolicy -Name $nameString -templateID 6308ccfc21c21b0001853799 -setIPAddress "1.1.1.1" -setPort "4333" -setResourcePath "/here/" -setForceTLS $true
             # Get the policy object
-            $policy = Get-JCPolicy -Name "Pester - Pipeline Policy String Bool Payload"
+            $policy = Get-JCPolicy -Name $stringPayloadPolicy.Name
             # Update the policy name
-            $updatedPolicy = $policy | Set-JCPolicy -NewName "Pester - Pipeline Policy String Bool Payload Updated"
-            # policy name shoud be updated
-            $updatedPolicy.name | Should -Be "Pester - Pipeline Policy String Bool Payload Updated"
+            $updatedPolicy = $policy | Set-JCPolicy -NewName "$($policy.Name) Updated"
+            # policy name should be updated
+            $updatedPolicy.name | Should -Be "$($policy.Name) Updated"
         }
     }
     Context 'Set-JCPolicy should reutrn policies with the correct data types' {

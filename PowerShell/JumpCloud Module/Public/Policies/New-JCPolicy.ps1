@@ -22,7 +22,7 @@ function New-JCPolicy {
         $Values
     )
     DynamicParam {
-        if ($TemplateID) {
+        if ($PSBoundParameters["TemplateID"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
             $ParameterAttribute.ParameterSetName = "ByID"
@@ -32,7 +32,7 @@ function New-JCPolicy {
                 throw "Could not find policy template by ID"
             }
 
-        } elseif ($TemplateName) {
+        } elseif ($PSBoundParameters["TemplateName"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
             $ParameterAttribute.ParameterSetName = "ByName"
@@ -48,7 +48,7 @@ function New-JCPolicy {
             }
         }
 
-        if ($templateObject.objectMap -And ($TemplateName -OR $TemplateID)) {
+        if ($templateObject.objectMap -And ($PSBoundParameters["TemplateName"] -OR $PSBoundParameters["TemplateID"])) {
             # $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
