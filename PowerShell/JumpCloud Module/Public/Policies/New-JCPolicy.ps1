@@ -159,7 +159,7 @@ function New-JCPolicy {
                                 # Given case for single string passed in as dynamic input, convert to a list
                                 $listRows = New-Object System.Collections.ArrayList
                                 foreach ($regItem in $keyValue) {
-                                    $listRows.Add($regItem)
+                                    $listRows.Add($regItem) | Out-Null
                                 }
                                 $templateObject.objectMap[$i].value = $listRows
                             } elseif ($($keyValue).getType().name -eq 'Object[]') {
@@ -195,7 +195,7 @@ function New-JCPolicy {
                             }
                             $regRows = New-Object System.Collections.ArrayList
                             foreach ($regItem in $keyValue) {
-                                $regRows.Add($regItem)
+                                $regRows.Add($regItem) | Out-Null
                             }
                             $templateObject.objectMap[$i].value = $regRows
                         }
