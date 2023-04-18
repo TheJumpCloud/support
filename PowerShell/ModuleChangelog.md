@@ -1,3 +1,18 @@
+## 2.4.0
+
+Release Date: April 13, 2023
+
+#### RELEASE NOTES
+
+```
+New Policy Functions, Set-JCpolicy, New-JCPolicy added to the module
+```
+
+#### FEATURES:
+
+New-JCPolicy Added, create new JumpCloud Policies programmatically
+Set-JCPolicy Added, update existing JumpCloud Policies programmatically
+
 ## 2.3.0
 
 Release Date: March 20, 2023
@@ -15,10 +30,10 @@ This release improves the functionality of the Add/Remove GroupMember functions 
 #### IMPROVEMENTS:
 
 - Replaced Invoke-WebRequest calls in the following functions with SDK functions to improve TTC and remove
-    - Add-JCSystemGroupMember
-    - Remove-JCSystemGroupMember
-    - Add-JCUserGroupMember
-    - Remove-JCUserGroupMember
+  - Add-JCSystemGroupMember
+  - Remove-JCSystemGroupMember
+  - Add-JCUserGroupMember
+  - Remove-JCUserGroupMember
 
 ## 2.2.0
 

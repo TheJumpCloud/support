@@ -34,4 +34,13 @@ Describe -Tag:('JCPolicy') 'Get-JCPolicy 1.10' {
         $SingleResult = Get-JCPolicy -Name:($PesterParams_SinglePolicy.Name)
         $SingleResult.Name | Should -Be $PesterParams_SinglePolicy.Name
     }
+
+    It "Returns a policy with the expected parameters" {
+        $SingleResult = Get-JCPolicy -Name:($PesterParams_SinglePolicy.Name)
+        $SingleResult.name | Should -Not -BeNullOrEmpty
+        $SingleResult.id | Should -Not -BeNullOrEmpty
+        $SingleResult.values | Should -BeNullOrEmpty
+        $SingleResult.template | Should -Not -BeNullOrEmpty
+        $SingleResult.templateID | Should -Not -BeNullOrEmpty
+    }
 }
