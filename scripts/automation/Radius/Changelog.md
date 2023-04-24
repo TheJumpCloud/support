@@ -1,0 +1,30 @@
+## 1.0.1
+
+Release Date: April 21, 2023
+
+#### RELEASE NOTES
+
+```
+Users with Local User Account names that differ from their JumpCloud Username are now supported
+```
+
+#### FEATURES:
+
+- If a user's local account name (systemUsername) is specified on an account, the certificates for those users will be generated with their local account name (not username) and installed correctly.
+
+## 1.0.0
+
+Release Date: March 21, 2023
+
+#### RELEASE NOTES
+
+```
+Iniital release of the Passwordless Radius User Certificate Generation automation scritps
+```
+
+#### FEATURES:
+
+- Generate/ Import CA Certificate
+- Generate User Certificates from CA Certificate
+- Distribute User Certificates to JumpCloud Devices w/ JumpCloud Commands
+- Monitor Command Deployments
