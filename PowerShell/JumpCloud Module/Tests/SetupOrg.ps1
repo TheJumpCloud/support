@@ -17,7 +17,7 @@ Try {
         Param(
             [switch]$Users
             , [switch]$Systems
-            # , [switch]$Policies
+            , [switch]$Policies
             , [switch]$Groups
             # , [switch]$Applications
             # , [switch]$Directories
@@ -58,9 +58,21 @@ Try {
         If ($RadiusServers) {
             $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
         }
+        if ($Policies) {
+            $allPolicies = Get-JCPolicy
+            foreach ($policy in $allPolicies.id) {
+                $null = Remove-JcSdkPolicy -Id $policy
+            }
+        }
     }
-    Remove-Org -Users -Groups -Commands -RadiusServers
+    Remove-Org -Users -Groups -Commands -RadiusServers -Policies
 
+    # Generate required policies
+    foreach ( $policyName in $PesterParamsHash_Common.MultiplePolicyList ) {
+        If (-not (Get-JCPolicy -Name $policyName)) {
+            New-JCpolicy -templateName linux_Disable_USB_Storage -Name $policyName
+        }
+    }
     # Setup org
     $PesterParamsHash_BuildOrg = @{
         # Newly created objects
@@ -128,6 +140,7 @@ Try {
             Remove-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
         };
     }
+
     # Combine all hash tables into one list and foreach of their values create a new global parameter
     (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
         $_.GetEnumerator() | ForEach-Object {

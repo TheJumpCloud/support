@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.3.0
+Help Version: 2.4.0
 Locale: en-US
 ---
 
@@ -126,6 +126,13 @@ A guided walk through that creates a command deployment CSV file on your local m
 ### [New-JCImportTemplate](New-JCImportTemplate.md)
 A guided walk through that creates a JumpCloud User Import CSV file on your local machine.
 
+### [New-JCPolicy](New-JCPolicy.md)
+New-JCPolicy creates new JumpCloud Policies in an organization by TemplateID or TemplateNames. JumpCloud policies can be created in three different ways. The New/Set-JCPolicy functions each have a dynamic set of parameters specific to each policy template, this dynamic set of parameters is generated after specifying a valid TemplateID or TemplateName. New/Set-JCPolicy functions can also be set through a valid `value` parameter which is specific to each template policy. Lastly, New/Set-JCPolicy functions can be set through a guided interface.
+
+TemplateIDs or TemplateNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL while creating new policies. TemplateNames can be dynamically pulled in while using the `New-JCPolicy` function by typing: `New-JCPolicy -TemplateName *tab*` where the tab key is pressed in place of `*tab*`, if prompted, press 'y' to list all policies. Policies by operating system can be 'searched' by typing `darwin` (macOS), `windows`, `linux`, `ios`. For example, `New-JCPolicy -TemplateName darwin*tab*` where the tab key is pressed in place of `*tab*`, the list of available macOS policies would then be displayed and can be autocompleted through further tab presses.
+
+At a minimum to display the dynamic set of parameters per template, the `TemplateID` or `TemplateName` must be specified. Tab actions display the available dynamic parameters available per function. For example, `New-JCPolicy -TemplateName darwin_Login_Window_Text -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `darwin_Login_Window_Text` policy. Dynamic parameters for templates are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
+
 ### [New-JCRadiusServer](New-JCRadiusServer.md)
 Creates a JumpCloud radius server.
 
@@ -185,6 +192,13 @@ Updates an existing JumpCloud command
 
 ### [Set-JCOrganization](Set-JCOrganization.md)
 Allows a multi tenant admin to update their connection to a specific JumpCloud organization.
+
+### [Set-JCPolicy](Set-JCPolicy.md)
+Set-JCPolicy updates existing JumpCloud Policies in an organization by PolicyID or PolicyName. JumpCloud policies can be updated in three different ways. The New/Set-JCPolicy functions each have a dynamic set of parameters specific to each policy template, this dynamic set of parameters is generated after specifying a valid TemplateID or PolicyName. New/Set-JCPolicy functions can also be set through a valid `value` parameter which is specific to each template policy. Lastly, New/Set-JCPolicy functions can be set through a guided interface.
+
+PolicyIDs or PolicyNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL on existing policies or running `Get-JCpolicy -Name "Some Policy Name` to get the policy by ID. PolicyNames can be specified if you know the name of a policy you wish to update or by running `Get-JCpolicy -Name "Some Policy Name` to get the policy by Name
+
+Set-JCPolicy can display the available parameters per policy if a `PolicyName` or `PolicyID` is specified. Tab actions display the available dynamic parameters available per function. For example, `Set-JCPolicy -PolicyName "macOS - Login Window Policy" -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `macOS - Login Window Policy` policy. Dynamic parameters for policies are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
 
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.

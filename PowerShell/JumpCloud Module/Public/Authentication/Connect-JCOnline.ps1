@@ -196,6 +196,24 @@ Function Connect-JCOnline () {
             } Else {
                 Write-Error ('Unable to set module authentication')
             }
+            # set Argument Completer(s) which require authentication
+            $templates = Get-JCSDKPolicyTemplate
+            $global:TemplateNameList = New-Object System.Collections.ArrayList
+            foreach ($template in $templates) {
+                $templateHashObject = [PSCustomObject]@{
+                    Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
+                    Id   = $template.Id
+                }
+                $TemplateNameList.Add($templateHashObject) | Out-Null
+            }
+
+            Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
+                param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+
+                $TypeFilter = $fakeBoundParameter.Name;
+                $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" }  | Sort-Object -Unique | ForEach-Object { $_ }
+            }
+
         } Catch {
             Write-Error $_
         }
