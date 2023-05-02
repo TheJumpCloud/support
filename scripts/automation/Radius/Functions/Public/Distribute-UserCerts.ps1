@@ -277,7 +277,7 @@ if (`$CurrentUser -eq "$($user.userName)") {
     # expand archive as root and copy to temp location
     Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\RadiusCert -Force
     `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
-    `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String "secret1234!" -AsPlainText -Force
+    `$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String $JCUSERCERTPASS -AsPlainText -Force
     Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
     }
     `$imported = Get-PfxData -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx"
@@ -322,7 +322,7 @@ if (`$CurrentUser -eq "$($user.userName)") {
     }
 
     # Lastly validate if the cert was installed
-    if (`$certValidate){
+    if (`$certValidate.Trim() -eq "True"){
         Write-Host "Cert was installed"
     } else {
         Throw "Cert was not installed"
