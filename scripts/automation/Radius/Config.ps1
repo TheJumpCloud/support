@@ -4,7 +4,7 @@ $JCAPIKEY = 'YOURAPIKEY'
 $JCORGID = 'YOURORGID'
 # JUMPCLOUD USER GROUP ID
 $JCUSERGROUP = 'YOURJCUSERGROUP'
-# USER CERT PASSWORD (user must enter this when importing cert)
+# USER CERT PASSWORD (this password is sent to the devices via JumpCloud Commands)
 $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
