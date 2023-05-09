@@ -357,7 +357,7 @@ $Arguments = '-NoLogo -NonInteractive -ExecutionPolicy ByPass -WindowStyle Hidde
 
 #### Description
 
-This command will download and install the JumpCloud Password Manager app to the device if it isn't already installed.
+This command will download and install the JumpCloud Password Manager app to the device if it isn't already installed. On slower networks, timeouts with exit code 127 can occu. Manually setting the default timeout limit to 600 seconds may be advisable.
 
 #### _Import This Command_
 

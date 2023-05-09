@@ -186,12 +186,13 @@ exit
 
 #### Description
 
-This command will download and install the JumpCloud Password Manager to the device if it isn't already installed.
+This command will download and install the JumpCloud Password Manager to the device if it isn't already installed. On slower networks, timeouts with exit code 127 can occur. Manually setting the default timeout limit to 600 seconds may be advisable.
 
 #### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Install%20JumpCloud%20Password%20Manager%20App.md"
+$command = Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Install%20JumpCloud%20Password%20Manager%20App.md"
+Set-JCCommand -CommandID $command.id -timeout 600
 ```
