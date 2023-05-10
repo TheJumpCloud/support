@@ -7,12 +7,12 @@ Function Remove-JCPolicy () {
             Position = 0,
             HelpMessage = 'The PolicyID of the JumpCloud policy you wish to remove.')]
         [Alias('_id', 'id')]
-        [String[]]$PolicyID,
+        [String]$PolicyID,
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'Name',
             HelpMessage = 'The Name of the JumpCloud policy you wish to remove.')]
-        [String[]]$Name,
+        [String]$Name,
         [Parameter(HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud Policy.')]
         [Switch]
         $force
@@ -63,8 +63,8 @@ Function Remove-JCPolicy () {
             }
             Name {
                 # Check if Policy exists with given name
-                if ($policyHash.Name -contains ($Name)) {
-                    $PolicyID = $policyHash | Where-Object Name -EQ $Name
+                if ($policyHash.Name -ccontains ($Name)) {
+                    $Policy = $policyHash | Where-Object Name -CEQ $Name
                 } else {
                     throw "Policy does not exist. Run 'Get-JCPolicy | Select-Object Name' to see a list of all your JumpCloud policies"
                 }
@@ -73,24 +73,24 @@ Function Remove-JCPolicy () {
 
                     Write-Warning "Are you sure you wish to delete policy: $Name ?" -WarningAction Inquire
                     try {
-                        $removePolicy = Remove-JcSdkPolicy -Id $PolicyID.id -ErrorAction Stop
+                        $removePolicy = Remove-JcSdkPolicy -Id $Policy.id -ErrorAction Stop
                         $Status = 'Deleted'
                     } catch {
                         $Status = $_.ErrorDetails
                     }
                     $FormattedResults = [PSCustomObject]@{
-                        'Policy'  = $PolicyID.Name
+                        'Policy'  = $Policy.Name
                         'Results' = $Status
                     }
                 } else {
                     try {
-                        $removePolicy = Remove-JcSdkPolicy -Id $PolicyID.id -ErrorAction Stop
+                        $removePolicy = Remove-JcSdkPolicy -Id $Policy.id -ErrorAction Stop
                         $Status = 'Deleted'
                     } catch {
                         $Status = $_.ErrorDetails
                     }
                     $FormattedResults = [PSCustomObject]@{
-                        'Policy'  = $PolicyID.Name
+                        'Policy'  = $Policy.Name
                         'Results' = $Status
                     }
                 }
