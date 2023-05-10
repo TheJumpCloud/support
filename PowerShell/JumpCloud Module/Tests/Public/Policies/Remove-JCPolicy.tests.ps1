@@ -2,6 +2,7 @@ Describe -Tag:('JCPolicy') 'Remove-JCPolicy 1.10' {
     BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It 'Remove Policy by PolicyID' {
         # Create test policy for removal
+        $policyTemplates = Get-JcSdkPolicyTemplate
         $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "rename_local_administrator_account_windows" }
         $templateId = $policyTemplate.id
         $stringPolicy = New-JCPolicy -Name "Pester - Remove Policy Test" -templateID $templateId -ADMINISTRATORSTRING "Test String"
@@ -11,6 +12,7 @@ Describe -Tag:('JCPolicy') 'Remove-JCPolicy 1.10' {
     }
     It 'Remove Policy by Name' {
         # Create test policy for removal
+        $policyTemplates = Get-JcSdkPolicyTemplate
         $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "rename_local_administrator_account_windows" }
         $templateId = $policyTemplate.id
         $stringPolicy = New-JCPolicy -Name "Pester - Remove Policy Test" -templateID $templateId -ADMINISTRATORSTRING "Test String"
