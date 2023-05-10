@@ -14,12 +14,12 @@ schema: 2.0.0
 
 ### ByID
 ```
-Remove-JCPolicy [-PolicyID] <String[]> [-force] [<CommonParameters>]
+Remove-JCPolicy [-PolicyID] <String> [-force] [<CommonParameters>]
 ```
 
 ### Name
 ```
-Remove-JCPolicy [-Name <String[]>] [-force] [<CommonParameters>]
+Remove-JCPolicy [-Name <String>] [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -55,7 +55,7 @@ Accept wildcard characters: False
 The Name of the JumpCloud policy you wish to remove.
 
 ```yaml
-Type: System.String[]
+Type: System.String
 Parameter Sets: Name
 Aliases:
 
@@ -70,7 +70,7 @@ Accept wildcard characters: False
 The PolicyID of the JumpCloud policy you wish to remove.
 
 ```yaml
-Type: System.String[]
+Type: System.String
 Parameter Sets: ByID
 Aliases: _id, id
 
@@ -86,7 +86,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String[]
+### System.String
 
 ## OUTPUTS
 
