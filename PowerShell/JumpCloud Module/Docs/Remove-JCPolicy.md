@@ -8,7 +8,7 @@ schema: 2.0.0
 # Remove-JCPolicy
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Removes a JumpCloud Policy
 
 ## SYNTAX
 
@@ -23,16 +23,23 @@ Remove-JCPolicy [-Name <String>] [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+The Remove-JCPolicy function will remove a JumpCloud Policy from the JumpCloud organization.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Remove-JCPolicy -Name "Allow The Use of Biometrics"
 ```
 
-{{ Add example description here }}
+This will remove the JumpCloud Policy with the name Allow The Use of Biometrics
+
+### Example 2
+```powershell
+PS C:\> Remove-JCPolicy -PolicyID "645bea14b069dd0001bbe232"
+```
+
+This will remove the JumpCloud Policy by its corresponding ID
 
 ## PARAMETERS
 
