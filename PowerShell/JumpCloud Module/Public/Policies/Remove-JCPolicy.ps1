@@ -65,10 +65,6 @@ Function Remove-JCPolicy () {
                 # Check if Policy exists with given name
                 if ($policyHash.Name -contains ($Name)) {
                     $PolicyID = $policyHash | Where-Object Name -EQ $Name
-                    # Check if there are multiple policies with the same name, and throw error
-                    if ($policyID.count -gt 1) {
-                        throw "Multiple policies detected with the name: $($Name). Run 'Get-JCPolicy | Select-Object id, Name' to find the id of the Policy"
-                    }
                 } else {
                     throw "Policy does not exist. Run 'Get-JCPolicy | Select-Object Name' to see a list of all your JumpCloud policies"
                 }
