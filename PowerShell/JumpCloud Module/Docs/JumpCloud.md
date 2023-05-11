@@ -158,7 +158,7 @@ Removes a JumpCloud Command Result
 Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command
 
 ### [Remove-JCPolicy](Remove-JCPolicy.md)
-{{ Fill in the Synopsis }}
+Removes a JumpCloud Policy
 
 ### [Remove-JCRadiusReplyAttribute](Remove-JCRadiusReplyAttribute.md)
 Removes Radius reply attributes from a JumpCloud user group.
