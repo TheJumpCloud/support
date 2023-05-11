@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.5.0
+Help Version: 2.4.0
 Locale: en-US
 ---
 
@@ -156,9 +156,6 @@ Removes a JumpCloud Command Result
 
 ### [Remove-JCCommandTarget](Remove-JCCommandTarget.md)
 Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command
-
-### [Remove-JCPolicy](Remove-JCPolicy.md)
-Removes a JumpCloud Policy
 
 ### [Remove-JCRadiusReplyAttribute](Remove-JCRadiusReplyAttribute.md)
 Removes Radius reply attributes from a JumpCloud user group.
