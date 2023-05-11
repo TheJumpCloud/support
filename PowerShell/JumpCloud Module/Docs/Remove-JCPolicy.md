@@ -50,6 +50,7 @@ A SwitchParameter which suppresses the warning message when removing a JumpCloud
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
+
 Required: False
 Position: Named
 Default value: None
@@ -64,6 +65,7 @@ The Name of the JumpCloud policy you wish to remove.
 Type: System.String
 Parameter Sets: Name
 Aliases:
+
 Required: False
 Position: Named
 Default value: None
@@ -78,6 +80,7 @@ The PolicyID of the JumpCloud policy you wish to remove.
 Type: System.String
 Parameter Sets: ByID
 Aliases: _id, id
+
 Required: True
 Position: 0
 Default value: None
@@ -96,5 +99,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.Object
 ## NOTES
+
+## RELATED LINKS
 
 ## RELATED LINKS

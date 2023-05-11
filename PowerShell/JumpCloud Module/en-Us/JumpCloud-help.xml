@@ -12732,11 +12732,11 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>Remove</command:verb>
       <command:noun>JCPolicy</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Removes a JumpCloud Policy</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Remove-JCPolicy function will remove a JumpCloud Policy from the JumpCloud organization.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12858,9 +12858,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Remove-JCPolicy -Name "Allow The Use of Biometrics"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>This will remove the JumpCloud Policy with the name Allow The Use of Biometrics</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCPolicy -PolicyID "645bea14b069dd0001bbe232"</dev:code>
+        <dev:remarks>
+          <maml:para>This will remove the JumpCloud Policy by its corresponding ID</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
