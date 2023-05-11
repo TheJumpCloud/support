@@ -1,3 +1,17 @@
+## 1.0.2
+
+Release Date: May 2, 2023
+
+#### RELEASE NOTES
+
+```
+Fixed an issue with the JCUSERCERTPASS not being correctly passed into Windows devices when changed from default
+```
+#### FEATURES:
+
+- JCUSERCERTPASS was not being correctly referenced when the device commands are generated resulting in certificates not being installed
+- Adjusted error tracking for more precise results when a certificate wasn't installed
+
 ## 1.0.1
 
 Release Date: April 21, 2023

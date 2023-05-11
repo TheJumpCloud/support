@@ -4,7 +4,7 @@ $JCAPIKEY = 'YOURAPIKEY'
 $JCORGID = 'YOURORGID'
 # JUMPCLOUD USER GROUP ID
 $JCUSERGROUP = 'YOURJCUSERGROUP'
-# USER CERT PASSWORD (user must enter this when importing cert)
+# USER CERT PASSWORD (this password is sent to the devices via JumpCloud Commands)
 $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
@@ -37,7 +37,7 @@ $CertType = "UsernameCn"
 # Do not modify below
 ################################################################################
 
-$UserAgent_ModuleVersion = '1.0.1'
+$UserAgent_ModuleVersion = '1.0.2'
 $UserAgent_ModuleName = 'PasswordlessRadiusConfig'
 #Build the UserAgent string
 $UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"
