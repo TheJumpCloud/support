@@ -21,6 +21,6 @@ Describe -Tag:('JCPolicy') 'Remove-JCPolicy 1.10' {
         $DeletedPolicy.results | Should -Be 'Deleted'
     }
     It "Remove Policy by Non-existant Name" {
-        $DeletedPolicy = Remove-JCPolicy -Name "Pester - Fake Policy Test" -Force | Should -Throw
+        $DeletedPolicy = { Remove-JCPolicy -Name "Pester - Fake Policy Test" -Force -ErrorAction Stop } | Should -Throw
     }
 }
