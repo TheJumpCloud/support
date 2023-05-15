@@ -1,3 +1,17 @@
+## 2.5.0
+
+Release Date: May 11, 2023
+
+#### RELEASE NOTES
+
+```
+New Policy Function, Remove-JCPolicy added to the module
+```
+
+#### FEATURES:
+
+Remove-JCPolicy added, remove existing JumpCloud Policies programmatically
+
 ## 2.4.0
 
 Release Date: May 1, 2023
