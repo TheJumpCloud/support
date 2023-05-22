@@ -29,7 +29,7 @@ Function Get-CommandObjectTable {
                 }
                 $commandResults = Search-JcSdkCommandResult -SearchFilter $SearchFilter
                 if ($commandResults) {
-                    $groupedCommandResults = $commandResults | Group-Object name, SystemId | Sort-Object -Property responseTime -Descending
+                    $groupedCommandResults = $commandResults | Sort-Object -Property responseTime -Descending | Group-Object name, SystemId
                     $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
                     $commandResults | ForEach-Object {
                         if ($_.id -in $mostRecentCommandResults.id) {
@@ -83,7 +83,7 @@ Function Get-CommandObjectTable {
                 }
                 $commandResults = Search-JcSdkCommandResult -SearchFilter $SearchFilter
                 if ($commandResults) {
-                    $groupedCommandResults = $commandResults | Group-Object name, systemId | Sort-Object -Property responseTime -Descending
+                    $groupedCommandResults = $commandResults | Sort-Object -Property responseTime -Descending | Group-Object name, SystemId
                     $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
                     $commandResults | ForEach-Object {
                         if ($_.id -in $mostRecentCommandResults.id) {
@@ -121,7 +121,7 @@ Function Get-CommandObjectTable {
                     if ($finishedCommands) {
                         # If there are finished command results, iterate through each and add to command object array
                         $finishedCommands | ForEach-Object {
-                            if (($finishedCommands.DataExitCode -eq 0)) {
+                            if (($_.DataExitCode -eq 0)) {
                                 $character = "$([char]0x1b)[92mOK"
                                 # Remove successful systems from command associations
                                 Set-JcSdkCommandAssociation -CommandId:("$($command.commandId)") -Op 'remove' -Type:('system') -Id:("$($_.systemId)") -ErrorAction SilentlyContinue | Out-Null
