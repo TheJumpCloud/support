@@ -9,14 +9,18 @@ Function Invoke-CommandsRetry {
         $RetryCommands = @()
         $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json -Depth 6
         $queuedCommands = Get-JCQueuedCommands
-        $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
-        $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
+        $SearchFilter = @{
+            searchTerm = 'RadiusCert-Install'
+            fields     = @('name')
+        }
+        $commandResults = Search-JcSdkCommandResult -SearchFilter $SearchFilter
+        $groupedCommandResults = $commandResults | Sort-Object -Property responseTime -Descending | Group-Object name, SystemId
         $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
     }
     process {
         # Prompt to rerun commands that have failed or expired
         Foreach ($command in $commandsObject.commandAssociations) {
-            $failedCommands = $mostRecentCommandResults | Where-Object exitCode -NE 0
+            $failedCommands = $mostRecentCommandResults | Where-Object DataExitCode -NE 0
 
             if ($queuedCommands.command -contains $command.commandId) {
                 Write-Host "[status] $($command.commandName) is currently $([char]0x1b)[93mPENDING"

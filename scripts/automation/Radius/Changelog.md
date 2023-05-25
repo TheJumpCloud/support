@@ -1,3 +1,17 @@
+## 1.0.3
+
+Release Date: May 24, 2023
+
+#### RELEASE NOTES
+
+```
+Fixed an issue affecting permissions on certain MacOS devices when attempting to deploy certs
+Improved performance when reviewing Command Results by changing fetch requests to Search-JCSDKCommandResult endpoint
+```
+#### FEATURES:
+
+- Fixed an issue affecting permissions on certain MacOS devices when attempting to deploy certs
+- Improved performance when reviewing Command Results by changing fetch requests to Search-JCSDKCommandResult endpoint
 ## 1.0.2
 
 Release Date: May 2, 2023

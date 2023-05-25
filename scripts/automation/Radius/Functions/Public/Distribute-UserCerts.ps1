@@ -112,6 +112,7 @@ foreach ($user in $userArray) {
                 Command           = @"
 set -e
 unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
+chmod 755 /tmp/$($user.userName)-client-signed.pfx
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certHash.serial)"

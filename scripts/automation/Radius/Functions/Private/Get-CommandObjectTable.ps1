@@ -23,15 +23,19 @@ Function Get-CommandObjectTable {
                 $CommandObjectTable = @()
 
                 # Clean up command results
-                $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
+                $SearchFilter = @{
+                    searchTerm = 'RadiusCert-Install'
+                    fields     = @('name')
+                }
+                $commandResults = Search-JcSdkCommandResult -SearchFilter $SearchFilter
                 if ($commandResults) {
-                    $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
+                    $groupedCommandResults = $commandResults | Sort-Object -Property responseTime -Descending | Group-Object name, SystemId
                     $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
                     $commandResults | ForEach-Object {
-                        if ($_._id -in $mostRecentCommandResults._id) {
+                        if ($_.id -in $mostRecentCommandResults.id) {
                             return
                         } else {
-                            Remove-JCCommandResult -CommandResultID $_._id -force | Out-Null
+                            Remove-JCCommandResult -CommandResultID $_.id -force | Out-Null
                         }
                     }
                 }
@@ -42,17 +46,17 @@ Function Get-CommandObjectTable {
                     if ($finishedCommands) {
                         # If there are finished command results, iterate through each and add to command object array
                         $finishedCommands | ForEach-Object {
-                            if (($_.exitCode -ne 0)) {
+                            if (($_.DataExitCode -ne 0)) {
                                 $character = "$([char]0x1b)[91mFAILED"
-                                $output = Get-JCCommandResult -id $_._id | Select-Object -ExpandProperty output
+                                #$output = Get-JCCommandResult -id $_._id | Select-Object -ExpandProperty output
                             } else {
                                 continue
                             }
                             $CommandTable = @{
                                 commandName       = $command.commandName
-                                systemDisplayName = $_.system
+                                systemDisplayName = $SystemHash | Where-Object _id -EQ $_.systemId | Select-Object -ExpandProperty displayName
                                 status            = $character
-                                output            = $output
+                                output            = $_.DataOutput
                             }
                             $CommandObjectTable += $CommandTable
                         }
@@ -73,15 +77,19 @@ Function Get-CommandObjectTable {
                 $CommandObjectTable = @()
 
                 # Clean up command results
-                $commandResults = Get-JCCommandResult | Where-Object name -Like "RadiusCert-Install*"
+                $SearchFilter = @{
+                    searchTerm = 'RadiusCert-Install'
+                    fields     = @('name')
+                }
+                $commandResults = Search-JcSdkCommandResult -SearchFilter $SearchFilter
                 if ($commandResults) {
-                    $groupedCommandResults = $commandResults | Group-Object name, system | Sort-Object -Property responseTime -Descending
+                    $groupedCommandResults = $commandResults | Sort-Object -Property responseTime -Descending | Group-Object name, SystemId
                     $mostRecentCommandResults = $groupedCommandResults | ForEach-Object { $_.Group | Select-Object -First 1 }
                     $commandResults | ForEach-Object {
-                        if ($_._id -in $mostRecentCommandResults._id) {
+                        if ($_.id -in $mostRecentCommandResults.id) {
                             return
                         } else {
-                            Remove-JCCommandResult -CommandResultID $_._id -force | Out-Null
+                            Remove-JCCommandResult -CommandResultID $_.id -force | Out-Null
                         }
                     }
                 }
@@ -113,7 +121,7 @@ Function Get-CommandObjectTable {
                     if ($finishedCommands) {
                         # If there are finished command results, iterate through each and add to command object array
                         $finishedCommands | ForEach-Object {
-                            if (($finishedCommands.exitCode -eq 0)) {
+                            if (($_.DataExitCode -eq 0)) {
                                 $character = "$([char]0x1b)[92mOK"
                                 # Remove successful systems from command associations
                                 Set-JcSdkCommandAssociation -CommandId:("$($command.commandId)") -Op 'remove' -Type:('system') -Id:("$($_.systemId)") -ErrorAction SilentlyContinue | Out-Null
@@ -122,7 +130,7 @@ Function Get-CommandObjectTable {
                             }
                             $CommandTable = @{
                                 commandName       = $command.commandName
-                                systemDisplayName = $_.system
+                                systemDisplayName = $SystemHash | Where-Object _id -EQ $_.systemId | Select-Object -ExpandProperty displayName
                                 status            = $character
                             }
                             $CommandObjectTable += $CommandTable
