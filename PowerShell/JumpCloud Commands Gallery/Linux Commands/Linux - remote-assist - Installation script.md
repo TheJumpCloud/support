@@ -18,7 +18,7 @@ linux
 # shellcheck disable=SC1091,SC1090,SC2059
 
 if [[ "${UID}" != 0 ]]; then
-    (>&2 echo "Error:  $0 must be run as root")
+    (>&2 echo "Error: $0 must be run as root")
     exit 1
 fi
 
