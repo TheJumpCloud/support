@@ -505,8 +505,14 @@ Function Update-JCUsersFromCSV () {
                 }
 
                 catch {
-
-                    $Status = 'User does not exist'
+                    If ($_.ErrorDetails) {
+                        $Status = $_.ErrorDetails
+                    } elseif ($_.Exception) {
+                        $Status = $_.Exception.Message
+                    }
+                    if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username)) {
+                        $Status = 'User does not exist'
+                    }
 
                     $FormattedResults = [PSCustomObject]@{
 
