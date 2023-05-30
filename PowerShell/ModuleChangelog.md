@@ -1,24 +1,16 @@
-## 2.6.0
+## 2.5.1
 
-Release Date: May 26, 2023
+Release Date: May 30, 2023
 
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+Bug fix for Update-JCUsersFromCSV function
 ```
-
-#### FEATURES:
-
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
 
 #### BUG FIXES:
 
-{{Fill in the Bug Fixes}}
+Update-JCUsersFromCSV would throw an incorrect status message if updated custom attributes or other API errors would be thrown during script execution. Now the correct error statement from our API should be displayed in the status message object on each updated user.
 
 ## 2.5.0
 
