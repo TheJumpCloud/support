@@ -259,7 +259,12 @@ fi
 If ("Nuget" -notin `$PkgProvider.Name){
     Install-PackageProvider -Name NuGet -Force
 }
-`$CurrentUser = ((Get-WMIObject -ClassName Win32_ComputerSystem).Username).Split('\')[1]
+`$CurrentUser = (Get-WMIObject -ClassName Win32_ComputerSystem).Username
+if ( -Not [string]::isNullOrEmpty(`$CurrentUser) ){
+    `$CurrentUser = `$CurrentUser.Split('\')[1]
+} else {
+    `$CurrentUser = `$null
+}
 if (`$CurrentUser -eq "$($user.userName)") {
     if (-not(Get-InstalledModule -Name RunAsUser -errorAction "SilentlyContinue")) {
         Write-Host "RunAsUser Module not installed, Installing..."
@@ -329,7 +334,11 @@ if (`$CurrentUser -eq "$($user.userName)") {
         Throw "Cert was not installed"
     }
 } else {
-    Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
+    if (`$CurrentUser -eq `$null){
+        Write-Host "No users are signed into the system. Please ensure $($user.userName) is signed in and retry."
+    } else {
+        Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
+    }
     # finally clean up temp files:
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){
         Remove-Item "C:\Windows\Temp\$($user.userName)-client-signed.zip"
