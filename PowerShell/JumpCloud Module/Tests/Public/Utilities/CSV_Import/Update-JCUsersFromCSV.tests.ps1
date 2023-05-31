@@ -529,7 +529,38 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
         $LDAPUser.ldap_binding_user | should -Be $false
         $UpdateStatus.LdapUserBind | Should -Match "not recognized as a valid Boolean"
     }
-    AfterAll {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+}
+
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
+    Context "Custom Attribute API error should be returned" {
+        It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
+            $user = New-RandomUser -Domain pleasedelete | New-JCUser
+            $CSVDATA = @{
+                Username         = $user.username
+                Attribute1_name  = "bad value"
+                Attribute1_value = 'string'
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/custom_attribute.csv" -Force
+            $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/custom_attribute.csv" -force
+            # the error message should show that custom attribute names cannot contain spaces
+            $UpdateStatus[0].status | Should -Match "Attribute names may not contain spaces"
+            $UpdateStatus[0].status | Should -Not -Match "User does not exist"
+        }
+        It "When a custom attribute name has a non-alphanumeric in the field, the API should return an error message in the status field" {
+            $user = New-RandomUser -Domain pleasedelete | New-JCUser
+            $CSVDATA = @{
+                Username         = $user.username
+                Attribute1_name  = "bad.value"
+                Attribute1_value = 'string'
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/custom_attribute.csv" -Force
+            $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/custom_attribute.csv" -force
+            # the error message should show that custom attribute names cannot contain spaces
+            $UpdateStatus[0].status | Should -Match "Attribute names may only contain letters and numbers"
+            $UpdateStatus[0].status | Should -Not -Match "User does not exist"
+        }
     }
+}
+AfterAll {
+    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 }
