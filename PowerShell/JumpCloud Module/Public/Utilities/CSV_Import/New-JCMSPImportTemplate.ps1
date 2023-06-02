@@ -11,7 +11,7 @@ Function New-JCMSPImportTemplate() {
         $Force,
         [Parameter(ParameterSetName = 'force',
             HelpMessage = 'Type of CSV to Create. Update or Import are valid options.',
-            Mandatory = $true)]
+            Mandatory = $false)]
         [ValidateSet('Import', 'Update')]
         $Type
     )
@@ -88,7 +88,7 @@ Function New-JCMSPImportTemplate() {
             }
         }
 
-        if (($ConfirmUpdateVsNew -eq 'U' -and $PSCmdlet.ParameterSetName -eq 'force') -or ($ConfirmUpdateVsNew -eq 'N' -and $PSCmdlet.ParameterSetName -eq 'force')) {
+        if ($ConfirmUpdateVsNew -eq 'U') {
             $CSV = New-Object System.Collections.ArrayList
 
             $fileName = 'JCMSPUpdateImport_' + $date + '.csv'
@@ -116,7 +116,6 @@ Function New-JCMSPImportTemplate() {
                     $skip += $limit
                 } until (($response.results.count -lt $limit))
                 ###
-                $CSVheader = New-Object System.Collections.ArrayList
                 foreach ($Org in $ExistingOrgs.GetEnumerator()) {
                     $CSV.Add([pscustomobject]@{
                             Name           = $Org.displayName
@@ -125,37 +124,20 @@ Function New-JCMSPImportTemplate() {
                         }) | Out-Null
                 }
             }
-        } elseif ($ConfirmUpdateVsNew) {
-            if ($ConfirmUpdateVsNew -eq 'N') {
-                $CSV = [ordered]@{
+            $fileName = 'JCMSPUpdateImport_' + $date + '.csv'
+            Write-Debug $fileName
+        } elseif ($ConfirmUpdateVsNew -eq 'N') {
+            $CSV = New-Object System.Collections.ArrayList
+            $CSV.Add( [PSCustomObject]@{
                     Name           = $null
                     maxSystemUsers = $null
-                }
+                }) | Out-Null
 
-                $fileName = 'JCMSPImport_' + $date + '.csv'
-                Write-Debug $fileName
-            } elseif ($ConfirmUpdateVsNew -eq 'U') {
-                $fileName = 'JCMSPUpdateImport_' + $date + '.csv'
-                Write-Debug $fileName
-
-                # $CSV = [ordered]@{
-                #     Name = $null
-                # }
-            }
-
-            $CSVheader = New-Object psobject -Property $Csv
-
-            if ($ExistingOrgs) {
-                $CSVheader = @()
-
-                foreach ($User in $ExistingOrgs.GetEnumerator()) {
-                    $CSVOrgAdd = $CSV
-                    $CSVOrgAdd.Name = $User.value.displayName
-                    $OrgObject = New-Object psobject -Property $CSVUserAdd
-                    $CSVheader += $OrgObject
-                }
-            }
+            $fileName = 'JCMSPImport_' + $date + '.csv'
+            Write-Debug $fileName
         }
+
+
     }
     end {
         $ExportPath = Test-Path ("$ExportLocation/$FileName")
