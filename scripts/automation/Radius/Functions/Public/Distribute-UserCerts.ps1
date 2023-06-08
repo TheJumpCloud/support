@@ -110,7 +110,6 @@ foreach ($user in $userArray) {
             $CommandBody = @{
                 Name              = "RadiusCert-Install:$($user.userName):MacOSX"
                 Command           = @"
-set -e
 unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
 chmod 755 /tmp/$($user.userName)-client-signed.pfx
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
@@ -148,6 +147,8 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
         for (( i=0; i<`$len; i++ )); do
             if [[ `$currentCertSN == `${arraySN[`$i]} ]]; then
                 echo "Found Cert: SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                installedCertSN=`${arraySN[`$i]}
+                installedCertSHA=`${arraySHA[`$i]}
                 # if cert is installed, no need to update
                 import=false
             else
@@ -165,22 +166,42 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
         /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
         if [[ `$? -eq 0 ]]; then
             echo "Import Success"
+            # get the SHA hash of the newly imported cert
+            installedCertSN=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain | grep snbr | awk '{print `$1}' | sed 's/"snbr"<blob>=0x//g')
+            if [[ `$installedCertSN == `$currentCertSN ]]; then
+                installedCertSHA=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain | grep SHA-1 | awk '{print `$3}')
+            fi
+
         else
             echo "import failed"
             exit 4
         fi
-        # set ssid info; this prevents multiple password prompts
-        for i in `${networkSsid[@]}; do
-            /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -$($macCertSearch) "$($certIdentifier)"
-            if [[ `$? -eq 0 ]]; then
-                echo "SSID: `$i and certificate linked"
-            else
-                echo "Could not associate SSID: `$i and certifiacte"
-            fi
-        done
     else
         echo "cert already imported"
     fi
+
+    # check if the cert secruity preference is set:
+    for i in `${networkSsid[@]}; do
+        echo "begin sertting network SSID: `$i security certificate"
+        if /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"; then
+            echo "it was already set"
+        else
+            echo "certificate not linked from SSID: `$i to certSN: `$currentCertSN, setting now"
+            /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"
+            if [[ `$? -eq 0 ]]; then
+            echo "SSID: `$i and certificate linked"
+            else
+                echo "Could not associate SSID: `$i and certifiacte"
+            fi
+        fi
+    done
+
+
+    # print results
+    echo "################## Cert Install Results ##################"
+    echo "Installed Cert SN: `$installedCertSN"
+    echo "Installed Cert SHA1: `$installedCertSHA"
+    echo "##########################################################"
 
     # Finally clean up files
     if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
