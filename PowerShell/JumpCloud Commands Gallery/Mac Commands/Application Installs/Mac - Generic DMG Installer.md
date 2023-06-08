@@ -10,7 +10,7 @@ mac
 
 ```
 #!/bin/bash
-# *** USAGE *** Version: 1.1
+# *** USAGE *** Version: 1.2
 
 # *NOTE* this template is only designed to work with DMG files and does not support .pkg, .zip files or DMGs that contain .pkg installers.
 
@@ -22,6 +22,7 @@ mac
 
 
 DownloadUrl="DOWNLOAD_URL"
+### Modify below this line at your own risk!
 # Locate DMG Download Link From URL
 regex='^https.*.dmg$'
 if [[ $DownloadUrl =~ $regex ]]; then
