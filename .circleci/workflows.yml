@@ -135,6 +135,13 @@ workflows:
             - Build Nuspec
             - Invoke Git Commit
           context: aws-credentials
+      - Pester Tests Linux MSP:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Invoke Git Commit
+          context: aws-credentials
       - Publish Module Validation:
           requires:
             - Initial Setup
@@ -256,6 +263,19 @@ jobs:
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           ExcludeTagList: "ModuleValidation, JCDeployment"
           IncludeTagList: "*"
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+          Shell: "pwsh"
+  Pester Tests Linux MSP:
+    machine:
+      image: ubuntu-2004:202201-02
+    steps:
+      - setup-pester-env-linux
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER_MTP
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          JumpCloudMspOrg: $env:XORGID_PesterMSP
+          ExcludeTagList: ""
+          IncludeTagList: "MSP"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: "pwsh"
   Publish Module Validation:

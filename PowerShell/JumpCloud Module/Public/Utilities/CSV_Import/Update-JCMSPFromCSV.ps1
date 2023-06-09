@@ -30,18 +30,52 @@ Function Update-JCMSPFromCSV () {
         )]
         [String]
         $ProviderID
-
-
     )
 
     begin {
-        # $OrgUpdateParams = @{ }
-        # $OrgUpdateParams.Add("Name", "Name")
-        # $OrgUpdateParams.Add("maxSystemUsers", "maxSystemUsers")
-        # $OrgUpdateParams.Add("provider_id", $ProviderID)
-        # $OrgUpdateParams.Add("id", "id")
         $ResultsArrayList = New-Object System.Collections.ArrayList
         Write-Verbose "$($PSCmdlet.ParameterSetName)"
+
+        # import the CSV, it should already be validated with the parameter set
+        $orgsToUpdate = Import-Csv -Path $CSVFilePath
+
+        # Validate non-null name values
+        $orgNameCheck = $orgsToUpdate | Where-Object { ($_.name -ne $Null) -and ($_.name -ne "") }
+
+        if ($orgNameCheck.Count -gt 0) {
+            Write-Host ""
+            Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($orgNameCheck.name.Count) orgs"
+
+            # get all orgs:
+            $ExistingOrgCheck = Get-JCSdkOrganization
+
+            # Check for orgs that do not exist:
+            foreach ($Org in $orgNameCheck) {
+                if ($ExistingOrgCheck.id -contains ($Org.id)) {
+                    Write-Host "Organization: $($Org.Name) will be updated."
+                } else {
+                    Write-Host "Organization: $($Org.Name) does not exist on console.jumpcloud.com"
+                    throw "Organization name: $($Org.Name) does not exist on console.jumpcloud.com"
+                }
+            }
+
+            # check for duplicate orgs
+            $orgDup = $orgNameCheck | Group-Object Name
+
+            ForEach ($U in $orgDup) {
+                if ($U.count -gt 1) {
+                    Write-Host "Organization: $($U.Name) is duplicated in update file."
+                    throw "Duplicate organization name: $($U.Name) in update file. organiztion name already exists."
+                }
+            }
+
+
+            Write-Host "organiztion check complete"
+        } else {
+            Write-Host "no orgs to update"
+        }
+
+        $NumberOfNewUsers = $orgsToUpdate.name.count
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
@@ -70,41 +104,7 @@ Function Update-JCMSPFromCSV () {
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
 
-            $orgsToUpdate = Import-Csv -Path $CSVFilePath
-            # only check non-null orgs in CSV
-            $orgNameCheck = $orgsToUpdate | Where-Object { ($_.name -ne $Null) -and ($_.name -ne "") }
-
-            if ($orgNameCheck.Count -gt 0) {
-                Write-Host ""
-                Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($orgNameCheck.name.Count) orgs"
-
-                $ExistingorgNameCheck = Get-JCSdkOrganization
-                # $ExistingorgNameCheck = Get-DynamicHash -Object User -returnProperties username, employeeIdentifier
-
-                foreach ($Org in $orgNameCheck) {
-                    if ($ExistingorgNameCheck.DisplayName -contains ($Org.name)) {
-                        Write-Host "Organization: $($Org.Name) will be updated."
-                    } else {
-                        Write-Verbose "$($Org.Name) does not exist"
-                    }
-                }
-
-                $orgDup = $orgNameCheck | Group-Object Name
-
-                ForEach ($U in $orgDup) {
-                    if ($U.count -gt 1) {
-
-                        Write-Warning "Duplicate organization name: $($U.name) in import file. organiztion names must be unique."
-                    }
-                }
-
-                Write-Host -BackgroundColor Green -ForegroundColor Black "organiztion check complete"
-            }
-
-
-            $NumberOfNewUsers = $orgsToUpdate.name.count
-
-            $title = "Import Summary:"
+            $title = "Update Summary:"
 
             $menu = @"
 
@@ -124,10 +124,10 @@ Function Update-JCMSPFromCSV () {
             if ($Confirm -eq 'Y') {
 
                 Write-Host ''
-                Write-Host "Hang tight! Updating your users. " -NoNewline
+                Write-Host "Hang tight! Updating your organizations. " -NoNewline
                 Write-Host "DO NOT shutdown the console." -ForegroundColor Red
                 Write-Host ''
-                Write-Host "It takes ~ 1 minute per 100 users."
+                Write-Host "It takes ~ 1 minute per 100 organizations."
 
             }
 
@@ -135,73 +135,67 @@ Function Update-JCMSPFromCSV () {
                 break
             }
         }
-    } #begin block end
+    } # begin block end
 
     process {
+        # Define headers
+        $headers = @{
+            "x-api-key"    = $ENV:JCApiKey
+            "content-type" = "application/json"
+        }
+
         [int]$ProgressCounter = 0
         foreach ($OrgUpdate in $orgsToUpdate) {
             $ProgressCounter++
-            $GroupAddProgressParams = @{
-
+            $ProgressParams = @{
                 Activity        = "Updating $($OrgUpdate.Name)"
                 Status          = "Org update $ProgressCounter of $NumberOfNewUsers"
                 PercentComplete = ($ProgressCounter / $NumberOfNewUsers) * 100
 
             }
 
-            Write-Progress @GroupAddProgressParams
-            Write-Host $OrgUpdate
+            Write-Progress @ProgressParams
             $UpdateParams = [PSCustomObject]@{
                 Name           = $OrgUpdate.Name
                 Id             = $OrgUpdate.Id
                 MaxSystemUsers = $OrgUpdate.MaxSystemUsers
-                # provider_id    = $Env:JCProviderID
             }
-            # $UpdateParams.name = $OrgUpdate.Name
-            # $UpdateParams.id = $OrgUpdate.id
-            # $UpdateParams.provider_id = $OrgUpdate.provider_id
-            # $UpdateParams.maxSystemUsers = $OrgUpdate.maxSystemUsers
 
-            # try {
-            $JSONParams = $UpdateParams | ConvertTo-Json
-
-            Write-host "$($JSONParams)"
-
-            $headers = @{}
-            $headers.Add("x-api-key", $ENV:JCApiKey)
-            $headers.Add("content-type", "application/json")
+            # update body variable before calling api
             $body = @{
                 name           = $OrgUpdate.Name
                 maxSystemUsers = [int]$OrgUpdate.MaxSystemUsers
             } | ConvertTo-Json
-            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$($ENV:JCProviderID)/organizations/$($OrgUpdate.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
 
-            Write-Host $response
-            # Set-JcSdkProviderOrganization -body $UpdateParams -providerID $Env:JCProviderID
-            # $NewUser = Set-JCUser @UpdateParams
-
-            # if ($NewUser._id) {
-
-            #     $Status = 'User Updated'
-            # }
-
-            # elseif (-not $NewUser._id) {
-            #     $Status = 'User does not exist'
-            # }
-            # $UpdateParams.maxSystemUsers = $upda/tedOrg.maxSystemUsers
-
-            # } catch {
-            #     # If ($_.ErrorDetails) {
-            #     #     $Status = $_.ErrorDetails
-            #     # } elseif ($_.Exception) {
-            #     #     $Status = $_.Exception.Message
-            #     # }
-
-            #     # if (-not (Get-JCUser -username $UpdateParams.username -returnProperties username)) {
-            #     #     $Status = 'User does not exist'
-            #     # }
-            # }
-            $ResultsArrayList.Add($UpdateParams) | Out-Null
+            # Clear the response variable if it exists:
+            if ($response) {
+                Clear-Variable -Name response
+            }
+            Try {
+                $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$($ENV:JCProviderID)/organizations/$($OrgUpdate.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
+                # Add to result array
+                $ResultsArrayList.Add(
+                    [PSCustomObject]@{
+                        'name'           = $response.name
+                        'maxSystemUsers' = $response.maxSystemUsers
+                        'id'             = $response.id
+                        'status'         = 'Updated'
+                    }) | Out-Null
+            } catch {
+                If ($errMsg.Message) {
+                    $Status = $errMsg.Message
+                } elseif ($errMsg.ErrorDetails) {
+                    $Status = $errMsg.ErrorDetails
+                }
+                # Add to result array
+                $ResultsArrayList.Add(
+                    [PSCustomObject]@{
+                        'name'           = $OrgUpdate.Name
+                        'maxSystemUsers' = [int]$OrgUpdate.MaxSystemUsers
+                        'id'             = $OrgUpdate.id
+                        'status'         = "Not Updated: $status"
+                    }) | Out-Null
+            }
         }
     }
     end {

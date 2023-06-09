@@ -1,6 +1,7 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
@@ -17,7 +18,9 @@ $Tags = ForEach ($PesterTest In $PesterTests) {
     ForEach ($DescribeLine In $DescribeLines) {
         If ($DescribeLine.Line -match 'Tag') {
             $TagParameterValue = ($DescribeLine.Line | Select-String -Pattern:([RegEx]'(?<=-Tag)(.*?)(?=\s)')).Matches.Value
-            @(":", "(", ")", "'") | ForEach-Object { If ($TagParameterValue -like ('*' + $_ + '*')) { $TagParameterValue = $TagParameterValue.Replace($_, '') } }
+            @(":", "(", ")", "'") | ForEach-Object { If ($TagParameterValue -like ('*' + $_ + '*')) {
+                    $TagParameterValue = $TagParameterValue.Replace($_, '')
+                } }
             $TagParameterValue
         } Else {
             Write-Error ('Tag missing in "' + $PesterTestFullName + '" on line number "' + $DescribeLine.LineNumber + '" value "' + ($DescribeLine.Line).Trim() + '"')
@@ -40,7 +43,14 @@ Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps
 . ("$PSScriptRoot/HelperFunctions.ps1")
 # Load SetupOrg
 Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
-. ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+if (-not [string]::IsNullOrEmpty($JumpCloudMspOrg)) {
+    $env:JCApiKey = $JumpCloudApiKeyMsp
+    $env:JCOrgId = $JumpCloudMspOrg
+    $env:JCProviderID = $env:XPROVIDER_ID
+    # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
+} else {
+    . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+}
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
 # $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
 if (-not (Test-Path $PesterResultsFileXmldir)) {
