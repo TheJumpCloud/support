@@ -533,6 +533,9 @@ commands:
       JumpCloudApiKeyMsp:
         type: string
         default: $env:XAPIKEY_PESTER_MTP
+      JumpCloudMspOrg:
+        type: string
+        default: $env:XORGID_PesterMSP
       ExcludeTagList:
         type: string
         default: "None"
