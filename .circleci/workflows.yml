@@ -274,7 +274,7 @@ jobs:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MTP
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
           JumpCloudMspOrg: $env:XORGID_PesterMSP
-          ExcludeTagList: ""
+          ExcludeTagList: "None"
           IncludeTagList: "MSP"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: "pwsh"
