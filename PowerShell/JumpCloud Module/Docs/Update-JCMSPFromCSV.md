@@ -5,41 +5,59 @@ online version: https://github.com/TheJumpCloud/support/wiki/
 schema: 2.0.0
 ---
 
-# Set-JCSettingsFile
+# Update-JCMSPFromCSV
 
 ## SYNOPSIS
-
-Updates the JumpCloud Module Settings File
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
+### GUI (Default)
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>] [-parallelOverride <PSObject>] [<CommonParameters>]
+Update-JCMSPFromCSV [-CSVFilePath] <String> [<CommonParameters>]
+```
+
+### force
+```
+Update-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-The Set-JCSettingsFile function updates an the JumpCloud Module settings file.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
 ### Example 1
-
 ```powershell
-PS C:\> Set-JCSettingsFile -ParallelOverride $true
+PS C:\> {{ Add example code here }}
 ```
 
-Disables parallel processing of results in the JumpCloud PowerShell Module
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -moduleBannerMessageCount
-
-sets the messageCount settings for the moduleBanner feature
+### -CSVFilePath
+The full path to the CSV file you wish to import.
+You can use tab complete to search for .csv files.
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: System.String
 Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -force
+A SwitchParameter which suppresses the GUI and data validation when using the Update-JCMSPFromCSV command.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: force
 Aliases:
 
 Required: False
@@ -49,13 +67,12 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -parallelOverride
-
-sets the Override settings for the parallel feature
+### -ProviderID
+Your Provider ID
 
 ```yaml
-Type: System.Management.Automation.PSObject
-Parameter Sets: (All)
+Type: System.String
+Parameter Sets: force
 Aliases:
 
 Required: False

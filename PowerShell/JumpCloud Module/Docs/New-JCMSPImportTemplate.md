@@ -5,40 +5,39 @@ online version: https://github.com/TheJumpCloud/support/wiki/
 schema: 2.0.0
 ---
 
-# Set-JCSettingsFile
+# New-JCMSPImportTemplate
 
 ## SYNOPSIS
-
-Updates the JumpCloud Module Settings File
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>] [-parallelOverride <PSObject>] [<CommonParameters>]
+New-JCMSPImportTemplate [-Force] [-Type <Object>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-The Set-JCSettingsFile function updates an the JumpCloud Module settings file.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
 ### Example 1
-
 ```powershell
-PS C:\> Set-JCSettingsFile -ParallelOverride $true
+PS C:\> {{ Add example code here }}
 ```
 
-Disables parallel processing of results in the JumpCloud PowerShell Module
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -moduleBannerMessageCount
-
-sets the messageCount settings for the moduleBanner feature
+### -Force
+Parameter to force populate CSV with all headers when creating an update template.
+When selected this option will forcefully replace existing files in the current working directory.
+i.e.
+If you
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -49,14 +48,15 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -parallelOverride
-
-sets the Override settings for the parallel feature
+### -Type
+Type of CSV to Create.
+Update or Import are valid options.
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
+Accepted values: Import, Update
 
 Required: False
 Position: Named
