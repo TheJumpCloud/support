@@ -42,13 +42,14 @@ Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
 # Load SetupOrg
-Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
-if (-not [string]::IsNullOrEmpty($JumpCloudMspOrg)) {
+if ("MSP" -in $IncludeTags) {
+    Write-Host ('[status]MSP Tests setting API Key, OrgID')
     $env:JCApiKey = $JumpCloudApiKeyMsp
     $env:JCOrgId = $JumpCloudMspOrg
     $env:JCProviderID = $env:XPROVIDER_ID
     # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
 } else {
+    Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
     . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 }
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
