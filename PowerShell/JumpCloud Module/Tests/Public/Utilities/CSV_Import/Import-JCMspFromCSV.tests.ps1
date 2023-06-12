@@ -55,7 +55,7 @@ Describe -Tag:('MSP') 'Import-JCMSPFromCSV' {
         }
         it 'should throw an error when the org already exists on console' {
             $orgs = Get-JcSdkOrganization
-            $selectedOrg = $orgs[$(Get-Random (0..$orgs.count))]
+            $selectedOrg = $orgs[$(Get-Random (0..($orgs.count - 1)))]
 
             $orgName = $selectedOrg.DisplayName
             $orgUserMax = '10'

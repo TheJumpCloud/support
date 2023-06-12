@@ -7,9 +7,12 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
         BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($env:XORGID_PesterMSP) -force | Out-Null }
 
         # Validate MSP Test org is set to default:
+        $updatedOrgName = 'Updated PesterMSP'
+        $defaultOrgName = 'PesterMSP'
         $org = Get-JCSdkOrganization -id $env:XORGID_PesterMSP
-        if (($org.Settings.Name -ne "PesterMSP") -And ($org.Settings.Name -ne "Updated PesterMSP")) {
-            Set-JcSdkOrganization -Id $env:XORGID_PesterMSP -Settings @{Name = "PesterMSP" }
+        if (($org.Settings.Name -ne $defaultOrgName) -And ($org.Settings.Name -eq $updatedOrgName)) {
+            Set-JcSdkOrganization -Id $env:XORGID_PesterMSP -Settings @{Name = $defaultOrgName }
+            Write-Host "resetting org name"
         }
     }
 
@@ -52,7 +55,7 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
         $orgs = Get-JcSdkOrganization
         # Select two real orgs:
         $selectedOrg1 = $orgs[$(Get-Random (0..[int]($orgs.count / 2)))]
-        $selectedOrg2 = $orgs[$(Get-Random ([int]($orgs.count / 2 + 1)..$orgs.count))]
+        $selectedOrg2 = $orgs[$(Get-Random ([int]($orgs.count / 2 + 1)..($orgs.count - 1)))]
 
 
         $orgName = "fake name"
@@ -85,7 +88,7 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
             }
             return $obj
         }
-        { Update-JCMSPFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateOrg.csv" -ProviderID $ProviderID -force } | should -Throw "Duplicate organization name: $($selectedOrg1.DisplayName) in import file. organiztion name already exists."
+        { Update-JCMSPFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateOrg.csv" -ProviderID $ProviderID -force } | should -Throw "Duplicate organization name: $($selectedOrg1.DisplayName) in update file. organiztion name already exists."
     }
     It 'Org Name and UserMax is updated with CSV' {
         # Get orgs list:
@@ -93,7 +96,7 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
         # Select one real org:
         $selectedOrg = Get-JcSdkOrganization -Id $env:JCOrgId
 
-        $orgName = "Updated PesterMSP"
+        $orgName = $updatedOrgName
         $orgUserMax = '10'
         $generatedID = 'p46392y0oyc45cez6ntedo92'
         $CSV = New-Object System.Collections.ArrayList
