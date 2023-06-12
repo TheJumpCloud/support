@@ -9053,11 +9053,13 @@ Get-JCUser -Username cClemons</dev:code>
       <command:verb>Import</command:verb>
       <command:noun>JCMSPFromCSV</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Imports a list of JumpCloud MSP organizations from a CSV file created using the New-JCMSPImportTemplate function.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Import-JCMSPFromCSV function does data validation when updating JumpCloud Organizations in bulk from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for organizations whose name already exists and duplicate organization names in the CSV file.</maml:para>
+      <maml:para>The Import-JCMSPFromCSV command can be used to import organization names and max user counts.</maml:para>
+      <maml:para>The Import-JCMSPFromCSV command also has a '-force' parameter which admins can use to skip the gui validation or to use the function in an automation script.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -9077,7 +9079,7 @@ Get-JCUser -Username cClemons</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>force</maml:name>
           <maml:description>
-            <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Update-JCMSPFromCSV command.</maml:para>
+            <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Import-JCMSPFromCSV command.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>System.Management.Automation.SwitchParameter</maml:name>
@@ -9115,7 +9117,7 @@ Get-JCUser -Username cClemons</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>force</maml:name>
         <maml:description>
-          <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Update-JCMSPFromCSV command.</maml:para>
+          <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Import-JCMSPFromCSV command.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
         <dev:type>
@@ -9165,9 +9167,16 @@ Get-JCUser -Username cClemons</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Import-JCMSPFromCSV ./JCMSPImport_06-14-2023.csv</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Imports MSP orgs from the .csv file 'JCMSPImport_06-14-2023.csv'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Import-JCMSPFromCSV ./JCMSPImport_06-14-2023.csv -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the 'Force' parameter to skip the GUI and data validation and import MSP orgs from the file 'JCMSPImport_06-14-2023.csv</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -10002,7 +10011,7 @@ SystemID                 CommandID                Status
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Force</maml:name>
           <maml:description>
-            <maml:para>Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory. i.e. If you</maml:para>
+            <maml:para>Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>System.Management.Automation.SwitchParameter</maml:name>
@@ -10032,7 +10041,7 @@ SystemID                 CommandID                Status
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Force</maml:name>
         <maml:description>
-          <maml:para>Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory. i.e. If you</maml:para>
+          <maml:para>Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
         <dev:type>
@@ -10108,11 +10117,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCMSPImportTemplate</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Creates a CSV file to either create new or update existing MSP organizations in a MSP tenant.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The New-JCMSPImportTemplate command is a menu driven function that creates a CSV template for the `Update-JCMSPFromCSV` and `Import-JCMSPFromCSV` functions. Templates for updated existing orgs are populated with the ids, names and max user counts of existing orgs. The template for new organizations is populated with only a name and max user count column.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -10200,9 +10209,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; New-JCMSPImportTemplate</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Launches the New-JCMSPImportTemplate menu</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -19792,11 +19801,13 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:verb>Update</command:verb>
       <command:noun>JCMSPFromCSV</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Updates a list of JumpCloud MSP organizations from a CSV file created using the New-JCMSPImportTemplate function.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Update-JCMSPFromCSV function does data validation when updating JumpCloud Organizations in bulk from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for organizations whose name already exists and duplicate organization names in the CSV file.</maml:para>
+      <maml:para>The Update-JCMSPFromCSV command can be used to update organization names and max user counts.</maml:para>
+      <maml:para>The Update-JCMSPFromCSV command also has a '-force' parameter which admins can use to skip the gui validation or to use the function in an automation script.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -19904,9 +19915,16 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Update-JCMSPFromCSV ./JCMSPUpdateImport_06-14-2023.csv</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Updates MSP orgs from the .csv file 'JCMSPUpdateImport_06-14-2023.csv'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Update-JCMSPFromCSV ./JCMSPUpdateImport_06-14-2023.csv -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the 'Force' parameter to skip the GUI and data validation and update MSP orgs from the file 'JCMSPUpdateImport_06-14-2023.csv</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

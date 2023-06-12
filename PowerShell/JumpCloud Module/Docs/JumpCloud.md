@@ -109,7 +109,7 @@ Returns the User Group members of a JumpCloud User Group.
 Imports a Mac, Linux or Windows JumpCloud Command into the JumpCloud admin portal from a URL
 
 ### [Import-JCMSPFromCSV](Import-JCMSPFromCSV.md)
-{{ Fill in the Synopsis }}
+Imports a list of JumpCloud MSP organizations from a CSV file created using the New-JCMSPImportTemplate function.
 
 ### [Import-JCUsersFromCSV](Import-JCUsersFromCSV.md)
 Imports a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.
@@ -130,7 +130,7 @@ A guided walk through that creates a command deployment CSV file on your local m
 A guided walk through that creates a JumpCloud User Import CSV file on your local machine.
 
 ### [New-JCMSPImportTemplate](New-JCMSPImportTemplate.md)
-{{ Fill in the Synopsis }}
+Creates a CSV file to either create new or update existing MSP organizations in a MSP tenant.
 
 ### [New-JCPolicy](New-JCPolicy.md)
 New-JCPolicy creates new JumpCloud Policies in an organization by TemplateID or TemplateNames. JumpCloud policies can be created in three different ways. The New/Set-JCPolicy functions each have a dynamic set of parameters specific to each policy template, this dynamic set of parameters is generated after specifying a valid TemplateID or TemplateName. New/Set-JCPolicy functions can also be set through a valid `value` parameter which is specific to each template policy. Lastly, New/Set-JCPolicy functions can be set through a guided interface.
@@ -234,7 +234,7 @@ The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the m
 Running this function will trigger the update of the JumpCloud PowerShell module.
 
 ### [Update-JCMSPFromCSV](Update-JCMSPFromCSV.md)
-{{ Fill in the Synopsis }}
+Updates a list of JumpCloud MSP organizations from a CSV file created using the New-JCMSPImportTemplate function.
 
 ### [Update-JCUsersFromCSV](Update-JCUsersFromCSV.md)
 Updates a set of JumpCloud users from a CSV file created using the New-JCImportTemplate function.
