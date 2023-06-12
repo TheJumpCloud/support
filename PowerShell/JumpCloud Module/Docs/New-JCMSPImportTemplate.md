@@ -8,7 +8,8 @@ schema: 2.0.0
 # New-JCMSPImportTemplate
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+Creates a CSV file to either create new or update existing MSP organizations in a MSP tenant.
 
 ## SYNTAX
 
@@ -17,20 +18,23 @@ New-JCMSPImportTemplate [-Force] [-Type <Object>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+The New-JCMSPImportTemplate command is a menu driven function that creates a CSV template for the `Update-JCMSPFromCSV` and `Import-JCMSPFromCSV` functions. Templates for updated existing orgs are populated with the ids, names and max user counts of existing orgs. The template for new organizations is populated with only a name and max user count column.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> New-JCMSPImportTemplate
 ```
 
-{{ Add example description here }}
+Launches the New-JCMSPImportTemplate menu
 
 ## PARAMETERS
 
 ### -Force
+
 Parameter to force populate CSV with all headers when creating an update template.
 When selected this option will forcefully replace existing files in the current working directory.
 i.e.
@@ -49,6 +53,7 @@ Accept wildcard characters: False
 ```
 
 ### -Type
+
 Type of CSV to Create.
 Update or Import are valid options.
 
@@ -66,6 +71,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -75,6 +81,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

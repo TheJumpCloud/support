@@ -8,35 +8,53 @@ schema: 2.0.0
 # Update-JCMSPFromCSV
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+Updates a list of JumpCloud MSP organizations from a CSV file created using the New-JCMSPImportTemplate function.
 
 ## SYNTAX
 
 ### GUI (Default)
+
 ```
 Update-JCMSPFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 ```
 
 ### force
+
 ```
 Update-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+The Update-JCMSPFromCSV function does data validation when updating JumpCloud Organizations in bulk from a CSV file to warn the administrator of any potential issues during the import process. Examples of warnings include warning messages for organizations whose name already exists and duplicate organization names in the CSV file.
+
+The Update-JCMSPFromCSV command can be used to update organization names and max user counts.
+
+The Update-JCMSPFromCSV command also has a '-force' parameter which admins can use to skip the gui validation or to use the function in an automation script.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Update-JCMSPFromCSV ./JCMSPUpdateImport_06-14-2023.csv
 ```
 
-{{ Add example description here }}
+Updates MSP orgs from the .csv file 'JCMSPUpdateImport_06-14-2023.csv'
+
+### Example 2
+
+```powershell
+PS C:\> Update-JCMSPFromCSV ./JCMSPUpdateImport_06-14-2023.csv -Force
+```
+
+Uses the 'Force' parameter to skip the GUI and data validation and update MSP orgs from the file 'JCMSPUpdateImport_06-14-2023.csv
 
 ## PARAMETERS
 
 ### -CSVFilePath
+
 The full path to the CSV file you wish to import.
 You can use tab complete to search for .csv files.
 
@@ -53,6 +71,7 @@ Accept wildcard characters: False
 ```
 
 ### -force
+
 A SwitchParameter which suppresses the GUI and data validation when using the Update-JCMSPFromCSV command.
 
 ```yaml
@@ -68,6 +87,7 @@ Accept wildcard characters: False
 ```
 
 ### -ProviderID
+
 Your Provider ID
 
 ```yaml
@@ -83,6 +103,7 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -92,6 +113,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

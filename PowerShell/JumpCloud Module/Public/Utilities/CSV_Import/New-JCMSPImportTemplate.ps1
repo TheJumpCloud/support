@@ -5,7 +5,7 @@ Function New-JCMSPImportTemplate() {
     (
         [Parameter(
             ParameterSetName = 'force',
-            HelpMessage = 'Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory. i.e. If you ',
+            HelpMessage = 'Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory.',
             Mandatory = $false)]
         [Switch]
         $Force,
@@ -17,6 +17,11 @@ Function New-JCMSPImportTemplate() {
     )
 
     begin {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
+        }
+
         $date = Get-Date -Format MM-dd-yyyy
 
         if ($PSCmdlet.ParameterSetName -eq 'force') {
