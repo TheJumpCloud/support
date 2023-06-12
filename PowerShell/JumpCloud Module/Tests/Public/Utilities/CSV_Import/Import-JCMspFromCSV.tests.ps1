@@ -1,6 +1,3 @@
-
-# BeforeAll {
-# }
 Describe -Tag:('MSP') 'Import-JCMSPFromCSV' {
 
     BeforeAll {
@@ -12,18 +9,7 @@ Describe -Tag:('MSP') 'Import-JCMSPFromCSV' {
             Set-JcSdkOrganization -Id $env:XORGID_PesterMSP -Settings @{Name = "PesterMSP" }
         }
     }
-
-    Context 'Organization pre-import validation tests' {
-        it 'should throw an error when an organiztion name already exists in the console' {
-
-        }
-        it 'should throw an error when an organiztion name is duplicated in the import CSV' {
-
-        }
-    }
-
     Context 'Organization Import' {
-
         it 'should import a valid org with the correct system users' {
             $orgName = 'org name'
             $orgUserMax = '10'
@@ -104,33 +90,5 @@ Describe -Tag:('MSP') 'Import-JCMSPFromCSV' {
             }
             { import-JCMSPFromCSV -CSVFilePath "$PesterParams_ImportPath/importOrg.csv" -ProviderID $ProviderID -force } | should -Throw "Duplicate organization name: $($orgName) in import file. organiztion name already exists."
         }
-    }
-
-
-    It 'Should return a response' {
-
-    }
-
-    it ' should trhow an error' -skip {
-        Mock Invoke-RestMethod {
-            # Use the actual types returned by your function or directly from Invoke-WebRequest.
-            if ($PSVersionTable.PSEdition -eq "Desktop") {
-                $WR = New-MockObject -Type 'System.Net.HttpWebResponse'
-                $Code = [System.Net.HttpStatusCode]::NotFound
-                # Use Add-Member because StatusCode is a read-only field on HttpWebResponse
-                $WR | Add-Member -MemberType NoteProperty -Name StatusCode -Value $Code -Force
-                $Status = [System.Net.WebExceptionStatus]::ProtocolError
-                $Ex = [System.Net.WebException]::new("404", $null, $Status, $WR)
-            } else {
-                $Message = [System.Net.Http.HttpResponseMessage]::new()
-                $Message.StatusCode = [System.Net.HttpStatusCode]::NotFound
-                $details = [System.Net.WebException]::new('This is the error from my API')
-                $Ex = [Microsoft.PowerShell.Commands.HttpResponseException]::new("404", $Message)
-            }
-            throw $details
-        }
-
-        $status = import-jcMSPFromCSV -CSVFilePath "/Users/jworkman/demo/csvMTP/JCMSPUpdateImport_06-06-2023.csv" -ProviderID $ProviderID -force
-        write-host "status is $status"
     }
 }

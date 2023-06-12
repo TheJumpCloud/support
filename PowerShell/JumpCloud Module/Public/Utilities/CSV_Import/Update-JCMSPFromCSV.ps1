@@ -54,8 +54,8 @@ Function Update-JCMSPFromCSV () {
                 if ($ExistingOrgCheck.id -contains ($Org.id)) {
                     Write-Host "Organization: $($Org.Name) will be updated."
                 } else {
-                    Write-Host "Organization: $($Org.Name) does not exist on console.jumpcloud.com"
-                    throw "Organization name: $($Org.Name) does not exist on console.jumpcloud.com"
+                    Write-Host "Organization: $($Org.Name) with id: $($Org.id) does not exist on console.jumpcloud.com"
+                    throw "Organization name: $($Org.Name) with id: $($Org.id) does not exist on console.jumpcloud.com"
                 }
             }
 
@@ -68,7 +68,6 @@ Function Update-JCMSPFromCSV () {
                     throw "Duplicate organization name: $($U.Name) in update file. organiztion name already exists."
                 }
             }
-
 
             Write-Host "organiztion check complete"
         } else {

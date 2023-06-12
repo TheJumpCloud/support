@@ -1,6 +1,3 @@
-
-# BeforeAll {
-# }
 Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
 
     BeforeAll {
@@ -15,8 +12,7 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
             Write-Host "resetting org name"
         }
     }
-
-    it 'should throw an error when an org name in the csv does not exist in console' {
+    it 'should throw an error when an org id in the csv does not exist in console' {
         # Get orgs list:
         $orgs = Get-JcSdkOrganization
         # Select two real orgs:
@@ -49,7 +45,7 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
             }
             return $obj
         }
-        { Update-JCMSPFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateOrg.csv" -ProviderID $ProviderID -force } | should -Throw "Organization name: $($orgName) does not exist on console.jumpcloud.com"
+        { Update-JCMSPFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateOrg.csv" -ProviderID $ProviderID -force } | should -Throw "Organization name: $($orgName) with id: $($generatedID) does not exist on console.jumpcloud.com"
     }
     it 'should throw an error when duplicate org names in the csv does are defined' {
         $orgs = Get-JcSdkOrganization
@@ -113,28 +109,5 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
         $updatedOrgs.name | should -not -Be $selectedOrg.DisplayName
         $updatedOrgs.name | should -Be $orgName
         $updatedOrgs.maxSystemUsers | should -Be $orgUserMax
-    }
-
-    it ' should trhow an error' -skip {
-        Mock Invoke-RestMethod {
-            # Use the actual types returned by your function or directly from Invoke-WebRequest.
-            if ($PSVersionTable.PSEdition -eq "Desktop") {
-                $WR = New-MockObject -Type 'System.Net.HttpWebResponse'
-                $Code = [System.Net.HttpStatusCode]::NotFound
-                # Use Add-Member because StatusCode is a read-only field on HttpWebResponse
-                $WR | Add-Member -MemberType NoteProperty -Name StatusCode -Value $Code -Force
-                $Status = [System.Net.WebExceptionStatus]::ProtocolError
-                $Ex = [System.Net.WebException]::new("404", $null, $Status, $WR)
-            } else {
-                $Message = [System.Net.Http.HttpResponseMessage]::new()
-                $Message.StatusCode = [System.Net.HttpStatusCode]::NotFound
-                $details = [System.Net.WebException]::new('This is the error from my API')
-                $Ex = [Microsoft.PowerShell.Commands.HttpResponseException]::new("404", $Message)
-            }
-            throw $details
-        }
-
-        $status = Update-JCMSPFromCSV -CSVFilePath "/Users/jworkman/demo/csvMTP/JCMSPUpdateImport_06-06-2023.csv" -ProviderID '5c901bece9665c34ee5b846a' -force
-        write-host "status is $status"
     }
 }
