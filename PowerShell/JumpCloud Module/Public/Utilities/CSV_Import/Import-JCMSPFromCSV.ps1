@@ -42,7 +42,7 @@ Function Import-JCMSPFromCSV () {
 
         if ($orgNameCheck.Count -gt 0) {
             Write-Host ""
-            Write-Host "Validating $($orgNameCheck.Name.Count) orgs"
+            Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($orgNameCheck.Name.Count) orgs"
 
             $ExistingorgNameCheck = Get-JCSdkOrganization
 
