@@ -14,6 +14,14 @@ if [[ "$OSTYPE" =~ ^linux ]]; then
 fi
 # First we need to generate a self-signed CA certificate:
 # Define Certificate Path
+if [[ ! -d "$(dirname -- "${BASH_SOURCE[0]}")/../Cert" ]]; then
+  # script statements if $DIR doesn't exist.
+  mkdir "$(dirname -- "${BASH_SOURCE[0]}")/../Cert"
+fi
+if [[ ! -d "$(dirname -- "${BASH_SOURCE[0]}")/../UserCerts" ]]; then
+  # script statements if $DIR doesn't exist.
+  mkdir "$(dirname -- "${BASH_SOURCE[0]}")/../UserCerts"
+fi
 caPath="$(dirname -- "${BASH_SOURCE[0]}")/../Cert"
 
 # Random password func

@@ -335,7 +335,8 @@ commands:
     steps:
       - run:
           name: Check Raidus Version
-          command: echo "hello world"
+          shell: pwsh.exe
+          command: "./scripts/automation/Radius/test/invoke-pester.ps1"
   validate-commands-gallery-headers:
     steps:
       - checkout
