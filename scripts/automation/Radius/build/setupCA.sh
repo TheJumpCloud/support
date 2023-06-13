@@ -3,11 +3,13 @@ echo $OSTYPE
 
 if [[ "$OSTYPE" =~ ^darwin ]]; then
     open_ssl_binary='/usr/local/Cellar/openssl@3/3.0.8/bin/openssl'
+    sed_binary='gsed'
     # brew install <some-package>
 fi
 
 if [[ "$OSTYPE" =~ ^linux ]]; then
     open_ssl_binary='openssl'
+    sed_binary='sed'
     # sudo apt-get install <some-package>
 fi
 # First we need to generate a self-signed CA certificate:
@@ -62,15 +64,15 @@ FILES="$(dirname -- "${BASH_SOURCE[0]}")/../Extensions/*"
 for f in $FILES
 do
     echo "Updating Extension file: $f"
-    gsed -i "s/C =.*/C = $countryCode/g" "$f"
-    gsed -i "s/ST =.*/ST = $stateCode/g" "$f"
-    gsed -i "s/L =.*/L = $Locality/g" "$f"
-    gsed -i "s/O =.*/O = $Organization/g" "$f"
-    gsed -i "s/OU =.*/OU = $OrganizationUnit/g" "$f"
-    gsed -i "s/CN =.*/CN = $CommonName/g" "$f"
+    $sed_binary -i "s/C =.*/C = $countryCode/g" "$f"
+    $sed_binary -i "s/ST =.*/ST = $stateCode/g" "$f"
+    $sed_binary -i "s/L =.*/L = $Locality/g" "$f"
+    $sed_binary -i "s/O =.*/O = $Organization/g" "$f"
+    $sed_binary -i "s/OU =.*/OU = $OrganizationUnit/g" "$f"
+    $sed_binary -i "s/CN =.*/CN = $CommonName/g" "$f"
 
     if [[ $certType == "EmailSAN" ]] && [[ $f =~ "EmailSAN" ]]; then
-        gsed -i "s/subjectAltName.*/subjectAltName = email:$email/g" "$f"
+        $sed_binary -i "s/subjectAltName.*/subjectAltName = email:$email/g" "$f"
     fi
 done
 
