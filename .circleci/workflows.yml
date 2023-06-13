@@ -46,6 +46,10 @@ parameters:
     description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/JumpCloud Commands Gallery folder"
     type: boolean
     default: false
+  RadiusDistributeCertModified:
+    description: "Used by Path Filtering Orb to determine if changes occurred in the ./PowerShell/JumpCloud Commands Gallery folder"
+    type: boolean
+    default: false
   PublishToPSGallery:
     description: "When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery"
     type: boolean
@@ -74,6 +78,19 @@ workflows:
             - equal: [true, << pipeline.parameters.CommandsGalleryModified >>]
     jobs:
       - CommandsCI
+  radiusCI:
+    when:
+      and:
+        - and:
+            - not:
+                matches:
+                  pattern: "^master$"
+                  value: << pipeline.git.branch >>
+        - or:
+            - equal:
+                [true, << pipeline.parameters.RadiusDistributeCertModified >>]
+    jobs:
+      - RadiusCI
   ci:
     when:
       and:
@@ -172,6 +189,12 @@ workflows:
             - Publish Module Validation
             - Approve Module
 jobs:
+  RadiusCI:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - radius-ci-setup
+      - validate-radius-branch
   CommandsCI:
     docker:
       - image: cimg/python:3.10.5
@@ -300,6 +323,19 @@ jobs:
             # Post Draft Release
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
+  radius-ci-setup:
+    steps:
+      - checkout
+      - run:
+          name: build radius ci
+          command: |
+            /bin/bash "./scripts/automation/Radius/build/installPrerequisites.sh"
+            /bin/bash "./scripts/automation/Radius/build/setupCA.sh"
+  validate-radius-branch:
+    steps:
+      - run:
+          name: Check Raidus Version
+          command: echo "hello world"
   validate-commands-gallery-headers:
     steps:
       - checkout

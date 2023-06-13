@@ -6,9 +6,10 @@ workflows:
   version: 2
   check-updated-files:
     jobs:
-    - path-filtering/filter:
-        mapping: |
-          PowerShell\/(?!JumpCloud\sCommands\sGallery|JumpCloud\sOffice365\sSSO).* PowerShellModified true
-          PowerShell\/(JumpCloud\sCommands\sGallery).* CommandsGalleryModified true
-        base-revision: master
-        config-path: .circleci/workflows.yml
+      - path-filtering/filter:
+          mapping: |
+            PowerShell\/(?!JumpCloud\sCommands\sGallery|JumpCloud\sOffice365\sSSO).* PowerShellModified true
+            PowerShell\/(JumpCloud\sCommands\sGallery).* CommandsGalleryModified true
+            scripts\/automation\/Radius.* RadiusDistributeCertModified true
+          base-revision: master
+          config-path: .circleci/workflows.yml
