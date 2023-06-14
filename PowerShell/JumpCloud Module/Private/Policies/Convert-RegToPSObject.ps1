@@ -54,7 +54,8 @@ function Convert-RegToPSObject {
                         $value = ($valueObject[1]).Substring(7).split(",")
                         # Convert to value
                         $value = for ($i = $value.count - 1; $i -ge 0; $i--) { $value[$i] }
-                        $customData = '0x' + ($value -join "").trimstart('0')
+                        $hexValue = '0x' + ($value -join "").trimstart('0')
+                        $customData = [int]$hexValue
                     } elseif ($valueObject[1].StartsWith("hex(7):")) {
                         #MULTI_SZ
                         $customRegType = "multiString"
