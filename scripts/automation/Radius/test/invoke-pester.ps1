@@ -1,0 +1,1 @@
+invoke-pester -Path $PSScriptRoot/*
