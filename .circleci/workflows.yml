@@ -201,7 +201,7 @@ jobs:
     executor: macos_exec
     steps:
       - setup-pester-env-mac
-      - validate-macOS-radius
+      - validate-macos-radius
   CommandsCI:
     docker:
       - image: cimg/python:3.10.5
@@ -330,7 +330,7 @@ jobs:
             # Post Draft Release
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
-  validate-macOS-radius:
+  validate-macos-radius:
     steps:
       - checkout
       - attach_workspace:
