@@ -1,6 +1,6 @@
 #!/bin/bash
 echo $OSTYPE
-
+openssl version
 if [[ "$OSTYPE" =~ ^darwin ]]; then
     open_ssl_binary='/usr/local/Cellar/openssl@3/3.0.8/bin/openssl'
     sed_binary='gsed'
