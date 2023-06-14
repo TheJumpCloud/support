@@ -17,6 +17,7 @@ Describe -Tag:('deployment') -Name "MacOS Deployment Tests" {
         $macScript = $macScript.Replace('$($macCertSearch)', $($macCertSearch))
         $macScript = $macScript.Replace('$($certIdentifier)', $($certIdentifier))
         $macScript = $macScript.Replace('$($JCUSERCERTPASS)', $($JCUSERCERTPASS))
+        $macScript | Out-File -Path "$psscriptroot/tempMacInstaller.sh"
     }
     It 'tests that macScript was rewritten' {
         $macScript | Should -Match "test.user"
@@ -28,6 +29,18 @@ Describe -Tag:('deployment') -Name "MacOS Deployment Tests" {
             $global:LASTEXITCODE = 0 # Note the global prefix.
             # Invoke-Expression "dotnet build xyz" # xyz is meaningless, to force nonzero exit code.
             Invoke-Expression "/bin/bash $psscriptroot/../../scripts/bash.sh"
+            Write-Host $LASTEXITCODE
+        }
+        foo
+        $LASTEXITCODE  | Should -be 4
+        foo
+        # { sh "$psscriptroot/../../scripts/bash.sh" } | should -Throw
+    }
+    It 'should exit 4 when running as the wrong user with the temp script' {
+        function foo {
+            $global:LASTEXITCODE = 0 # Note the global prefix.
+            # Invoke-Expression "dotnet build xyz" # xyz is meaningless, to force nonzero exit code.
+            Invoke-Expression "/bin/bash $psscriptroot/tempMacInstaller.sh"
             Write-Host $LASTEXITCODE
         }
         foo
