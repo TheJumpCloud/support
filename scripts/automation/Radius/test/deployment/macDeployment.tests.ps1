@@ -1,8 +1,9 @@
 Describe -Tag:('deployment') -Name "MacOS Deployment Tests" {
 
     BeforeAll {
+        $localUser = Invoke-Expression "whoami"
         $user = @{
-            username = "test.user"
+            username = $localUser
         }
         $certHash = @{
             serial = '149B8C3C37EAC184E73EA01F0846FA5D85B4EA54'
@@ -18,9 +19,12 @@ Describe -Tag:('deployment') -Name "MacOS Deployment Tests" {
         $macScript = $macScript.Replace('$($certIdentifier)', $($certIdentifier))
         $macScript = $macScript.Replace('$($JCUSERCERTPASS)', $($JCUSERCERTPASS))
         $macScript | Out-File -Path "$psscriptroot/tempMacInstaller.sh"
+
+        # setup /tmp/ directory
+        Copy-Item "$psscriptroot/../../UserCerts/test.user-client-signed.pfx" "/tmp/$localUser-client-signed.pfx"
     }
     It 'tests that macScript was rewritten' {
-        $macScript | Should -Match "test.user"
+        $macScript | Should -Match $localUser
         $macScript | Should -Match "149B8C3C37EAC184E73EA01F0846FA5D85B4EA54"
     }
 

@@ -5,7 +5,7 @@ currentUser=$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=$(id -u "$currentUser")
 currentCertSN="$($certHash.serial)"
 networkSsid="$($NETWORKSSID)"
-if [[ $currentUser ==  $($user.userName) ]]; then
+if [[ $currentUser == "$($user.userName)" ]]; then
     certs=$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
     regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
     regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
