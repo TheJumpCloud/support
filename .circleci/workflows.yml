@@ -93,6 +93,7 @@ workflows:
                 [true, << pipeline.parameters.RadiusDistributeCertModified >>]
     jobs:
       - RadiusCI
+      - Radius-macOS-Tests
   ci:
     when:
       and:
