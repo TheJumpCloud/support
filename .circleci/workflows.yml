@@ -92,10 +92,7 @@ workflows:
             - equal:
                 [true, << pipeline.parameters.RadiusDistributeCertModified >>]
     jobs:
-      - RadiusCI
       - Radius-macOS-Tests:
-          requires:
-            - RadiusCI
   ci:
     when:
       and:
@@ -338,6 +335,10 @@ commands:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+        name: build radius ci
+        command: |
+          /bin/bash "./scripts/automation/Radius/build/setupCA.sh"
       - run:
           name: Setup PWSH
           shell: pwsh

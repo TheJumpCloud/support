@@ -2,7 +2,11 @@
 echo $OSTYPE
 openssl version
 if [[ "$OSTYPE" =~ ^darwin ]]; then
-    open_ssl_binary='/usr/local/Cellar/openssl@3/3.0.8/bin/openssl'
+    brew install openssl
+    brew install gsed
+
+    installedVersion=$(ls /usr/local/Cellar/openssl@3)
+    open_ssl_binary="/usr/local/Cellar/openssl@3/$installedVersion/bin/openssl"
     sed_binary='gsed'
     # brew install <some-package>
 fi
@@ -104,7 +108,7 @@ $open_ssl_binary req -new -key "$userKey" -out "$userCSR" -config "$ExtensionPat
 # Gennerate User Cert
 $open_ssl_binary x509 -req -in "$userCSR" -CA "$rootCA" -CAkey "$rootCAKey" -days $JCUSERCERTVALIDITY -passin pass:"$certKeyPass" -CAcreateserial -out "$userCert" -extfile $ExtensionPath
 # Combine key and cert to create pfx file
-$open_ssl_binary pkcs12 -export -out "$userPfx" -inkey "$userKey" -in "$userCert" -passout pass:"$JCUSERCERTPASS" # -legacy for 1.1.1. version of openssl legacy tag not needed
+$open_ssl_binary pkcs12 -export -out "$userPfx" -inkey "$userKey" -in "$userCert" -passout pass:"$JCUSERCERTPASS" -legacy # for 1.1.1. version of openssl legacy tag not needed
 # Output
 # $open_ssl_binary x509 -noout -text -in "$userCert"
 # invoke-expression "$$open_ssl_binary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)"\
