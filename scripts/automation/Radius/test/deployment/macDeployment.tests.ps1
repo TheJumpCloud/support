@@ -22,6 +22,7 @@ Describe -Tag:('deployment') -Name "MacOS Deployment Tests" {
 
         # setup /tmp/ directory
         Copy-Item "$psscriptroot/../../UserCerts/test.user-client-signed.pfx" "/tmp/$localUser-client-signed.pfx"
+        Invoke-Expression "zip /tmp/distiller-client-signed.zip /tmp/distiller-client-signed.pfx"
     }
     It 'tests that macScript was rewritten' {
         $macScript | Should -Match $localUser
@@ -49,7 +50,6 @@ Describe -Tag:('deployment') -Name "MacOS Deployment Tests" {
         }
         foo
         $LASTEXITCODE  | Should -be 4
-        foo
         # { sh "$psscriptroot/../../scripts/bash.sh" } | should -Throw
     }
 }
