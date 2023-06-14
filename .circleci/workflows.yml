@@ -333,10 +333,11 @@ commands:
             /bin/bash "./scripts/automation/Radius/build/setupCA.sh"
   validate-radius-branch:
     steps:
-      - run: Setup PWSH
-        shell: pwsh
-        command: |
-          Install-Module Pester -Force
+      - run:
+          name:Setup PWSH
+          shell: pwsh
+          command: |
+            Install-Module Pester -Force
       - run:
           name: Check Raidus Version
           shell: pwsh
