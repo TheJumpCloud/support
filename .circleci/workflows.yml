@@ -191,7 +191,7 @@ workflows:
 jobs:
   RadiusCI:
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/base:2022.04
     steps:
       - radius-ci-setup
       - validate-radius-branch
