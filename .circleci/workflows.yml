@@ -336,9 +336,9 @@ commands:
       - attach_workspace:
           at: .
       - run:
-        name: build radius ci
-        command: |
-          /bin/bash "./scripts/automation/Radius/build/setupCA.sh"
+          name: build radius ci
+          command: |
+            /bin/bash "./scripts/automation/Radius/build/setupCA.sh"
       - run:
           name: Setup PWSH
           shell: pwsh
