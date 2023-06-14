@@ -65,6 +65,8 @@ executors:
     macos:
       xcode: 13.2.1
     resource_class: macos.x86.medium.gen2
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
 workflows:
   version: 2
   CommandsGalleryCI:
@@ -195,6 +197,11 @@ jobs:
     steps:
       - radius-ci-setup
       - validate-radius-branch
+  Radius-macOS-Tests:
+    executor: macos_exec
+    steps:
+      - setup-pester-env-mac
+      - validate-macOS-radius
   CommandsCI:
     docker:
       - image: cimg/python:3.10.5
@@ -323,6 +330,20 @@ jobs:
             # Post Draft Release
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -n "$TITLE" -b "$BODY" -delete -draft "$TAG" /root/project/PowerShell/
 commands:
+  validate-macOS-radius:
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Setup PWSH
+          shell: pwsh
+          command: |
+            Install-Module Pester -Force
+      - run:
+          name: Check Raidus Version
+          shell: pwsh
+          command: "./scripts/automation/Radius/test/invoke-pester.ps1"
   radius-ci-setup:
     steps:
       - checkout
@@ -342,6 +363,10 @@ commands:
           name: Check Raidus Version
           shell: pwsh
           command: "./scripts/automation/Radius/test/invoke-pester.ps1"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   validate-commands-gallery-headers:
     steps:
       - checkout
