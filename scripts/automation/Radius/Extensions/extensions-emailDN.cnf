@@ -4,11 +4,11 @@ distinguished_name = req_distinguished_name
 
 [req_distinguished_name]
 C = US
-ST = VA
-L = SomeCity
-O = MyCompany
-OU = MyDivision
-CN = www.company.com
+ST = CO
+L = Boulder
+O = JumpCloud
+OU = Solutions_Architecture
+CN = JumpCloud.com
 
 [v3_req]
 keyUsage = digitalSignature

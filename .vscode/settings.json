@@ -1,6 +1,6 @@
 {
   "spellright.language": ["en"],
-  "spellright.documentTypes": ["markdown", "latex", "plaintext"],
+  "spellright.documentTypes": ["markdown", "latex", "plaintext", "powershell"],
   "editor.formatOnSave": true,
   "powershell.codeFormatting.preset": "OTBS",
   "powershell.scriptAnalysis.enable": true,

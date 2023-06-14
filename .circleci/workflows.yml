@@ -63,7 +63,7 @@ orbs:
 executors:
   macos_exec:
     macos:
-      xcode: 13.2.1
+      xcode: 14.3.1
     resource_class: macos.x86.medium.gen2
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -93,7 +93,9 @@ workflows:
                 [true, << pipeline.parameters.RadiusDistributeCertModified >>]
     jobs:
       - RadiusCI
-      - Radius-macOS-Tests
+      - Radius-macOS-Tests:
+          requires:
+            - RadiusCI
   ci:
     when:
       and:
