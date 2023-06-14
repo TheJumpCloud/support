@@ -334,7 +334,7 @@ commands:
   validate-radius-branch:
     steps:
       - run:
-          name:Setup PWSH
+          name: Setup PWSH
           shell: pwsh
           command: |
             Install-Module Pester -Force
