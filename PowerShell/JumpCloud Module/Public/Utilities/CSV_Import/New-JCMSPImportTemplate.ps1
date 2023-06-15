@@ -38,39 +38,42 @@ Function New-JCMSPImportTemplate() {
                                     CSV MSP Import Template
 "@
 
-            $Heading2 = 'The CSV file will be created within the directory:'
-
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
-                Clear-Host
-            }
-
             Write-Host $Banner -ForegroundColor Green
-            Write-Host "`n$Heading2`n"
-            Write-Host " $PWD" -ForegroundColor Yellow
             Write-Host ""
 
+            # PromptForChoice Args
+            $Title = "The CSV template will be created in the current working directory: $PWD"
+            $Prompt = "Would you like to specify a new path?"
 
-            while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N') {
-                $ConfirmFile = Read-Host  "Enter Y to confirm or N to change output location" #Confirm .csv file location creation
-            }
+            $Choices = @(
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Current directory: $PWD", "A CSV import template will be created in the current working directory")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Specify a new directory", "Specify a directory in which to save the CSV import template.")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Cancel", "Exit this prompt")
+            )
+            $Default = 0
 
-            if ($ConfirmFile -eq 'Y') {
+            # Prompt for the choice
+            $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
 
-                $ExportLocation = $PWD
-            }
-
-            elseif ($ConfirmFile -eq 'N') {
-                $ExportLocation = Read-Host "Enter the full path to the folder you wish to create the import file in"
-
-                while (-not(Test-Path -Path $ExportLocation -PathType Container)) {
-                    Write-Host -BackgroundColor Yellow -ForegroundColor Red "The location $ExportLocation does not exist. Try another"
+            # Action based on the choice
+            switch ($Choice) {
+                0 {
+                    $ExportLocation = $PWD
+                }
+                1 {
                     $ExportLocation = Read-Host "Enter the full path to the folder you wish to create the import file in"
 
-                }
-                Write-Host ""
-                Write-Host -BackgroundColor Green -ForegroundColor Black "The CSV file will be created within the $ExportLocation directory"
-                Pause
+                    while (-not(Test-Path -Path $ExportLocation -PathType Container)) {
+                        Write-Host "The location $ExportLocation does not exist. Try another"
+                        $ExportLocation = Read-Host "Enter the full path to the folder you wish to create the import file in"
 
+                    }
+                    Write-Host ""
+                    Write-Host "The CSV file will be created within the $ExportLocation directory"
+                }
+                2 {
+                    break
+                }
             }
         }
     }
@@ -81,15 +84,32 @@ Function New-JCMSPImportTemplate() {
         } elseif ($type -eq 'Update') {
             $ConfirmUpdateVsNew = 'U'
         } Else {
-            Write-Host "`nDo you want to create an import CSV template for creating new MSP orgs or updating exisitng MSP orgs?"
-            Write-Host 'Enter "N" for to create a template for ' -NoNewline
-            Write-Host -ForegroundColor Yellow 'new MSP orgs'
-            Write-Host 'Enter "U" for creating a template for ' -NoNewline
-            Write-Host -ForegroundColor Yellow "updating existing MSP orgs"
 
+            # PromptForChoice Args
+            $Title = "Do you want to create an import CSV template for creating new MSP orgs or updating existing MSP orgs?"
+            $Prompt = "Enter your choice"
 
-            while ($ConfirmUpdateVsNew -ne 'N' -and $ConfirmUpdateVsNew -ne 'U') {
-                $ConfirmUpdateVsNew = Read-Host  "Enter N for 'new MSP orgs' or U for 'updating MSP orgs'"
+            $Choices = @(
+                [System.Management.Automation.Host.ChoiceDescription]::new("&New MSP Orgs", "Create template for importing new MSP Orgs")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Update Existing MSP Orgs", "Get list of existing MSP Orgs and create template")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Cancel", "Exit this prompt")
+            )
+            $Default = 1
+
+            # Prompt for the choice
+            $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
+
+            # Action based on the choice
+            switch ($Choice) {
+                0 {
+                    $ConfirmUpdateVsNew = 'N'
+                }
+                1 {
+                    $ConfirmUpdateVsNew = 'U'
+                }
+                2 {
+                    break
+                }
             }
         }
 
@@ -180,19 +200,29 @@ Function New-JCMSPImportTemplate() {
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             }
-            Write-Host ""
-            Write-Host "Do you want to open the file" -NoNewLine
-            Write-Host " $FileName`?" -ForegroundColor Yellow
 
-            while ($Open -ne 'Y' -and $Open -ne 'N') {
-                $Open = Read-Host  "Enter Y for Yes or N for No"
-            }
+            # PromptForChoice Args
+            $Title = "Do you want to open the files?"
+            $Prompt = "Enter Y to open the CSV, N to continue and exit"
 
-            if ($Open -eq 'Y') {
-                Invoke-Item -path "$ExportLocation/$FileName"
+            $Choices = @(
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Yes Open", "Opens the file in the defualt CSV editor")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&No", "Continue and exit prompt")
+            )
+            $Default = 1
 
-            }
-            if ($Open -eq 'N') {
+            # Prompt for the choice
+            $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
+
+            # Action based on the choice
+            switch ($Choice) {
+                0 {
+                    Invoke-Item -path "$ExportLocation/$FileName"
+                }
+                1 {
+                    $ConfirmUpdateVsNew = 'U'
+                    continue
+                }
             }
         }
     }

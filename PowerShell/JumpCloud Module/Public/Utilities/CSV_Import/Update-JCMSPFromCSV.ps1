@@ -48,7 +48,6 @@ Function Update-JCMSPFromCSV () {
 
             # get all orgs:
             $ExistingOrgCheck = Get-JCSdkOrganization
-
             # Check for orgs that do not exist:
             foreach ($Org in $orgNameCheck) {
                 if ($ExistingOrgCheck.id -contains ($Org.id)) {
@@ -74,7 +73,7 @@ Function Update-JCMSPFromCSV () {
             Write-Host "no orgs to update"
         }
 
-        $NumberOfNewUsers = $orgsToUpdate.name.count
+        $NumberOfOrgs = $orgsToUpdate.name.count
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
@@ -100,100 +99,98 @@ Function Update-JCMSPFromCSV () {
             If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
-            Write-Host $Banner -ForegroundColor Green
-            Write-Host ""
+        }
+    } # begin block end
 
-            $title = "Update Summary:"
+    process {
+        Write-Host $Banner -ForegroundColor Green
+        Write-Host ""
+        Write-host "Update Summary:"
+        $orgNameCheck | Format-Table
 
-            $menu = @"
+        # PromptForChoice Args
+        $Title = "Number Of Orgs To update: $NumberOfOrgs"
+        $Prompt = "Would you like to update these orgs?"
 
-    Number Of Orgs To Update = $NumberOfNewUsers
+        $Choices = @(
+            [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "Begin updating the validated organizations")
+            [System.Management.Automation.Host.ChoiceDescription]::new("&No", "Do not update and exit")
+        )
+        $Default = 0
 
-    Would you like to update these orgs?
+        # Prompt for the choice
+        $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
 
-"@
-            Write-Host $title -ForegroundColor Red
-            Write-Host $menu -ForegroundColor Yellow
-
-
-            while ($Confirm -ne 'Y' -and $Confirm -ne 'N') {
-                $Confirm = Read-Host "Press Y to confirm or N to quit"
-            }
-
-            if ($Confirm -eq 'Y') {
-
+        # Action based on the choice
+        switch ($Choice) {
+            0 {
                 Write-Host ''
                 Write-Host "Hang tight! Updating your organizations. " -NoNewline
                 Write-Host "DO NOT shutdown the console." -ForegroundColor Red
                 Write-Host ''
                 Write-Host "It takes ~ 1 minute per 100 organizations."
-
-            }
-
-            elseif ($Confirm -eq 'N') {
-                break
-            }
-        }
-    } # begin block end
-
-    process {
-        # Define headers
-        $headers = @{
-            "x-api-key"    = $ENV:JCApiKey
-            "content-type" = "application/json"
-        }
-
-        [int]$ProgressCounter = 0
-        foreach ($OrgUpdate in $orgsToUpdate) {
-            $ProgressCounter++
-            $ProgressParams = @{
-                Activity        = "Updating $($OrgUpdate.Name)"
-                Status          = "Org update $ProgressCounter of $NumberOfNewUsers"
-                PercentComplete = ($ProgressCounter / $NumberOfNewUsers) * 100
-
-            }
-
-            Write-Progress @ProgressParams
-            $UpdateParams = [PSCustomObject]@{
-                Name           = $OrgUpdate.Name
-                Id             = $OrgUpdate.Id
-                MaxSystemUsers = $OrgUpdate.MaxSystemUsers
-            }
-
-            # update body variable before calling api
-            $body = @{
-                name           = $OrgUpdate.Name
-                maxSystemUsers = [int]$OrgUpdate.MaxSystemUsers
-            } | ConvertTo-Json
-
-            # Clear the response variable if it exists:
-            if ($response) {
-                Clear-Variable -Name response
-            }
-            Try {
-                $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$($ENV:JCProviderID)/organizations/$($OrgUpdate.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
-                # Add to result array
-                $ResultsArrayList.Add(
-                    [PSCustomObject]@{
-                        'name'           = $response.name
-                        'maxSystemUsers' = $response.maxSystemUsers
-                        'id'             = $response.id
-                        'status'         = 'Updated'
-                    }) | Out-Null
-            } catch {
-                If ($errMsg.Message) {
-                    $Status = $errMsg.Message
-                } elseif ($errMsg.ErrorDetails) {
-                    $Status = $errMsg.ErrorDetails
+                # Define headers
+                $headers = @{
+                    "x-api-key"    = $ENV:JCApiKey
+                    "content-type" = "application/json"
                 }
-                # Add to result array
-                $ResultsArrayList.Add(
-                    [PSCustomObject]@{
-                        'name'           = $OrgUpdate.Name
-                        'maxSystemUsers' = [int]$OrgUpdate.MaxSystemUsers
-                        'id'             = $OrgUpdate.id
-                        'status'         = "Not Updated: $status"
-                    }) | Out-Null
+
+                [int]$ProgressCounter = 0
+                foreach ($OrgUpdate in $orgsToUpdate) {
+                    $ProgressCounter++
+                    $ProgressParams = @{
+                        Activity        = "Updating $($OrgUpdate.Name)"
+                        Status          = "Org update $ProgressCounter of $NumberOfOrgs"
+                        PercentComplete = ($ProgressCounter / $NumberOfOrgs) * 100
+
+                    }
+
+                    Write-Progress @ProgressParams
+                    $UpdateParams = [PSCustomObject]@{
+                        Name           = $OrgUpdate.Name
+                        Id             = $OrgUpdate.Id
+                        MaxSystemUsers = $OrgUpdate.MaxSystemUsers
+                    }
+
+                    # update body variable before calling api
+                    $body = @{
+                        name           = $OrgUpdate.Name
+                        maxSystemUsers = [int]$OrgUpdate.MaxSystemUsers
+                    } | ConvertTo-Json
+
+                    # Clear the response variable if it exists:
+                    if ($response) {
+                        Clear-Variable -Name response
+                    }
+                    Try {
+                        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$($ENV:JCProviderID)/organizations/$($OrgUpdate.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
+                        # Add to result array
+                        $ResultsArrayList.Add(
+                            [PSCustomObject]@{
+                                'name'           = $response.name
+                                'maxSystemUsers' = $response.maxSystemUsers
+                                'id'             = $response.id
+                                'status'         = 'Updated'
+                            }) | Out-Null
+                    } catch {
+                        If ($errMsg.Message) {
+                            $Status = $errMsg.Message
+                        } elseif ($errMsg.ErrorDetails) {
+                            $Status = $errMsg.ErrorDetails
+                        }
+                        # Add to result array
+                        $ResultsArrayList.Add(
+                            [PSCustomObject]@{
+                                'name'           = $OrgUpdate.Name
+                                'maxSystemUsers' = [int]$OrgUpdate.MaxSystemUsers
+                                'id'             = $OrgUpdate.id
+                                'status'         = "Not Updated: $status"
+                            }) | Out-Null
+                    }
+                }
+            }
+            1 {
+                break
             }
         }
     }

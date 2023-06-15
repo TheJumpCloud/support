@@ -8,6 +8,20 @@ Release Date: June 9, 2023
 Update/Import-JCMspFromCSV functions added.
 ```
 
+## 2.5.1
+
+Release Date: May 30, 2023
+
+#### RELEASE NOTES
+
+```
+Bug fix for Update-JCUsersFromCSV function
+```
+
+#### BUG FIXES:
+
+Update-JCUsersFromCSV would throw an incorrect status message if updated custom attributes or other API errors would be thrown during script execution. Now the correct error statement from our API should be displayed in the status message object on each updated user.
+
 ## 2.5.0
 
 Release Date: May 11, 2023
