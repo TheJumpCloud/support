@@ -37,7 +37,7 @@ function Convert-RegToPSObject {
                 if ($line -notmatch "HKEY_LOCAL_MACHINE") {
                     throw "JumpCloud Policies only support HKEY_LOCAL_MACHINE/HKLM registry keys"
                 } else {
-                    $path = "HKLM:" + ($line.TrimStart("[").TrimEnd("]")).Replace("HKEY_LOCAL_MACHINE", "").Replace("\\\\", "\\")
+                    $path = $line.TrimStart("[").TrimEnd("]").Replace("HKEY_LOCAL_MACHINE", "").Replace("\\\\", "\\").TrimStart('\')
                 }
             } else {
                 # Extract Values
