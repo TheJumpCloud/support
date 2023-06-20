@@ -22,7 +22,11 @@ function Set-JCPolicy {
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
-        $Values
+        $Values,
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'RegistryFile',
+            HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.')]
+        [System.IO.FileInfo]$registryFile
     )
     DynamicParam {
 
@@ -215,6 +219,11 @@ function Set-JCPolicy {
                 }
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
+            if ($registryFile) {
+                $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                $updatedPolicyObject.value += $regKeys
+                Write-Debug $updatedPolicyObject
+            }
         } elseif ($values) {
             # begin value param set
             $updatedPolicyObject = New-Object System.Collections.ArrayList
@@ -230,31 +239,38 @@ function Set-JCPolicy {
             }
         } else {
             if (($templateObject.objectMap).count -gt 0) {
-                # Begin user prompt
-                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
-                # User selects edit all fields
-                if ($initialUserInput.fieldSelection -eq 'A') {
-                    for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
-                    }
-                    # Display policy values
-                    # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
-                }
-                # User selects edit individual field
-                elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
-                    # For set-jcpolicy, add the help & label options
-                    $updatedPolicyObject | ForEach-Object {
-                        if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
-                            $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
-                            $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
+                if ($registryFile) {
+                    $updatedPolicyObject = $foundPolicy.values
+                    $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                    $updatedPolicyObject.value += $regKeys
+                    Write-Debug $updatedPolicyObject
+                } else {
+                    # Begin user prompt
+                    $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
+                    # User selects edit all fields
+                    if ($initialUserInput.fieldSelection -eq 'A') {
+                        for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                            $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
                         }
+                        # Display policy values
+                        # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
                     }
-                    Do {
-                        # Hide option to edit all fields
-                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
-                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
-                    } while ($userInput.fieldSelection -ne 'C')
+                    # User selects edit individual field
+                    elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
+                        # For set-jcpolicy, add the help & label options
+                        $updatedPolicyObject | ForEach-Object {
+                            if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
+                                $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
+                                $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
+                            }
+                        }
+                        Do {
+                            # Hide option to edit all fields
+                            $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
+                            $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
+                        } while ($userInput.fieldSelection -ne 'C')
+                    }
                 }
             }
         }
