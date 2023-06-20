@@ -98,24 +98,29 @@ Function Import-JCMSPFromCSV () {
         }
     }
     process {
-        Write-Host $Banner -ForegroundColor Green
-        Write-Host ""
-        Write-Host "Import Summary:"
-        $orgNameCheck | Format-Table
+        if ($PSCmdlet.ParameterSetName -eq 'force') {
+            # Begin import w/ force
+            $Choice = 0
+        } else {
+            Write-Host $Banner -ForegroundColor Green
+            Write-Host ""
+            Write-Host "Import Summary:"
+            $orgNameCheck | Format-Table
 
-        # only check non-null orgs in CSV
-        # PromptForChoice Args
-        $Title = "Number Of Orgs To import: $NumberOfOrgs"
-        $Prompt = "Would you like to import these orgs?"
+            # only check non-null orgs in CSV
+            # PromptForChoice Args
+            $Title = "Number Of Orgs To import: $NumberOfOrgs"
+            $Prompt = "Would you like to import these orgs?"
 
-        $Choices = @(
-            [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "Begin importing the validated organizations")
-            [System.Management.Automation.Host.ChoiceDescription]::new("&No", "Do not import and exit")
-        )
-        $Default = 0
+            $Choices = @(
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "Begin importing the validated organizations")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&No", "Do not import and exit")
+            )
+            $Default = 0
 
-        # Prompt for the choice
-        $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
+            # Prompt for the choice
+            $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
+        }
 
         # Action based on the choice
         switch ($Choice) {

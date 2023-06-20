@@ -103,24 +103,29 @@ Function Update-JCMSPFromCSV () {
     } # begin block end
 
     process {
-        Write-Host $Banner -ForegroundColor Green
-        Write-Host ""
-        Write-host "Update Summary:"
-        $orgNameCheck | Format-Table
+        if ($PSCmdlet.ParameterSetName -eq 'force') {
+            # Begin updates w/ force
+            $Choice = 0
+        } else {
 
-        # PromptForChoice Args
-        $Title = "Number Of Orgs To update: $NumberOfOrgs"
-        $Prompt = "Would you like to update these orgs?"
+            Write-Host $Banner -ForegroundColor Green
+            Write-Host ""
+            Write-host "Update Summary:"
+            $orgNameCheck | Format-Table
 
-        $Choices = @(
-            [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "Begin updating the validated organizations")
-            [System.Management.Automation.Host.ChoiceDescription]::new("&No", "Do not update and exit")
-        )
-        $Default = 0
+            # PromptForChoice Args
+            $Title = "Number Of Orgs To update: $NumberOfOrgs"
+            $Prompt = "Would you like to update these orgs?"
 
-        # Prompt for the choice
-        $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
+            $Choices = @(
+                [System.Management.Automation.Host.ChoiceDescription]::new("&Yes", "Begin updating the validated organizations")
+                [System.Management.Automation.Host.ChoiceDescription]::new("&No", "Do not update and exit")
+            )
+            $Default = 0
 
+            # Prompt for the choice
+            $Choice = $host.UI.PromptForChoice($Title, $Prompt, $Choices, $Default)
+        }
         # Action based on the choice
         switch ($Choice) {
             0 {
