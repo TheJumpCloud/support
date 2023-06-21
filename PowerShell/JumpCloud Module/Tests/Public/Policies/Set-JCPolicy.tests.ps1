@@ -3,7 +3,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         . "$($PSSCRIPTROOT)/../../..//Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
         Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         $policies = Get-JCPolicy
-        $policies | Where-Object { $_.Name -like "Pester -*" } | % { Remove-JcSdkPolicy -id $_.id }
+        $policies | Where-Object { $_.Name -like "Pester -*" } | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
         $policyTemplates = Get-JcSdkPolicyTemplate
     }
     Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
@@ -18,7 +18,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # update the value with dynamic param
             $updatedPesterMacStringText = Set-JCPolicy -policyID $PesterMacStringText.id -LoginwindowText $updateText
             # orig policy def and new policy def should be different
-            $updatedPesterMacStringText.values.value | Should -not -Be $PesterMacStringText.values.value
+            $updatedPesterMacStringText.values.value | Should -Not -Be $PesterMacStringText.values.value
             # updated policy value should be equal to $updateText
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
@@ -26,7 +26,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
             $templateId = $policyTemplate.id
             $intValue = 45
-            $intPolicy = New-JCPolicy -name "Pester - Integer" -templateID $templateId -timeout $intValue
+            $intPolicy = New-JCPolicy -Name "Pester - Integer" -templateID $templateId -timeout $intValue
             $updatedIntValue = 55
             $updatedStringPolicy = Set-JCPolicy -policyID $intPolicy.id -timeout $updatedIntValue
             # Should not be null
@@ -70,26 +70,26 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
             $listboxSet = Set-JCpolicy -policyid $listboxPolicy.Id -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
             # set should set the policies to the correct type
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
             # since we set only one value the count for each of these objects should be 1
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
             # add multiple values here and test
             $multipleServerAddresses = @("Test Pester Address1", "Test Pester Address2")
             $multipleSupplementalMatchDomains = @("Test Domain3", "Test Domain4")
             $listboxSetMultipleValues = Set-JCpolicy -policyid $listboxPolicy.Id -ServerAddresses $multipleServerAddresses -ServerURL "Test URL2" -SupplementalMatchDomains $multipleSupplementalMatchDomains
             # set should set the policies to the correct type
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
             # Count for listbox policy should be 2
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
             # validate that the items are correct:
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
 
         }
         It 'Sets a policy with a file, dynamic parameter' {
@@ -97,8 +97,8 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $templateId = $policyTemplate.id
 
             # Upload ps1 files for this test
-            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -First 1
-            $secondFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -Last 1
+            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select-Object -First 1
+            $secondFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select-Object -Last 1
 
 
             # Add a new policy with file type:
@@ -183,7 +183,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # update the value with dynamic param
             $updatedPesterMacStringText = Set-JCPolicy -PolicyName $PesterMacStringText.Name -LoginwindowText $updateText
             # orig policy def and new policy def should be different
-            $updatedPesterMacStringText.values.value | Should -not -Be $PesterMacStringText.values.value
+            $updatedPesterMacStringText.values.value | Should -Not -Be $PesterMacStringText.values.value
             # updated policy value should be equal to $updateText
             $updatedPesterMacStringText.values.value | Should -Be $updateText
         }
@@ -191,7 +191,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "lock_screen_darwin" }
             $templateId = $policyTemplate.id
             $intValue = 45
-            $stringPolicy = New-JCPolicy -name "Pester - Integer byName" -templateID $templateId -timeout $intValue
+            $stringPolicy = New-JCPolicy -Name "Pester - Integer byName" -templateID $templateId -timeout $intValue
             $updatedIntValue = 55
             $updatedStringPolicy = Set-JCPolicy -PolicyName $stringPolicy.Name -timeout $updatedIntValue
             # Should not be null
@@ -235,34 +235,34 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $listboxPolicy = New-JCPolicy -Name "Pester - Mac - Encrypted DNS Policy byName" -templateID $templateId -ServerAddresses "Test Pester Address" -ServerURL "Test URL" -SupplementalMatchDomains "Test Domain"
             $listboxSet = Set-JCpolicy -PolicyName $listboxPolicy.Name -ServerAddresses "Test Pester Address1" -ServerURL "Test URL2" -SupplementalMatchDomains "Test Domain3"
             # set should set the policies to the correct type
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
             # since we set only one value the count for each of these objects should be 1
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
-            ($listboxSet.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 1
+            ($listboxSet.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 1
             # add multiple values here and test
             $multipleServerAddresses = @("Test Pester Address1", "Test Pester Address2")
             $multipleSupplementalMatchDomains = @("Test Domain3", "Test Domain4")
             $listboxSetMultipleValues = Set-JCpolicy -PolicyName $listboxPolicy.Name -ServerAddresses $multipleServerAddresses -ServerURL "Test URL2" -SupplementalMatchDomains $multipleSupplementalMatchDomains
             # set should set the policies to the correct type
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.getType() | Should -BeOfType object
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerURL' }).value.getType().Name | Should -BeOfType string
             # Count for listbox policy should be 2
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value.count | Should -Be 2
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value.count | Should -Be 2
             # validate that the items are correct:
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
-            ($listboxSetMultipleValues.values | Where-object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'ServerAddresses' }).value | Should -Be $multipleServerAddresses
+            ($listboxSetMultipleValues.values | Where-Object { $_.ConfigFieldName -eq 'SupplementalMatchDomains' }).value | Should -Be $multipleSupplementalMatchDomains
         }
         It 'Sets a policy with a file, dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_font_policy_darwin" }
             $templateId = $policyTemplate.id
 
             # Upload ps1 files for this test
-            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -First 1
-            $secondFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select -Last 1
+            $firstFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select-Object -First 1
+            $secondFile = Get-ChildItem $($PSScriptRoot) -Filter *.ps1 | Select-Object -Last 1
 
             # Add a new policy with file type:
             $newFilePolicy = New-JCPolicy -templateID 631f44bc2630c900017ed834 -setFont $firstFile.FullName -Name "Pester - File Test byName" -setName "Roboto Light"
@@ -377,7 +377,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy using the values object where a policy has a multi selection type' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "system_preferences_panes_darwin" }
             $templateId = $policyTemplate.id
-            $valuesSystemPreferenceControl = new-jcpolicy -templateID $templateId -name "Pester - Mac System Preference Control" -pipelineVariable 0 -appstore $false -icloud $true
+            $valuesSystemPreferenceControl = new-jcpolicy -templateID $templateId -Name "Pester - Mac System Preference Control" -PipelineVariable 0 -appstore $false -icloud $true
             #Update the values to true
             $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "appstore" } | ForEach-Object { $_.value = $true }
             $valuesSystemPreferenceControl.values | Where-Object { $_.configFieldName -eq "icloud" } | ForEach-Object { $_.value = $false }
@@ -452,7 +452,23 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $usbLinuxPolicyUpdated.templateID | Should -Not -BeNullOrEmpty
         }
     }
-    Context 'Manual Test Cases' -skip {
+    Context 'Update registry policy using Registry file' {
+        It 'Set-JCPolicy using regFilePath parameter' {
+            $PesterRegistryFilePath = "$PSScriptRoot/Reg_File/PesterRegFile.reg"
+            $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -registryFile $PesterRegistryFilePath
+
+            $NewName = "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)"
+
+            $registryPolicyUpdated = Set-JCPolicy -PolicyID $registryPolicy.Id -NewName $NewName -registryFile $PesterRegistryFilePath
+            $registryPolicyUpdated.name | Should -Be $NewName
+            $registryPolicyUpdated.templateID | Should -Be '5f07273cb544065386e1ce6f'
+            $registryPolicyUpdated.values | Should -Not -BeNullOrEmpty
+            $registryPolicyUpdated.values.value.count | Should -Be 8
+            $registryPolicyUpdated.id | Should -Not -BeNullOrEmpty
+            $registryPolicyUpdated.template | Should -Not -BeNullOrEmpty
+        }
+    }
+    Context 'Manual Test Cases' -Skip {
         # These test cases should be executed locally; Each manual task should be executed when prompted to edit the policy
         It 'Policy with a string payload can be set interactivly' {
             # Create a policy
@@ -536,10 +552,10 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # two rows of data
             $updatedPolicy.values.value.count | Should -Be 2
             # first row of data should have been changed
-            $updatedPolicy.values.value[0].customData | should -not -be $policyValue.customData
-            $updatedPolicy.values.value[0].customRegType | should -not -be $policyValue.customRegType
-            $updatedPolicy.values.value[0].customLocation | should -not -be $policyValue.customLocation
-            $updatedPolicy.values.value[0].customValueName | should -not -be $policyValue.customValueName
+            $updatedPolicy.values.value[0].customData | Should -Not -Be $policyValue.customData
+            $updatedPolicy.values.value[0].customRegType | Should -Not -Be $policyValue.customRegType
+            $updatedPolicy.values.value[0].customLocation | Should -Not -Be $policyValue.customLocation
+            $updatedPolicy.values.value[0].customValueName | Should -Not -Be $policyValue.customValueName
         }
     }
 }
