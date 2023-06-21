@@ -25,13 +25,13 @@ $PSDefaultParameterValues['Invoke-WebRequest:ContentType'] = 'application/json; 
 If ($PSVersionTable.PSEdition -eq 'Core') {
     $PSDefaultParameterValues['Invoke-RestMethod:SkipCertificateCheck'] = $true
     $PSDefaultParameterValues['Invoke-RestMethod:SkipHeaderValidation'] = $true
-    # $PSDefaultParameterValues['Invoke-RestMethod:MaximumRetryCount'] = 5
-    # $PSDefaultParameterValues['Invoke-RestMethod:RetryIntervalSec'] = 5
+    $PSDefaultParameterValues['Invoke-RestMethod:MaximumRetryCount'] = 5
+    $PSDefaultParameterValues['Invoke-RestMethod:RetryIntervalSec'] = 5
 
     $PSDefaultParameterValues['Invoke-WebRequest:SkipCertificateCheck'] = $true
     $PSDefaultParameterValues['Invoke-WebRequest:SkipHeaderValidation'] = $true
-    # $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 5
-    # $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 5
+    $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 5
+    $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 5
 } Else {
     #Ignore SSL errors / do not add policy if it exists
     if (-Not [System.Net.ServicePointManager]::CertificatePolicy) {
