@@ -5,40 +5,43 @@ online version: https://github.com/TheJumpCloud/support/wiki/
 schema: 2.0.0
 ---
 
-# Set-JCSettingsFile
+# New-JCMSPImportTemplate
 
 ## SYNOPSIS
 
-Updates the JumpCloud Module Settings File
+Creates a CSV file to either create new or update existing MSP organizations in a MSP tenant.
 
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-parallelOverride <PSObject>] [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
+New-JCMSPImportTemplate [-Force] [-Type <Object>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
 
-The Set-JCSettingsFile function updates an the JumpCloud Module settings file.
+The New-JCMSPImportTemplate command is a menu driven function that creates a CSV template for the `Update-JCMSPFromCSV` and `Import-JCMSPFromCSV` functions. Templates for updated existing orgs are populated with the ids, names and max user counts of existing orgs. The template for new organizations is populated with only a name and max user count column.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> Set-JCSettingsFile -ParallelOverride $true
+PS C:\> New-JCMSPImportTemplate
 ```
 
-Disables parallel processing of results in the JumpCloud PowerShell Module
+Launches the New-JCMSPImportTemplate menu
 
 ## PARAMETERS
 
-### -moduleBannerMessageCount
+### -Force
 
-sets the messageCount settings for the moduleBanner feature
+Parameter to force populate CSV with all headers when creating an update template.
+When selected this option will forcefully replace existing files in the current working directory.
+i.e.
+If you
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 
@@ -49,14 +52,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -parallelOverride
+### -Type
 
-sets the Override settings for the parallel feature
+Type of CSV to Create.
+Update or Import are valid options.
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
+Accepted values: Import, Update
 
 Required: False
 Position: Named

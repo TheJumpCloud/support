@@ -49,11 +49,11 @@ parameters:
   PublishToPSGallery:
     description: "When `true` and when run against Master branch, this workflow will publish the latest code to PSGallery"
     type: boolean
-    default: false
+    default: true
   ManualModuleVersion:
     description: "When `true` the pipeline will use the Module Version specified in JumpCloud Module JumpCloud.psd1 file"
     type: boolean
-    default: false
+    default: true
 orbs:
   win: circleci/windows@2.4.1
 executors:
@@ -129,6 +129,13 @@ workflows:
             - Invoke Git Commit
           context: aws-credentials
       - Pester Tests Linux:
+          requires:
+            - Initial Setup
+            - Build Help and Test Files
+            - Build Nuspec
+            - Invoke Git Commit
+          context: aws-credentials
+      - Pester Tests Linux MSP:
           requires:
             - Initial Setup
             - Build Help and Test Files
@@ -231,7 +238,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: "ModuleValidation, JCDeployment"
+          ExcludeTagList: "ModuleValidation, JCDeployment, MSP"
           IncludeTagList: "*"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: "pwsh.exe"
@@ -242,7 +249,7 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_MAC
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: "ModuleValidation, JCDeployment"
+          ExcludeTagList: "ModuleValidation, JCDeployment, MSP"
           IncludeTagList: "*"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: "pwsh"
@@ -254,8 +261,21 @@ jobs:
       - invoke-pester:
           JumpCloudApiKey: $env:XAPIKEY_PESTER_LINUX
           JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
-          ExcludeTagList: "ModuleValidation, JCDeployment"
+          ExcludeTagList: "ModuleValidation, JCDeployment, MSP"
           IncludeTagList: "*"
+          RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
+          Shell: "pwsh"
+  Pester Tests Linux MSP:
+    machine:
+      image: ubuntu-2004:202201-02
+    steps:
+      - setup-pester-env-linux
+      - invoke-pester:
+          JumpCloudApiKey: $env:XAPIKEY_PESTER_MTP
+          JumpCloudApiKeyMsp: $env:XAPIKEY_PESTER_MTP
+          JumpCloudMspOrg: $env:XORGID_PesterMSP
+          ExcludeTagList: "None"
+          IncludeTagList: "MSP"
           RequiredModulesRepo: << pipeline.parameters.RequiredModulesRepo >>
           Shell: "pwsh"
   Publish Module Validation:
@@ -513,6 +533,9 @@ commands:
       JumpCloudApiKeyMsp:
         type: string
         default: $env:XAPIKEY_PESTER_MTP
+      JumpCloudMspOrg:
+        type: string
+        default: $env:XORGID_PesterMSP
       ExcludeTagList:
         type: string
         default: "None"
@@ -539,7 +562,7 @@ commands:
                 command: |
                   $ErrorActionPreference = 'stop'
                   ./PowerShell\Deploy\SdkSync\jcapiToSupportSync.ps1 -RequiredModulesRepo << pipeline.parameters.RequiredModulesRepo >>
-                  . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
+                  . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey << parameters.JumpCloudApiKey >> -JumpCloudApiKeyMsp << parameters.JumpCloudApiKeyMsp >> -JumpCloudMspOrg << parameters.JumpCloudMspOrg >> -ExcludeTagList << parameters.ExcludeTagList >> -IncludeTagList << parameters.IncludeTagList >> -RequiredModulesRepo << parameters.RequiredModulesRepo >>
             - store_test_results:
                 name: Uploading test results'
                 path: "./PowerShell/JumpCloud Module/Tests/test_results/"

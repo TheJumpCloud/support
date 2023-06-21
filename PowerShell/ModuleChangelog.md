@@ -1,3 +1,13 @@
+## 2.6.0
+
+Release Date: June 21, 2023
+
+#### RELEASE NOTES
+
+```
+Update/Import-JCMspFromCSV functions added.
+```
+
 ## 2.5.1
 
 Release Date: May 30, 2023
