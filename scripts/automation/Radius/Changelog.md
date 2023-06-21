@@ -1,3 +1,34 @@
+## 1.0.4
+
+Release Date: June 5, 2023
+
+#### RELEASE NOTES
+
+```
+Addressed an issue on macOS with EmailSAN and EmailDN type cert deployments where assigning network SSIDs during certificate import.
+```
+
+#### Bug Fixes:
+
+- In previous versions, deploying either an EmailSAN or EmailDN type cert would throw an error while attempting to associate a network SSID to the newly imported certificate. The cert identifier in this case was updated to the SHA1 hash of the certificates instead of the common name (which was incorrectly identified in previous iterations of these example scripts).
+
+## 1.0.3
+
+Release Date: May 30, 2023
+
+#### RELEASE NOTES
+
+```
+Fixed an issue affecting permissions on certain MacOS devices when attempting to deploy certs
+Improved performance when reviewing Command Results by changing fetch requests to Search-JCSDKCommandResult endpoint
+Added a condidtion for returning exit 4 on windows systems when no users are logged in
+```
+
+#### FEATURES:
+
+- Fixed an issue affecting permissions on certain MacOS devices when attempting to deploy certs
+- Improved performance when reviewing Command Results by changing fetch requests to Search-JCSDKCommandResult endpoint
+
 ## 1.0.2
 
 Release Date: May 2, 2023
@@ -7,6 +38,7 @@ Release Date: May 2, 2023
 ```
 Fixed an issue with the JCUSERCERTPASS not being correctly passed into Windows devices when changed from default
 ```
+
 #### FEATURES:
 
 - JCUSERCERTPASS was not being correctly referenced when the device commands are generated resulting in certificates not being installed

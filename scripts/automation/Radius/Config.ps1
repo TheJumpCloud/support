@@ -37,7 +37,7 @@ $CertType = "UsernameCn"
 # Do not modify below
 ################################################################################
 
-$UserAgent_ModuleVersion = '1.0.2'
+$UserAgent_ModuleVersion = '1.0.4'
 $UserAgent_ModuleName = 'PasswordlessRadiusConfig'
 #Build the UserAgent string
 $UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"
