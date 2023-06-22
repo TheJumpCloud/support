@@ -80,7 +80,7 @@ $PesterParamsHash_Common = @{
     ImportPath                      = "$PSScriptRoot/Csv_Files/import"
     UpdatePath                      = "$PSScriptRoot/Csv_Files/update"
     # Registry Files
-    $RegistryFilePath               = "$PSScriptRoot/Reg_File/PesterRegFile.reg"
+    RegistryFilePath                = "$PSScriptRoot/Reg_File/PesterRegFile.reg"
     # Policy Info
     MultiplePolicyList              = @('1 Linux', 'Disable USB Storage - Linux')
     SinglePolicyList                = @('Disable USB Storage - Linux')
