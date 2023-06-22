@@ -1,5 +1,5 @@
 BeforeAll {
-    $PesterRegistryFilePath = "$PSScriptRoot/Private/Policies/Reg_File/PesterRegFile.reg"
+    $PesterRegistryFilePath = "$PSScriptRoot/Reg_File/PesterRegFile.reg"
 }
 Describe -Tag:('JCPolicy') 'Registry File Tests' {
 
