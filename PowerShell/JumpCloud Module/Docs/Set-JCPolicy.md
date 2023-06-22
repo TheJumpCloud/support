@@ -27,6 +27,11 @@ Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [<Commo
 Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
+### RegistryFile
+```
+Set-JCPolicy [-NewName <String>] [-Values <Object[]>] [-registryFile <FileInfo>] [<CommonParameters>]
+```
+
 ## DESCRIPTION
 
 Set-JCPolicy allows for the update of existing JumpCloud Policies via the JumpCloud PowerShell Module.
@@ -116,6 +121,21 @@ Parameter Sets: ByName
 Aliases: name
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -registryFile
+A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.
+
+```yaml
+Type: System.IO.FileInfo
+Parameter Sets: RegistryFile
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
