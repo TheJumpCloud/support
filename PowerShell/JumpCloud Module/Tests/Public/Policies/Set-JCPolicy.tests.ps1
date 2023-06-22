@@ -454,12 +454,11 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     }
     Context 'Update registry policy using Registry file' {
         It 'Set-JCPolicy using regFilePath parameter' {
-            $PesterRegistryFilePath = "$PSScriptRoot/Reg_File/PesterRegFile.reg"
-            $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -registryFile $PesterRegistryFilePath
+            $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -registryFile $PesterParams_RegistryFilePath
 
             $NewName = "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)"
 
-            $registryPolicyUpdated = Set-JCPolicy -PolicyID $registryPolicy.Id -NewName $NewName -registryFile $PesterRegistryFilePath
+            $registryPolicyUpdated = Set-JCPolicy -PolicyID $registryPolicy.Id -NewName $NewName -registryFile $PesterParams_RegistryFilePath
             $registryPolicyUpdated.name | Should -Be $NewName
             $registryPolicyUpdated.templateID | Should -Be '5f07273cb544065386e1ce6f'
             $registryPolicyUpdated.values | Should -Not -BeNullOrEmpty

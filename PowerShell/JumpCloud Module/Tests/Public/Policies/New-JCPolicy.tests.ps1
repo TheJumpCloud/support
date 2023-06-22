@@ -291,8 +291,7 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     }
     Context 'Create new policy using Registry file' {
         It 'New-JCPolicy using regFilePath parameter' {
-            $PesterRegistryFilePath = "$PSScriptRoot/Reg_File/PesterRegFile.reg"
-            $registryPolicy = New-JCPolicy -Name 'Pester - RegFileUpload' -registryFile $PesterRegistryFilePath
+            $registryPolicy = New-JCPolicy -Name 'Pester - RegFileUpload' -registryFile $PesterParams_RegistryFilePath
             $registryPolicy.name | Should -Not -BeNullOrEmpty
             $registryPolicy.templateID | Should -Be '5f07273cb544065386e1ce6f'
             $registryPolicy.values | Should -Not -BeNullOrEmpty
