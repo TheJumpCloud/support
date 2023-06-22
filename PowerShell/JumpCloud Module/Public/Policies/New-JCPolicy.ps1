@@ -102,6 +102,7 @@ function New-JCPolicy {
                     } else {
                         $ParameterAttribute.HelpMessage = "$($key.help)"
                     }
+                    $ParameterAttribute.ParameterSetName = "Standard"
                     # Add the attributes to the attributes collection
                     $AttributeCollection.Add($ParameterAttribute)
                     # Add the param
