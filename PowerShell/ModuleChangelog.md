@@ -5,20 +5,12 @@ Release Date: June 22, 2023
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+This release introduces a new parameter, registryFile, to New-JCPolicy and Set-JCPolicy
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
+Admins can now upload a .reg file to a new or existing Windows - Advanced: Custom Registry Keys Policy
 
 ## 2.5.1
 
