@@ -24,7 +24,6 @@ function Set-JCPolicy {
         [System.object[]]
         $Values,
         [Parameter(Mandatory = $false,
-            ParameterSetName = 'RegistryFile',
             HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.')]
         [System.IO.FileInfo]$registryFile
     )
@@ -220,7 +219,11 @@ function Set-JCPolicy {
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
             if ($registryFile) {
-                $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                try {
+                    $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                } catch {
+                    throw $_
+                }
                 $updatedPolicyObject.value += $regKeys
                 Write-Debug $updatedPolicyObject
             }
@@ -241,7 +244,11 @@ function Set-JCPolicy {
             if (($templateObject.objectMap).count -gt 0) {
                 if ($registryFile) {
                     $updatedPolicyObject = $foundPolicy.values
-                    $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                    try {
+                        $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                    } catch {
+                        throw $_
+                    }
                     $updatedPolicyObject.value += $regKeys
                     Write-Debug $updatedPolicyObject
                 } else {
