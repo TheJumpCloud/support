@@ -19,17 +19,14 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 
 ### ByID (Default)
 ```
-Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
+Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [-registryFile <FileInfo>]
+ [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
-```
-
-### RegistryFile
-```
-Set-JCPolicy [-NewName <String>] [-Values <Object[]>] [-registryFile <FileInfo>] [<CommonParameters>]
+Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [-registryFile <FileInfo>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -132,7 +129,7 @@ A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys"
 
 ```yaml
 Type: System.IO.FileInfo
-Parameter Sets: RegistryFile
+Parameter Sets: (All)
 Aliases:
 
 Required: False
