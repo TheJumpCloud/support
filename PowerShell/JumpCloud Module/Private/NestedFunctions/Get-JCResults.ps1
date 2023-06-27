@@ -171,7 +171,7 @@ Function Get-JCResults {
             if ($totalCountHeader) {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
-                [void]$resultsArray.Add($content)
+                [void]$resultsArray.AddRange($content)
             } else {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
@@ -221,7 +221,7 @@ Function Get-JCResults {
                 if ($totalCountHeader) {
                     # Add results to results list
                     $content = $response.Content | ConvertFrom-Json
-                    [void]$resultsArray.Add($content)
+                    [void]$resultsArray.AddRange($content)
                     Write-Debug ("Page: $($i+1) Amount: " + ($content).Count)
                 } else {
                     # Add results to results list
