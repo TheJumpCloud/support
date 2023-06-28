@@ -12,6 +12,10 @@ This release introduces a new parameter, registryFile, to New-JCPolicy and Set-J
 
 Admins can now upload a .reg file to a new or existing Windows - Advanced: Custom Registry Keys Policy
 
+### BUG FIXES:
+
+Fixed an issue with sequential results not returning as expected with large datasets
+
 ## 2.5.1
 
 Release Date: May 30, 2023
