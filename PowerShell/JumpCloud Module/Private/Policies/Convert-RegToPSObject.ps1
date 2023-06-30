@@ -47,7 +47,7 @@ function Convert-RegToPSObject {
                     if ($valueObject[1].StartsWith("dword:")) {
                         #DWORD
                         $customRegType = "DWORD"
-                        $customData = ($valueObject[1]).Substring(5)
+                        $customData = [int]"0x$(($valueObject[1]).Substring(6))"
                     } elseif ($valueObject[1].StartsWith("hex(b):")) {
                         #QWORD
                         $customRegType = "QWORD"
