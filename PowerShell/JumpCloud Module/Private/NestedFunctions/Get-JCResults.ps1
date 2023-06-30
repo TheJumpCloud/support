@@ -170,11 +170,11 @@ Function Get-JCResults {
         else {
             if ($totalCountHeader) {
                 # Add results to results list
-                $content = $response.Content | ConvertFrom-Json
+                $content = $response.Content
                 [void]$resultsArray.AddRange($content)
             } else {
                 # Add results to results list
-                $content = $response.Content | ConvertFrom-Json
+                $content = $response.Content
                 if ($null -eq $content.results) {
                     [void]$resultsArray.Add($content)
                 } else {
@@ -238,6 +238,9 @@ Function Get-JCResults {
         }
     }
     end {
+        if ($totalCountHeader) {
+            $resultsArray = $resultsArray | ConvertFrom-Json
+        }
         # Return complete results
         return $resultsArray
     }
