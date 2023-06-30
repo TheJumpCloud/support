@@ -5,24 +5,19 @@ function New-JCPolicy {
             ParameterSetName = 'ByID',
             ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The ID of the policy template to create as a new JumpCloud Policy')]
-        [Parameter(ParameterSetName = 'Standard')]
         [System.String]
         $TemplateID,
         [Parameter(Mandatory = $true,
             ParameterSetName = 'ByName',
             HelpMessage = 'The Name of the policy template to create as a new JumpCloud Policy')]
-        [Parameter(ParameterSetName = 'Standard')]
         [System.String]
         $TemplateName,
         [Parameter(Mandatory = $false,
             HelpMessage = 'The name of the policy to create. If left unspecified, the cmdlet will attempt to create the policy with the default name defined by the selected policy template.')]
-        [Parameter(ParameterSetName = 'Standard')]
-        [Parameter(ParameterSetName = 'RegistryFile')]
         [System.String]
         $Name,
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
-        [Parameter(ParameterSetName = 'Standard')]
         [System.object[]]
         $Values,
         [Parameter(Mandatory = $false,
@@ -31,87 +26,84 @@ function New-JCPolicy {
         [System.IO.FileInfo]$registryFile
     )
     DynamicParam {
-        if ($PSCmdlet.ParameterSetName -eq "Standard") {
-            if ($PSBoundParameters["TemplateID"]) {
-                $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-                $ParameterAttribute.Mandatory = $false
-                $ParameterAttribute.ParameterSetName = "ByID"
-                # Get the policy template by ID
-                $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
-                if ([String]::IsNullOrEmpty($templateObject.defaultName)) {
-                    throw "Could not find policy template by ID"
-                }
+        if ($PSBoundParameters["TemplateID"]) {
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            $ParameterAttribute.ParameterSetName = "ByID"
+            # Get the policy template by ID
+            $templateObject = Get-JCPolicyTemplateConfigField -templateID $templateID
+            if ([String]::IsNullOrEmpty($templateObject.defaultName)) {
+                throw "Could not find policy template by ID"
+            }
 
-            } elseif ($PSBoundParameters["TemplateName"]) {
-                $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-                $ParameterAttribute.Mandatory = $false
-                $ParameterAttribute.ParameterSetName = "ByName"
-                # Get the policy by Name
-                if ($TemplateName -in $global:TemplateNameList.Name) {
-                    $matchedTemplate = $templateNameList[$templateNameList.Name.IndexOf($TemplateName)].id
+        } elseif ($PSBoundParameters["TemplateName"]) {
+            $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+            $ParameterAttribute.Mandatory = $false
+            $ParameterAttribute.ParameterSetName = "ByName"
+            # Get the policy by Name
+            if ($TemplateName -in $global:TemplateNameList.Name) {
+                $matchedTemplate = $templateNameList[$templateNameList.Name.IndexOf($TemplateName)].id
+            } else {
+                throw "template list missing; have you run Connect-JCOnline"
+            }
+            $templateObject = Get-JCPolicyTemplateConfigField -templateID $matchedTemplate
+            if ([String]::IsNullOrEmpty($templateObject.defaultName)) {
+                throw "Could not find policy template by specified Name"
+            }
+        }
+
+        if ($templateObject.objectMap -And ($PSBoundParameters["TemplateName"] -OR $PSBoundParameters["TemplateID"])) {
+            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            # Foreach key in the supplied config file:
+            foreach ($key in $templateObject.objectMap) {
+                # Set the dynamic parameters' name
+                $ParamName_Filter = "$($key.configFieldName)"
+                # Create the collection of attributes
+                $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                # If ValidateSet is specified in the config file, set the value here:
+                # If the type of value is a bool, create a custom validateSet attribute here:
+                $paramType = $($key.type)
+                switch ($paramType) {
+                    'boolean' {
+                        $arrSet = @("true", "false")
+                        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
+                        $AttributeCollection.Add($ValidateSetAttribute)
+                    }
+                    'multi' {
+                        $paramType = 'string'
+                        $arrSet = $key.validation.values
+                        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
+                        $AttributeCollection.Add($ValidateSetAttribute)
+                    }
+                    'file' {
+                        $paramType = 'string'
+                    }
+                    'listbox' {
+                        $paramType = [system.string[]]
+                    }
+                    'table' {
+                        $paramType = [system.object[]]
+                    }
+                    'exclude' {
+                        Continue
+                    }
+                    Default {
+                        $paramType = 'string'
+                    }
+                }
+                if ([String]::isNullorEmpty($($key.help))) {
+                    $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
                 } else {
-                    throw "template list missing; have you run Connect-JCOnline"
+                    $ParameterAttribute.HelpMessage = "$($key.help)"
                 }
-                $templateObject = Get-JCPolicyTemplateConfigField -templateID $matchedTemplate
-                if ([String]::IsNullOrEmpty($templateObject.defaultName)) {
-                    throw "Could not find policy template by specified Name"
-                }
+                # Add the attributes to the attributes collection
+                $AttributeCollection.Add($ParameterAttribute)
+                # Add the param
+                $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
+                $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
             }
-
-            if ($templateObject.objectMap -And ($PSBoundParameters["TemplateName"] -OR $PSBoundParameters["TemplateID"])) {
-                $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-                # Foreach key in the supplied config file:
-                foreach ($key in $templateObject.objectMap) {
-                    # Set the dynamic parameters' name
-                    $ParamName_Filter = "$($key.configFieldName)"
-                    # Create the collection of attributes
-                    $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                    # If ValidateSet is specified in the config file, set the value here:
-                    # If the type of value is a bool, create a custom validateSet attribute here:
-                    $paramType = $($key.type)
-                    switch ($paramType) {
-                        'boolean' {
-                            $arrSet = @("true", "false")
-                            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-                            $AttributeCollection.Add($ValidateSetAttribute)
-                        }
-                        'multi' {
-                            $paramType = 'string'
-                            $arrSet = $key.validation.values
-                            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-                            $AttributeCollection.Add($ValidateSetAttribute)
-                        }
-                        'file' {
-                            $paramType = 'string'
-                        }
-                        'listbox' {
-                            $paramType = [system.string[]]
-                        }
-                        'table' {
-                            $paramType = [system.object[]]
-                        }
-                        'exclude' {
-                            Continue
-                        }
-                        Default {
-                            $paramType = 'string'
-                        }
-                    }
-                    if ([String]::isNullorEmpty($($key.help))) {
-                        $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
-                    } else {
-                        $ParameterAttribute.HelpMessage = "$($key.help)"
-                    }
-                    $ParameterAttribute.ParameterSetName = "Standard"
-                    # Add the attributes to the attributes collection
-                    $AttributeCollection.Add($ParameterAttribute)
-                    # Add the param
-                    $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
-                    $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
-                }
-                # Returns the dictionary
-                return $RuntimeParameterDictionary
-            }
+            # Returns the dictionary
+            return $RuntimeParameterDictionary
         }
     }
     begin {
@@ -121,7 +113,27 @@ function New-JCPolicy {
         }
     }
     process {
-        if ($PSCmdlet.ParameterSetName -eq "Standard") {
+        if ($PSCmdlet.ParameterSetName -eq 'RegistryFile') {
+            try {
+                $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+            } catch {
+                throw $_
+            }
+            $body = @{
+                "name"     = if (!$Name) { "Advanced: Custom Registry Keys" } else { $($Name) }
+                "values"   = @(@{
+                        "configFieldID"   = '5f07273cb544065386e1ce70'
+                        "configFieldName" = 'customRegTable'
+                        "sensitive"       = $($false)
+                        "value"           = @($regKeys)
+                    })
+                "template" = @{
+                    "id" = "5f07273cb544065386e1ce6f"
+                }
+            }
+            $body = ConvertTo-Json -InputObject $body -Depth 10
+            Write-Debug $Body
+        } else {
             $params = $PSBoundParameters
             $paramterSet = $params.keys
             $DynamicParamSet = $false
@@ -271,22 +283,6 @@ function New-JCPolicy {
                 } | ConvertTo-Json -Depth 99
 
             }
-        } elseif ($PSCmdlet.ParameterSetName -eq 'RegistryFile') {
-            $regKeys = Convert-RegToPSObject -regFilePath $registryFile
-            $body = @{
-                "name"     = if (!$Name) { "Advanced: Custom Registry Keys" } else { $($Name) }
-                "values"   = @(@{
-                        "configFieldID"   = '5f07273cb544065386e1ce70'
-                        "configFieldName" = 'customRegTable'
-                        "sensitive"       = $($false)
-                        "value"           = @($regKeys)
-                    })
-                "template" = @{
-                    "id" = "5f07273cb544065386e1ce6f"
-                }
-            }
-            $body = ConvertTo-Json -InputObject $body -Depth 10
-            Write-Debug $Body
         }
         $headers = @{
             'x-api-key'    = $env:JCApiKey
