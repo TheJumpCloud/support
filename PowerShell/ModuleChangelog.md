@@ -1,6 +1,6 @@
 ## 2.7.0
 
-Release Date: June 22, 2023
+Release Date: June 30, 2023
 
 #### RELEASE NOTES
 
