@@ -22,12 +22,6 @@ At a minimum to display the dynamic set of parameters per template, the `Templat
 New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
-### Standard
-```
-New-JCPolicy [-TemplateID <String>] [-TemplateName <String>] [-Name <String>] [-Values <Object[]>]
- [<CommonParameters>]
-```
-
 ### ByName
 ```
 New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
@@ -132,33 +126,9 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-```yaml
-Type: System.String
-Parameter Sets: Standard
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -TemplateName
 
 The Name of the policy template to create as a new JumpCloud Policy
-
-```yaml
-Type: System.String
-Parameter Sets: Standard
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ```yaml
 Type: System.String
@@ -178,19 +148,7 @@ The values object either built manually or passed in through Get-JCPolicy
 
 ```yaml
 Type: System.Object[]
-Parameter Sets: ByID, ByName, RegistryFile
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-```yaml
-Type: System.Object[]
-Parameter Sets: Standard
+Parameter Sets: (All)
 Aliases:
 
 Required: False
