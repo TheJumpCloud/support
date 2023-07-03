@@ -238,7 +238,7 @@ Function Get-JCResults {
         }
     }
     end {
-        if ($parallel) {
+        if ($parallel -and $totalCountHeader) {
             $resultsArray = $resultsArray | ConvertFrom-Json
         }
         # Return complete results
