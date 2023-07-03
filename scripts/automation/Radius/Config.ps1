@@ -14,7 +14,7 @@ $JCUSERCERTVALIDITY = 90
 $NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
-# MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+# MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
 $opensslBinary = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
 $Subj = [PSCustomObject]@{
@@ -37,7 +37,7 @@ $CertType = "UsernameCn"
 # Do not modify below
 ################################################################################
 
-$UserAgent_ModuleVersion = '1.0.4'
+$UserAgent_ModuleVersion = '1.0.5'
 $UserAgent_ModuleName = 'PasswordlessRadiusConfig'
 #Build the UserAgent string
 $UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"

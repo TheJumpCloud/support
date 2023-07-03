@@ -1,3 +1,17 @@
+## 1.0.5
+
+Release Date: July 3, 2023
+
+#### RELEASE NOTES
+
+```
+Addressed an issue generating certificates for users with localUsernames (systemUsernames specified in the JumpCloud console). These user certificates were generated with the localUsername instead of their username field. The resulting certificate would never be allowed to access a radius backed network as their localUsername does not match the username.
+```
+
+#### Bug Fixes:
+
+- Certificates for users with localUsername (systemUsernames) should now authenticate to radius networks. Their CNs should now be based on their usernames, not localUsernames.
+
 ## 1.0.4
 
 Release Date: June 5, 2023
