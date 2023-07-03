@@ -238,6 +238,9 @@ Function Get-JCResults {
         }
     }
     end {
+        if ($parallel) {
+            $resultsArray = $resultsArray | ConvertFrom-Json
+        }
         # Return complete results
         return $resultsArray
     }
