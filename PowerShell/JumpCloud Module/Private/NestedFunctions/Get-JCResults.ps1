@@ -22,7 +22,7 @@ Function Get-JCResults {
             $errorResults = [System.Collections.Concurrent.ConcurrentQueue[Exception]]::new()
         } else {
             Write-Debug "Running in Sequential"
-            $resultsArray = [System.Collections.Generic.List[object]]::new()
+            $resultsArray = [System.Collections.ArrayList]::new()
         }
         $totalCount = 1
         $limit = [int]$limit
