@@ -174,7 +174,7 @@ Function Get-JCResults {
                 [void]$resultsArray.AddRange($content)
             } else {
                 # Add results to results list
-                $content = $response.Content | ConvertFrom-Json
+                $content = $response.Content
                 if ($null -eq $content.results) {
                     [void]$resultsArray.Add($content)
                 } else {
