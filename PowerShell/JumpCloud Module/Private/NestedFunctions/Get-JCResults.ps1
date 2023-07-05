@@ -18,11 +18,11 @@ Function Get-JCResults {
         }
 
         if ($parallel) {
-            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[psobject]]::new()
+            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[pscustomObject]]::new()
             $errorResults = [System.Collections.Concurrent.ConcurrentQueue[Exception]]::new()
         } else {
             Write-Debug "Running in Sequential"
-            $resultsArray = [System.Collections.Generic.List[psobject]]::new()
+            $resultsArray = [System.Collections.Generic.List[pscustomobject]]::new()
         }
         $totalCount = 1
         $limit = [int]$limit
