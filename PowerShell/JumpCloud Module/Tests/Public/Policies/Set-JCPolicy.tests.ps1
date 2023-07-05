@@ -454,7 +454,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     }
     Context 'Update registry policy using Registry file' {
         It 'Set-JCPolicy using regFilePath parameter' {
-            $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -registryFile $PesterParams_RegistryFilePath
+            $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -templateId '5f07273cb544065386e1ce6f' -registryFile $PesterParams_RegistryFilePath
 
             $NewName = "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)"
 
