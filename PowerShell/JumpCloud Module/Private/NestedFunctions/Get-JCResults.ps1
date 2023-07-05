@@ -18,11 +18,11 @@ Function Get-JCResults {
         }
 
         if ($parallel) {
-            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[pscustomObject]]::new()
+            $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
             $errorResults = [System.Collections.Concurrent.ConcurrentQueue[Exception]]::new()
         } else {
             Write-Debug "Running in Sequential"
-            $resultsArray = [System.Collections.Generic.List[pscustomobject]]::new()
+            $resultsArray = [System.Collections.Generic.List[object]]::new()
         }
         $totalCount = 1
         $limit = [int]$limit
@@ -174,7 +174,7 @@ Function Get-JCResults {
                 [void]$resultsArray.AddRange($content)
             } else {
                 # Add results to results list
-                $content = $response.Content
+                $content = $response.Content | ConvertFrom-Json
                 if ($null -eq $content.results) {
                     [void]$resultsArray.Add($content)
                 } else {
