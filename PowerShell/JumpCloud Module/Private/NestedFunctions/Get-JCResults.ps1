@@ -171,14 +171,22 @@ Function Get-JCResults {
             if ($totalCountHeader) {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
-                [void]$resultsArray.AddRange($content)
+                if ($content.Count -eq 1) {
+                    [void]$resultsArray.Add($content)
+                } else {
+                    [void]$resultsArray.AddRange($content)
+                }
             } else {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
                 if ($null -eq $content.results) {
                     [void]$resultsArray.Add($content)
                 } else {
-                    [void]$resultsArray.AddRange($content.results)
+                    if ($($content.results).Count -eq 1) {
+                        [void]$resultsArray.Add($content.results)
+                    } else {
+                        [void]$resultsArray.AddRange($content.results)
+                    }
                 }
             }
 
@@ -221,17 +229,22 @@ Function Get-JCResults {
                 if ($totalCountHeader) {
                     # Add results to results list
                     $content = $response.Content | ConvertFrom-Json
-                    [void]$resultsArray.AddRange($content)
-                    Write-Debug ("Page: $($i+1) Amount: " + ($content).Count)
+                    if ($content.Count -eq 1) {
+                        [void]$resultsArray.Add($content)
+                    } else {
+                        [void]$resultsArray.AddRange($content)
+                    }
                 } else {
                     # Add results to results list
                     $content = $response.Content | ConvertFrom-Json
                     if ($null -eq $content.results) {
                         [void]$resultsArray.Add($content)
-                        Write-Debug ("Page: $($i+1) Amount: " + ($content | ConvertFrom-Json).Count)
                     } else {
-                        [void]$resultsArray.AddRange($content.results)
-                        Write-Debug ("Page: $($i+1) Amount: " + ($content.results).Count)
+                        if ($($content.results).Count -eq 1) {
+                            [void]$resultsArray.Add($content.results)
+                        } else {
+                            [void]$resultsArray.AddRange($content.results)
+                        }
                     }
                 }
             }
