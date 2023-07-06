@@ -462,7 +462,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $registryPolicyUpdated.name | Should -Be $NewName
             $registryPolicyUpdated.templateID | Should -Be '5f07273cb544065386e1ce6f'
             $registryPolicyUpdated.values | Should -Not -BeNullOrEmpty
-            $registryPolicyUpdated.values.value.count | Should -Be 8
+            $registryPolicyUpdated.values.value.count | Should -Be 10
             $registryPolicyUpdated.id | Should -Not -BeNullOrEmpty
             $registryPolicyUpdated.template | Should -Not -BeNullOrEmpty
         }
