@@ -49,6 +49,7 @@ declare -r apps_path="/usr/share/applications"
 declare -r raa_directory="${install_prefix}/jumpcloud-remote-assist"
 declare -r raa_desktop_file="${raa_directory}/resources/build-app/linux/jumpcloud-remote-assist.desktop"
 declare -r uninstaller_path="${install_prefix}/bin/uninstall-${raa_binary_name}"
+declare -r raa_service_install_file="${raa_directory}/resources/build-app/linux/raasvc-install.sh"
 
 declare -r remote_pub_key_url="https://jumpcloud-windows-agent.s3.amazonaws.com/production/remote-assist/jumpcloud-remote-assist-agent.gpg.asc"
 declare -r remote_tgz_url="https://jumpcloud-windows-agent.s3.amazonaws.com/production/remote-assist/versions/${raa_version}/jumpcloud-remote-assist-agent_x86_64.tar.gz"
@@ -160,6 +161,14 @@ function install_desktop_file() {
   fi
 }
 
+function install_raasvc_file() {
+  echo "Installing raasvc and raal service"
+  if [[ -f "${raa_service_install_file}" ]]; then
+    chmod +x "${raa_service_install_file}"
+    /bin/bash "${raa_service_install_file}"
+  fi
+}
+
 function install_uninstall_script() {
   mkdir -p "$(dirname "${uninstaller_path}")"
   cat > "${uninstaller_path}" <<'EOF'
@@ -176,6 +185,7 @@ function main() {
   kill_running_raa_instance
   install_new_raa
   install_desktop_file
+  install_raasvc_file
   install_uninstall_script
 }
 
