@@ -171,7 +171,7 @@ Function Get-JCResults {
             if ($totalCountHeader) {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
-                if ($content.Count -eq 1) {
+                if ($content.Count -le 1) {
                     [void]$resultsArray.Add($content)
                 } else {
                     [void]$resultsArray.AddRange($content)
@@ -182,7 +182,7 @@ Function Get-JCResults {
                 if ($null -eq $content.results) {
                     [void]$resultsArray.Add($content)
                 } else {
-                    if ($($content.results).Count -eq 1) {
+                    if ($($content.results).Count -le 1) {
                         [void]$resultsArray.Add($content.results)
                     } else {
                         [void]$resultsArray.AddRange($content.results)
@@ -229,7 +229,7 @@ Function Get-JCResults {
                 if ($totalCountHeader) {
                     # Add results to results list
                     $content = $response.Content | ConvertFrom-Json
-                    if ($content.Count -eq 1) {
+                    if ($content.Count -le 1) {
                         [void]$resultsArray.Add($content)
                     } else {
                         [void]$resultsArray.AddRange($content)
@@ -240,7 +240,7 @@ Function Get-JCResults {
                     if ($null -eq $content.results) {
                         [void]$resultsArray.Add($content)
                     } else {
-                        if ($($content.results).Count -eq 1) {
+                        if ($($content.results).Count -le 1) {
                             [void]$resultsArray.Add($content.results)
                         } else {
                             [void]$resultsArray.AddRange($content.results)
