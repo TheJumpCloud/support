@@ -171,6 +171,7 @@ Function Get-JCResults {
             if ($totalCountHeader) {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
+                # Check to see size of content
                 if ($content.Count -le 1) {
                     [void]$resultsArray.Add($content)
                 } else {
