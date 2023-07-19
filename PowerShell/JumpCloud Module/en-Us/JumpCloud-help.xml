@@ -14856,18 +14856,6 @@ Enter a value between 1 and 2:</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>registryFile</maml:name>
-          <maml:description>
-            <maml:para>A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.IO.FileInfo</command:parameterValue>
-          <dev:type>
-            <maml:name>System.IO.FileInfo</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Values</maml:name>
           <maml:description>
@@ -14903,18 +14891,6 @@ Enter a value between 1 and 2:</dev:code>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>registryFile</maml:name>
-          <maml:description>
-            <maml:para>A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.IO.FileInfo</command:parameterValue>
-          <dev:type>
-            <maml:name>System.IO.FileInfo</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -14966,18 +14942,6 @@ Enter a value between 1 and 2:</dev:code>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
           <maml:name>System.String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>registryFile</maml:name>
-        <maml:description>
-          <maml:para>A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.IO.FileInfo</command:parameterValue>
-        <dev:type>
-          <maml:name>System.IO.FileInfo</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

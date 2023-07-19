@@ -19,14 +19,12 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 
 ### ByID (Default)
 ```
-Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [-registryFile <FileInfo>]
- [<CommonParameters>]
+Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [-registryFile <FileInfo>]
- [<CommonParameters>]
+Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -118,21 +116,6 @@ Parameter Sets: ByName
 Aliases: name
 
 Required: True
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -registryFile
-A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.
-
-```yaml
-Type: System.IO.FileInfo
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
