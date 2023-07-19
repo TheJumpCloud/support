@@ -23,9 +23,6 @@ function Set-JCPolicy {
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
         $Values
-        # [Parameter(Mandatory = $false,
-        #     HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.')]
-        # [System.IO.FileInfo]$registryFile
     )
     DynamicParam {
 
