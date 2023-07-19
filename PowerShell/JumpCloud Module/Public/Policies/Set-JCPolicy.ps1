@@ -22,10 +22,10 @@ function Set-JCPolicy {
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
-        $Values,
-        [Parameter(Mandatory = $false,
-            HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.')]
-        [System.IO.FileInfo]$registryFile
+        $Values
+        # [Parameter(Mandatory = $false,
+        #     HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.')]
+        # [System.IO.FileInfo]$registryFile
     )
     DynamicParam {
 
@@ -102,6 +102,16 @@ function Set-JCPolicy {
                 # Add the param
                 $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
                 $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
+                if ($ParamName_Filter -eq "customRegTable") {
+                    $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+                    $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                    $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                    $RegImport_paramType = [System.IO.FileInfo]
+                    $RegImport_ParameterAttribute.HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.'
+                    $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
+                    $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryFile', $RegImport_paramType, $RegImport_AttributeCollection)
+                    $RuntimeParameterDictionary.Add('RegistryFile', $RegImport_RuntimeParameter)
+                }
             }
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -211,6 +221,15 @@ function Set-JCPolicy {
                         }
                     }
                     $newObject.Add($templateObject.objectMap[$i]) | Out-Null
+                } elseif ('RegistryFile' -in $params.Keys) {
+                    try {
+                        $regKeys = Convert-RegToPSObject -regFilePath $($params.'RegistryFile')
+                    } catch {
+                        throw $_
+                    }
+                    # Set the registryFile as the customRegTable
+                    $templateObject.objectMap[0].value = $regKeys
+                    $newObject.Add($templateObject.objectMap[0]) | Out-Null
                 } else {
                     # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
                     $templateObject.objectMap[$i].value = ($foundPolicy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
