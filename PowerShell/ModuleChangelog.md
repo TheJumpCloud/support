@@ -16,6 +16,7 @@ Admins can now upload a .reg file to a new or existing Windows - Advanced: Custo
 
 Fixed an issue with sequential results not returning as expected with large datasets
 
+
 ## 2.5.1
 
 Release Date: May 30, 2023

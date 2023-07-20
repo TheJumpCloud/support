@@ -62,14 +62,13 @@ if (Test-Path "$JCScriptRoot/UserCerts") {
 foreach ($user in $groupMembers) {
     # Create the User Certs
     $MatchedUser = get-webjcuser -userID $user.id
-
     Write-Host "Generating Cert for user: $($MatchedUser.username)"
 
     if ($MatchedUser.id -in $userArray.userId) {
         if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
             Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
         } else {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem"
+            Generate-UserCert -CertType $CertType -user $MatchedUser.username -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem"
         }
     } else {
         Write-Host "[status] $($MatchedUser.username) not found in users.json"
@@ -92,6 +91,11 @@ foreach ($user in $groupMembers) {
         $userTable = @{
             userId              = $MatchedUser.id
             userName            = $MatchedUser.username
+            localUsername       = $(If ($MatchedUser.hasLocalUsername) {
+                    $matchedUser.localUsername
+                } else {
+                    $matchedUser.username
+                })
             systemAssociations  = $systemAssociations
             commandAssociations = @()
         }

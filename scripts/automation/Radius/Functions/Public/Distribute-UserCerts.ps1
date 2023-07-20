@@ -116,8 +116,8 @@ currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certHash.serial)"
 networkSsid="$($NETWORKSSID)"
-if [[ `$currentUser ==  $($user.userName) ]]; then
-    certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain)
+if [[ `$currentUser ==  $($user.localUsername) ]]; then
+    certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain)
     regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
     regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
     global_rematch() {
@@ -154,7 +154,7 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
             else
                 echo "Removing previously installed radius cert:"
                 echo "SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
-                security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.userName)/Library/Keychains/login.keychain
+                security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.localUsername)/Library/Keychains/login.keychain
             fi
         done
 
@@ -163,13 +163,13 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
     fi
 
     if [[ `$import == true ]]; then
-        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.userName)/Library/Keychains/login.keychain -P $JCUSERCERTPASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $JCUSERCERTPASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
         if [[ `$? -eq 0 ]]; then
             echo "Import Success"
             # get the SHA hash of the newly imported cert
-            installedCertSN=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain | grep snbr | awk '{print `$1}' | sed 's/"snbr"<blob>=0x//g')
+            installedCertSN=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain | grep snbr | awk '{print `$1}' | sed 's/"snbr"<blob>=0x//g')
             if [[ `$installedCertSN == `$currentCertSN ]]; then
-                installedCertSHA=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.userName)/Library/Keychains/login.keychain | grep SHA-1 | awk '{print `$3}')
+                installedCertSHA=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain | grep SHA-1 | awk '{print `$3}')
             fi
 
         else
@@ -213,7 +213,7 @@ if [[ `$currentUser ==  $($user.userName) ]]; then
         rm "/tmp/$($user.userName)-client-signed.pfx"
     fi
 else
-    echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry"
+    echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.localUsername) is signed in and retry"
     # Finally clean up files
     if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
         echo "Removing Temp Zip"
@@ -286,7 +286,7 @@ if ( -Not [string]::isNullOrEmpty(`$CurrentUser) ){
 } else {
     `$CurrentUser = `$null
 }
-if (`$CurrentUser -eq "$($user.userName)") {
+if (`$CurrentUser -eq "$($user.localUsername)") {
     if (-not(Get-InstalledModule -Name RunAsUser -errorAction "SilentlyContinue")) {
         Write-Host "RunAsUser Module not installed, Installing..."
         Install-Module RunAsUser -Force
@@ -358,7 +358,7 @@ if (`$CurrentUser -eq "$($user.userName)") {
     if (`$CurrentUser -eq `$null){
         Write-Host "No users are signed into the system. Please ensure $($user.userName) is signed in and retry."
     } else {
-        Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.userName) is signed in and retry."
+        Write-Host "Current logged in user, `$CurrentUser, does not match expected certificate user. Please ensure $($user.localUsername) is signed in and retry."
     }
     # finally clean up temp files:
     If (Test-Path "C:\Windows\Temp\$($user.userName)-client-signed.zip"){

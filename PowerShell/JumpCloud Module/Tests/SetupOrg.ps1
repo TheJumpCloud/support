@@ -1,12 +1,17 @@
 Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
 )
 Try {
     # Import JC Module
     Import-Module "$PSScriptRoot/../JumpCloud.psd1"
     # Authenticate to JumpCloud
-    Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey) -force | Out-Null
+    if (-not [string]::IsNullOrEmpty($JumpCloudMspOrg)) {
+        Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudOrgId:($JumpCloudMspOrg) -force | Out-Null
+    } else {
+        Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey) -force | Out-Null
+    }
     # Define variable names
     $PesterParamsHash_VariableName = @{
         VariableNamePrefix     = 'PesterParams_';

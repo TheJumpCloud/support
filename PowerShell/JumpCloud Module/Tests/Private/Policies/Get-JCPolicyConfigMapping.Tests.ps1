@@ -1,5 +1,3 @@
-BeforeAll {
-}
 Describe -tag:('JCPolicy') 'Get config fields tests' {
 
     Context 'Test Config Fields for all possible types' {
