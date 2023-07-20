@@ -330,11 +330,3 @@ function Set-JCPolicy {
         return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
     }
 }
-$privs = Get-ChildItem -Path "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private" -recurse -Filter *.ps1
-foreach ($privFunc in $privs) {
-    write-host "importing $($privFunc.FullName)"
-    . "$($privFunc.FullName)"
-}
-# "/Users/jworkman/Downloads/hey.reg"
-# "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Tests/Reg_File/PesterRegFile.reg"
-Set-JCPolicy -PolicyID 64b82ddb6e220b0001d17889 -RegistryFile /Users/jworkman/Downloads/hey.reg -RegistryOverwrite
