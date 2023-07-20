@@ -1,6 +1,6 @@
 ## 1.0.5
 
-Release Date: July 3, 2023
+Release Date: July 20, 2023
 
 #### RELEASE NOTES
 
