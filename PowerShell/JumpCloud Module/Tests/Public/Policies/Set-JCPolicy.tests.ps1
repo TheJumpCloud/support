@@ -452,6 +452,16 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $usbLinuxPolicyUpdated.templateID | Should -Not -BeNullOrEmpty
         }
     }
+    Context 'Validates Throw Conditions' {
+        It 'Should throw an error when multiple policies with the same name exist and the policyName param is specified' {
+            $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
+            $randomValue = $(new-randomString -NumberOfChars 8)
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $($randomValue)"
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $($randomValue)"
+            { Set-JCPolicy -PolicyName -Name "Pester - USB Linux $($randomValue)" -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)" } | Should -Throw
+
+        }
+    }
     Context 'Update registry policy using Registry file' {
         It 'Set-JCPolicy using regFilePath parameter' {
             $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -templateId '5f07273cb544065386e1ce6f' -registryFile $PesterParams_RegistryFilePath
