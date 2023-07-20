@@ -109,6 +109,16 @@ function Set-JCPolicy {
                     $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryFile', $RegImport_paramType, $RegImport_AttributeCollection)
                     $RuntimeParameterDictionary.Add('RegistryFile', $RegImport_RuntimeParameter)
                 }
+                if ($ParamName_Filter -eq "customRegTable") {
+                    $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+                    $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                    $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                    $RegImport_paramType = [Switch]
+                    $RegImport_ParameterAttribute.HelpMessage = 'When specified along with the RegistryFile parameter, existing registry values will be overwritten'
+                    $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
+                    $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryOverwrite', $RegImport_paramType, $RegImport_AttributeCollection)
+                    $RuntimeParameterDictionary.Add('RegistryOverwrite', $RegImport_RuntimeParameter)
+                }
             }
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -225,8 +235,16 @@ function Set-JCPolicy {
                         throw $_
                     }
                     # Set the registryFile as the customRegTable
-                    $templateObject.objectMap[0].value = $regKeys
-                    $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                    if ('RegistryOverwrite' -in $params.Keys) {
+                        $templateObject.objectMap[0].value = $regKeys
+                        $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                    } else {
+                        $registryList = New-Object System.Collections.ArrayList
+                        $registryList += $foundPolicy.values.value
+                        $registryList += $regKeys
+                        $templateObject.objectMap[0].value += $registryList
+                        $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                    }
                 } else {
                     # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
                     $templateObject.objectMap[$i].value = ($foundPolicy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
@@ -258,42 +276,31 @@ function Set-JCPolicy {
             }
         } else {
             if (($templateObject.objectMap).count -gt 0) {
-                if ($registryFile) {
-                    $updatedPolicyObject = $foundPolicy.values
-                    try {
-                        $regKeys = Convert-RegToPSObject -regFilePath $registryFile
-                    } catch {
-                        throw $_
+                # Begin user prompt
+                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
+                # User selects edit all fields
+                if ($initialUserInput.fieldSelection -eq 'A') {
+                    for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
                     }
-                    $updatedPolicyObject.value += $regKeys
-                    Write-Debug $updatedPolicyObject
-                } else {
-                    # Begin user prompt
-                    $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
-                    # User selects edit all fields
-                    if ($initialUserInput.fieldSelection -eq 'A') {
-                        for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                            $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
+                    # Display policy values
+                    # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
+                }
+                # User selects edit individual field
+                elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
+                    # For set-jcpolicy, add the help & label options
+                    $updatedPolicyObject | ForEach-Object {
+                        if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
+                            $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
+                            $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
                         }
-                        # Display policy values
-                        # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
                     }
-                    # User selects edit individual field
-                    elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
-                        # For set-jcpolicy, add the help & label options
-                        $updatedPolicyObject | ForEach-Object {
-                            if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
-                                $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
-                                $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
-                            }
-                        }
-                        Do {
-                            # Hide option to edit all fields
-                            $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
-                            $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
-                        } while ($userInput.fieldSelection -ne 'C')
-                    }
+                    Do {
+                        # Hide option to edit all fields
+                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
+                    } while ($userInput.fieldSelection -ne 'C')
                 }
             }
         }
@@ -323,3 +330,11 @@ function Set-JCPolicy {
         return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
     }
 }
+$privs = Get-ChildItem -Path "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Private" -recurse -Filter *.ps1
+foreach ($privFunc in $privs) {
+    write-host "importing $($privFunc.FullName)"
+    . "$($privFunc.FullName)"
+}
+# "/Users/jworkman/Downloads/hey.reg"
+# "/Users/jworkman/Documents/GitHub/support/PowerShell/JumpCloud Module/Tests/Reg_File/PesterRegFile.reg"
+Set-JCPolicy -PolicyID 64b82ddb6e220b0001d17889 -RegistryFile /Users/jworkman/Downloads/hey.reg -RegistryOverwrite

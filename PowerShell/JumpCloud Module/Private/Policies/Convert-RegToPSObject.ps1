@@ -53,7 +53,9 @@ function Convert-RegToPSObject {
                         $customRegType = "QWORD"
                         $value = ($valueObject[1]).Substring(7).split(",")
                         # Convert to value
-                        $value = for ($i = $value.count - 1; $i -ge 0; $i--) { $value[$i] }
+                        $value = for ($i = $value.count - 1; $i -ge 0; $i--) {
+                            $value[$i]
+                        }
                         $hexValue = '0x' + ($value -join "").trimstart('0')
                         $customData = [int]$hexValue
                     } elseif ($valueObject[1].StartsWith("hex(7):")) {
@@ -61,7 +63,11 @@ function Convert-RegToPSObject {
                         $customRegType = "multiString"
                         $value = ($valueObject[1]).Replace("hex(7):", "").split(",")
                         $value = for ($i = 0; $i -lt $value.count; $i += 2) {
-                            if ($value[$i] -ne '00') { [string][char][int]('0x' + $value[$i]) } else { "\0" }
+                            if ($value[$i] -ne '00') {
+                                [string][char][int]('0x' + $value[$i])
+                            } else {
+                                "\0"
+                            }
                         }
                         $customData = $value -join ""
                     } elseif ($valueObject[1].StartsWith("hex(2):")) {
@@ -69,7 +75,9 @@ function Convert-RegToPSObject {
                         $customRegType = "expandString"
                         $value = ($valueObject[1]).Substring(7).split(",")
                         $value = for ($i = 0; $i -lt $value.count; $i += 2) {
-                            if ($value[$i] -ne '00') {[string][char][int]('0x' + $value[$i])}
+                            if ($value[$i] -ne '00') {
+                                [string][char][int]('0x' + $value[$i])
+                            }
                         }
                         $customData = $value -join ""
                     } else {
@@ -94,6 +102,6 @@ function Convert-RegToPSObject {
     }
     end {
         # Return objectarray containing keys
-        return $regKeys
+        return , $regKeys
     }
 }

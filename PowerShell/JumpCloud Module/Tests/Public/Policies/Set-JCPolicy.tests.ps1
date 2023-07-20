@@ -466,6 +466,19 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $registryPolicyUpdated.id | Should -Not -BeNullOrEmpty
             $registryPolicyUpdated.template | Should -Not -BeNullOrEmpty
         }
+        It 'Set-JCPolicy using regFilePath parameter and RegisryOverwrite Parameter' {
+            $registryPolicy = New-JCPolicy -Name "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)" -templateId '5f07273cb544065386e1ce6f' -registryFile $PesterParams_RegistryFilePath
+
+            $NewName = "Pester - RegFileUpload $(new-randomString -NumberOfChars 8)"
+
+            $registryPolicyUpdated = Set-JCPolicy -PolicyID $registryPolicy.Id -NewName $NewName -registryFile $PesterParams_RegistryFilePath -RegistryOverwrite
+            $registryPolicyUpdated.name | Should -Be $NewName
+            $registryPolicyUpdated.templateID | Should -Be '5f07273cb544065386e1ce6f'
+            $registryPolicyUpdated.values | Should -Not -BeNullOrEmpty
+            $registryPolicyUpdated.values.value.count | Should -Be 5
+            $registryPolicyUpdated.id | Should -Not -BeNullOrEmpty
+            $registryPolicyUpdated.template | Should -Not -BeNullOrEmpty
+        }
     }
     Context 'Manual Test Cases' -Skip {
         # These test cases should be executed locally; Each manual task should be executed when prompted to edit the policy
