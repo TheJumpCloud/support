@@ -338,3 +338,4 @@ function Set-JCPolicy {
             return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
         }
     }
+}
