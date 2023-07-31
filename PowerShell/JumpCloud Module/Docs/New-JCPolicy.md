@@ -18,13 +18,11 @@ At a minimum to display the dynamic set of parameters per template, the `Templat
 ## SYNTAX
 
 ### ByID (Default)
-
 ```
 New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
 ### ByName
-
 ```
 New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
@@ -149,7 +147,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -161,7 +158,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

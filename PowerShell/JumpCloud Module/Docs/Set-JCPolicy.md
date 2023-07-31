@@ -18,13 +18,11 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 ## SYNTAX
 
 ### ByID (Default)
-
 ```
 Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
 
 ### ByName
-
 ```
 Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
 ```
@@ -78,7 +76,6 @@ This would update the policy named `macOS - Login Window Policy` with the login 
 
 ```powershell
 PS C:\>  Set-JCPolicy -PolicyName "Windows - Imported Custom Registry Settings" -RegistryFile "/path/to/registryFile.reg"
-
 ```
 
 This command would append the registry policy's existing values with the imported set of .Reg keys specified by the "RegistryFile" parameter. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
@@ -87,7 +84,6 @@ This command would append the registry policy's existing values with the importe
 
 ```powershell
 PS C:\>  Set-JCPolicy -PolicyName "Windows - Imported Custom Registry Settings" -RegistryFile "/path/to/registryFile.reg" -RegistryOverwrite
-
 ```
 
 This command would overwrite the registry policy's existing values with the imported set of .Reg keys specified by the "RegistryFile" parameter. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
@@ -159,7 +155,6 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
@@ -171,7 +166,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
