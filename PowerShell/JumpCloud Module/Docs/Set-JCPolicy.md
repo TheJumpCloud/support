@@ -74,7 +74,7 @@ PS C:\>  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $policyV
 
 This would update the policy named `macOS - Login Window Policy` with the login window text set to `Welcome to JumpCloud`. The policy values are set using the `values` parameter. Objects passed into the `values` parameter set must contain the `value` for the policy config field and a `configFieldID`. To get a policy value object, search for any existing policy using `Get-JCPolicy` the `values` object returned from that cmdlet will contain the config fields required to build new policies or edit existing ones.
 
-## Example 5
+### Example 5
 
 ```powershell
 PS C:\>  Set-JCPolicy -PolicyName "Windows - Imported Custom Registry Settings" -RegistryFile "/path/to/registryFile.reg"
@@ -83,7 +83,7 @@ PS C:\>  Set-JCPolicy -PolicyName "Windows - Imported Custom Registry Settings" 
 
 This command would append the registry policy's existing values with the imported set of .Reg keys specified by the "RegistryFile" parameter. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
 
-## Example 6
+### Example 6
 
 ```powershell
 PS C:\>  Set-JCPolicy -PolicyName "Windows - Imported Custom Registry Settings" -RegistryFile "/path/to/registryFile.reg" -RegistryOverwrite
