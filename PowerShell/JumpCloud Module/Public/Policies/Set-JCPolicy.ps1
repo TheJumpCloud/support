@@ -51,83 +51,83 @@ function Set-JCPolicy {
             if (($foundPolicy.ID).count -gt 1) {
                 throw "multiple policies with the same name were found, please specify a policy by ID"
             }
-            # If policy is identified, get the dynamic policy set
-            if ($foundPolicy.id -And ($PSBoundParameters["PolicyName"] -OR $PSBoundParameters["PolicyID"])) {
-                # Set the policy template object based on policy
-                $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
-                $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-                # Foreach key in the supplied config file:
-                foreach ($key in $templateObject.objectMap) {
-                    # Set the dynamic parameters' name
-                    $ParamName_Filter = "$($key.configFieldName)"
-                    # Create the collection of attributes
-                    $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                    # If ValidateSet is specified in the config file, set the value here:
-                    # If the type of value is a bool, create a custom validateSet attribute here:
-                    $paramType = $($key.type)
-                    switch ($paramType) {
-                        'boolean' {
-                            $arrSet = @("true", "false")
-                            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-                            $AttributeCollection.Add($ValidateSetAttribute)
-                        }
-                        'multi' {
-                            $paramType = 'string'
-                            $arrSet = $key.validation.values
-                            $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
-                            $AttributeCollection.Add($ValidateSetAttribute)
-                        }
-                        'file' {
-                            $paramType = 'string'
-                        }
-                        'listbox' {
-                            $paramType = [system.string[]]
-                        }
-                        'table' {
-                            $paramType = [system.object[]]
-                        }
-                        'exclude' {
-                            Continue
-                        }
-                        Default {
-                            $paramType = 'string'
-                        }
+        }
+        # If policy is identified, get the dynamic policy set
+        if ($foundPolicy.id -And ($PSBoundParameters["PolicyName"] -OR $PSBoundParameters["PolicyID"])) {
+            # Set the policy template object based on policy
+            $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
+            $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+            # Foreach key in the supplied config file:
+            foreach ($key in $templateObject.objectMap) {
+                # Set the dynamic parameters' name
+                $ParamName_Filter = "$($key.configFieldName)"
+                # Create the collection of attributes
+                $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                # If ValidateSet is specified in the config file, set the value here:
+                # If the type of value is a bool, create a custom validateSet attribute here:
+                $paramType = $($key.type)
+                switch ($paramType) {
+                    'boolean' {
+                        $arrSet = @("true", "false")
+                        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
+                        $AttributeCollection.Add($ValidateSetAttribute)
                     }
-                    # Set the help message
-                    if ([String]::isNullorEmpty($($key.help))) {
-                        $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
-                    } else {
-                        $ParameterAttribute.HelpMessage = "$($key.help)"
+                    'multi' {
+                        $paramType = 'string'
+                        $arrSet = $key.validation.values
+                        $ValidateSetAttribute = New-Object System.Management.Automation.ValidateSetAttribute($arrSet)
+                        $AttributeCollection.Add($ValidateSetAttribute)
                     }
-                    # Add the attributes to the attributes collection
-                    $AttributeCollection.Add($ParameterAttribute)
-                    # Add the param
-                    $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
-                    $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
-                    if ($ParamName_Filter -eq "customRegTable") {
-                        $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-                        $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                        $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-                        $RegImport_paramType = [System.IO.FileInfo]
-                        $RegImport_ParameterAttribute.HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.'
-                        $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
-                        $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryFile', $RegImport_paramType, $RegImport_AttributeCollection)
-                        $RuntimeParameterDictionary.Add('RegistryFile', $RegImport_RuntimeParameter)
+                    'file' {
+                        $paramType = 'string'
                     }
-                    if ($ParamName_Filter -eq "customRegTable") {
-                        $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-                        $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-                        $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
-                        $RegImport_paramType = [Switch]
-                        $RegImport_ParameterAttribute.HelpMessage = 'When specified along with the RegistryFile parameter, existing registry values will be overwritten'
-                        $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
-                        $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryOverwrite', $RegImport_paramType, $RegImport_AttributeCollection)
-                        $RuntimeParameterDictionary.Add('RegistryOverwrite', $RegImport_RuntimeParameter)
+                    'listbox' {
+                        $paramType = [system.string[]]
+                    }
+                    'table' {
+                        $paramType = [system.object[]]
+                    }
+                    'exclude' {
+                        Continue
+                    }
+                    Default {
+                        $paramType = 'string'
                     }
                 }
-                # Returns the dictionary
-                return $RuntimeParameterDictionary
+                # Set the help message
+                if ([String]::isNullorEmpty($($key.help))) {
+                    $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
+                } else {
+                    $ParameterAttribute.HelpMessage = "$($key.help)"
+                }
+                # Add the attributes to the attributes collection
+                $AttributeCollection.Add($ParameterAttribute)
+                # Add the param
+                $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
+                $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
+                if ($ParamName_Filter -eq "customRegTable") {
+                    $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+                    $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                    $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                    $RegImport_paramType = [System.IO.FileInfo]
+                    $RegImport_ParameterAttribute.HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.'
+                    $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
+                    $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryFile', $RegImport_paramType, $RegImport_AttributeCollection)
+                    $RuntimeParameterDictionary.Add('RegistryFile', $RegImport_RuntimeParameter)
+                }
+                if ($ParamName_Filter -eq "customRegTable") {
+                    $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+                    $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                    $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                    $RegImport_paramType = [Switch]
+                    $RegImport_ParameterAttribute.HelpMessage = 'When specified along with the RegistryFile parameter, existing registry values will be overwritten'
+                    $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
+                    $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryOverwrite', $RegImport_paramType, $RegImport_AttributeCollection)
+                    $RuntimeParameterDictionary.Add('RegistryOverwrite', $RegImport_RuntimeParameter)
+                }
             }
+            # Returns the dictionary
+            return $RuntimeParameterDictionary
         }
     }
     begin {
