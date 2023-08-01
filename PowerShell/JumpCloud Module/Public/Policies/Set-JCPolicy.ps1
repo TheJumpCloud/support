@@ -129,213 +129,213 @@ function Set-JCPolicy {
                 return $RuntimeParameterDictionary
             }
         }
-        begin {
-            Write-Debug 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) {
-                Connect-JCOnline
+    }
+    begin {
+        Write-Debug 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline
+        }
+    }
+    process {
+        # Get Existing Policy Data if not set through dynamic param
+        if (([string]::IsNullOrEmpty($foundPolicy.ID)) -And ($policyID)) {
+            # Get the policy by ID
+            $foundPolicy = Get-JCPolicy -PolicyID $PolicyID
+            if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
+                throw "Could not find policy by ID"
+            }
+            if (($foundPolicy.ID).count -gt 1) {
+                throw "multiple policies with the same name were found, please specify a policy by ID"
             }
         }
-        process {
-            # Get Existing Policy Data if not set through dynamic param
-            if (([string]::IsNullOrEmpty($foundPolicy.ID)) -And ($policyID)) {
-                # Get the policy by ID
-                $foundPolicy = Get-JCPolicy -PolicyID $PolicyID
-                if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
-                    throw "Could not find policy by ID"
-                }
-                if (($foundPolicy.ID).count -gt 1) {
-                    throw "multiple policies with the same name were found, please specify a policy by ID"
-                }
+        $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
+        # First set the name from PSParamSet if set; else set from policy
+        $policyNameFromProcess = if ($PSBoundParameters["NewName"]) {
+            $NewName
+        } else {
+            $foundPolicy.name
+        }
+        $params = $PSBoundParameters
+        $paramterSet = $params.keys
+        $DynamicParamSet = $false
+        $requiredSet = @('PolicyID', 'PolicyName', 'NewName' , 'Values')
+        foreach ($parameter in $paramterSet) {
+            $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
+            if ($parameterComparison | Where-Object { $_.sideindicator -eq "=>" }) {
+                $DynamicParamSet = $true
+                break
             }
-            $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
-            # First set the name from PSParamSet if set; else set from policy
-            $policyNameFromProcess = if ($PSBoundParameters["NewName"]) {
-                $NewName
-            } else {
-                $foundPolicy.name
-            }
-            $params = $PSBoundParameters
-            $paramterSet = $params.keys
-            $DynamicParamSet = $false
-            $requiredSet = @('PolicyID', 'PolicyName', 'NewName' , 'Values')
-            foreach ($parameter in $paramterSet) {
-                $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
-                if ($parameterComparison | Where-Object { $_.sideindicator -eq "=>" }) {
-                    $DynamicParamSet = $true
-                    break
-                }
-            }
-            if ($DynamicParamSet) {
-                # begin dynamic param set
-                $newObject = New-Object System.Collections.ArrayList
-                for ($i = 0; $i -lt $templateObject.objectMap.count; $i++) {
-                    # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
-                    if ($templateObject.objectMap[$i].configFieldName -in $params.keys) {
-                        $keyName = $params.keys | Where-Object { $_ -eq $templateObject.objectMap[$i].configFieldName }
-                        # write-host "Setting value from $($keyName)"
-                        $keyValue = $params.$KeyName
-                        switch ($templateObject.objectMap[$i].type) {
-                            'multi' {
-                                $templateObject.objectMap[$i].value = $(($templateObject.objectMap[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+        }
+        if ($DynamicParamSet) {
+            # begin dynamic param set
+            $newObject = New-Object System.Collections.ArrayList
+            for ($i = 0; $i -lt $templateObject.objectMap.count; $i++) {
+                # If one of the dynamicParam config fields are passed in and is found in the policy template, set the new value:
+                if ($templateObject.objectMap[$i].configFieldName -in $params.keys) {
+                    $keyName = $params.keys | Where-Object { $_ -eq $templateObject.objectMap[$i].configFieldName }
+                    # write-host "Setting value from $($keyName)"
+                    $keyValue = $params.$KeyName
+                    switch ($templateObject.objectMap[$i].type) {
+                        'multi' {
+                            $templateObject.objectMap[$i].value = $(($templateObject.objectMap[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
+                        }
+                        'file' {
+                            $path = Test-Path -Path $keyValue
+                            if ($path) {
+                                # convert file path to base64 string
+                                $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
                             }
-                            'file' {
-                                $path = Test-Path -Path $keyValue
-                                if ($path) {
-                                    # convert file path to base64 string
-                                    $templateObject.objectMap[$i].value = [convert]::ToBase64String((Get-Content -Path $keyValue -AsByteStream))
-                                }
-                                #TODO: else we should throw an error here that the file path was not valid
-                            }
-                            'listbox' {
-                                if ($($keyValue).getType().name -eq 'String') {
-                                    # Given case for single string passed in as dynamic input, convert to a list
-                                    $listRows = New-Object System.Collections.ArrayList
-                                    foreach ($regItem in $keyValue) {
-                                        $listRows.Add($regItem)
-                                    }
-                                    $templateObject.objectMap[$i].value = $listRows
-                                } elseif ($($keyValue).getType().name -eq 'Object[]') {
-                                    # else if the object passed in is a list already, pass in list
-                                    $templateObject.objectMap[$i].value = $($keyValue)
-                                }
-                            }
-                            'table' {
-                                # For custom registry table, validate the object
-                                if ($templateObject.objectMap[$i].configFieldName -eq "customRegTable") {
-                                    # get default value properties
-                                    $RegProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
-                                    # get passed in object properties
-                                    $ObjectProperties = if ($keyValue | Get-Member -MemberType NoteProperty) {
-                                        # for lists get note properties
-                                    ($keyValue | Get-Member -MemberType NoteProperty).Name
-                                    } else {
-                                        # for single objects, get keys
-                                        $keyValue.keys
-                                    }
-                                    $RegProperties | ForEach-Object {
-                                        if ($_.Name -notin $ObjectProperties) {
-                                            Throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
-                                        }
-                                    }
-                                    # reg type validation
-                                    $validRegTypes = @('DWORD', 'expandString', 'multiString', 'QWORD', 'String')
-                                    $($keyValue).customRegType | ForEach-Object {
-                                        if ($_ -notin $validRegTypes) {
-                                            throw "Custom Registry Tables require the `"customRegType`" data string to be one of: $validRegTypes, found: $_"
-                                        }
-                                    }
-                                }
-                                $regRows = New-Object System.Collections.ArrayList
+                            #TODO: else we should throw an error here that the file path was not valid
+                        }
+                        'listbox' {
+                            if ($($keyValue).getType().name -eq 'String') {
+                                # Given case for single string passed in as dynamic input, convert to a list
+                                $listRows = New-Object System.Collections.ArrayList
                                 foreach ($regItem in $keyValue) {
-                                    $regRows.Add($regItem) | Out-Null
+                                    $listRows.Add($regItem)
                                 }
-                                $templateObject.objectMap[$i].value = $regRows
-                            }
-                            Default {
+                                $templateObject.objectMap[$i].value = $listRows
+                            } elseif ($($keyValue).getType().name -eq 'Object[]') {
+                                # else if the object passed in is a list already, pass in list
                                 $templateObject.objectMap[$i].value = $($keyValue)
                             }
                         }
-                        $newObject.Add($templateObject.objectMap[$i]) | Out-Null
-                    } elseif ('RegistryFile' -in $params.Keys) {
-                        try {
-                            $regKeys = Convert-RegToPSObject -regFilePath $($params.'RegistryFile')
-                        } catch {
-                            throw $_
+                        'table' {
+                            # For custom registry table, validate the object
+                            if ($templateObject.objectMap[$i].configFieldName -eq "customRegTable") {
+                                # get default value properties
+                                $RegProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
+                                # get passed in object properties
+                                $ObjectProperties = if ($keyValue | Get-Member -MemberType NoteProperty) {
+                                    # for lists get note properties
+                                    ($keyValue | Get-Member -MemberType NoteProperty).Name
+                                } else {
+                                    # for single objects, get keys
+                                    $keyValue.keys
+                                }
+                                $RegProperties | ForEach-Object {
+                                    if ($_.Name -notin $ObjectProperties) {
+                                        Throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                    }
+                                }
+                                # reg type validation
+                                $validRegTypes = @('DWORD', 'expandString', 'multiString', 'QWORD', 'String')
+                                $($keyValue).customRegType | ForEach-Object {
+                                    if ($_ -notin $validRegTypes) {
+                                        throw "Custom Registry Tables require the `"customRegType`" data string to be one of: $validRegTypes, found: $_"
+                                    }
+                                }
+                            }
+                            $regRows = New-Object System.Collections.ArrayList
+                            foreach ($regItem in $keyValue) {
+                                $regRows.Add($regItem) | Out-Null
+                            }
+                            $templateObject.objectMap[$i].value = $regRows
                         }
-                        # Set the registryFile as the customRegTable
-                        if ('RegistryOverwrite' -in $params.Keys) {
-                            $templateObject.objectMap[0].value = $regKeys
-                            $newObject.Add($templateObject.objectMap[0]) | Out-Null
-                        } else {
-                            $registryList = New-Object System.Collections.ArrayList
-                            $registryList += $foundPolicy.values.value
-                            $registryList += $regKeys
-                            $templateObject.objectMap[0].value += $registryList
-                            $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                        Default {
+                            $templateObject.objectMap[$i].value = $($keyValue)
                         }
-                    } else {
-                        # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
-                        $templateObject.objectMap[$i].value = ($foundPolicy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
-                        $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                     }
-                }
-                $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
-                if ($registryFile) {
+                    $newObject.Add($templateObject.objectMap[$i]) | Out-Null
+                } elseif ('RegistryFile' -in $params.Keys) {
                     try {
-                        $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                        $regKeys = Convert-RegToPSObject -regFilePath $($params.'RegistryFile')
                     } catch {
                         throw $_
                     }
-                    $updatedPolicyObject.value += $regKeys
-                    Write-Debug $updatedPolicyObject
-                }
-            } elseif ($values) {
-                # begin value param set
-                $updatedPolicyObject = New-Object System.Collections.ArrayList
-                # Add each value into the object to set the policy
-                foreach ($value in $values) {
-                    $updatedPolicyObject.add($value) | Out-Null
-                }
-                # If only one or a few of the config fields were set, add the remaining items from $foundPolicy.values
-                $foundPolicy.values | ForEach-Object {
-                    if ($_.configFieldID -notin $updatedPolicyObject.configFieldID) {
-                        $updatedPolicyObject.Add($_) | Out-Null
+                    # Set the registryFile as the customRegTable
+                    if ('RegistryOverwrite' -in $params.Keys) {
+                        $templateObject.objectMap[0].value = $regKeys
+                        $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                    } else {
+                        $registryList = New-Object System.Collections.ArrayList
+                        $registryList += $foundPolicy.values.value
+                        $registryList += $regKeys
+                        $templateObject.objectMap[0].value += $registryList
+                        $newObject.Add($templateObject.objectMap[0]) | Out-Null
                     }
+                } else {
+                    # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
+                    $templateObject.objectMap[$i].value = ($foundPolicy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
+                    $newObject.Add($templateObject.objectMap[$i]) | Out-Null
                 }
-            } else {
-                if (($templateObject.objectMap).count -gt 0) {
-                    # Begin user prompt
-                    $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
-                    # User selects edit all fields
-                    if ($initialUserInput.fieldSelection -eq 'A') {
-                        for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
-                            $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
+            }
+            $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
+            if ($registryFile) {
+                try {
+                    $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                } catch {
+                    throw $_
+                }
+                $updatedPolicyObject.value += $regKeys
+                Write-Debug $updatedPolicyObject
+            }
+        } elseif ($values) {
+            # begin value param set
+            $updatedPolicyObject = New-Object System.Collections.ArrayList
+            # Add each value into the object to set the policy
+            foreach ($value in $values) {
+                $updatedPolicyObject.add($value) | Out-Null
+            }
+            # If only one or a few of the config fields were set, add the remaining items from $foundPolicy.values
+            $foundPolicy.values | ForEach-Object {
+                if ($_.configFieldID -notin $updatedPolicyObject.configFieldID) {
+                    $updatedPolicyObject.Add($_) | Out-Null
+                }
+            }
+        } else {
+            if (($templateObject.objectMap).count -gt 0) {
+                # Begin user prompt
+                $initialUserInput = Show-JCPolicyValues -policyObject $templateObject.objectMap -policyValues $foundPolicy.values
+                # User selects edit all fields
+                if ($initialUserInput.fieldSelection -eq 'A') {
+                    for ($i = 0; $i -le $initialUserInput.fieldCount; $i++) {
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $i -policyValues $foundPolicy.values
+                    }
+                    # Display policy values
+                    # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
+                }
+                # User selects edit individual field
+                elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
+                    $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
+                    # For set-jcpolicy, add the help & label options
+                    $updatedPolicyObject | ForEach-Object {
+                        if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
+                            $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
+                            $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
                         }
-                        # Display policy values
-                        # Show-JCPolicyValues -policyObject $updatedPolicyObject -ShowTable $true
                     }
-                    # User selects edit individual field
-                    elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
-                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection -policyValues $foundPolicy.values
-                        # For set-jcpolicy, add the help & label options
-                        $updatedPolicyObject | ForEach-Object {
-                            if ($_.configFieldID -in $templateObject.objectMap.configFieldID) {
-                                $_ | Add-Member -MemberType NoteProperty -Name "help" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].help
-                                $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
-                            }
-                        }
-                        Do {
-                            # Hide option to edit all fields
-                            $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
-                            $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
-                        } while ($userInput.fieldSelection -ne 'C')
-                    }
+                    Do {
+                        # Hide option to edit all fields
+                        $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
+                        $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
+                    } while ($userInput.fieldSelection -ne 'C')
                 }
-            }
-            if ($updatedPolicyObject) {
-                $body = [PSCustomObject]@{
-                    name     = $policyNameFromProcess
-                    template = @{id = $foundPolicy.Template.Id }
-                    values   = @($updatedPolicyObject)
-                } | ConvertTo-Json -Depth 99
-            } else {
-                $body = [PSCustomObject]@{
-                    name     = $policyNameFromProcess
-                    template = @{id = $foundPolicy.Template.Id }
-                } | ConvertTo-Json -Depth 99
-            }
-            $headers = @{
-                'x-api-key'    = $env:JCApiKey
-                'x-org-id'     = $env:JCOrgId
-                'content-type' = "application/json"
-            }
-            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($foundPolicy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
-            if ($response) {
-                $response | Add-Member -MemberType NoteProperty -Name "templateID" -Value $response.template.id
             }
         }
-        end {
-            return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
+        if ($updatedPolicyObject) {
+            $body = [PSCustomObject]@{
+                name     = $policyNameFromProcess
+                template = @{id = $foundPolicy.Template.Id }
+                values   = @($updatedPolicyObject)
+            } | ConvertTo-Json -Depth 99
+        } else {
+            $body = [PSCustomObject]@{
+                name     = $policyNameFromProcess
+                template = @{id = $foundPolicy.Template.Id }
+            } | ConvertTo-Json -Depth 99
         }
+        $headers = @{
+            'x-api-key'    = $env:JCApiKey
+            'x-org-id'     = $env:JCOrgId
+            'content-type' = "application/json"
+        }
+        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($foundPolicy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
+        if ($response) {
+            $response | Add-Member -MemberType NoteProperty -Name "templateID" -Value $response.template.id
+        }
+    }
+    end {
+        return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
     }
 }
