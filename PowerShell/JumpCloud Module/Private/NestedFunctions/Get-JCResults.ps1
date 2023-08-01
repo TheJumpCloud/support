@@ -22,7 +22,7 @@ Function Get-JCResults {
             $errorResults = [System.Collections.Concurrent.ConcurrentQueue[Exception]]::new()
         } else {
             Write-Debug "Running in Sequential"
-            $resultsArray = [System.Collections.Generic.List[object]]::new()
+            $resultsArray = [System.Collections.ArrayList]::new()
         }
         $totalCount = 1
         $limit = [int]$limit
@@ -170,15 +170,24 @@ Function Get-JCResults {
         else {
             if ($totalCountHeader) {
                 # Add results to results list
-                $content = $response.Content
-                [void]$resultsArray.Add($content)
+                $content = $response.Content | ConvertFrom-Json
+                # Check to see size of content
+                if ($content.Count -le 1) {
+                    [void]$resultsArray.Add($content)
+                } else {
+                    [void]$resultsArray.AddRange($content)
+                }
             } else {
                 # Add results to results list
                 $content = $response.Content | ConvertFrom-Json
                 if ($null -eq $content.results) {
                     [void]$resultsArray.Add($content)
                 } else {
-                    [void]$resultsArray.AddRange($content.results)
+                    if ($($content.results).Count -le 1) {
+                        [void]$resultsArray.Add($content.results)
+                    } else {
+                        [void]$resultsArray.AddRange($content.results)
+                    }
                 }
             }
 
@@ -220,25 +229,30 @@ Function Get-JCResults {
                 # Add results to results list
                 if ($totalCountHeader) {
                     # Add results to results list
-                    $content = $response.Content
-                    [void]$resultsArray.Add($content)
-                    Write-Debug ("Page: $($i+1) Amount: " + ($content | ConvertFrom-Json).Count)
+                    $content = $response.Content | ConvertFrom-Json
+                    if ($content.Count -le 1) {
+                        [void]$resultsArray.Add($content)
+                    } else {
+                        [void]$resultsArray.AddRange($content)
+                    }
                 } else {
                     # Add results to results list
                     $content = $response.Content | ConvertFrom-Json
                     if ($null -eq $content.results) {
                         [void]$resultsArray.Add($content)
-                        Write-Debug ("Page: $($i+1) Amount: " + ($content | ConvertFrom-Json).Count)
                     } else {
-                        [void]$resultsArray.AddRange($content.results)
-                        Write-Debug ("Page: $($i+1) Amount: " + ($content.results).Count)
+                        if ($($content.results).Count -le 1) {
+                            [void]$resultsArray.Add($content.results)
+                        } else {
+                            [void]$resultsArray.AddRange($content.results)
+                        }
                     }
                 }
             }
         }
     }
     end {
-        if ($totalCountHeader) {
+        if ($parallel -and $totalCountHeader) {
             $resultsArray = $resultsArray | ConvertFrom-Json
         }
         # Return complete results
