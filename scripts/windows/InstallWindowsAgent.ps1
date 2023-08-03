@@ -46,7 +46,6 @@ Function DownloadAndInstallAgent() {
                 exit
             }
         }
-        # if the agent is not running as a service after 20 seconds then exit the script
         Write-Output 'JumpCloud Agent Failed to Install'
     }
 }
