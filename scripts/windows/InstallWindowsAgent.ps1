@@ -10,67 +10,22 @@ Param (
 #--- Modify Below This Line At Your Own Risk ------------------------------
 
 # JumpCloud Agent Installation Variables
-$msvc2013x64File = 'vc_redist.x64.exe'
-$msvc2013x86File = 'vc_redist.x86.exe'
-$msvc2013x86Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe'
-$msvc2013x64Link = 'https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe'
 $TempPath = 'C:\Windows\Temp\'
-$msvc2013x86Install = "$TempPath$msvc2013x86File /install /quiet /norestart"
-$msvc2013x64Install = "$TempPath$msvc2013x64File /install /quiet /norestart"
-$AGENT_PATH = "${env:ProgramFiles}\JumpCloud"
-$AGENT_BINARY_NAME = "jcagent-msi-signed.msi"
+$AGENT_PATH = Join-Path ${env:ProgramFiles} "JumpCloud"
+$AGENT_BINARY_NAME = "jumpcloud-agent.exe"
 $AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/jcagent-msi-signed.msi"
 $AGENT_INSTALLER_PATH = "C:\windows\Temp\jcagent-msi-signed.msi"
 # JumpCloud Agent Installation Functions
-Function AgentIsOnFileSystem() {
-    Test-Path -Path:(${AGENT_PATH} + '/' + ${AGENT_BINARY_NAME})
-}
 Function InstallAgent() {
     msiexec /i $AGENT_INSTALLER_PATH /quiet JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey /VERYSILENT /NORESTART /NOCLOSEAPPLICATIONS /L*V "C:\Windows\Temp\jcUpdate.log"`"
 }
 Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
 }
-
-Function CheckProgramInstalled($programName) {
-    $installed = (Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -match $programName })
-    if (-not [System.String]::IsNullOrEmpty($installed)) {
-        return $true
+Function DownloadAndInstallAgent() {
+    If (Test-Path -Path "$($AGENT_PATH)\$($AGENT_BINARY_NAME)") {
+        Write-Output 'JumpCloud Agent Already Installed'
     } else {
-        return $false
-    }
-}
-
-Function DownloadLink($Link, $Path) {
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    $WebClient = New-Object -TypeName:('System.Net.WebClient')
-    $WebClient.DownloadFile("$Link", "$Path")
-    $WebClient.Dispose()
-}
-
-
-Function DownloadAndInstallAgent(
-    [System.String]$msvc2013x64Link
-    , [System.String]$TempPath
-    , [System.String]$msvc2013x64File
-    , [System.String]$msvc2013x64Install
-    , [System.String]$msvc2013x86Link
-    , [System.String]$msvc2013x86File
-    , [System.String]$msvc2013x86Install
-) {
-    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64"))) {
-        Write-Output "Downloading & Installing JCAgent prereq Visual C++ 2013 x64"
-        DownloadLink -Link:($msvc2013x64Link) -Path:($TempPath + $msvc2013x64File)
-        Invoke-Expression -Command:($msvc2013x64Install)
-        Write-Output "JCAgent Visual C++ 2013 x64 prereq installed"
-    }
-    If (!(CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86"))) {
-        Write-Output 'Downloading & Installing JCAgent prereq Visual C++ 2013 x86'
-        DownloadLink -Link:($msvc2013x86Link) -Path:($TempPath + $msvc2013x86File)
-        Invoke-Expression -Command:($msvc2013x86Install)
-        Write-Output 'JCAgent prereq installed'
-    }
-    If (!(AgentIsOnFileSystem)) {
         Write-Output 'Downloading JCAgent Installer'
         # Download Installer
         DownloadAgentInstaller
@@ -79,11 +34,14 @@ Function DownloadAndInstallAgent(
         # Run Installer
         InstallAgent
 
-    }
-    If (CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x64") -and CheckProgramInstalled("Microsoft Visual C\+\+ 2013 x86") -and AgentIsOnFileSystem) {
-        Write-Output 'JumpCloud Agent Installer Completed'
-    } Else {
-        Write-Output 'JumpCloud Agent Installer Failed'
+        # Check if Agent is on filesystem
+        Start-Sleep -Seconds 10 # Wait 10 seconds for the agent install to complete before checking if the agent is on the filesystem
+
+        If (Test-Path -Path "$($AGENT_PATH)\$($AGENT_BINARY_NAME)") {
+            Write-Output 'JumpCloud Agent Installed'
+        } else {
+            Write-Output 'JumpCloud Agent Installation Failed'
+        }
     }
 }
 
@@ -93,4 +51,4 @@ ipconfig /FlushDNS
 
 # JumpCloud Agent Installation Logic
 
-DownloadAndInstallAgent -msvc2013x64link:($msvc2013x64Link) -TempPath:($TempPath) -msvc2013x64file:($msvc2013x64File) -msvc2013x64install:($msvc2013x64Install) -msvc2013x86link:($msvc2013x86Link) -msvc2013x86file:($msvc2013x86File) -msvc2013x86install:($msvc2013x86Install)
+DownloadAndInstallAgent
