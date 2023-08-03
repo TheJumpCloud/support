@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Install JumpCloud Password Manager App | v1.0 JCCG
+Windows - Install JumpCloud Password Manager App | v1.1 JCCG
 
 #### commandType
 
@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-# Set $LaunchPasswordManager to $false  ON LINE 35 if you do not wish to launch the password manger after installation
+# Set $LaunchPasswordManager to $false  ON LINE 39 if you do not wish to launch the password manger after installation
 
 $installerURL = 'https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.exe'
 
@@ -17,24 +17,17 @@ $installerTempLocation = 'C:\Windows\Temp\JumpCloud-Password-Manager-latest.exe'
 
 Write-Output 'Testing if Password Manager installer is downloaded'
 
-if (-not(Test-Path -Path $installerTempLocation -PathType Leaf))
-{
-    try
-    {
+if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
+    try {
         Write-Output 'Downloading Password Manger installer now.'
-        try
-        {
+        try {
             Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
-        }
-        catch
-        {
+        } catch {
             Write-Error 'Unable to download Password Manger installer.'
             exit 1
         }
         Write-Output 'Finished downloading Password Manger installer.'
-    }
-    catch
-    {
+    } catch {
         throw $_.Exception.Message
     }
 
@@ -49,27 +42,20 @@ $Command = {
 
     . $installerTempLocation
 
-    if ($LaunchPasswordManager -eq $true)
-    {
+    if ($LaunchPasswordManager -eq $true) {
 
         $SignedInUserFull = Get-WMIObject -class Win32_ComputerSystem | Select-Object -ExpandProperty username
 
         $SignedInUserUsername = $SignedInUserFull.Split('\')[1]
 
-        while (!(Test-Path "C:\Users\$($SignedInUserUsername)\AppData\Local\pwm\JumpCloud Password Manager.exe")) { Start-Sleep 5 }
-
-        try
-        {
-
-            . "C:\Users\$($SignedInUserUsername)\AppData\Local\pwm\JumpCloud Password Manager.exe"
-
+        while (!(Test-Path "C:\Users\$($SignedInUserUsername)\AppData\Local\jcpwm\JumpCloud Password Manager.exe")) {
+            Start-Sleep 10
         }
-        catch
-        {
+        try {
+            . "C:\Users\$($SignedInUserUsername)\AppData\Local\jcpwm\JumpCloud Password Manager.exe"
+        } catch {
             throw $_.Exception.Message
         }
-
-
     }
 
 
@@ -357,7 +343,7 @@ $Arguments = '-NoLogo -NonInteractive -ExecutionPolicy ByPass -WindowStyle Hidde
 
 #### Description
 
-This command will download and install the JumpCloud Password Manager app to the device if it isn't already installed. On slower networks, timeouts with exit code 127 can occu. Manually setting the default timeout limit to 600 seconds may be advisable.
+This command will download and install the JumpCloud Password Manager app to the device if it isn't already installed. On slower networks, timeouts with exit code 127 can occur. Manually setting the default timeout limit to 600 seconds may be advisable.
 
 #### _Import This Command_
 
