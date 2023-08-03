@@ -34,14 +34,20 @@ Function DownloadAndInstallAgent() {
         # Run Installer
         InstallAgent
 
-        # Check if Agent is on filesystem
-        Start-Sleep -Seconds 10 # Wait 10 seconds for the agent install to complete before checking if the agent is on the filesystem
-
-        If (Test-Path -Path "$($AGENT_PATH)\$($AGENT_BINARY_NAME)") {
-            Write-Output 'JumpCloud Agent Installed'
-        } else {
-            Write-Output 'JumpCloud Agent Installation Failed'
+        # Check if agent is running as a service
+        # Do a loop for 60 seconds to check if the agent is running as a service
+        for ($i = 0; $i -lt 60; $i++) {
+            Start-Sleep -Seconds 1
+            #Output the errors encountered
+            Write-Output $Error
+            $AgentService = Get-Service -Name "jumpcloud-agent" -ErrorAction SilentlyContinue
+            if ($AgentService) {
+                Write-Output 'JumpCloud Agent Succesfully Installed'
+                exit
+            }
         }
+        # if the agent is not running as a service after 20 seconds then exit the script
+        Write-Output 'JumpCloud Agent Failed to Install'
     }
 }
 
