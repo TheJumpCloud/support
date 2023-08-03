@@ -39,9 +39,8 @@ Function DownloadAndInstallAgent() {
         for ($i = 0; $i -lt 60; $i++) {
             Start-Sleep -Seconds 1
             #Output the errors encountered
-            Write-Output $Error
             $AgentService = Get-Service -Name "jumpcloud-agent" -ErrorAction SilentlyContinue
-            if ($AgentService) {
+            if ($AgentService.Status -eq 'Running') {
                 Write-Output 'JumpCloud Agent Succesfully Installed'
                 exit
             }
