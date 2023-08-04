@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-# Set $LaunchPasswordManager to $false  ON LINE 39 if you do not wish to launch the password manger after installation
+# Set $LaunchPasswordManager to $false  ON LINE 39 if you do not wish to launch the password manager after installation
 
 $installerURL = 'https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.exe'
 
@@ -19,21 +19,21 @@ Write-Output 'Testing if Password Manager installer is downloaded'
 
 if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
     try {
-        Write-Output 'Downloading Password Manger installer now.'
+        Write-Output 'Downloading Password Manager installer now.'
         try {
             Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
         } catch {
-            Write-Error 'Unable to download Password Manger installer.'
+            Write-Error 'Unable to download Password Manager installer.'
             exit 1
         }
-        Write-Output 'Finished downloading Password Manger installer.'
+        Write-Output 'Finished downloading Password Manager installer.'
     } catch {
         throw $_.Exception.Message
     }
 
 }
 
-Write-Output 'Installing Password Manger now, this may take a few minutes.'
+Write-Output 'Installing Password Manager now, this may take a few minutes.'
 
 $Command = {
     $LaunchPasswordManager = $true
