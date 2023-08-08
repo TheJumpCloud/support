@@ -6,6 +6,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
 )
+$stopwatch = [System.Diagnostics.Stopwatch]::new()
+$stopwatch.Start()
 # Load Get-Config.ps1
 . "$PSScriptRoot/../../Deploy/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
 # . (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
@@ -55,36 +57,84 @@ if ("MSP" -in $IncludeTags) {
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
 # $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
 if (-not (Test-Path $PesterResultsFileXmldir)) {
-    new-item -path $PesterResultsFileXmldir -ItemType Directory
+    New-Item -Path $PesterResultsFileXmldir -ItemType Directory
 }
 # Remove old test results file if exists (not needed)
 # If (Test-Path -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml")) { Remove-Item -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml") -Force }
 # Run Pester tests
 
-$configuration = [PesterConfiguration]::Default
-$configuration.Run.Path = "$PSScriptRoot"
-$configuration.Should.ErrorAction = 'Continue'
-$configuration.CodeCoverage.Enabled = $true
-$configuration.testresult.Enabled = $true
-$configuration.testresult.OutputFormat = 'JUnitXml'
-$configuration.Filter.Tag = $IncludeTags
-$configuration.Filter.ExcludeTag = $ExcludeTagList
-$configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
-$configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
+# Parallel Pester Testing
+$PesterParams = Get-Variable Pester*
+$PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0
 
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-Invoke-Pester -configuration $configuration
+$PesterTestsPaths | ForEach-Object -Parallel {
+    $JumpCloudApiKey = $using:JumpCloudApiKey
+    $JumpCloudApiKeyMsp = $using:JumpCloudApiKeyMsp
+    $JumpCloudMspOrg = $using:JumpCloudMspOrg
+    #Load all pester params
+    $using:PesterParams | ForEach-Object {
+        Set-Variable -Name $_.Name -Value $_.Value
+    }
+    # Import JC Module
+    Import-Module JumpCloud.SDK.V1
+    Import-Module JumpCloud.SDK.V2
+    Import-Module "$using:PSScriptRoot/../JumpCloud.psd1"
+    # Authenticate to JumpCloud
+    if (-not [string]::IsNullOrEmpty($using:JumpCloudMspOrg)) {
+        Connect-JCOnline -JumpCloudApiKey:($using:JumpCloudApiKey) -JumpCloudOrgId:($using:JumpCloudMspOrg) -force | Out-Null
+    } else {
+        Connect-JCOnline -JumpCloudApiKey:($using:JumpCloudApiKey) -force | Out-Null
+    }
+    # Load DefineEnvironment
+    . ("$using:PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($using:JumpCloudApiKey) -JumpCloudApiKeyMsp:($using:JumpCloudApiKeyMsp) -RequiredModulesRepo:($using:RequiredModulesRepo)
+    # Load private functions
+    Write-Host ('[status]Load private functions: ' + "$using:PSScriptRoot/../Private/*.ps1")
+    Get-ChildItem -Path:("$using:PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+    # Load HelperFunctions
+    Write-Host ('[status]Load HelperFunctions: ' + "$using:PSScriptRoot/HelperFunctions.ps1")
+    . ("$using:PSScriptRoot/HelperFunctions.ps1")
+
+    $FileName = $_.Name -replace '.Tests.ps1'
+
+    $configuration = [PesterConfiguration]::Default
+    $configuration.Run.Path = "$_"
+    $configuration.Should.ErrorAction = 'Continue'
+    $configuration.CodeCoverage.Enabled = $true
+    $configuration.testresult.Enabled = $true
+    $configuration.testresult.OutputFormat = 'JUnitXml'
+    $configuration.Filter.Tag = $using:IncludeTags
+    $configuration.Filter.ExcludeTag = $using:ExcludeTagList
+    $configuration.CodeCoverage.OutputPath = ($using:PesterResultsFileXmldir + "$($FileName)-coverage.xml")
+    $configuration.testresult.OutputPath = ($using:PesterResultsFileXmldir + "$($FileName)-results.xml")
+
+    Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$_') -TagFilter:('$($using:IncludeTags -join "','")') -ExcludeTagFilter:('$($using:ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+    Invoke-Pester -Configuration $configuration
+} -ThrottleLimit 10
 
 $PesterTestResultPath = (Get-ChildItem -Path:("$($PesterResultsFileXmldir)")).FullName | Where-Object { $_ -match "results.xml" }
 If (Test-Path -Path:($PesterTestResultPath)) {
-    [xml]$PesterResults = Get-Content -Path:($PesterTestResultPath)
-    If ($PesterResults.ChildNodes.failures -gt 0) {
-        Write-Error ("Test Failures: $($PesterResults.ChildNodes.failures)")
+    # Counter for failures/errors
+    $totalFailures = 0
+    $totalErrors = 0
+
+    $PesterTestResultPath | ForEach-Object {
+        [xml]$PesterResults = Get-Content -Path:($_)
+        If ($PesterResults.ChildNodes.failures -gt 0) {
+            $totalFailures++
+        }
+        If ($PesterResults.ChildNodes.errors -gt 0) {
+            $totalErrors++
+        }
     }
-    If ($PesterResults.ChildNodes.errors -gt 0) {
-        Write-Error ("Test Errors: $($PesterResults.ChildNodes.errors)")
+    if ($totalFailures -gt 0) {
+        Write-Error ("Test Failures: $($totalFailures)")
+    }
+    if ($totalErrors -gt 0) {
+        Write-Error ("Test Errors: $($totalErrors)")
     }
 } Else {
     Write-Error ("Unable to find file path: $PesterTestResultPath")
 }
+$stopwatch.Stop()
+$Stopwatch.Elapsed
 Write-Host -ForegroundColor Green '-------------Done-------------'
