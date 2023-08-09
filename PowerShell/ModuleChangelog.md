@@ -1,3 +1,25 @@
+## 2.7.1
+
+Release Date: August 09, 2023
+
+#### RELEASE NOTES
+
+```
+{{Fill in the Release Notes}}
+```
+
+#### FEATURES:
+
+{{Fill in the Features}}
+
+#### IMPROVEMENTS:
+
+{{Fill in the Improvements}}
+
+#### BUG FIXES:
+
+{{Fill in the Bug Fixes}}
+
 ## 2.7.0
 
 Release Date: August 1, 2023
