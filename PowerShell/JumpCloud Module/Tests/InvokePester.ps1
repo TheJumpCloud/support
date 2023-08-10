@@ -85,8 +85,6 @@ $PesterTestsPaths | ForEach-Object -Parallel {
     } else {
         Connect-JCOnline -JumpCloudApiKey:($using:JumpCloudApiKey) -force | Out-Null
     }
-    # Load DefineEnvironment
-    . ("$using:PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($using:JumpCloudApiKey) -JumpCloudApiKeyMsp:($using:JumpCloudApiKeyMsp) -RequiredModulesRepo:($using:RequiredModulesRepo)
     # Load private functions
     Write-Host ('[status]Load private functions: ' + "$using:PSScriptRoot/../Private/*.ps1")
     Get-ChildItem -Path:("$using:PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
