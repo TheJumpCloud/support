@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Install JumpCloud Password Manager App | v1.1 JCCG
+Windows - Install JumpCloud Password Manager App | v1.2 JCCG
 
 #### commandType
 
@@ -9,7 +9,7 @@ windows
 #### Command
 
 ```
-# Set $LaunchPasswordManager to $false  ON LINE 35 if you do not wish to launch the password manger after installation
+# Set $LaunchPasswordManager to $false  ON LINE 63 if you do not wish to launch the password manger after installation
 
 # Get the current logged on User
 $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
@@ -21,16 +21,16 @@ $registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\
 
 # Get the ProfileImagePath value from the Registry
 $loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
-Write-Output "loggedOnUserProfileImagePath: $loggedOnUserProfileImagePath"
+Write-Output "Logged On User Profile Path: $loggedOnUserProfileImagePath"
 
 $installerURL = 'https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.exe'
 if (Test-Path "$loggedOnUserProfileImagePath\AppData\Local\Temp" ) {
 
     $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
-    Write-Output "installerTempLocation: $installerTempLocation"
+    Write-Output "Installer Location: $installerTempLocation"
 }
 else {
-    Write-Output "unable to determine user profile folder"
+    Write-Output "Unable to determine user profile folder"
     Exit 1
 }
 
