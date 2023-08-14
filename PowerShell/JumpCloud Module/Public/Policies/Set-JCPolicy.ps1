@@ -35,6 +35,9 @@ function Set-JCPolicy {
             if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
                 throw "Could not find policy by ID"
             }
+            if (($foundPolicy.ID).count -gt 1) {
+                throw "multiple policies with the same name were found, please specify a policy by ID"
+            }
 
         } elseif ($PSBoundParameters["PolicyName"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
@@ -44,6 +47,9 @@ function Set-JCPolicy {
             $foundPolicy = Get-JCPolicy -Name $PolicyName
             if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
                 throw "Could not find policy by specified Name"
+            }
+            if (($foundPolicy.ID).count -gt 1) {
+                throw "multiple policies with the same name were found, please specify a policy by ID"
             }
         }
         # If policy is identified, get the dynamic policy set
@@ -99,6 +105,26 @@ function Set-JCPolicy {
                 # Add the param
                 $RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter($ParamName_Filter, $paramType, $AttributeCollection)
                 $RuntimeParameterDictionary.Add($ParamName_Filter, $RuntimeParameter)
+                if ($ParamName_Filter -eq "customRegTable") {
+                    $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+                    $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                    $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                    $RegImport_paramType = [System.IO.FileInfo]
+                    $RegImport_ParameterAttribute.HelpMessage = 'A .reg file path that will be uploaded into the "Advanced: Custom Registry Keys" Windows Policy template.'
+                    $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
+                    $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryFile', $RegImport_paramType, $RegImport_AttributeCollection)
+                    $RuntimeParameterDictionary.Add('RegistryFile', $RegImport_RuntimeParameter)
+                }
+                if ($ParamName_Filter -eq "customRegTable") {
+                    $RegImport_RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+                    $RegImport_AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                    $RegImport_ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
+                    $RegImport_paramType = [Switch]
+                    $RegImport_ParameterAttribute.HelpMessage = 'When specified along with the RegistryFile parameter, existing registry values will be overwritten'
+                    $RegImport_AttributeCollection.Add($RegImport_ParameterAttribute)
+                    $RegImport_RuntimeParameter = New-Object System.Management.Automation.RuntimeDefinedParameter('RegistryOverwrite', $RegImport_paramType, $RegImport_AttributeCollection)
+                    $RuntimeParameterDictionary.Add('RegistryOverwrite', $RegImport_RuntimeParameter)
+                }
             }
             # Returns the dictionary
             return $RuntimeParameterDictionary
@@ -117,6 +143,9 @@ function Set-JCPolicy {
             $foundPolicy = Get-JCPolicy -PolicyID $PolicyID
             if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
                 throw "Could not find policy by ID"
+            }
+            if (($foundPolicy.ID).count -gt 1) {
+                throw "multiple policies with the same name were found, please specify a policy by ID"
             }
         }
         $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
@@ -208,6 +237,23 @@ function Set-JCPolicy {
                         }
                     }
                     $newObject.Add($templateObject.objectMap[$i]) | Out-Null
+                } elseif ('RegistryFile' -in $params.Keys) {
+                    try {
+                        $regKeys = Convert-RegToPSObject -regFilePath $($params.'RegistryFile')
+                    } catch {
+                        throw $_
+                    }
+                    # Set the registryFile as the customRegTable
+                    if ('RegistryOverwrite' -in $params.Keys) {
+                        $templateObject.objectMap[0].value = $regKeys
+                        $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                    } else {
+                        $registryList = New-Object System.Collections.ArrayList
+                        $registryList += $foundPolicy.values.value
+                        $registryList += $regKeys
+                        $templateObject.objectMap[0].value += $registryList
+                        $newObject.Add($templateObject.objectMap[0]) | Out-Null
+                    }
                 } else {
                     # Else if the dynamicParam for a config field is not specified, set the value from the defaultValue
                     $templateObject.objectMap[$i].value = ($foundPolicy.values | Where-Object { $_.configFieldID -eq $templateObject.objectMap[$i].configFieldID }).value
@@ -215,6 +261,15 @@ function Set-JCPolicy {
                 }
             }
             $updatedPolicyObject = $newObject | Select-Object configFieldID, configFieldName, value
+            if ($registryFile) {
+                try {
+                    $regKeys = Convert-RegToPSObject -regFilePath $registryFile
+                } catch {
+                    throw $_
+                }
+                $updatedPolicyObject.value += $regKeys
+                Write-Debug $updatedPolicyObject
+            }
         } elseif ($values) {
             # begin value param set
             $updatedPolicyObject = New-Object System.Collections.ArrayList

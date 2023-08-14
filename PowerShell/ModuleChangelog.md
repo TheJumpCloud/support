@@ -1,12 +1,21 @@
-## 2.6.0
+## 2.7.0
 
-Release Date: June 21, 2023
+Release Date: August 1, 2023
 
 #### RELEASE NOTES
 
 ```
-Update/Import-JCMspFromCSV functions added.
+This release introduces a new parameter, registryFile, to New-JCPolicy and Set-JCPolicy
 ```
+
+#### FEATURES:
+
+Admins can now upload a .reg file to a new or existing Windows - Advanced: Custom Registry Keys Policy
+
+### BUG FIXES:
+
+Fixed an issue with sequential results not returning as expected with large datasets
+
 
 ## 2.5.1
 

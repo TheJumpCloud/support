@@ -72,6 +72,14 @@ PS C:\>  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyValu
 
 This would create a new macOS Login Window Text policy with the login window text set to `Welcome to JumpCloud` with the `macOS - Login Window Policy` name. The policy values are set using the `values` parameter. Objects passed into the `values` parameter set must contain the `value` for the policy config field and a `configFieldID`. To get a policy value object, search for any existing policy using `Get-JCPolicy` the `values` object returned from that cmdlet will contain the config fields required to build new policies or edit existing ones.
 
+### Example 5
+
+```PowerShell
+PS C:\>  New-JCPolicy -TemplateName windows_Advanced:_Custom_Registry_Keys -Name "Windows - Imported Custom Registry Settings" -RegistryFile "/path/to/registryFile.reg"
+```
+
+This command would create a new Windows Custom Registry Policy named "Windows - Imported Custom Registry Settings" and populate the values from a registry file. .Reg registry files can be passed into New-JCPolicy as long as the TemplateName is specified with the corresponding "windows_Advanced:\_Custom_Registry_Keys" template. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
+
 ## PARAMETERS
 
 ### -Name

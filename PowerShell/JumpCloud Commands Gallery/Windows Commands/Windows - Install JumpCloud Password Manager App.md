@@ -1,6 +1,8 @@
 #### Name
 
+
 Windows - Install JumpCloud Password Manager App | v1.2 JCCG
+
 
 #### commandType
 
@@ -9,6 +11,7 @@ windows
 #### Command
 
 ```
+
 # Set $LaunchPasswordManager to $false  ON LINE 63 if you do not wish to launch the password manger after installation
 
 # Get the current logged on User
@@ -23,6 +26,7 @@ $registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\
 $loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
 Write-Output "Logged On User Profile Path: $loggedOnUserProfileImagePath"
 
+
 $installerURL = 'https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.exe'
 if (Test-Path "$loggedOnUserProfileImagePath\AppData\Local\Temp" ) {
 
@@ -35,6 +39,7 @@ else {
 }
 
 Write-Output 'Testing if Password Manager installer is downloaded'
+
 if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
     try {
         Write-Output 'Downloading Password Manager installer now.'
@@ -51,6 +56,7 @@ if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
 }
 
 Write-Output 'Installing Password Manager now, this may take a few minutes.'
+
 $Command = {
     # Get the current user's SID (Security Identifier)
     $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
@@ -64,13 +70,12 @@ $Command = {
     $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
     . $installerTempLocation
     if ($LaunchPasswordManager -eq $true) {
-        # TODO: Get current logged in user's path
-        $localPath =
         while (!(Test-Path "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe")) {
             Start-Sleep 10
         }
         try {
             . "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe"
+
         } catch {
             throw $_.Exception.Message
         }
@@ -359,7 +364,7 @@ $Arguments = '-NoLogo -NonInteractive -ExecutionPolicy ByPass -WindowStyle Hidde
 
 #### Description
 
-This command will download and install the JumpCloud Password Manager app to the device if it isn't already installed. On slower networks, timeouts with exit code 127 can occu. Manually setting the default timeout limit to 600 seconds may be advisable.
+This command will download and install the JumpCloud Password Manager app to the device if it isn't already installed. On slower networks, timeouts with exit code 127 can occur. Manually setting the default timeout limit to 600 seconds may be advisable.
 
 #### _Import This Command_
 
