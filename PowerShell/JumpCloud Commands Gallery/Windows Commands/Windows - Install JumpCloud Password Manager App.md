@@ -1,6 +1,8 @@
 #### Name
 
-Windows - Install JumpCloud Password Manager App | v1.1 JCCG
+
+Windows - Install JumpCloud Password Manager App | v1.2 JCCG
+
 
 #### commandType
 
@@ -9,11 +11,32 @@ windows
 #### Command
 
 ```
-# Set $LaunchPasswordManager to $false  ON LINE 39 if you do not wish to launch the password manager after installation
+
+# Set $LaunchPasswordManager to $false  ON LINE 63 if you do not wish to launch the password manger after installation
+
+# Get the current logged on User
+$loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
+$loggedUser = $loggedUser -replace '.*\\'
+
+# Construct the Registry path using the user's SID
+$userSID = (New-Object System.Security.Principal.NTAccount($loggedUser)).Translate([System.Security.Principal.SecurityIdentifier]).Value
+$registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$userSID"
+
+# Get the ProfileImagePath value from the Registry
+$loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
+Write-Output "Logged On User Profile Path: $loggedOnUserProfileImagePath"
+
 
 $installerURL = 'https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.exe'
+if (Test-Path "$loggedOnUserProfileImagePath\AppData\Local\Temp" ) {
 
-$installerTempLocation = 'C:\Windows\Temp\JumpCloud-Password-Manager-latest.exe'
+    $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
+    Write-Output "Installer Location: $installerTempLocation"
+}
+else {
+    Write-Output "Unable to determine user profile folder"
+    Exit 1
+}
 
 Write-Output 'Testing if Password Manager installer is downloaded'
 
@@ -23,42 +46,40 @@ if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
         try {
             Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
         } catch {
-            Write-Error 'Unable to download Password Manager installer.'
+            Write-Error "Unable to download Password Manager installer to $InstallerTempLocation."
             exit 1
         }
         Write-Output 'Finished downloading Password Manager installer.'
     } catch {
         throw $_.Exception.Message
     }
-
 }
 
 Write-Output 'Installing Password Manager now, this may take a few minutes.'
 
 $Command = {
+    # Get the current user's SID (Security Identifier)
+    $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
+    $loggedUser = $loggedUser -replace '.*\\'
+
+    # Construct the Registry path using the user's SID
+    $userSID = (New-Object System.Security.Principal.NTAccount($loggedUser)).Translate([System.Security.Principal.SecurityIdentifier]).Value
+    $registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$userSID"
+    $loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
     $LaunchPasswordManager = $true
-
-    $installerTempLocation = 'C:\Windows\Temp\JumpCloud-Password-Manager-latest.exe'
-
+    $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
     . $installerTempLocation
-
     if ($LaunchPasswordManager -eq $true) {
-
-        $SignedInUserFull = Get-WMIObject -class Win32_ComputerSystem | Select-Object -ExpandProperty username
-
-        $SignedInUserUsername = $SignedInUserFull.Split('\')[1]
-
-        while (!(Test-Path "C:\Users\$($SignedInUserUsername)\AppData\Local\jcpwm\JumpCloud Password Manager.exe")) {
+        while (!(Test-Path "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe")) {
             Start-Sleep 10
         }
         try {
-            . "C:\Users\$($SignedInUserUsername)\AppData\Local\jcpwm\JumpCloud Password Manager.exe"
+            . "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe"
+
         } catch {
             throw $_.Exception.Message
         }
     }
-
-
 }
 
 $Source = @'
