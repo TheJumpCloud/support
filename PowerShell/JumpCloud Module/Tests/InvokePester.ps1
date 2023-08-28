@@ -8,7 +8,7 @@ Param(
 )
 # Load Get-Config.ps1
 . "$PSScriptRoot/../../Deploy/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
-# . (Join-Path -Path:((Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName) -ChildPath:('Deploy/Get-Config.ps1') -Resolve)
+
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
 $Tags = ForEach ($PesterTest In $PesterTests) {
@@ -27,20 +27,25 @@ $Tags = ForEach ($PesterTest In $PesterTests) {
         }
     }
 }
+
 # Filters on tags
 $IncludeTags = If ($IncludeTagList) {
     $IncludeTagList
 } Else {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
+
 # Load DefineEnvironment
 . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
+
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+
 # Load HelperFunctions
 Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps1")
 . ("$PSScriptRoot/HelperFunctions.ps1")
+
 # Load SetupOrg
 if ("MSP" -in $IncludeTags) {
     Write-Host ('[status]MSP Tests setting API Key, OrgID')
@@ -52,29 +57,80 @@ if ("MSP" -in $IncludeTags) {
     Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
     . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
 }
+
+# Setup folder for test results
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
-# $PesterResultsFileXml = $PesterResultsFileXmldir + "results.xml"
 if (-not (Test-Path $PesterResultsFileXmldir)) {
-    new-item -path $PesterResultsFileXmldir -ItemType Directory
+    New-Item -Path $PesterResultsFileXmldir -ItemType Directory
 }
-# Remove old test results file if exists (not needed)
-# If (Test-Path -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml")) { Remove-Item -Path:("$PSScriptRoot/test_results/$PesterParams_PesterResultsFileXml") -Force }
-# Run Pester tests
 
-$configuration = [PesterConfiguration]::Default
-$configuration.Run.Path = "$PSScriptRoot"
-$configuration.Should.ErrorAction = 'Continue'
-$configuration.CodeCoverage.Enabled = $true
-$configuration.testresult.Enabled = $true
-$configuration.testresult.OutputFormat = 'JUnitXml'
-$configuration.Filter.Tag = $IncludeTags
-$configuration.Filter.ExcludeTag = $ExcludeTagList
-$configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
-$configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
+# Store all Pester variables for use in parallel block
+$PesterParams = Get-Variable Pester*
+$PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0
 
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-Invoke-Pester -configuration $configuration
+# Run Pester tests in Parallel
+Write-Host '[status]Beginning Parallel Pester Invocations'
+$PesterJobs = $PesterTestsPaths | ForEach-Object -Parallel {
+    $JumpCloudApiKey = $using:JumpCloudApiKey
+    $JumpCloudApiKeyMsp = $using:JumpCloudApiKeyMsp
+    $JumpCloudMspOrg = $using:JumpCloudMspOrg
+    #Load all pester params
+    $using:PesterParams | ForEach-Object {
+        Set-Variable -Name $_.Name -Value $_.Value
+    }
+    # Import JC Module
+    Import-Module JumpCloud.SDK.V1
+    Import-Module JumpCloud.SDK.V2
+    Import-Module "$using:PSScriptRoot/../JumpCloud.psd1"
+    # Authenticate to JumpCloud
+    if (-not [string]::IsNullOrEmpty($using:JumpCloudMspOrg)) {
+        Connect-JCOnline -JumpCloudApiKey:($using:JumpCloudApiKey) -JumpCloudOrgId:($using:JumpCloudMspOrg) -force | Out-Null
+    } else {
+        Connect-JCOnline -JumpCloudApiKey:($using:JumpCloudApiKey) -force | Out-Null
+    }
+    # Load private functions
+    Get-ChildItem -Path:("$using:PSScriptRoot/../Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+    # Load HelperFunctions
+    . ("$using:PSScriptRoot/HelperFunctions.ps1")
 
+    $configuration = [PesterConfiguration]::Default
+    $configuration.Run.Path = "$_"
+    $configuration.Run.PassThru = $true
+    $configuration.Should.ErrorAction = 'Continue'
+    $configuration.Filter.Tag = $using:IncludeTags
+    $configuration.Filter.ExcludeTag = $using:ExcludeTagList
+
+    Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$_') -TagFilter:('$($using:IncludeTags -join "','")') -ExcludeTagFilter:('$($using:ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+    Invoke-Pester -Configuration $configuration
+} -ThrottleLimit 10 -AsJob
+
+# Aggregate test results
+$PesterJobResults = ($PesterJobs | Wait-Job | Receive-Job -Keep)
+$PesterResultsObject = [Pester.Run]::new()
+$PesterJobResults | ForEach-Object {
+    $PesterResultsObject.Containers += $_.Containers
+    $PesterResultsObject.DiscoveryDuration += $_.DiscoveryDuration
+    $PesterResultsObject.Duration += $_.Duration
+    $PesterResultsObject.Executed += $_.Executed
+    $PesterResultsObject.Failed += $_.Failed
+    $PesterResultsObject.FailedBlocks += $_.FailedBlocks
+    $PesterResultsObject.FailedBlocksCount += $_.FailedBlocksCount
+    $PesterResultsObject.FailedContainers += $_.FailedContainers
+    $PesterResultsObject.FailedContainersCount += $_.FailedContainersCount
+    $PesterResultsObject.FailedCount += $_.FailedCount
+    $PesterResultsObject.FrameworkDuration += $_.FrameworkDuration
+    $PesterResultsObject.NotRun += $_.NotRun
+    $PesterResultsObject.NotRunCount += $_.NotRunCount
+    $PesterResultsObject.Passed += $_.Passed
+    $PesterResultsObject.PassedCount += $_.PassedCount
+    $PesterResultsObject.Result += $_.Result
+    $PesterResultsObject.Skipped += $_.Skipped
+    $PesterResultsObject.SkippedCount += $_.SkippedCount
+    $PesterResultsObject.Tests += $_.Tests
+    $PesterResultsObject.TotalCount += $_.TotalCount
+    $PesterResultsObject.UserDuration += $_.UserDuration
+}
+$PesterResultsObject | Export-JUnitReport -Path ($PesterResultsFileXmldir + 'results.xml')
 $PesterTestResultPath = (Get-ChildItem -Path:("$($PesterResultsFileXmldir)")).FullName | Where-Object { $_ -match "results.xml" }
 If (Test-Path -Path:($PesterTestResultPath)) {
     [xml]$PesterResults = Get-Content -Path:($PesterTestResultPath)
