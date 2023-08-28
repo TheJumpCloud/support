@@ -5,20 +5,13 @@ Release Date: August 28, 2023
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+Implemented parallel processing to Pester testing suite
 ```
-
-#### FEATURES:
-
-{{Fill in the Features}}
 
 #### IMPROVEMENTS:
 
-{{Fill in the Improvements}}
+Implemented parallel processing to Pester testing suite
 
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
 
 ## 2.7.0
 
