@@ -100,7 +100,7 @@ $PesterJobs = $PesterTestsPaths | ForEach-Object -Parallel {
     $configuration.Filter.Tag = $using:IncludeTags
     $configuration.Filter.ExcludeTag = $using:ExcludeTagList
 
-    Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$_') -TagFilter:('$($using:IncludeTags -join "','")') -ExcludeTagFilter:('$($using:ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+    #Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$_') -TagFilter:('$($using:IncludeTags -join "','")') -ExcludeTagFilter:('$($using:ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
     Invoke-Pester -Configuration $configuration
 } -ThrottleLimit 10 -AsJob
 
