@@ -65,8 +65,9 @@ if (-not (Test-Path $PesterResultsFileXmldir)) {
 }
 
 # Store all Pester variables for use in parallel block
-$PesterParams = Get-Variable Pester*
+$LoadPesterParams = Get-Variable PesterParams*
 $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0
+Write-Host "[status]Found $($PesterTestsPaths.Count) Test Files"
 
 # Run Pester tests in Parallel
 Write-Host '[status]Beginning Parallel Pester Invocations'
@@ -75,7 +76,7 @@ $PesterJobs = $PesterTestsPaths | ForEach-Object -Parallel {
     $JumpCloudApiKeyMsp = $using:JumpCloudApiKeyMsp
     $JumpCloudMspOrg = $using:JumpCloudMspOrg
     #Load all pester params
-    $using:PesterParams | ForEach-Object {
+    $using:LoadPesterParams | ForEach-Object {
         Set-Variable -Name $_.Name -Value $_.Value
     }
     # Import JC Module
