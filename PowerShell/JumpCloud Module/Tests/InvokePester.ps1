@@ -66,7 +66,7 @@ if (-not (Test-Path $PesterResultsFileXmldir)) {
 
 # Store all Pester variables for use in parallel block
 $LoadPesterParams = Get-Variable PesterParams*
-$PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0
+$PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
 Write-Host "[status]Found $($PesterTestsPaths.Count) Test Files"
 # create a hash of tests to track progress
 $hash = New-Object System.Collections.ArrayList
@@ -84,7 +84,7 @@ for ($i = 0; $i -lt $PesterTestsPaths.Count; $i++) {
 # Create a hashtable for process.
 # Keys should be ID's of the processes
 $origin = @{}
-$hash | Foreach-Object { $origin.($_.Id) = @{} }
+$hash | ForEach-Object { $origin.($_.Id) = @{} }
 $sync = [System.Collections.Hashtable]::Synchronized($origin)
 
 # Run Pester tests in Parallel
@@ -143,7 +143,7 @@ $PesterJobs = $hash | ForEach-Object -ThrottleLimit 10 -AsJob -Parallel {
 }
 
 while ($PesterJobs.State -eq 'Running') {
-    $sync.Keys | Foreach-Object {
+    $sync.Keys | ForEach-Object {
         # If key is not defined, ignore
         if (![string]::IsNullOrEmpty($sync.$_.keys)) {
             # Create parameter hashtable to splat
