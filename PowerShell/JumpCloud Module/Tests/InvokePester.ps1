@@ -68,10 +68,36 @@ if (-not (Test-Path $PesterResultsFileXmldir)) {
 $LoadPesterParams = Get-Variable PesterParams*
 $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0
 Write-Host "[status]Found $($PesterTestsPaths.Count) Test Files"
+# create a hash of tests to track progress
+$hash = New-Object System.Collections.ArrayList
+for ($i = 0; $i -lt $PesterTestsPaths.Count; $i++) {
+    $hash.Add(
+        [PSCustomObject]@{
+            Name = ($PesterTestsPaths[$i].BaseName)
+            Path = ($PesterTestsPaths[$i].FullName)
+            ID   = ($i)
+        }
+    ) | Out-Null
+}
+
+
+# Create a hashtable for process.
+# Keys should be ID's of the processes
+$origin = @{}
+$hash | Foreach-Object { $origin.($_.Id) = @{} }
+$sync = [System.Collections.Hashtable]::Synchronized($origin)
 
 # Run Pester tests in Parallel
 Write-Host '[status]Beginning Parallel Pester Invocations'
-$PesterJobs = $PesterTestsPaths | ForEach-Object -Parallel {
+$PesterJobs = $hash | ForEach-Object -ThrottleLimit 10 -AsJob -Parallel {
+    # parallel output
+    $syncCopy = $using:sync
+    $process = $syncCopy.$($PSItem.Id)
+    $process.Id = $PSItem.Id
+    $process.Activity = "$($PSItem.Name) Test Setup"
+    $process.PercentComplete = ((0 / 100) * 100)
+    $process.Status = "Initializing"
+
     $JumpCloudApiKey = $using:JumpCloudApiKey
     $JumpCloudApiKeyMsp = $using:JumpCloudApiKeyMsp
     $JumpCloudMspOrg = $using:JumpCloudMspOrg
@@ -79,10 +105,13 @@ $PesterJobs = $PesterTestsPaths | ForEach-Object -Parallel {
     $using:LoadPesterParams | ForEach-Object {
         Set-Variable -Name $_.Name -Value $_.Value
     }
+    $process.Activity = "$($PSItem.Name) Importing Modules"
     # Import JC Module
     Import-Module JumpCloud.SDK.V1
     Import-Module JumpCloud.SDK.V2
     Import-Module "$using:PSScriptRoot/../JumpCloud.psd1"
+    $process.Status = "Connecting"
+    $process.PercentComplete = ((10 / 100) * 100)
     # Authenticate to JumpCloud
     if (-not [string]::IsNullOrEmpty($using:JumpCloudMspOrg)) {
         Connect-JCOnline -JumpCloudApiKey:($using:JumpCloudApiKey) -JumpCloudOrgId:($using:JumpCloudMspOrg) -force | Out-Null
@@ -94,17 +123,40 @@ $PesterJobs = $PesterTestsPaths | ForEach-Object -Parallel {
     # Load HelperFunctions
     . ("$using:PSScriptRoot/HelperFunctions.ps1")
 
+    $process.PercentComplete = ((20 / 100) * 100)
     $configuration = [PesterConfiguration]::Default
-    $configuration.Run.Path = "$_"
+    $configuration.Run.Path = "$($_.Path)"
     $configuration.Run.PassThru = $true
     $configuration.Should.ErrorAction = 'Continue'
     $configuration.Filter.Tag = $using:IncludeTags
     $configuration.Filter.ExcludeTag = $using:ExcludeTagList
 
     #Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$_') -TagFilter:('$($using:IncludeTags -join "','")') -ExcludeTagFilter:('$($using:ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-    Invoke-Pester -Configuration $configuration
-} -ThrottleLimit 10 -AsJob
+    $process.Activity = "$($PSItem.Name) Tests Running"
+    $process.Status = "Running"
 
+    $process.PercentComplete = ((25 / 100) * 100)
+    Invoke-Pester -Configuration $configuration
+    $process.PercentComplete = ((100 / 100) * 100)
+    $process.Completed = $true
+
+}
+
+while ($PesterJobs.State -eq 'Running') {
+    $sync.Keys | Foreach-Object {
+        # If key is not defined, ignore
+        if (![string]::IsNullOrEmpty($sync.$_.keys)) {
+            # Create parameter hashtable to splat
+            $param = $sync.$_
+
+            # Execute Write-Progress
+            Write-Progress @param
+        }
+    }
+
+    # Wait to refresh to not overload gui
+    Start-Sleep -Seconds 0.1
+}
 # Aggregate test results
 $PesterJobResults = ($PesterJobs | Wait-Job | Receive-Job -Keep)
 $PesterResultsObject = [Pester.Run]::new()
