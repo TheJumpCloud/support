@@ -14,6 +14,11 @@ CSBaseAddress=""
 CSClientID=""
 CSClientSecret=""
 
+# Installation Token (Only use if you have Require Tokens enabled for your organization)
+# https://falcon.us-2.crowdstrike.com/documentation/page/f8a0f751/host-and-host-group-management#x7be77b4
+
+CSInstallToken=""
+
 ############### Do Not Edit Below This Line ###############
 
 # API Base URL and the various endpoints we need
@@ -79,6 +84,10 @@ fi
 installer -verboseR -package "/tmp/$TempFolder/$fileName" -target /
 
 # Validate the install and license status
+if [[ "$CSInstallToken" != "" ]]; then
+    sudo /Applications/Falcon.app/Contents/Resources/falconctl provisioning-token $CSInstallToken
+fi
+
 stats=$(/Applications/Falcon.app/Contents/Resources/falconctl stats > /dev/null 2>&1)
 statsStatus=$?
 if [[ $statsStatus == 0 ]]; then
