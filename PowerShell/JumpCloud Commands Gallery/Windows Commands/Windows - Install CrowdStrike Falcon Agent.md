@@ -13,6 +13,11 @@ $CSBaseAddress = ""
 $CSClientID = ""
 $CSClientSecret = ""
 
+# Installation Token (Only use if you have Require Tokens enabled for your organization)
+# https://falcon.us-2.crowdstrike.com/documentation/page/f8a0f751/host-and-host-group-management#x7be77b4
+
+$CSInstallToken=""
+
 ############### Do Not Edit Below This Line ###############
 function Connect-CrowdStrike {
     param(
@@ -153,6 +158,9 @@ Write-Host "Finished downloading Falcon Agent installer."
 Write-Host "Installing Falcon Agent now, this may take a few minutes."
 try {
     $args = @("/install", "/quiet", "/norestart", "CID=$CID")
+    if ($CSInstallToken){
+        $args += "ProvToken=$CSInstallToken"
+    }
     $installerProcess = Start-Process -FilePath $installerTempLocation -Wait -PassThru -ArgumentList $args
 } catch {
     Write-Error "Failed to run Falcon Agent installer."
