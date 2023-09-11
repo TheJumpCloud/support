@@ -14,6 +14,11 @@ CSBaseAddress=""
 CSClientID=""
 CSClientSecret=""
 
+# Installation Token (Only use if you have Require Tokens enabled for your organization)
+# https://falcon.us-2.crowdstrike.com/documentation/page/f8a0f751/host-and-host-group-management#x7be77b4
+
+CSInstallToken=""
+
 ############### Do Not Edit Below This Line ###############
 
 # API Base URL and the various endpoints we need
@@ -79,6 +84,10 @@ fi
 installer -verboseR -package "/tmp/$TempFolder/$fileName" -target /
 
 # Validate the install and license status
+if [[ "$CSInstallToken" != "" ]]; then
+    sudo /Applications/Falcon.app/Contents/Resources/falconctl provisioning-token $CSInstallToken
+fi
+
 stats=$(/Applications/Falcon.app/Contents/Resources/falconctl stats > /dev/null 2>&1)
 statsStatus=$?
 if [[ $statsStatus == 0 ]]; then
@@ -105,6 +114,7 @@ Specifically for this command:
 
 1. Create a CrowdStrike API Client with the "SENSOR DOWNLOAD" Read scope and make note of the ClientID and ClientSecret. Refer to CrowdStrike's article [Getting Access to the CrowdStrike API](https://www.crowdstrike.com/blog/tech-center/get-access-falcon-apis/) for further information
 2. Set the 3 variables (CSBaseAddress, CSClientID, CSClientSecret) to their respective values for your CrowdStrike API Client
+    1. If you have Require Token enabled for your CrowdStrike org, set the CSInstallToken variable with your installation token
 3. Extend the command timeout to a value that makes sense in your environment. The suggested command timeout for an environment with average network speeds on devices with average computing power is 10 minutes. Note that the command may timeout with a 124 error code in the command result window if not extended, but the script will continue to run.
 
 #### _Import This Command_
