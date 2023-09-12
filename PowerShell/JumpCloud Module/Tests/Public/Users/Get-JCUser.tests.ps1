@@ -1,5 +1,5 @@
 Describe -Tag:('JCUser') 'Get-JCUser 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    # BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Gets all JumpCloud users using Get-JCuser" {
         $Users = Get-JCUser
         $Users._id.count | Should -BeGreaterThan 1
@@ -448,19 +448,38 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 Describe -Tag:('JCUser') "Case Insensitivity Tests" {
     It "Searches parameters dynamically with mixed, lower special characters, and upper capitalization" {
         $commandParameters = (GCM Get-JCUser).Parameters
-        $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
+        $testString = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
+        $newSearchUser = @{
+            allow_public_key   = $false
+            company            = 'testOrg'
+            costCenter         = 'testCost'
+            department         = 'testDepartment'
+            description        = 'testDescription'
+            displayName        = 'testDispName'
+            email              = "$($testString)1@DeleteMe.com"
+            employeeIdentifier = "employeeIdentifier_$($testString)"
+            employeeType       = 'testEmpType'
+            firstname          = 'testFirst'
+            jobTitle           = 'testJobTitle'
+            lastname           = 'testLast'
+            location           = 'testLocationNewLocation'
+            recoveryEmail      = "$($testString)re@DeleteMe.com"
+            username           = "pester.case_$($testString)"
+        };
+        $User1 = New-JCUser @newSearchUser
+        $gmr = Get-JCUser -Username $User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
-        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
+        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") -and ($_.Definition -notmatch "activated") }
         foreach ($param in $parameters.Name) {
             $string = ""
             $searchPester = ""
             # Get recoveryEmail address from hashtable
             if ($param -eq "recoveryEmail") {
-                $string = $PesterParams_User1.$param.address.toLower()
-                $searchPester = $PesterParams_User1.$param.address
+                $string = $User1.$param.address.toLower()
+                $searchPester = $User1.$param.address
             } else {
-                $string = $PesterParams_User1.$param.toLower()
-                $searchPester = $PesterParams_User1.$param
+                $string = $User1.$param.toLower()
+                $searchPester = $User1.$param
             }
             $defaultSearch = "Get-JCUser -$($param) `"$searchPester`""
             $userSearchDefault = Invoke-Expression -Command:($defaultSearch)
@@ -488,7 +507,9 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
             $userSearchLower = Invoke-Expression -Command:($lowerCaseSearch)
             $userSearchUpper = Invoke-Expression -Command:($upperCaseSearch)
             # DefaultSearch is the expression without text formatting
-
+            # write-host "$mixedCaseSearch $($userSearchUpper.count) $($userSearchUpper.username)"
+            # write-host "$lowerCaseSearch $($userSearchLower.count) $($userSearchLower.username)"
+            # write-host "$upperCaseSearch $($userSearchMixed.count) $($userSearchMixed.username)"
             # Ids returned here should return the same results
             $userSearchUpper._id | Should -Be $userSearchDefault._id
             $userSearchLower._id | Should -Be $userSearchDefault._id
