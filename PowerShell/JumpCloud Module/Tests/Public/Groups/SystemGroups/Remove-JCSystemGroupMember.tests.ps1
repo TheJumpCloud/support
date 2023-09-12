@@ -9,7 +9,7 @@ Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
             New-JCSystemGroup -GroupName:($PesterParams_SystemGroup.Name)
         }
         If (Get-JCSystemGroupMember -GroupName:($SystemGroup.Name) | Where-Object { $_.SystemID -eq $System.id }) {
-            Remove-JCSystemGroupMember -SystemID:($System.id) -GroupName:($SystemGroup.Name) -fo
+            Remove-JCSystemGroupMember -SystemID:($System.id) -GroupName:($SystemGroup.Name) -force
         }
     }
     It "Removes a JumpCloud system from a JumpCloud system group by System Groupname and SystemID" {
