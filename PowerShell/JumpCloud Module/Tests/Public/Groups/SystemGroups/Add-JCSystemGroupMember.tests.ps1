@@ -36,7 +36,8 @@ Describe -Tag:('JCSystemGroupMember') 'Add-JCSystemGroupMember 1.0' {
         $MultiSystemGroupAdd.Status | Select-Object -Unique | Should -Be 'Added'
     }
     AfterAll {
-        Remove-JCSystemGroup -GroupName $testGroup.Name
+        $group = Get-JCGroup -Type System -name $testGroup.Name
+        Remove-JCSDKSystemGroup -id $group.id
     }
 
 }
