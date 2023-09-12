@@ -107,8 +107,8 @@ $PesterJobs = $hash | ForEach-Object -ThrottleLimit 10 -AsJob -Parallel {
     }
     $process.Activity = "$($PSItem.Name) Importing Modules"
     # Import JC Module
-    Import-Module JumpCloud.SDK.V1
-    Import-Module JumpCloud.SDK.V2
+    # Import-Module JumpCloud.SDK.V1
+    # Import-Module JumpCloud.SDK.V2
     Import-Module "$using:PSScriptRoot/../JumpCloud.psd1"
     $process.Status = "Connecting"
     $process.PercentComplete = ((10 / 100) * 100)
@@ -155,7 +155,11 @@ while ($PesterJobs.State -eq 'Running') {
     }
 
     # Wait to refresh to not overload gui
-    Start-Sleep -Seconds 0.1
+    if ($CIRCLECI) {
+        Start-Sleep -Seconds 60
+    } else {
+        Start-Sleep -Seconds 0.1
+    }
 }
 # Aggregate test results
 $PesterJobResults = ($PesterJobs | Wait-Job | Receive-Job -Keep)
