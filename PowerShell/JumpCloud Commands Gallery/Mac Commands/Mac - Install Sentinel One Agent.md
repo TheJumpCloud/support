@@ -15,6 +15,7 @@ sentinelToken="YOURTOKEN"
 DownloadURL="https://path/to/url.pkg"
 
 ############### Do Not Edit Below This Line ###############
+set -e
 
 filename="sentineloneagent.pkg"
 
