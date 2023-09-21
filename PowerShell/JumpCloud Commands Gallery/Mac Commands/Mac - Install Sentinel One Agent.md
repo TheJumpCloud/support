@@ -37,7 +37,7 @@ mkdir /tmp/$TempFolder
 cd /tmp/$TempFolder
 
 # Download Sentinel One file
-if curl -o "$filename" "$downloadURL"; then
+if curl -o "$filename" "$DownloadURL"; then
     echo "Download successful"
 else
     # Catch block
