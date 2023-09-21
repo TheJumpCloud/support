@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install Sentinel One Agent | v1.0 JCCG
+Mac - Install Sentinel One Agent | v1.0.1 JCCG
 
 #### commandType
 
@@ -36,7 +36,13 @@ mkdir /tmp/$TempFolder
 cd /tmp/$TempFolder
 
 # Download Sentinel One file
-curl -o $filename $DownloadURL
+if curl -o "$filename" "$downloadURL"; then
+    echo "Download successful"
+else
+    # Catch block
+    echo "Error: Failed to download file"
+    exit 1
+fi
 
 
 DownloadFile="$(ls)"
