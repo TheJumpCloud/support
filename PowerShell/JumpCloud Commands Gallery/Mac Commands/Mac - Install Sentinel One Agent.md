@@ -37,14 +37,7 @@ mkdir /tmp/$TempFolder
 cd /tmp/$TempFolder
 
 # Download Sentinel One file
-if curl -o "$filename" "$DownloadURL"; then
-    echo "Download successful"
-else
-    # Catch block
-    echo "Error: Failed to download file"
-    exit 1
-fi
-
+curl --fail -o "$filename" "$DownloadURL"
 
 DownloadFile="$(ls)"
 echo "Downloaded $DownloadFile to /tmp/$TempFolder"
