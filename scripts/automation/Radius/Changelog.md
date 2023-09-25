@@ -1,5 +1,19 @@
 ## 1.0.5
 
+Release Date: September 25, 2023
+
+#### RELEASE NOTES
+
+```
+Certificates distributed to macOS device are now imported using the -x flag to prevent them from being exported.
+```
+
+#### Bug Fixes:
+
+- For users with multiple SSIDs where one SSID has a space in the name, previous versions of the script could not account for this. This version addresses this change by passing text with a ';' delimiter rather than a space.
+
+## 1.0.5
+
 Release Date: July 20, 2023
 
 #### RELEASE NOTES

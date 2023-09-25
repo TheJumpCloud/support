@@ -163,7 +163,7 @@ if [[ `$currentUser ==  $($user.localUsername) ]]; then
     fi
 
     if [[ `$import == true ]]; then
-        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $JCUSERCERTPASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $JCUSERCERTPASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
         if [[ `$? -eq 0 ]]; then
             echo "Import Success"
             # get the SHA hash of the newly imported cert
@@ -181,8 +181,9 @@ if [[ `$currentUser ==  $($user.localUsername) ]]; then
     fi
 
     # check if the cert secruity preference is set:
-    for i in `${networkSsid[@]}; do
-        echo "begin sertting network SSID: `$i security certificate"
+    IFS=';' read -ra network <<< "`$networkSsid"
+    for i in "`${network[@]}"; do
+        echo "begin setting network SSID: `$i"
         if /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"; then
             echo "it was already set"
         else
@@ -195,7 +196,6 @@ if [[ `$currentUser ==  $($user.localUsername) ]]; then
             fi
         fi
     done
-
 
     # print results
     echo "################## Cert Install Results ##################"
