@@ -9,8 +9,8 @@ $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $JCUSERCERTVALIDITY = 90
 # List Of Radius Network SSID(s)
-# For Multiple SSIDs enter as a single string seperated by spaces ex:
-# "CorpNetwork_Denver CorpNetwork_Boulder"
+# For Multiple SSIDs enter as a single string seperated by a semicolon  ex:
+# "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network"
 $NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
@@ -37,7 +37,7 @@ $CertType = "UsernameCn"
 # Do not modify below
 ################################################################################
 
-$UserAgent_ModuleVersion = '1.0.5'
+$UserAgent_ModuleVersion = '1.0.6'
 $UserAgent_ModuleName = 'PasswordlessRadiusConfig'
 #Build the UserAgent string
 $UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"
