@@ -10,9 +10,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            PowerShell/Deploy
-            PowerShell/JumpCloud\ Module
-            PowerShell/ModuleChangelog.md
+            PowerShell
       - shell: pwsh
         run: |
           . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
