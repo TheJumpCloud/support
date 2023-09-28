@@ -1,0 +1,9 @@
+# Support Code Owners
+
+# PowerShell Module
+
+/PowerShell/ @TheJumpCloud/jc-sa
+
+# Scripts
+
+/scripts/ @TheJumpCloud/jc-sa
