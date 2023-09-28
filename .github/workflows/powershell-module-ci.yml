@@ -3,6 +3,7 @@ on: [push]
 jobs:
   Publish-PowerShell-Artifact:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       source: CodeArtifact
     steps:
@@ -11,6 +12,7 @@ jobs:
           sparse-checkout: |
             PowerShell/Deploy
             PowerShell/JumpCloud\ Module
+            PowerShell/ModuleChangelog.md
       - shell: pwsh
         run: |
           . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery

@@ -54,6 +54,7 @@ $RequiredFolders | ForEach-Object {
     $FolderPath = $FolderPath_Module + '/' + $FolderName
     New-Variable -Name:('FolderName_' + $_.Replace('-', '')) -Value:($FolderName) -Force -Scope Global;
     New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force -Scope Global
+    write-host "New Variable: $('FolderPath_' + $_) with value: $($FolderPath)"
 }
 $RequiredFiles | ForEach-Object {
     $FileName = If ($_ -in ('psm1', 'psd1')) {
@@ -64,6 +65,7 @@ $RequiredFiles | ForEach-Object {
     $FilePath = $FolderPath_Module + '/' + $FileName
     New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force -Scope Global;
     New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force -Scope Global;
+    write-host "New Variable: $('FilePath_' + $_) with value: $($FilePath)"
 }
 # Get .psd1 contents
 $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
