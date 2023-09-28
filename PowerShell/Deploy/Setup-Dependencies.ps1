@@ -10,9 +10,9 @@ If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('Silently
 $PSDependencies = @{
     'PowerShellGet'          = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
     'PackageManagement'      = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
-    'PSScriptAnalyzer'       = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
+    # 'PSScriptAnalyzer'       = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
     'PlatyPS'                = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
-    'Pester'                 = @{Repository = 'PSGallery'; RequiredVersion = '5.3.3' }
+    # 'Pester'                 = @{Repository = 'PSGallery'; RequiredVersion = '5.3.3' }
     'AWS.Tools.Common'       = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
     'AWS.Tools.CodeArtifact' = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
 }

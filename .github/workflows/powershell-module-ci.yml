@@ -1,0 +1,16 @@
+name: PowerShell Module CI
+on: [push]
+jobs:
+  Publish-PowerShell-Artifact:
+    runs-on: ubuntu-latest
+    env:
+      source: CodeArtifact
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            PowerShell/Deploy
+            PowerShell/JumpCloud\ Module
+      - shell: pwsh
+        run: |
+          . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
