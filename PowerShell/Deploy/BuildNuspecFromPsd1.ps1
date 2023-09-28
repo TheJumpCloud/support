@@ -95,6 +95,9 @@ function New-NuspecFile {
         # $BuildString = "build$($env:GITHUB_RUN_NUMBER)datetime$($date)"
         $build = $($env:GITHUB_RUN_NUMBER)
         $Version = $Version + ".$($build)" + "-$date"
+        Write-Host "Building Module Version: $Version"
+    } else {
+        Write-Host "Building Module Version: $Version"
     }
 
     $metaDataElementsHash = [ordered]@{
