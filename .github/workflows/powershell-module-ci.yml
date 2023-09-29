@@ -9,8 +9,7 @@ on:
     paths:
     # JumpCloud Module
     - 'PowerShell/JumpCloud Module/**'
-    types:
-      - "opened"
+    types: [opened, edited]
 jobs:
   Test-Diff-Master-Branch:
     runs-on: ubuntu-latest
