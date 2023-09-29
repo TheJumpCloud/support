@@ -17,16 +17,12 @@ jobs:
       - name : testPR
         uses: actions/checkout@v4
       - name: Get diff if pull request
-        if: github.event_name == 'pull_request'
         run: |
-          # Get the current branch
-          current_branch=$(git symbolic-ref --short HEAD)
+          #Echo the current event
+          echo "Current event: $GITHUB_EVENT_NAME"
 
-          # Fetch changes from the master branch
-          git fetch origin master:master
 
-          # Run the git diff command between master and the current branch
-          git diff master..$current_branch
+
   clone:
     runs-on: ubuntu-latest
     steps:
