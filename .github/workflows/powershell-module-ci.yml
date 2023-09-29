@@ -8,8 +8,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 2
-    - run: git checkout HEAD^
+        fetch-depth: 1
   Publish-PowerShell-Artifact:
     runs-on: ubuntu-latest
     timeout-minutes: 30
