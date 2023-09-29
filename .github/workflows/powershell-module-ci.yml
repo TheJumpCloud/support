@@ -25,3 +25,5 @@ jobs:
       - shell: pwsh
         run: |
           . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
+
+# Will this run
