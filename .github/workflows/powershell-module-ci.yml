@@ -20,9 +20,14 @@ jobs:
       - name: Get diff if pull request
         if: github.event_name == 'pull_request'
         run: |
-          git diff --name-only origin/master
-          git diff --name-only origin/master > diff.txt
-          echo "::set-output name=diff::$(cat diff.txt)"
+          # Get the current branch
+          current_branch=$(git symbolic-ref --short HEAD)
+
+          # Fetch changes from the master branch
+          git fetch origin master:master
+
+          # Run the git diff command between master and the current branch
+          git diff master..$current_branch
   clone:
     runs-on: ubuntu-latest
     steps:
