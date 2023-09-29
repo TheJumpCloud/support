@@ -3,6 +3,7 @@ Describe -Tag:('ModuleValidation') 'Function Format Tests' {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $FunctionList = Get-FunctionReport -Folder:(("$ModuleRoot/Public"), ("$ModuleRoot/Private")) | Where-Object { $_.FileName -notlike 'ScriptBlock_*' }
         $FunctionListTestCases = $FunctionList | ForEach-Object {
+            # "$_.FileFullName"
             @{
                 Content        = $_.Content
                 FileBaseName   = $_.FileBaseName
@@ -10,6 +11,7 @@ Describe -Tag:('ModuleValidation') 'Function Format Tests' {
                 MatchValue     = $_.MatchValue
                 FileName       = $_.FileName
                 FolderLocation = $_.FolderLocation
+                FullName       = $_.FullName
             }
         }
         Return $FunctionListTestCases;
@@ -49,6 +51,16 @@ Describe -Tag:('ModuleValidation') 'Function Format Tests' {
         }
         It ('When multiple MatchValues of functions with the same name exist for "<Name>"')  -TestCases:(Get-FunctionReportTestCases) {
             ($MatchValue | Group-Object).Count | Should -Be 1
+        }
+    }
+    Context ('Tests that each public function file has a corresponding .test.ps1 file') {
+        It ('Test File Exists <FullName>') -TestCases:(Get-FunctionReportTestCases) {
+            If ($FolderLocation -eq 'Public') {
+                $newName = ("$($FullName)" -replace "Public", "Tests/Public") -replace ".ps1", ".Tests.ps1"
+                $newName | should -Exist
+                $testContent = Get-Content -Path $newName
+                $testContent |  Should -Not -BeNullOrEmpty
+            }
         }
     }
 }
