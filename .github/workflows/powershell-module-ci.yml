@@ -3,7 +3,7 @@ on:
   push:
     paths:
     # JumpCloud Module
-    - 'PowerShell/JumpCloud Module/*'
+    - 'PowerShell/JumpCloud Module/**'
 jobs:
   clone:
     runs-on: ubuntu-latest
