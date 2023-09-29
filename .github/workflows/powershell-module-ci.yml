@@ -1,6 +1,15 @@
 name: PowerShell Module CI
 on: [push]
 jobs:
+  clone:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+    - run: git checkout HEAD^
   Publish-PowerShell-Artifact:
     runs-on: ubuntu-latest
     timeout-minutes: 30
