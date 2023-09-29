@@ -4,7 +4,25 @@ on:
     paths:
     # JumpCloud Module
     - 'PowerShell/JumpCloud Module/**'
+    # Pull Request
+  pull_request:
+    paths:
+    # JumpCloud Module
+    - 'PowerShell/JumpCloud Module/**'
+    types:
+      - "opened"
 jobs:
+  Test-Diff-Master-Branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name : testPR
+        uses: actions/checkout@v4
+      - name: Get diff if pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --name-only origin/master
+          git diff --name-only origin/master > diff.txt
+          echo "::set-output name=diff::$(cat diff.txt)"
   clone:
     runs-on: ubuntu-latest
     steps:
@@ -25,5 +43,3 @@ jobs:
       - shell: pwsh
         run: |
           . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
-
-# Will this run
