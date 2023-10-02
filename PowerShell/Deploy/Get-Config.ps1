@@ -15,11 +15,6 @@ param (
 # Set variables:
 $ScriptRoot = $MyInvocation.MyCommand.Path
 write-host $ScriptRoot
-# break
-If ($env:CI) {
-    $ScriptRoot = $ScriptRoot -replace "/support/support/", "/support/"
-    write-host $ScriptRoot
-}
 
 $FolderPath_ModuleRootPath = (Get-Item -Path:($ScriptRoot)).Directory.parent.FullName
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'

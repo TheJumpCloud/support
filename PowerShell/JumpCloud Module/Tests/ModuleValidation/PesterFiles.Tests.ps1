@@ -1,6 +1,6 @@
 Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
     Function Get-PesterFilesTestCases {
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
         $FolderTests = "$ModuleRoot/Tests"
         $FolderPublic = "$ModuleRoot/Public"
         $PesterTestFilePath = Get-ChildItem -Path:("$FolderPublic/*.ps1") -Recurse -File | ForEach-Object {
