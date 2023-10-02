@@ -4,7 +4,7 @@ param (
     [string]
     $RequiredModulesRepo
 )
-. "$PSScriptRoot/../Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+. "$PSScriptRoot/../Get-Config.ps1"
 ###########################################################################
 $ApprovedFunctions = [Ordered]@{
     'JumpCloud.SDK.DirectoryInsights' = @(

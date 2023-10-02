@@ -5,7 +5,7 @@ param (
     $RequiredModulesRepo = 'PSGallery'
 )
 
-. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+. "$PSScriptRoot/Get-Config.ps1"
 # $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 $nuspecFiles = @(
     @{src = "en-Us/**/*.*"; target = "./" },

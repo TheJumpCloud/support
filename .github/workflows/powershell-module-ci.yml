@@ -1,14 +1,27 @@
-name: PowerShell Module CI
+name: PowerShell Module
+
+env:
+  # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
+  RELEASE_TYPE: "patch"
+  # override version boolean. If specified, valid vlaues are 'true' or 'false'
+  OVERRIDE_VERSION: "false"
 on: [push]
 jobs:
+  validate-env-variables:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: pwsh
+        run: |
+          # validate release type variables
+          $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
+          $env:RELEASE_TYPE | | Should -BeIn @('major','minor','patch')
   clone:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
   Publish-PowerShell-Artifact:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -22,3 +35,14 @@ jobs:
       - shell: pwsh
         run: |
           . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
+  Validate-Module:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            PowerShell
+      - shell: pwsh
+        run: |
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
