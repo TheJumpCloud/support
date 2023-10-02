@@ -1,4 +1,4 @@
-name: PowerShell Module
+name: PowerShell Module CI
 
 env:
   # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
