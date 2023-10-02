@@ -17,7 +17,7 @@ $ScriptRoot = $MyInvocation.MyCommand.Path
 write-host $ScriptRoot
 # break
 If ($env:CI) {
-    $ScriptRoot = $ScriptRoot -replace "/support/support", "support"
+    $ScriptRoot = $ScriptRoot -replace "/support/support/", "/support/"
     write-host $ScriptRoot
 }
 
