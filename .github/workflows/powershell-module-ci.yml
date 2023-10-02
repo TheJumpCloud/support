@@ -14,7 +14,7 @@ jobs:
         run: |
           # validate release type variables
           $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
-          $env:RELEASE_TYPE | | Should -BeIn @('major','minor','patch')
+          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
   clone:
     runs-on: ubuntu-latest
     steps:

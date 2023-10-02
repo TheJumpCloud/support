@@ -80,7 +80,7 @@ if (-not (Test-Path $PesterResultsFileXmldir)) {
 
 
 # define pester configuration
-$configuration = [PesterConfiguration]::Default
+$configuration = New-PesterConfiguration
 $configuration.Run.Path = $PesterRunPaths
 $configuration.Should.ErrorAction = 'Continue'
 $configuration.CodeCoverage.Enabled = $true
