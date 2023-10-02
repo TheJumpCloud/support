@@ -11,12 +11,41 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
         # validate required Modules
         $RequiredModules = @('JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2')
         $RequiredModules | ForEach-Object {
-            write-host "$_"
             $module.RequiredModules.Name | should -Contain $_
         }
 
+        $ExportedFuncs = $module.ExportedFunctions.keys | Group-Object
+        foreach ($func in $ExportedFuncs) {
+            $func.count | should -BeExactly 1
+        }
         # Validate module version
         $latestModule = Find-Module -Name JumpCloud
         $module.Version | should -BeGreaterThan $latestModule.version
+        # GHA Env Variables
+        if (-Not $env:OVERRIDE_VERSION) {
+            switch ($env:RELEASE_TYPE) {
+                'major' {
+                    $module.Version.Major | Should -Be (([version]$latestModule.Version).Major + 1)
+                }
+                'minor' {
+                    $module.Version.Minor | Should -Be (([version]$latestModule.Version).Minor + 1)
+                }
+                'patch' {
+                    $module.Version.Build | Should -Be (([version]$latestModule.Version).Build + 1)
+                }
+            }
+        }
+    }
+    It 'When Update-ModuleManifest is run, no changes in the current branch are behind' {
+        Update-ModuleManifest -Path:($FilePath_psd1)
+        $diff = git diff -- $FilePath_psd1
+        if ($diff) {
+            write-warning "diff found in file: $FilePath_psd1 when we expected none to exist; have you run `Update-ModuleManifest -Path /src/PowerShell/JumpCloud Module/JumpCloud.psd1` and committed the resulting changes?"
+        }
+        $diff | Should -BeNullOrEmpty
+        $moduleContent = Get-COntent -Path ("$FilePath_psd1")
+        $stringMatch = Select-String -InputObject $moduleContent -Pattern "# Generated on: ([\d]+\/[\d]+\/[\d]+)"
+        $PSD1_date = $stringMatch.matches.groups[1].value
+        $PSD1_date | Should -Be ( Get-Date -Format "M/d/yyyy" )
     }
 }
