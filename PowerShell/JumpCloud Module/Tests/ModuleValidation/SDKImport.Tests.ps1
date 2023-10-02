@@ -18,7 +18,6 @@ Describe -Tag:('ModuleValidation') 'SDK Generation' {
                 $diff = git diff -- $functionFilePath
                 if ($diff) {
                     write-warning "diff found in file: $functionFilePath when we expected none to exist; have you run jcapiToSupportSync.ps1 and committed the resulting changes?"
-                    Write-Host $diff
                 }
                 $diff | Should -BeNullOrEmpty
             }

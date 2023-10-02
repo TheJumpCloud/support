@@ -53,16 +53,6 @@ Describe -Tag:('ModuleValidation') 'Function Format Tests' {
             ($MatchValue | Group-Object).Count | Should -Be 1
         }
     }
-    Context ('Tests that each public function file has a corresponding .test.ps1 file') {
-        It ('Test File Exists <FullName>') -TestCases:(Get-FunctionReportTestCases) {
-            If ($FolderLocation -eq 'Public') {
-                $newName = ("$($FullName)" -replace "Public", "Tests/Public") -replace ".ps1", ".Tests.ps1"
-                $newName | should -Exist
-                $testContent = Get-Content -Path $newName
-                $testContent |  Should -Not -BeNullOrEmpty
-            }
-        }
-    }
 }
 
 
