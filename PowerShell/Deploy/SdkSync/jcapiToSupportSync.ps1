@@ -75,7 +75,9 @@ $MSCopyrightHeader = "`n<#`n.Synopsis`n"
 $Divider = "`n[SPLIT]`n<#`n.Synopsis`n"
 $FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
 $ScriptAnalyzerResults = @()
-$JumpCloudModulePath = "$PSScriptRoot/../JumpCloud Module"
+$JumpCloudModulePath = (Get-Item $FilePath_psd1).Directory.FullName
+$PSD1_Module = Test-ModuleManifest -Path:("$FilePath_psd1")
+
 Get-Module -Refresh -ListAvailable -All | Out-Null
 $Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
 If (-not [System.String]::IsNullOrEmpty($Modules)) {
@@ -121,7 +123,9 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                     $PSScriptInfo = $PSScriptInfo.Replace("$NewCommandName.md", "$FunctionName.md")
                 }
                 # Build CmdletBinding
-                If (-not [System.String]::IsNullOrEmpty($OutputType)) { $CmdletBinding = "$($OutputType)`n$($IndentChar)$($CmdletBinding)" }
+                If (-not [System.String]::IsNullOrEmpty($OutputType)) {
+                    $CmdletBinding = "$($OutputType)`n$($IndentChar)$($CmdletBinding)"
+                }
                 # Build $BeginContent, $ProcessContent, and $EndContent
                 $BeginContent = @()
                 $ProcessContent = @()
@@ -152,8 +156,11 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 # Copy tests?
                 # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
                 # Update .Psd1 file
-                $Psd1.FunctionsToExport += $NewCommandName
-                Update-ModuleManifest -Path:($FilePath_psd1) -FunctionsToExport:($Psd1.FunctionsToExport)
+                If ($NewCommandName -notin $PSD1_Module.ExportedFunctions.keys) {
+                    $Psd1.FunctionsToExport += $NewCommandName
+                    Update-ModuleManifest -Path:($FilePath_psd1) -FunctionsToExport:($Psd1.FunctionsToExport)
+                }
+
             }
         }
     }
