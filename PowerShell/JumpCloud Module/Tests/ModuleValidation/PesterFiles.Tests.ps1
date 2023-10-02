@@ -1,8 +1,8 @@
 Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
     Function Get-PesterFilesTestCases {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
-        $FolderTests = "$ModuleRoot/Tests"
-        $FolderPublic = "$ModuleRoot/Public"
+        $FolderTests = "$FolderPath_Tests"
+        $FolderPublic = "$FolderPath_Public"
         $PesterTestFilePath = Get-ChildItem -Path:("$FolderPublic/*.ps1") -Recurse -File | ForEach-Object {
             @{
                 FilePath = ($_.FullName).Replace($ModuleRoot, $FolderTests).Replace($_.Extension, ".Tests$($_.Extension)")
