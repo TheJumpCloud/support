@@ -46,6 +46,6 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
         $moduleContent = Get-COntent -Path ("$FilePath_psd1")
         $stringMatch = Select-String -InputObject $moduleContent -Pattern "# Generated on: ([\d]+\/[\d]+\/[\d]+)"
         $PSD1_date = $stringMatch.matches.groups[1].value
-        $PSD1_date | Should -Be ( Get-Date -Format "M/d/yyyy" )
+        [datetime]$PSD1_date | Should -Be [datetime]( Get-Date -Format "M/d/yyyy" )
     }
 }
