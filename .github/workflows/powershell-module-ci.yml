@@ -1,12 +1,9 @@
 name: PowerShell Module CI
 on:
   pull_request:
-    - paths: "Powershell/JumpCloud Module/**"
-#     types: [synchronize]
-#     branches:
-#       # Branch with JumpCloudModule_ on it
-#       - 'JumpCloudModule_/**'
- jobs:
+    paths: 'Powershell/JumpCloud Module/**'
+
+jobs:
   clone:
     runs-on: ubuntu-latest
     steps:
