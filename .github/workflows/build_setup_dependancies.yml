@@ -2,6 +2,18 @@ name: Cache Dependancies Test
 run-name: ${{ github.actor }} is testing PowerShell caching
 on: push
 jobs:
+  cleanup-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Clean Cache
+        run: |
+          gh extension install actions/gh-actions-cache
+
+          REPO=${{ github.repository }}
+          BRANCH=${GITHUB_REF}
   setup-build-dependancies:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -25,12 +37,15 @@ jobs:
           }
 
           $PSDependencies = @{
-              'PowerShellGet'          = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
-              'PackageManagement'      = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
-              'PSScriptAnalyzer'       = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
-              'PlatyPS'                = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
-              'AWS.Tools.Common'       = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
-              'AWS.Tools.CodeArtifact' = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+              'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
+              'PackageManagement'                     = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
+              'PSScriptAnalyzer'                      = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
+              'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
+              'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+              'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.35'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.39'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = '0.0.23'}
           }
 
           foreach ($RequiredModule in $PSDependencies.Keys) {
