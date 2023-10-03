@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
     branches:
       # Branch with JumpCloudModule_ on it
-      - 'JumpCloudModule_/**'
+      - 'JumpCloudModule_**'
 jobs:
   check_branch:
     runs-on: ubuntu-latest
