@@ -1,12 +1,17 @@
 name: PowerShell Module CI
 on:
-    # Pull Request
   pull_request:
     types: [opened, synchronize]
-    branches:
-      # Branch with JumpCloudModule_ on it
-      - 'JumpCloudModule/**'
+    # branches:
+    #   - 'JumpCloudModule/**'
 jobs:
+  clone:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
   check_branch:
     runs-on: ubuntu-latest
     steps:
@@ -16,14 +21,6 @@ jobs:
           echo "This is the main branch1"
           exit 1
         fi
-
-  clone:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
   Publish-PowerShell-Artifact:
     runs-on: ubuntu-latest
     timeout-minutes: 30
