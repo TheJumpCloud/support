@@ -4,9 +4,6 @@ on:
     branches:
       - 'JumpCloudModule_**'
     # Only .ps1 files
-    paths:
-      - 'Powershell/JumpCloud Module/**'
-
 
 jobs:
   clone:
