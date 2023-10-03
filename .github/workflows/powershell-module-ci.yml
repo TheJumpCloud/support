@@ -1,7 +1,7 @@
 name: PowerShell Module CI
 on:
-  pull_request:
-    paths: 'Powershell/JumpCloud Module/**'
+  pull_request
+
 
 jobs:
   clone:
