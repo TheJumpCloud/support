@@ -1,10 +1,5 @@
 name: PowerShell Module CI
-on:
-  push:
-    branches:
-      - 'JumpCloudModule/**'
-  pull_request:
-    types: [opened, synchronize]
+on: push
     # branches:
     #   - 'JumpCloudModule/**'
 jobs:
