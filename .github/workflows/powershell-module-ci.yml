@@ -5,6 +5,7 @@ on:
       - 'JumpCloudModule_**'
     paths:
       - '**.ps1'
+      - '!**.md'
 jobs:
   clone:
     runs-on: ubuntu-latest
