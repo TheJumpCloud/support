@@ -14,11 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check Base Branch Name
+    # Find out base branch name
       run: |
-        if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
-          echo "This is the main branch1"
-          exit 1
-        fi
+        echo "Base Branch Name: ${{ github.base_ref }}"
+        echo "Head Branch Name: ${{ github.head_ref }}"
+        echo "Head Branch Name: ${{ github.ref }}"
+
   Publish-PowerShell-Artifact:
     runs-on: ubuntu-latest
     timeout-minutes: 30
