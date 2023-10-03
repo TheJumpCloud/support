@@ -2,13 +2,14 @@ name: PowerShell Module CI
 on:
     # Pull Request
   pull_request:
+    types: [opened, synchronize]
     paths:
     # JumpCloud Module
     - 'PowerShell/JumpCloud Module/**'
     - 'PowerShell/Deploy/**'
     - 'PowerShell/ModuleChangelog.md'
     # JumpCloud Module Tests
-    types: [opened, synchronize]
+
 jobs:
   clone:
     runs-on: ubuntu-latest
