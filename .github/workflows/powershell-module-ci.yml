@@ -3,7 +3,8 @@ on:
   pull_request:
     branches:
       - 'JumpCloudModule_**'
-    # Only .ps1 files
+    paths:
+      - '**.ps1'
 jobs:
   clone:
     runs-on: ubuntu-latest
