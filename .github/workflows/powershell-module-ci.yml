@@ -4,7 +4,6 @@ on:
     branches:
       - 'JumpCloudModule_**'
     # Only .ps1 files
-
 jobs:
   clone:
     runs-on: ubuntu-latest
