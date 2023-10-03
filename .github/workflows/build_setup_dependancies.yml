@@ -2,18 +2,6 @@ name: Cache Dependancies Test
 run-name: ${{ github.actor }} is testing PowerShell caching
 on: push
 jobs:
-  cleanup-cache:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Clean Cache
-        run: |
-          gh extension install actions/gh-actions-cache
-
-          REPO=${{ github.repository }}
-          BRANCH=${GITHUB_REF}
   setup-build-dependancies:
     runs-on: ubuntu-latest
     timeout-minutes: 90
