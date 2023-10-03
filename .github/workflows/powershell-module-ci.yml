@@ -1,6 +1,8 @@
 name: PowerShell Module CI
 on:
-  pull_request
+  pull_request:
+    branches:
+      - master
 
 
 jobs:
