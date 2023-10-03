@@ -1,9 +1,21 @@
 name: PowerShell Module CI
 on:
   pull_request:
+    types: [opened, synchronize]
     branches:
-      - 'JumpCloudModule/**'
+      # Branch with JumpCloudModule_ on it
+      - 'JumpCloudModule_/**'
 jobs:
+  check_branch:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Base Branch Name
+      run: |
+        if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
+          echo "This is the main branch"
+          exit 1
+        fi
+
   clone:
     runs-on: ubuntu-latest
     steps:
