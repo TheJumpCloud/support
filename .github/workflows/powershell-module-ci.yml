@@ -5,7 +5,7 @@ on:
       - 'JumpCloudModule_**'
     # Only .ps1 files
     paths:
-      - 'Powershell/JumpCloud Module/test.md'
+      - 'Powershell/JumpCloud Module/**'
 
 
 jobs:
