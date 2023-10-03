@@ -2,7 +2,7 @@ name: PowerShell Module CI
 on:
   pull_request:
     branches:
-      - master
+      - 'JumpCloudModule_**'
 
 
 jobs:
