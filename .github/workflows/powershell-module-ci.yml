@@ -1,7 +1,8 @@
 name: PowerShell Module CI
-on: push
-    # branches:
-    #   - 'JumpCloudModule/**'
+on:
+  pull_request:
+    branches:
+      - 'JumpCloudModule/**'
 jobs:
   clone:
     runs-on: ubuntu-latest
