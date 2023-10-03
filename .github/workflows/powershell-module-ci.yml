@@ -5,7 +5,7 @@ on:
       - 'JumpCloudModule_**'
     paths:
       - '**.ps1'
-      - '!**.md'
+      - '!Powershell/ModuleChangelog.md'
 jobs:
   clone:
     runs-on: ubuntu-latest
