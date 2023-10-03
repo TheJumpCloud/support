@@ -1,28 +1,15 @@
 name: PowerShell Module CI
 on:
-  push:
-    paths:
-    # JumpCloud Module
-    - 'PowerShell/JumpCloud Module/**'
     # Pull Request
   pull_request:
     paths:
     # JumpCloud Module
     - 'PowerShell/JumpCloud Module/**'
-    types: [opened, edited]
+    - 'PowerShell/Deploy/**'
+    - 'PowerShell/ModuleChangelog.md'
+    # JumpCloud Module Tests
+    types: [opened, synchronize]
 jobs:
-  Test-Diff-Master-Branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name : testPR
-        uses: actions/checkout@v4
-      - name: Get diff if pull request
-        run: |
-          #Echo the current event
-          echo "Current event: $GITHUB_EVENT_NAME"
-
-
-
   clone:
     runs-on: ubuntu-latest
     steps:
