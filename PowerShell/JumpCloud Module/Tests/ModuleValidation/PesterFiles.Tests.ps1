@@ -11,6 +11,16 @@ Describe -Tag:('ModuleValidation') 'Pester Files Tests' {
         Return $PesterTestFilePath
     }
     Context 'Pester Test Files Validation' {
+        It ('Validates that test files found in the test path have the correct "Test" casing') {
+            # validate case sensitive filename for ubuntu-latest ci workflow:
+            $tests = Get-ChildItem -Path $FolderPath_Tests -Filter "*Tests*" -Recurse
+            foreach ($testFile in $tests.FullName) {
+                if ($testFile -cmatch "tests") {
+                    Write-Warning "The $testFile file contains a pester 'tests' declartion with a lowercase 'tests' filetype, this should be 'Tests' "
+                    $testFile | Should -Not -MatchExactly "tests"
+                }
+            }
+        }
         It ('Validating Pester test file exists for "<FilePath>"') -TestCases:(Get-PesterFilesTestCases) {
             Test-Path -Path:($FilePath) | Should -Be $true
         }
