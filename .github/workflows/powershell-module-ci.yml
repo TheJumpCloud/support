@@ -25,9 +25,10 @@ jobs:
           # If there are changes in the specific folder, exit with 0
           if echo "$CHANGED_FILES" | grep "$SPECIFIC_FOLDER"; then
             echo "Changes detected in $SPECIFIC_FOLDER"
-            exit 0
+            exit 1
           else
             echo "No changes detected in $SPECIFIC_FOLDER"
+            # exit GH Action with error code
             exit 1
           fi
   clone:
