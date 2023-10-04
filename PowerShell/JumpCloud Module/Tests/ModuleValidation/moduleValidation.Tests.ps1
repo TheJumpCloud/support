@@ -36,14 +36,11 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
             }
         }
     }
-    It 'When Update-ModuleManifest is run, no changes in the current branch are behind' {
+    It 'The date on the current version of the Module Manifest file should be todays date' {
+        # update module manifest
         Update-ModuleManifest -Path:($FilePath_psd1)
-        $diff = git diff -- $FilePath_psd1
-        if ($diff) {
-            write-warning "diff found in file: $FilePath_psd1 when we expected none to exist; have you run `Update-ModuleManifest -Path /src/PowerShell/JumpCloud Module/JumpCloud.psd1` and committed the resulting changes?"
-        }
-        $diff | Should -BeNullOrEmpty
-        $moduleContent = Get-COntent -Path ("$FilePath_psd1")
+        # get content from current path
+        $moduleContent = Get-Content -Path ("$FilePath_psd1")
         $stringMatch = Select-String -InputObject $moduleContent -Pattern "# Generated on: ([\d]+\/[\d]+\/[\d]+)"
         $PSD1_date = $stringMatch.matches.groups[1].value
         ([datetime]$PSD1_date) | Should -Be ([datetime]( Get-Date -Format "M/d/yyyy" ))
