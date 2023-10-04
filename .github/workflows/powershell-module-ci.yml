@@ -13,11 +13,11 @@ jobs:
       - name: Check Changes in Folder
         shell: pwsh
         run: |
-            $list = @("/PowerShell/Deploy/*", "/PowerShell/JumpCloud Module/*", "/PowerShell/ModuleChangelog.md")
+            $list = @("diff --git  a/PowerShell/Deploy/*", "diff --git a/PowerShell/JumpCloud Module/*", "diff --git a/PowerShell/ModuleChangelog.md b/PowerShell/ModuleChangelog.md")
 
             # Loop through each file in the list then do git diff
             $difCount = 0 # Diff Counter
-            git fetch origin $GITHUB_BASE_REF
+            git fetch origin $env:GITHUB_BASE_RE
             $gitDiff = git diff origin/$env:GITHUB_BASE_REF..HEAD
             foreach ($path in $list) {
                 # Check if the path exists in the Git diff
