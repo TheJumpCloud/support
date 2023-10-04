@@ -21,6 +21,9 @@ jobs:
           # Check for changes in the specific folder
           git fetch origin $GITHUB_BASE_REF
           CHANGED_FILES=$(git diff origin/$GITHUB_BASE_REF..HEAD)
+          # Output Head and Base
+          echo "Head: $GITHUB_HEAD_REF"
+          echo "Base: $GITHUB_BASE_REF"
 
 
           if [ -n "$CHANGED_FILES" ]; then
