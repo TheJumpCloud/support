@@ -17,8 +17,8 @@ jobs:
 
             # Loop through each file in the list then do git diff
             $difCount = 0 # Diff Counter
-            git fetch origin $env:GITHUB_BASE_RE
-            $gitDiff = git diff origin/$env:GITHUB_BASE_REF..HEAD
+            git fetch origin $env:GITHUB_BASE_REF
+            $gitDiff = git diff origin/$env:GITHUB_BASE_REF..HEAD . ':!.github/workflows/powershell-module-ci.yml'
             foreach ($path in $list) {
                 # Check if the path exists in the Git diff
                 if ($gitDiff -match [regex]::Escape($path)) {
