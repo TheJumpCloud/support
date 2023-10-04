@@ -42,6 +42,7 @@ jobs:
       - name: Exit with error code
         run: exit 1
   clone:
+    needs: check-failed-job
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
