@@ -17,7 +17,7 @@ jobs:
 
             # Loop through each file in the list then do git diff
             $difCount = 0 # Diff Counter
-            $gitDiff = git diff origin/$env:GITHUB_BASE_REF..origin/$env:HEAD
+            $gitDiff = git diff origin/$env:GITHUB_BASE_REF..$env:HEAD
             foreach ($path in $list) {
                 # Check if the path exists in the Git diff
                 if ($gitDiff -match [regex]::Escape($path)) {
