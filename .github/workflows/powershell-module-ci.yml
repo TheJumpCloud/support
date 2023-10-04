@@ -32,10 +32,14 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+      - uses: actions/cache@v3
+        with:
+          path: "/home/runner/.local/share/powershell/Modules/"
+          key: PS-Dependancies
       - shell: pwsh
         run: |
           . "./PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
-    needs: [Validate-Module, clone]
+    needs: [Validate-Module, clone, Test-Module]
   Validate-Module:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -52,6 +56,27 @@ jobs:
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
     needs: setup-build-dependancies
+  Test-Module:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            PowerShell
+      - uses: actions/cache@v3
+        with:
+          path: "/home/runner/.local/share/powershell/Modules/"
+          key: PS-Dependancies
+      - shell: pwsh
+        env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+          PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
+        run: |
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation, JCDeployment, MSP" -IncludeTagList * -RequiredModulesRepo "PSGallery"
+    needs: [setup-build-dependancies, Validate-Module]
+
   setup-build-dependancies:
     runs-on: ubuntu-latest
     timeout-minutes: 90
