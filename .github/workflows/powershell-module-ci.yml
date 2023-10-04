@@ -20,7 +20,7 @@ jobs:
 
           # Check for changes in the specific folder
           git fetch origin $GITHUB_BASE_REF
-          CHANGED_FILES=$(git diff origin/$GITHUB_BASE_REF..origin/$GITHUB_HEAD_REF)
+          CHANGED_FILES=$(git diff origin/$GITHUB_BASE_REF..HEAD)
           # Output Head and Base
           echo "Head: $HEAD"
           echo "Base: $GITHUB_BASE_REF"
