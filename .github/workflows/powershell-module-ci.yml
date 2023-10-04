@@ -19,8 +19,7 @@ jobs:
 
 
           # Check for changes in the specific folder
-          git checkout $GITHUB_BASE_REF
-          git diff --name-only origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF | grep "^$SPECIFIC_FOLDER"
+          git diff --name-only origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF
 
           # CHANGED_FILES=$(git diff --name-only origin/$GITHUB_BASE_REF origin/$GITHUB_HEAD_REF | grep "^$SPECIFIC_FOLDER")
 
