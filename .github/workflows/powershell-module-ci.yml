@@ -20,7 +20,7 @@ jobs:
 
           # Check for changes in the specific folder
           git fetch origin $GITHUB_BASE_REF
-          CHANGED_FILES=$(git diff origin/$GITHUB_BASE_REF..HEAD > mydiff | grep "^$SPECIFIC_FOLDER")
+          CHANGED_FILES=$(git diff origin/$GITHUB_BASE_REF..HEAD | grep "^$SPECIFIC_FOLDER")
 
           if [ -n "$CHANGED_FILES" ]; then
             echo "Changes detected in the specified folder: $CHANGED_FILES"
