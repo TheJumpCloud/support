@@ -31,6 +31,16 @@ jobs:
             # exit GH Action with error code
             exit 1
           fi
+  # Create a job to check if recent job has failed then exit all GH Actions
+  check-failed-job:
+    runs-on: ubuntu-latest
+    needs: check-changes
+    if: ${{ failure() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Exit with error code
+        run: exit 1
   clone:
     runs-on: ubuntu-latest
     steps:
