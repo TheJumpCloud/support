@@ -52,6 +52,7 @@ jobs:
   Test-Module:
     runs-on: ubuntu-latest
     timeout-minutes: 75
+    name: Run Pester Tests and Upload results
     steps:
       - uses: actions/checkout@v4
         with:
@@ -61,13 +62,20 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
-      - shell: pwsh
+      - name: Test PWSH Module
+        shell: pwsh
         env:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
-          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation, JCDeployment, MSP" -IncludeTagList * -RequiredModulesRepo "PSGallery"
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation, JCDeployment, MSP, JCModule, JCAssociation" -IncludeTagList "JCUser" -RequiredModulesRepo "PSGallery"
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: PWSH-Pester-Tests
+          path: "./PowerShell/JumpCloud Module/Tests/test_results/results.xml"
+    if: ${{ always() }}
     needs: [setup-build-dependancies, Validate-Module]
   Test-Module-MSP:
     runs-on: ubuntu-latest
@@ -86,6 +94,7 @@ jobs:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
+          PESTER_PROVIDER_ID: ${{ secrets.PESTER_PROVIDER_ID }}
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "None" -IncludeTagList "MSP" -RequiredModulesRepo "PSGallery"
     needs: [setup-build-dependancies, Validate-Module, Test-Module]
