@@ -1,8 +1,8 @@
 Describe -tag:('JCPolicy') 'Get config fields tests' {
 
     Context 'Test Config Fields for all possible types' {
-        $configMapping = Get-JCPolicyConfigMapping
         It 'Get-JCPolicyConfigField should return all types of available policy types' {
+            $configMapping = Get-JCPolicyConfigMapping
             foreach ($configType in $configMapping) {
                 $object = Get-JCPolicyTemplateConfigField -templateID $configType.value
                 $object | Should -Not -BeNullOrEmpty

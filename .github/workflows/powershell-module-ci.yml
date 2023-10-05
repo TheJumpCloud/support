@@ -10,10 +10,18 @@ on:
     # Sequence of patterns matched against refs/heads
     branches:
       - "master"
-  push:
-    branches: JumpCloudModule_**
 jobs:
+  Filter-Branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Filter
+        if: ${{contains(github.base_ref, 'PowerShellModule_**')}}
+        run: exit 0
+
   Check-Filepath-Changes:
+    needs: Filter-Branch
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -48,6 +56,7 @@ jobs:
               exit 0
           }
   Validate-Env-Variables:
+    needs: Filter-Branch
     runs-on: ubuntu-latest
     steps:
       - shell: pwsh
@@ -92,7 +101,7 @@ jobs:
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
-          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation, JCDeployment, MSP, JCModule, JCAssociation" -IncludeTagList "JCUser" -RequiredModulesRepo "PSGallery"
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation, JCDeployment, MSP, JCModule, JCAssociation" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
         with:
@@ -122,8 +131,9 @@ jobs:
     needs: [Test-Module]
 
   Setup-Build-Dependancies:
+    needs: Filter-Branch
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Setup PowerShell Module Cache

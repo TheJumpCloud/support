@@ -28,33 +28,33 @@ Param(
 #     }
 # }
 ### TODO: Switch to CodeArtifact
-If ($RequiredModulesRepo -ne 'PSGallery') {
-    $AWSRepo = 'jumpcloud-nuget-modules'
-    $AWSDomain = 'jumpcloud-artifacts'
-    $AWSRegion = 'us-east-1'
-    # Set AWS authToken using context from CI Pipeline (context: aws-credentials)
-    $authToken = Get-CAAuthorizationToken -Domain $AWSDomain -Region $AWSRegion
-    If (-not [System.String]::IsNullOrEmpty($authToken)) {
-        # Create Credential Object
-        $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
-    } Else {
-        Write-Warning ('No authToken has been provided')
-    }
-    # Register PSRepository
-    try {
-        # Search for Repo Object, moved to try/ catch loop to avoid issue w/ PowerShell Get Beta10
-        $resourceRepos = Get-PSResourceRepository -Name:($RequiredModulesRepo)
-        if ([String]::IsNullOrEmpty($resourceRepos)) {
-            Write-Host "Could not Find $RequiredModulesRepo"
-        }
-    } catch {
-        Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
-        # Set Endpoint URL
-        $AWSCARepoEndpoint = Get-CARepositoryEndpoint -Domain:($AWSDomain) -Repository:($AWSRepo) -Region:($AWSRegion) -Format:('nuget')
-        # Set Resource Repository
-        Register-PSResourceRepository -Name:($RequiredModulesRepo) -URL:("$($AWSCARepoEndpoint)v3/index.json") -Trusted
-    }
-}
+# If ($RequiredModulesRepo -ne 'PSGallery') {
+#     $AWSRepo = 'jumpcloud-nuget-modules'
+#     $AWSDomain = 'jumpcloud-artifacts'
+#     $AWSRegion = 'us-east-1'
+#     # Set AWS authToken using context from CI Pipeline (context: aws-credentials)
+#     $authToken = Get-CAAuthorizationToken -Domain $AWSDomain -Region $AWSRegion
+#     If (-not [System.String]::IsNullOrEmpty($authToken)) {
+#         # Create Credential Object
+#         $RepositoryCredentials = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $authToken.AuthorizationToken , ($authToken.AuthorizationToken | ConvertTo-SecureString -AsPlainText -Force)
+#     } Else {
+#         Write-Warning ('No authToken has been provided')
+#     }
+#     # Register PSRepository
+#     try {
+#         # Search for Repo Object, moved to try/ catch loop to avoid issue w/ PowerShell Get Beta10
+#         $resourceRepos = Get-PSResourceRepository -Name:($RequiredModulesRepo)
+#         if ([String]::IsNullOrEmpty($resourceRepos)) {
+#             Write-Host "Could not Find $RequiredModulesRepo"
+#         }
+#     } catch {
+#         Write-Host("[status]Register-PackageSource Setup '$RequiredModulesRepo'")
+#         # Set Endpoint URL
+#         $AWSCARepoEndpoint = Get-CARepositoryEndpoint -Domain:($AWSDomain) -Repository:($AWSRepo) -Region:($AWSRegion) -Format:('nuget')
+#         # Set Resource Repository
+#         Register-PSResourceRepository -Name:($RequiredModulesRepo) -URL:("$($AWSCARepoEndpoint)v3/index.json") -Trusted
+#     }
+# }
 If (-not [System.String]::IsNullOrEmpty($Psd1)) {
     # Install required modules
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
