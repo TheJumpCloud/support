@@ -9,7 +9,9 @@ on:
   pull_request:
     # Sequence of patterns matched against refs/heads
     branches:
-      - "JumpCloudModule_**"
+      - "master"
+  push:
+    branches: JumpCloudModule_**
 jobs:
   Check-Filepath-Changes:
     runs-on: ubuntu-latest
