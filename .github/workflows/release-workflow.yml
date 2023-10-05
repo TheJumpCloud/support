@@ -1,0 +1,15 @@
+name: Test on push master mockup
+on:
+  push:
+    paths:
+      - PowerShell/*
+    branches:
+      - SA-3607_GHA_CI_Workflow_GW
+
+jobs:
+  Hi:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Hello
+      run: |
+        echo Hi
