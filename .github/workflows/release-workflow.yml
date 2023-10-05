@@ -9,6 +9,7 @@ on:
 jobs:
   Hi:
     runs-on: ubuntu-latest
+    environment: PublishToPSGallery
     steps:
     - name: Hello
       run: |
