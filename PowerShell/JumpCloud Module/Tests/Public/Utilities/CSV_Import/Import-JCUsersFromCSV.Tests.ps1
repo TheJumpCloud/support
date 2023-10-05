@@ -1,6 +1,6 @@
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' -skip {
     #TODO: rework tests, dynamically populate groups/ system, else these tests fail
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Removes users Where-Object Email -like *pleasedelete* " {
         Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }

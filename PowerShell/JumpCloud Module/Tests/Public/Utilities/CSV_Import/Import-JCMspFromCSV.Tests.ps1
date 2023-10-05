@@ -1,12 +1,12 @@
 Describe -Tag:('MSP') 'Import-JCMSPFromCSV' {
 
     BeforeAll {
-        BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($env:XORGID_PesterMSP) -force | Out-Null }
+        BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($env:PESTER_ORGID) -force | Out-Null }
 
         # Validate MSP Test org is set to default:
-        $org = Get-JCSdkOrganization -id $env:XORGID_PesterMSP
+        $org = Get-JCSdkOrganization -id $env:PESTER_ORGID
         if (($org.Settings.Name -ne "PesterMSP") -And ($org.Settings.Name -ne "Updated PesterMSP")) {
-            Set-JcSdkOrganization -Id $env:XORGID_PesterMSP -Settings @{Name = "PesterMSP" }
+            Set-JcSdkOrganization -Id $env:PESTER_ORGID -Settings @{Name = "PesterMSP" }
         }
     }
     Context 'Organization Import' {

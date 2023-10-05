@@ -1,5 +1,4 @@
 Describe -Tag:('JCSystemGroupMember') 'Add-JCSystemGroupMember 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Adds a JumpCloud system to a JumpCloud system group by System Groupname and SystemID" {
 
         $SingleSystemGroupRemove = Remove-JCSystemGroupMember -SystemID $PesterParams_SystemLinux._id -GroupName $PesterParams_SystemGroup.Name

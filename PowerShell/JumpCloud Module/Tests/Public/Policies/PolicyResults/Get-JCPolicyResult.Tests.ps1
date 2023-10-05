@@ -1,5 +1,5 @@
 Describe -Tag:('JCPolicyResult') "Get-JCPolicyResult 1.10" {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Returns a policy result with the PolicyName" {
         $PolicyResult = Get-JCPolicyResult $PesterParams_SinglePolicy.Name
         $PolicyResult.count | Should -BeGreaterThan 0

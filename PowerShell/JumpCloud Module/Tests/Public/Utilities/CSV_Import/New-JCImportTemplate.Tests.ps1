@@ -1,5 +1,5 @@
 Describe -Tag:('JCUsersFromCSV') 'New-JCImportTemplate' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Forcefully creates a CSV Import Template" {
         New-JCImportTemplate -Force -Type "Import"
         $items = Get-ChildItem -Path $PWD | Where-Object { $_.FullName -Match "JCUserUpdateImport*" }

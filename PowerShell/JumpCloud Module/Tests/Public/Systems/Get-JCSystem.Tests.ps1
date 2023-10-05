@@ -1,5 +1,5 @@
 Describe -Tag:('JCSystem') 'Get-JCSystem 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Gets all JumpCloud systems" {
         $Systems = Get-JCSystem
         $Systems._id.Count | Should -BeGreaterThan 1

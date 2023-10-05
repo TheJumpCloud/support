@@ -1,6 +1,6 @@
 Describe -Tag:('JCBackupOrg') "Backup-JCOrganization" {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+
     }
     # Currently skipping this test, it's redundant
     It "Backs up JumpCloud Org without associations" {

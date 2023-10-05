@@ -1,5 +1,5 @@
 Describe -Tag:('JCSystemUser') 'Set-JCSystemUser 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Sets a standard user to an admin user using username" {
 
         Add-JCSystemUser -SystemID $PesterParams_SystemLinux._id -Username $PesterParams_User1.Username -Administrator $False #Sets to standard user

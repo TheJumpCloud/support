@@ -1,5 +1,4 @@
 Describe -Tag:('Parallel') "Get-JCResults Parallel" {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     BeforeEach {
         # Set global variable to run in parallel before each It block
         Set-JCSettingsFile -parallelOverride $false

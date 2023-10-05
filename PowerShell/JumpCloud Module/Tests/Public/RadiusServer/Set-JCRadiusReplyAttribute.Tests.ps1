@@ -1,5 +1,5 @@
 Describe -Tag:('JCRadiusReplyAttribute') "Set-JCRadiusReplyAttribute 1.9.0" {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Updates VLAN attributes on a group" {
 
         $NewGroup = New-JCUserGroup -GroupName $(New-RandomStringLower)

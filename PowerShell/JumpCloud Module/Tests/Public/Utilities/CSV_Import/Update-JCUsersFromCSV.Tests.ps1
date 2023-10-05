@@ -1,5 +1,5 @@
 Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Updates users from a CSV populated with telephony attributes" {
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -force

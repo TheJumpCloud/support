@@ -1,6 +1,6 @@
 Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+
         $RandomString = ( -join (( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
         $RandomEmail = '{0}@{1}.com' -f $RandomString, $RandomString
     }

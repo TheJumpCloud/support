@@ -1,5 +1,5 @@
 Describe -Tag:('JCSystem') 'Set-JCSystem 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Updates the DisplayName and then set it back" {
         $CurrentDisplayName = Get-JCSystem -SystemID $PesterParams_SystemLinux._id | Select-Object DisplayName
         $UpdatedSystem = Set-JCSystem -SystemID $PesterParams_SystemLinux._id -displayName 'NewName'

@@ -1,6 +1,6 @@
 Describe -Tag:('JCSystemGroupMember') 'Remove-JCSystemGroupMember 1.0' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+
         $System = Get-JCSystem -SystemID:($PesterParams_SystemLinux._id)
         $SystemGroup = If (-not (Get-JCGroup -Type:('System') | Where-Object { $_.name -eq $PesterParams_SystemGroup.Name })) {
             New-JCSystemGroup -GroupName:($PesterParams_SystemGroup.Name)

@@ -1,5 +1,4 @@
 Describe -Tag:('JCDeployment') "Invoke-JCDeployment 1.7.0" {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Invokes a JumpCloud command deployment with 2 systems" {
 
         $Invoke2 = Invoke-JCDeployment -CommandID $PesterParams_Command1.id -CSVFilePath $PesterParams_JCDeployment_2_CSV

@@ -1,5 +1,5 @@
 Describe -Tag:('MSP') 'New-JCMSPImportTemplate' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Forcefully creates a CSV Import Template" {
         New-JCMSPImportTemplate -Force -Type "Import"
         $items = Get-ChildItem -Path $PWD | Where-Object { $_.FullName -Match "JCMSPImport*" }

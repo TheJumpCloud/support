@@ -1,5 +1,5 @@
 Describe -Tag:('JCPolicy') 'Get-JCPolicy 1.10' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It "Returns a single JumpCloud Policy declaring -PolicyId" {
         $SingleResult = Get-JCPolicy -PolicyId:($PesterParams_SinglePolicy.id)
         $SingleResult.id.Count | Should -Be $PesterParams_SinglePolicyList.Count

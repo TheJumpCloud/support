@@ -1,6 +1,6 @@
 Describe -Tag:('JCUserGroupMember') 'Add-JCUserGroupMember 1.0' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+
     }
     It "Adds a JumpCloud user to a JumpCloud user group by User GroupName and Username" {
 

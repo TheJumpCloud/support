@@ -1,5 +1,4 @@
 Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     It "Gets all JumpCloud commands" {
         $AllCommands = Get-JCCommand
         $AllCommands._id.Count | Should -BeGreaterThan 1
@@ -38,7 +37,6 @@ Describe -Tag:('JCCommand') 'Get-JCCommand 1.0' {
 
 Describe -Tag('JCCommand') 'Get-JCCommand Search' {
     BeforeAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
         # Get Command3 because it does not contain a wildcard
         $PesterParams_Command3 = Get-JCCommand -CommandID:($PesterParams_Command3.Id)
     }

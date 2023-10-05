@@ -1,5 +1,5 @@
 Describe -Tag:('JCPolicy') 'Remove-JCPolicy 1.10' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
     It 'Remove Policy by PolicyID' {
         # Create test policy for removal
         $policyTemplates = Get-JcSdkPolicyTemplate

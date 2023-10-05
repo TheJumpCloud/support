@@ -1,5 +1,5 @@
 Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
+    BeforeAll {  }
 
     It "Remove-JCUser 1.0" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser

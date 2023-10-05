@@ -4,6 +4,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
 )
 Try {
+    Write-Host "Begin: SetupOrg"
+    $stopwatch = [system.diagnostics.stopwatch]::StartNew()
     # Import JC Module
     Import-Module "$PSScriptRoot/../JumpCloud.psd1"
     # Authenticate to JumpCloud
@@ -152,6 +154,9 @@ Try {
             Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
         }
     }
+    Write-Host "End: SetupOrg"
+    $stopwatch.Stop()
+    Write-Host "SetupOrg Elapsed: $($stopwatch.Elapsed)"
 } Catch {
     Write-Error ($_.Exception)
     Write-Error ($_.FullyQualifiedErrorId)

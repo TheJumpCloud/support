@@ -1,7 +1,7 @@
 Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     BeforeAll {
         . "$($PSSCRIPTROOT)/../../..//Private/Policies/Get-JCPolicyTemplateConfigField.ps1"
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
         $policyTemplates = Get-JcSdkPolicyTemplate
