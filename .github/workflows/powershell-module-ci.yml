@@ -23,3 +23,9 @@ jobs:
       - name: Filter
         if: ${{contains(github.base_ref, 'PowerShellModule_**')}}
         run: exit 0
+  Next-Step:
+    needs: FIlter-Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World
+        run: echo "hello"
