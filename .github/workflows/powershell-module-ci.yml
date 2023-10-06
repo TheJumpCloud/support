@@ -32,7 +32,7 @@ jobs:
       - name: pwsh refs
         shell: pwsh
         run: |
-          $x = ${{ toJson(github.event.pull_request.labels.*.name) }}
+          $x = $(${{ toJson(github.event.pull_request.labels.*.name) }})
           write-host $x
   Filter-Branch:
     runs-on: ubuntu-latest
