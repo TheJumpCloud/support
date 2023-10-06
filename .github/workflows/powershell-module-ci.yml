@@ -14,18 +14,16 @@ on:
       - "PowerShell/Deploy/**"
       - "PowerShell/JumpCloud Module/**"
       - "PowerShell/ModuleChangelog.md"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   Filter-Branch:
     runs-on: ubuntu-latest
+    if: ${{contains(github.head_ref, 'JumpCloudModule_**')}}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Filter PowerShell
-        if: ${{contains(github.ref, 'JumpCloudModule_**')}}
-        run: exit 0
-      - name: Filter Non-PowerShell
-        if: ${{!contains(github.ref, 'JumpCloudModule_**')}}
-        run: exit 1
+      - run: echo "The head of this PR starts with 'JumpCloudModule_'"
+
   Next-Step:
     needs: Filter-Branch
     runs-on: ubuntu-latest
