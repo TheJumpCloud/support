@@ -30,7 +30,7 @@ jobs:
           echo github.ref_name ${{ github.ref_name }}
   Filter-Branch:
     runs-on: ubuntu-latest
-    if: ${{contains(github.ref, 'JumpCloudModule_**')}}
+    if: ${{contains(github.head_ref, 'JumpCloudModule_**')}}
     steps:
       - run: echo "The head of this PR starts with 'JumpCloudModule_'"
 
