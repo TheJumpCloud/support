@@ -1,0 +1,25 @@
+name: PowerShell Module CI
+
+env:
+  # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
+  RELEASE_TYPE: "patch"
+  # override version boolean. If specified, valid vlaues are 'true' or 'false'
+  OVERRIDE_VERSION: "false"
+on:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - "master"
+    paths:
+      - "PowerShell/Deploy/**"
+      - "PowerShell/JumpCloud Module/**"
+      - "PowerShell/ModuleChangelog.md"
+jobs:
+  Filter-Branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Filter
+        if: ${{contains(github.base_ref, 'PowerShellModule_**')}}
+        run: exit 0
