@@ -29,7 +29,8 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-          echo ${{ github.event.pull_request.labels.name }}
+          x=${{ toJson(github.event.pull_request.labels.*.name) }}
+          echo $x
   Filter-Branch:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
