@@ -11,9 +11,9 @@ on:
     branches:
       - "master"
     paths:
-      - "/PowerShell/Deploy/**"
-      - "/PowerShell/JumpCloud Module/**"
-      - "/PowerShell/ModuleChangelog.md"
+      - "PowerShell/Deploy/**"
+      - "PowerShell/JumpCloud Module/**"
+      - "PowerShell/ModuleChangelog.md"
 jobs:
   Filter-Branch:
     runs-on: ubuntu-latest
