@@ -35,7 +35,7 @@ jobs:
         shell: pwsh
         run: |
           $split_labels = $env:PR_LABEL_LIST.split(" ")
-          foreach ($label in $env:split_labels) {
+          foreach ($label in $split_labels) {
             Write-Host "determining version from: $label"
             switch ($label) {
               ('minor') {
@@ -59,7 +59,7 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-          echo $env:RELEASE_TYPE
+          echo $RELEASE_TYPE
 
   Filter-Branch:
     runs-on: ubuntu-latest
