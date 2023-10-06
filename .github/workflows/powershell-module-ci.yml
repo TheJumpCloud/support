@@ -20,11 +20,14 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Filter
+      - name: Filter PowerShell
         if: ${{contains(github.base_ref, 'PowerShellModule_**')}}
         run: exit 0
+      - name: Filter Non-PowerShell
+        if: ${{!contains(github.base_ref, 'PowerShellModule_**')}}
+        run: exit 1
   Next-Step:
-    needs: FIlter-Branch
+    needs: Filter-Branch
     runs-on: ubuntu-latest
     steps:
       - name: Hello World
