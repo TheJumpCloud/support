@@ -24,17 +24,17 @@ jobs:
       - name: Check PR Labels
         id: label-check
         run: |
-          PR_Labels=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues${{ github.event.pull_request.number }}/labels | jq -r '.[].name')
+          PR_Labels=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
           echo "::set-output name=labels::$PR_Labels"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: set env variables
         run: |
-          if [[ "${{steps.label-check.output.labels }}"  == *"major"* ]];then
+          if [[ "${{steps.label-check.output.labels }}" == *"major"* ]];then
             echo "Setting ENV_LABEL=major"
             echo "ENV_LABEL=$(echo 'major')" >> $env:GITHUB_ENV
-          elif [[ "${{steps.label-check.output.labels }}"  == *"minor"* ]];then
+          elif [[ "${{steps.label-check.output.labels }}" == *"minor"* ]];then
             echo "Setting ENV_LABEL=minor"
             echo "ENV_LABEL=$(echo 'minor')" >> $env:GITHUB_ENV
           fi
