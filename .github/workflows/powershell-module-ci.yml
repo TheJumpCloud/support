@@ -18,22 +18,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  Set-Label-Var:
-    if: ${{ github.event.pull_request.label.name == 'minor' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set Minor Verison
-        run: echo "RELEASE_TYPE=minor" >> $GITHUB_ENV
-    # if: ${{ github.event.pull_request.label.name == 'major' }}
-    # runs-on: ubuntu-latest
-    # steps:
-    #   - name: Set Major Verison
-    #     run: echo "RELEASE_TYPE=major" >> $GITHUB_ENV
-    # if: ${{ github.event.pull_request.label.name == 'patch' }}
-    # runs-on: ubuntu-latest
-    # steps:
-    #   - name: Set Patch Verison
-    #     run: echo "RELEASE_TYPE=patch" >> $GITHUB_ENV
   Display-Vars:
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +28,14 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-          echo $RELEASE_TYPE
+      - name: pwsh vars
+        shell: pwsh
+        run: |
+          echo "GITHUB_SHA_SHORT=$(echo ${{ github.event.pull_request.labels.name }})" >> $env:GITHUB_ENV
+      - name: pwsh vars
+        shell: pwsh
+        run: |
+          write-host $env:GITHUB_SHA_SHORT
   Filter-Branch:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
