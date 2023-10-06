@@ -34,24 +34,23 @@ jobs:
       - name: set env variables
         shell: pwsh
         run: |
-          foreach ($label in $env:PR_LABEL_LIST) {
-              Write-Host $label
-              switch ($label) {
-                  ('minor') {
-                      write-host "release type is minor"
-                      echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
-                  }
-                  ('major') {
-                      write-host "release type is major"
-                      echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
-                  }
-                  ('patch') {
-                      write-host "release type is patch"
-                      echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
-                  }
-                  Default {
-                  }
+          $split_labels = $env:PR_LABEL_LIST.split(" ")
+          foreach ($label in $env:split_labels) {
+            Write-Host "determining version from: $label"
+            switch ($label) {
+              ('minor') {
+                write-host "release type is minor"
+                echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
               }
+              ('major') {
+                write-host "release type is major"
+                echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
+              }
+              ('patch') {
+                write-host "release type is patch"
+                echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
+              }
+            }
           }
       - name: show the refs
         shell: bash
@@ -60,7 +59,7 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-          echo $RELEASE_TYPE
+          echo $env:RELEASE_TYPE
 
   Filter-Branch:
     runs-on: ubuntu-latest
