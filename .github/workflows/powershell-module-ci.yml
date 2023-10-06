@@ -2,7 +2,7 @@ name: PowerShell Module CI
 
 env:
   # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
-  RELEASE_TYPE: "patch"
+  RELEASE_TYPE: ${{ github.event.pull_request.labels.name == 'minor' }}
   # override version boolean. If specified, valid vlaues are 'true' or 'false'
   OVERRIDE_VERSION: "false"
 on:
@@ -14,6 +14,7 @@ on:
       - "PowerShell/Deploy/**"
       - "PowerShell/JumpCloud Module/**"
       - "PowerShell/ModuleChangelog.md"
+    types: [opened, synchronize, reopened, labeled]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -28,11 +29,12 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
+          echo ${{ github.event.pull_request.labels.name }}
   Filter-Branch:
     runs-on: ubuntu-latest
-    if: ${{contains(github.head_ref, 'JumpCloudModule_SA-[0-9]+')}}
+    if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
     steps:
-      - run: echo "The head of this PR starts with 'JumpCloudModule_'"
+      - run: echo "Building JumpCloud Module Event 'JumpCloudModule_'"
 
   Next-Step:
     needs: Filter-Branch
