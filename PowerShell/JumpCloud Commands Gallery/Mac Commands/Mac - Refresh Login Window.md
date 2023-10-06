@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Refresh Login Window  |  v1.0 JCCG
+Mac - Refresh Login Window  12345 |  v1.0 JCCG
 
 #### commandType
 
