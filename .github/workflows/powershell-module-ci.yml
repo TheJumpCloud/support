@@ -22,22 +22,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR Labels
-        id: label-check
+        id: label-check-pwsh
+        shell: pwsh
         run: |
-          PR_Labels=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
-          echo "::set-output name=labels::$PR_Labels"
+          $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
+          echo "PR_LABEL_LIST=$PR_LABEL_LIST" >> $env:GITHUB_ENV
+          write-host $PR_LABEL_LIST
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: set env variables
+        shell: pwsh
         run: |
-          if [[ "${{steps.label-check.output.labels }}" == *"major"* ]];then
-            echo "Setting ENV_LABEL=major"
-            echo "ENV_LABEL=$(echo 'major')" >> $env:GITHUB_ENV
-          elif [[ "${{steps.label-check.output.labels }}" == *"minor"* ]];then
-            echo "Setting ENV_LABEL=minor"
-            echo "ENV_LABEL=$(echo 'minor')" >> $env:GITHUB_ENV
-          fi
+          foreach ($label in $env:PR_LABEL_LIST) {
+              Write-Host $label
+              switch ($label) {
+                  ('minor') {
+                      write-host "release type is minor"
+                      echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
+                  }
+                  ('major') {
+                      write-host "release type is major"
+                      echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
+                  }
+                  ('patch') {
+                      write-host "release type is patch"
+                      echo "RELEASE_TYPE=$label" >> $env:GITHUB_ENV
+                  }
+                  Default {
+                  }
+              }
+          }
       - name: show the refs
         shell: bash
         run: |
@@ -45,7 +60,7 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-          echo $ENV_LABEL
+          echo $RELEASE_TYPE
 
   Filter-Branch:
     runs-on: ubuntu-latest
