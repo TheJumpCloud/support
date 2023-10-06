@@ -28,10 +28,9 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-      - name: pwsh vars
-        shell: pwsh
-        run: |
-          echo "GITHUB_SHA_SHORT=$(echo ${{ github.event.pull_request.labels.*.name }})" >> $env:GITHUB_ENV
+          if [[${${{ github.event.pull_request.labels.*.name }})[@]} =~ 'minor' ]]; then
+            echo "GITHUB_SHA_SHORT=$(echo 'minor'" >> $env:GITHUB_ENV
+          fi
       - name: pwsh vars
         shell: pwsh
         run: |
