@@ -31,7 +31,7 @@ jobs:
       - name: pwsh vars
         shell: pwsh
         run: |
-          echo "GITHUB_SHA_SHORT=$(echo ${{ github.event.pull_request.labels.name }})" >> $env:GITHUB_ENV
+          echo "GITHUB_SHA_SHORT=$(echo ${{ github.event.pull_request.labels.*.name }})" >> $env:GITHUB_ENV
       - name: pwsh vars
         shell: pwsh
         run: |
