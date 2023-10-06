@@ -168,7 +168,7 @@ Try {
         }
     }
     $stopwatch.Stop()
-    Write-Host "SetupOrg took $($stopwatch.Elapsed) to complete!"
+    Write-Host "[Status] SetupOrg took $($stopwatch.Elapsed) to complete!"
 } Catch {
     Write-Error ($_.Exception)
     Write-Error ($_.FullyQualifiedErrorId)
