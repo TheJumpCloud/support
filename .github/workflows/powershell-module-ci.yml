@@ -20,7 +20,7 @@ concurrency:
 jobs:
   Filter-Branch:
     runs-on: ubuntu-latest
-    if: ${{contains(github.head_ref, 'JumpCloudModule_**')}}
+    if: ${{contains(github.ref, 'JumpCloudModule_**')}}
     steps:
       - run: echo "The head of this PR starts with 'JumpCloudModule_'"
 
