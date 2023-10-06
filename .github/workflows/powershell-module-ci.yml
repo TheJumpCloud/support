@@ -21,6 +21,23 @@ jobs:
   Display-Vars:
     runs-on: ubuntu-latest
     steps:
+      - name: Check PR Labels
+        id: label-check
+        run: |
+          PR_Labels=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues${{ github.event.pull_request.number }}/labels | jq -r '.[].name')
+          echo "::set-output name=labels::$PR_Labels"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: set env variables
+        run: |
+          if [[ "${{steps.label-check.output.labels }}"  == *"major"* ]];then
+            echo "Setting ENV_LABEL=major"
+            echo "ENV_LABEL=$(echo 'major')" >> $env:GITHUB_ENV
+          elif [[ "${{steps.label-check.output.labels }}"  == *"minor"* ]];then
+            echo "Setting ENV_LABEL=minor"
+            echo "ENV_LABEL=$(echo 'minor')" >> $env:GITHUB_ENV
+          fi
       - name: show the refs
         shell: bash
         run: |
@@ -28,13 +45,8 @@ jobs:
           echo github.head_ref ${{ github.head_ref }}
           echo github.ref ${{ github.ref }}
           echo github.ref_name ${{ github.ref_name }}
-          if [[${${{ github.event.pull_request.labels.*.name }})[@]} =~ 'minor' ]]; then
-            echo "GITHUB_SHA_SHORT=$(echo 'minor')" >> $env:GITHUB_ENV
-          fi
-      - name: pwsh vars
-        shell: pwsh
-        run: |
-          write-host $env:GITHUB_SHA_SHORT
+          echo $ENV_LABEL
+
   Filter-Branch:
     runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
