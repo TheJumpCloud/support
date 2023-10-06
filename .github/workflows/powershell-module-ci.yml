@@ -3,6 +3,10 @@ on:
   pull_request:
     branches:
       - 'JumpCloudModule_**'
+    paths:
+      - "PowerShell/Deploy/**"
+      - "PowerShell/JumpCloud Module/**"
+      - "PowerShell/ModuleChangelog.md"
 jobs:
   check-changes:
     runs-on: ubuntu-latest
