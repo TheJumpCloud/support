@@ -60,7 +60,7 @@ jobs:
         run: |
           # validate release type variables
           $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
-          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
+          $RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
   Validate-Module:
     needs: Setup-Build-Dependancies
     runs-on: ubuntu-latest
