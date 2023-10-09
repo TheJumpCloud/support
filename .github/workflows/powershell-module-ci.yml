@@ -30,12 +30,10 @@ jobs:
           $types = @('major', 'minor', 'patch')
           $typeCount = 0
           foreach ($item in $PR_LABEL_LIST) {
-              if (condition) {
-                  ($item -in $types) {
-                      write-host "$item"
-                      $typeCount += 1
-                      $RELEASE_TYPE = $item
-                  }
+              if ($item -in $types) {
+                  write-host "$item"
+                  $typeCount += 1
+                  $RELEASE_TYPE = $item
               }
           }
 
