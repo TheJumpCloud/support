@@ -14,6 +14,7 @@ on:
       - "PowerShell/Deploy/**"
       - "PowerShell/JumpCloud Module/**"
       - "PowerShell/ModuleChangelog.md"
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 jobs:
   Check-PR-Labels:
     runs-on: ubuntu-latest
