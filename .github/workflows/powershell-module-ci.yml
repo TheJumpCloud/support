@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR Version Labels
+        id: init-vars
         shell: pwsh
         run: |
           $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
@@ -38,7 +39,7 @@ jobs:
           }
 
           if ($typeCount -eq 1) {
-              echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_ENV
+              echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_OUTPUT
           } else {
               throw "Multiple or invalid release types were found on PR"
               exit 1
@@ -58,6 +59,7 @@ jobs:
     steps:
       - shell: pwsh
         run: |
+          $RELEASE_TYPE = echo "${{ steps.init-vars.outputs.RELEASE_TYPE }}"
           # validate release type variables
           $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
           $RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
@@ -76,6 +78,7 @@ jobs:
           key: PS-Dependancies
       - shell: pwsh
         run: |
+          $RELEASE_TYPE = echo "${{ steps.init-vars.outputs.RELEASE_TYPE }}"
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Validate-Module"]
