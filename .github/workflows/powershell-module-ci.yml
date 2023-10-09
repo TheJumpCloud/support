@@ -100,7 +100,6 @@ jobs:
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule", "JCAssociation" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
-    if: ${{ always() }}
   Test-Module-MSP:
     needs: ["Test-Module"]
     runs-on: ubuntu-latest
