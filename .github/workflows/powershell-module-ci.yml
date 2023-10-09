@@ -19,9 +19,10 @@ jobs:
   Check-PR-Labels:
     runs-on: ubuntu-latest
     outputs:
-      RELEASE_TYPE: ${{ steps.Validate-PR-Version-Labels.outputs.RELEASE_TYPE }}
+      RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
     steps:
       - name: Validate-PR-Version-Labels
+        id: validate
         shell: pwsh
         run: |
           $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
@@ -66,7 +67,7 @@ jobs:
           $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
           $RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
   Validate-Module:
-    needs: Setup-Build-Dependancies
+    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
