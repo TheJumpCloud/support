@@ -21,7 +21,7 @@ jobs:
     outputs:
       RELEASE_TYPE: ${{ steps.Validate-PR-Version-Labels.outputs.RELEASE_TYPE }}
     steps:
-      - name: Validate PR Version Labels
+      - name: Validate-PR-Version-Labels
         shell: pwsh
         run: |
           $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
