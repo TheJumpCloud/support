@@ -2,7 +2,7 @@ name: PowerShell Module CI
 
 env:
   # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
-  RELEASE_TYPE: "patch"
+  # RELEASE_TYPE: "patch"
   # override version boolean. If specified, valid vlaues are 'true' or 'false'
   OVERRIDE_VERSION: "false"
 on:
@@ -15,52 +15,45 @@ on:
       - "PowerShell/JumpCloud Module/**"
       - "PowerShell/ModuleChangelog.md"
 jobs:
-  Filter-Branch:
+  Check-PR-Labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Filter
-        if: ${{contains(github.base_ref, 'PowerShellModule_**')}}
-        run: exit 0
+      - name: Validate PR Version Labels
+        shell: pwsh
+        run: |
+          $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
+          # echo "PR_LABEL_LIST=$PR_LABEL_LIST" >> $env:GITHUB_ENV
+          # write-host $PR_LABEL_LIST
+          if ("PowerShell Module" -in $PR_LABEL_LIST){
+            write-host "Starting Build for PowerShell Module Release
+          }
+          # validate type from label list:
+          $types = @('major', 'minor', 'patch')
+          $typeCount = 0
+          foreach ($item in $PR_LABEL_LIST) {
+            if ($item -in $types) {
+              write-host $item
+              $typeCount += 1
+              $RELEASE_TYPE = $item
+            }
+          }
+          if ($typeCount -eq 1){
+            echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_ENV
+          } else {
+            throw "Multiple release types were found on PR"
+            exit 1
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Check-Filepath-Changes:
-  #   needs: Filter-Branch
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v4
-  #     - name: Check Changes in Directory
-  #       shell: pwsh
-  #       run: |
-  #         # Define List of PWSH directories:
-  #         $list = @(
-  #           "/PowerShell/Deploy/",
-  #           "/PowerShell/JumpCloud Module/",
-  #           "/PowerShell/ModuleChangelog.md"
-  #         )
-  #         # Loop through each file in the list then do git diff
-  #         $difCount = 0 # Diff Counter
-  #         git fetch origin $env:GITHUB_BASE_REF
-  #         $gitDiff = git diff origin/$env:GITHUB_BASE_REF..HEAD . ':!.github/workflows/powershell-module-ci.yml'
-  #         foreach ($path in $list) {
-  #             # Check if the path exists in the Git diff
-  #             if ($gitDiff -match [regex]::Escape($path)) {
-  #                 Write-Host "Path found in Git diff: $path"
-  #                 $difCount++
-  #             }
-  #         }
-  #         $gitdiff
-  #         # If difcount = 0 then no changes were made to the files in the list, throw exit 1
-  #         if ($difCount -eq 0) {
-  #             Write-Host "No changes were made to the files in the list, exiting with code 1"
-  #             exit 1
-  #         } else {
-  #             Write-Host "Changes were made to the files in the list"
-  #             exit 0
-  #         }
+  Filter-Branch:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
+    steps:
+      - run: echo "Building JumpCloud Module Event 'JumpCloudModule_'"
+
   Validate-Env-Variables:
-    needs: Filter-Branch
+    needs: ["Filter-Branch", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     steps:
       - shell: pwsh
@@ -130,7 +123,7 @@ jobs:
     needs: [Test-Module]
 
   Setup-Build-Dependancies:
-    needs: Filter-Branch
+    needs: ["Filter-Branch", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
