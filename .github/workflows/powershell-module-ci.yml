@@ -38,9 +38,9 @@ jobs:
           }
 
           if ($typeCount -eq 1) {
-              # echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_ENV
+              echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_ENV
           } else {
-              throw "Multiple release types were found on PR"
+              throw "Multiple or invalid release types were found on PR"
               exit 1
           }
         env:
