@@ -23,7 +23,7 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
         $module.Version | should -BeGreaterThan $latestModule.version
         # GHA Env Variables
         if (-Not $env:OVERRIDE_VERSION) {
-            switch ($RELEASE_TYPE) {
+            switch ($env:RELEASE_TYPE) {
                 'major' {
                     $module.Version.Major | Should -Be (([version]$latestModule.Version).Major + 1)
                 }
