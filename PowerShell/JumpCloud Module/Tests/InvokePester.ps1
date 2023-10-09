@@ -55,8 +55,8 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
     # Load SetupOrg
     if ("MSP" -in $IncludeTags) {
         Write-Host ('[status]MSP Tests setting API Key, OrgID')
-        $env:JCApiKey = $JumpCloudApiKeyMsp
-        $env:JCOrgId = $JumpCloudMspOrg
+        $env:JCApiKey = $env:PESTER_MSP_APIKEY
+        $env:JCOrgId = $env:PESTER_ORGID
         $env:JCProviderID = $env:PESTER_PROVIDER_ID
         # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
     } else {

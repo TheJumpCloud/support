@@ -1,14 +1,14 @@
 Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
 
     BeforeAll {
-        BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($env:XORGID_PesterMSP) -force | Out-Null }
+        BeforeAll { Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force | Out-Null }
 
         # Validate MSP Test org is set to default:
         $updatedOrgName = 'Updated PesterMSP'
         $defaultOrgName = 'PesterMSP'
-        $org = Get-JCSdkOrganization -id $env:XORGID_PesterMSP
+        $org = Get-JCSdkOrganization -id $env:PESTER_ORGID
         if (($org.Settings.Name -ne $defaultOrgName) -And ($org.Settings.Name -eq $updatedOrgName)) {
-            Set-JcSdkOrganization -Id $env:XORGID_PesterMSP -Settings @{Name = $defaultOrgName }
+            Set-JcSdkOrganization -Id $env:PESTER_ORGID -Settings @{Name = $defaultOrgName }
             Write-Host "resetting org name"
         }
     }
