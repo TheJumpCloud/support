@@ -22,26 +22,27 @@ jobs:
         shell: pwsh
         run: |
           $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
-          # echo "PR_LABEL_LIST=$PR_LABEL_LIST" >> $env:GITHUB_ENV
-          # write-host $PR_LABEL_LIST
-          if ("PowerShell Module" -in $PR_LABEL_LIST){
-            write-host "Starting Build for PowerShell Module Release
+          if ("PowerShell Module" -in $PR_LABEL_LIST) {
+              write-host "Starting Build for PowerShell Module Release"
           }
           # validate type from label list:
           $types = @('major', 'minor', 'patch')
           $typeCount = 0
           foreach ($item in $PR_LABEL_LIST) {
-            if ($item -in $types) {
-              write-host $item
-              $typeCount += 1
-              $RELEASE_TYPE = $item
-            }
+              if (condition) {
+                  ($item -in $types) {
+                      write-host "$item"
+                      $typeCount += 1
+                      $RELEASE_TYPE = $item
+                  }
+              }
           }
-          if ($typeCount -eq 1){
-            echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_ENV
+
+          if ($typeCount -eq 1) {
+              # echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_ENV
           } else {
-            throw "Multiple release types were found on PR"
-            exit 1
+              throw "Multiple release types were found on PR"
+              exit 1
           }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,7 +79,7 @@ jobs:
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
   Test-Module:
-    needs: [Setup-Build-Dependancies, Validate-Module]
+    needs: ["Setup-Build-Dependancies", "Validate-Module"]
     runs-on: ubuntu-latest
     timeout-minutes: 75
     name: Run Pester Tests and Upload Results
@@ -101,6 +102,7 @@ jobs:
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule", "JCAssociation" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
     if: ${{ always() }}
   Test-Module-MSP:
+    needs: ["Test-Module"]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -120,10 +122,9 @@ jobs:
           PESTER_PROVIDER_ID: ${{ secrets.PESTER_PROVIDER_ID }}
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "None" -IncludeTagList "MSP" -RequiredModulesRepo "PSGallery"
-    needs: [Test-Module]
 
   Setup-Build-Dependancies:
-    needs: ["Filter-Branch", "Check-PR-Labels"]
+    needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
