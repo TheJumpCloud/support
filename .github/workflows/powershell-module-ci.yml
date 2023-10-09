@@ -15,8 +15,12 @@ on:
       - "PowerShell/JumpCloud Module/**"
       - "PowerShell/ModuleChangelog.md"
     types: [opened, synchronize, reopened, labeled, unlabeled]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   Check-PR-Labels:
+    needs: ["Filter-Branch"]
     runs-on: ubuntu-latest
     outputs:
       RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
