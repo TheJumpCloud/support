@@ -30,7 +30,6 @@ def test_diff():
     print(cmd_filepath)
     repo = git.Repo(rootPath)
     # Get current origin branch
-    currentBranch = repo.active_branch.name
     # Do diff between remote and current branch
     diff = repo.git.diff(cmd_filepath)
 
