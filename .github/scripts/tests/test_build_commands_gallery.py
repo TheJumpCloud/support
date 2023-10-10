@@ -1,6 +1,5 @@
 from ..build_commands_gallery import parse_commands_to_json, set_links, validate_commands_galleryMD
 import subprocess
-import os
 
 
 def test_script_functions():
@@ -14,8 +13,7 @@ def test_script_functions():
 #subprocess.check_output(['git', 'diff', '--name-only', currentBranch + '..' + master])
 def test_diff():
     try:
-        global diff_output
-        diff_output = subprocess.check_output(['git', 'diff', 'origin/master'], universal_newlines=True, stderr=subprocess.STDOUT)
+        diff_output = subprocess.check_output(['git', 'diff', 'master'], universal_newlines=True, stderr=subprocess.STDOUT)
 
     except subprocess.CalledProcessError as e:
         print("Exception on process, rc=", e.returncode, "output=", e.output)
