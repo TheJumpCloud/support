@@ -1,6 +1,6 @@
 from ..build_commands_gallery import parse_commands_to_json, set_links, validate_commands_galleryMD
 import subprocess
-
+import os
 
 
 def test_script_functions():
