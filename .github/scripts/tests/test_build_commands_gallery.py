@@ -1,23 +1,46 @@
-import subprocess
+import json
 import os
+# import git
+import re
+#from git
+from tempfile import TemporaryDirectory
+#Import the functions from the script
+from ..build_commands_gallery import parse_commands_to_json, set_links, validate_commands_galleryMD
+import subprocess
+#import pytest
 
-def test_generate_json_and_git_diff():
-    # Step 2: Run the Python script to generate the .json file
-    subprocess.run(["python", "your_script.py"])
 
-    # Step 3: Add and commit changes
-    subprocess.run(["git", "add", "."])
-    subprocess.run(["git", "commit", "-m", "Generated .json file"])
 
-    # Step 4: Switch to the master branch
-    subprocess.run(["git", "checkout", "master"])
+# Pull master then do pytest difference
+def test_script_functions():
+    # You can use temporary directories and files for testing if needed.
+    # For simplicity, we'll just use the current directory for this example.
 
-    # Step 5: Pull the latest changes from the master branch
-    subprocess.run(["git", "pull", "origin", "master"])
+    # Capture the standard output to check for exceptions.
+    try:
+        parse_commands_to_json()
+        set_links()
+        validate_commands_galleryMD()
+    except Exception as e:
+        assert False, f"An exception occurred: {e}"
 
-    # Step 6: Run git diff to compare
-    diff_output = subprocess.check_output(["git", "diff", "master"])
-    assert diff_output == b'', "There are differences between branches"
+#subprocess.check_output(['git', 'diff', '--name-only', currentBranch + '..' + master])
+def test_diff():
 
-if __name__ == "__main__":
-    test_generate_json_and_git_diff()
+    # git_diff_output = subprocess.check_output(['git', 'diff', 'master'], universal_newlines=True)
+    # grep_output = subprocess.check_output(['grep', 'b/PowerShell/JumpCloud Commands Gallery/commands.json'], input=git_diff_output, universal_newlines=True)
+    # # Print the grep output
+    # print(grep_output)
+    # # Do assertions on the grep_output has to have b/PowerShell/JumpCloud Commands Gallery/commands.json
+    # assert grep_output == 'b/PowerShell/JumpCloud Commands Gallery/commands.json\n'
+    # Run the git diff command
+    git_diff_output = subprocess.check_output(['git', 'diff', 'master'], universal_newlines=True)
+
+    # Check if the expected lines are present in the output
+    expected_lines = [
+        "diff --git a/PowerShell/JumpCloud Commands Gallery/commands.json b/PowerShell/JumpCloud Commands Gallery/commands.json",
+        "+++ b/PowerShell/JumpCloud Commands Gallery/commands.json"
+    ]
+
+    for line in expected_lines:
+        assert line in git_diff_output
