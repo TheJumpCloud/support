@@ -28,12 +28,11 @@ def test_diff():
     rootPath = dirname(dirname(dirname(scriptPath)))
     print(rootPath)
     repo = git.Repo(rootPath)
-    diff = repo.git.diff('origin/master')
-    #Check if the expected lines are present in the output
-    expected_lines = [
-        "diff --git a/PowerShell/JumpCloud Commands Gallery/commands.json b/PowerShell/JumpCloud Commands Gallery/commands.json",
-        "+++ b/PowerShell/JumpCloud Commands Gallery/commands.json"
-    ]
-    print (diff)
-    for line in expected_lines:
-        assert line in diff
+    # Get current origin branch
+    currentBranch = repo.active_branch.name
+    # Do diff between remote and current branch
+    diff = repo.git.diff('origin/' + currentBranch)
+
+
+
+    assert '' == diff, "Changes detected in commands gallery. Please run `python .github/scripts/build_commands_gallery.py` locally and commit the changes."
