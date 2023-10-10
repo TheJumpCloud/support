@@ -13,16 +13,18 @@ def test_script_functions():
 
 #subprocess.check_output(['git', 'diff', '--name-only', currentBranch + '..' + master])
 def test_diff():
-    # try:
-    #    #b#ase_ref = os.environ.get('master')
+    try:
+        base_ref = os.environ.get('github.base.ref')
+        head_ref = os.environ.get('github.head_ref')
 
-    #     #print(base_ref)
-    #     diff_output = subprocess.check_output(['git', 'diff', 'master'], universal_newlines=True, stderr=subprocess.STDOUT)
+        print(base_ref)
+        print(head_ref)
+        diff = subprocess.check_output(['git', 'diff', 'master'], universal_newlines=True, stderr=subprocess.STDOUT)
 
-    # except subprocess.CalledProcessError as e:
-    #     print("Exception on process, rc=", e.returncode, "output=", e.output)
-    repo = git.Repo('./')
-    diff = repo.git.diff('${{ github.base.ref }}, ${{ github.head_ref }}')
+    except subprocess.CalledProcessError as e:
+        print("Exception on process, rc=", e.returncode, "output=", e.output)
+    # repo = git.Repo('./')
+    # diff = repo.git.diff('${{ github.base.ref }}, ${{ github.head_ref }}')
     #Check if the expected lines are present in the output
     expected_lines = [
         "diff --git a/PowerShell/JumpCloud Commands Gallery/commands.json b/PowerShell/JumpCloud Commands Gallery/commands.json",
