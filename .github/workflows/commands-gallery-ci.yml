@@ -45,5 +45,7 @@ jobs:
               uses: actions/setup-python@v4
               with:
                 python-version: 3.9
+            - name: Install dependencies
+              run: pip install -r requirements.txt
             - name: Run Python Test
               run: pytest .github/scripts/tests/test_build_commands_gallery.py
