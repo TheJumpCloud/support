@@ -58,6 +58,9 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
         $env:JCApiKey = $env:PESTER_MSP_APIKEY
         $env:JCOrgId = $env:PESTER_ORGID
         $env:JCProviderID = $env:PESTER_PROVIDER_ID
+        # force import module
+        Import-Module $FilePath_psd1 -Force
+        BeforeAll { Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force | Out-Null }
         # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
     } else {
         Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")

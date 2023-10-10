@@ -1,5 +1,4 @@
 Describe -Tag:('MSP') 'New-JCMSPImportTemplate' {
-    BeforeAll {  }
     It "Forcefully creates a CSV Import Template" {
         New-JCMSPImportTemplate -Force -Type "Import"
         $items = Get-ChildItem -Path $PWD | Where-Object { $_.FullName -Match "JCMSPImport*" }

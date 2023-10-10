@@ -1,8 +1,6 @@
 Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
 
     BeforeAll {
-        BeforeAll { Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force | Out-Null }
-
         # Validate MSP Test org is set to default:
         $updatedOrgName = 'Updated PesterMSP'
         $defaultOrgName = 'PesterMSP'
