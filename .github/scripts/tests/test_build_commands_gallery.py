@@ -1,5 +1,4 @@
 from ..build_commands_gallery import parse_commands_to_json, set_links, validate_commands_galleryMD
-import subprocess
 import os
 import git
 from os.path import dirname
@@ -26,12 +25,14 @@ def test_diff():
     scriptPath = os.path.dirname(os.path.realpath(__file__))
     # rootPath is root of the directory
     rootPath = dirname(dirname(dirname(scriptPath)))
-    print(rootPath)
+
+    cmd_filepath = os.path.join(rootPath, "PowerShell/JumpCloud Commands Gallery/commands.json")
+    print(cmd_filepath)
     repo = git.Repo(rootPath)
     # Get current origin branch
     currentBranch = repo.active_branch.name
     # Do diff between remote and current branch
-    diff = repo.git.diff('origin/' + currentBranch)
+    diff = repo.git.diff(cmd_filepath)
 
 
 
