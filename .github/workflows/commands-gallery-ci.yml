@@ -15,26 +15,26 @@ jobs:
             if: contains(github.event.pull_request.labels.*.name, 'Commands Gallery')
             steps:
             - run: echo "Building JumpCloud Commands Gallery Event"
-        Check-PR-Labels:
-          needs: ["Filter-Branch"]
-          runs-on: ubuntu-latest
-          outputs:
-            RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
-          steps:
-            - name: Validate-PR-Version-Labels
-              id: validate
-              shell: pwsh
-              run: |
-                $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
-                if ("Commands Gallery" -in $PR_LABEL_LIST) {
-                    write-host "Starting Build for Commands Gallery"
-                }
-                else {
-                    write-host "No Commands Gallery label found, skipping build"
-                    exit 1
-                }
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Check-PR-Labels:
+        #   needs: ["Filter-Branch"]
+        #   runs-on: ubuntu-latest
+        #   outputs:
+        #     RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
+        #   steps:
+        #     - name: Validate-PR-Version-Labels
+        #       id: validate
+        #       shell: pwsh
+        #       run: |
+        #         $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
+        #         if ("Commands Gallery" -in $PR_LABEL_LIST) {
+        #             write-host "Starting Build for Commands Gallery"
+        #         }
+        #         else {
+        #             write-host "No Commands Gallery label found, skipping build"
+        #             exit 1
+        #         }
+        #       env:
+        #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         Test-Commands-Gallery:
             needs: ["Check-PR-Labels", "Filter-Branch"]
             runs-on: ubuntu-latest
