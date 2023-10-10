@@ -55,7 +55,8 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
     # Load SetupOrg
     if ("MSP" -in $IncludeTags) {
         Write-Host ('[status]MSP Tests setting API Key, OrgID')
-        $env:JCApiKey = $env:PESTER_MSP_APIKEY
+        $env:JCAPIKEY = $env:PESTER_MSP_APIKEY
+        $JCAPIKEY = $env:PESTER_MSP_APIKEY
         $env:JCOrgId = $env:PESTER_ORGID
         $env:JCProviderID = $env:PESTER_PROVIDER_ID
         # force import module
