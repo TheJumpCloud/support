@@ -47,5 +47,9 @@ jobs:
                 python-version: 3.9
             - name: Install dependencies
               run: pip install -r .github/scripts/requirements.txt
+            - name: Set base branch variable
+              run: |
+                BASE_BRANCH="$GITHUB_BASE_REF"
+                echo "::set-env name=BASE_BRANCH::$BASE_BRANCH"
             - name: Run Python Test
               run: pytest .github/scripts/tests/test_build_commands_gallery.py $BASE_BRANCH
