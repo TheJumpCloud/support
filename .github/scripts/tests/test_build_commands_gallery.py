@@ -28,7 +28,7 @@ def test_diff():
     rootPath = dirname(dirname(dirname(scriptPath)))
     print(rootPath)
     repo = git.Repo(rootPath)
-    diff = repo.git.diff()
+    diff = repo.git.diff('origin/master')
     #Check if the expected lines are present in the output
     expected_lines = [
         "diff --git a/PowerShell/JumpCloud Commands Gallery/commands.json b/PowerShell/JumpCloud Commands Gallery/commands.json",
