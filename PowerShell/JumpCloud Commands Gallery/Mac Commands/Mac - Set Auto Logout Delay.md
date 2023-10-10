@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Set Auto Logout Delay | v1.0 JCCG
+Mac - Set Auto Logout Delay | v1.0 JCCG 123312123
 
 #### commandType
 
