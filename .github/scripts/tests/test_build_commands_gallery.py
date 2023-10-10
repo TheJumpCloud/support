@@ -13,9 +13,11 @@ def test_script_functions():
 
 #subprocess.check_output(['git', 'diff', '--name-only', currentBranch + '..' + master])
 def test_diff():
+    try:
+        git_diff_output = subprocess.check_output(['git', 'diff', 'origin/master'], universal_newlines=True, stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+        print("Exception on process, rc=", e.returncode, "output=", e.output)
 
-    github_base_ref = os.environ.get("GITHUB_BASE_REF")
-    git_diff_output = subprocess.check_output(['git', 'diff', github_base_ref], universal_newlines=True)
 
     # Check if the expected lines are present in the output
     expected_lines = [
