@@ -34,6 +34,6 @@ def test_diff():
         "diff --git a/PowerShell/JumpCloud Commands Gallery/commands.json b/PowerShell/JumpCloud Commands Gallery/commands.json",
         "+++ b/PowerShell/JumpCloud Commands Gallery/commands.json"
     ]
-
+    print (diff)
     for line in expected_lines:
         assert line in diff
