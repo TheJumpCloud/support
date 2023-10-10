@@ -22,7 +22,7 @@ def test_diff():
     # except subprocess.CalledProcessError as e:
     #     print("Exception on process, rc=", e.returncode, "output=", e.output)
     repo = git.Repo('.')
-    diff = repo.git.diff('master')
+    diff = repo.git.diff('refs/heads/main')
     # Check if the expected lines are present in the output
     expected_lines = [
         "diff --git a/PowerShell/JumpCloud Commands Gallery/commands.json b/PowerShell/JumpCloud Commands Gallery/commands.json",
