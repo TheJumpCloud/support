@@ -13,8 +13,10 @@ def test_script_functions():
 #subprocess.check_output(['git', 'diff', '--name-only', currentBranch + '..' + master])
 def test_diff():
     try:
-        base_branch = os.environ.get("BASE_BRANCH")
-        diff_output = subprocess.check_output(['git', 'diff', '{base_branch}'], universal_newlines=True, stderr=subprocess.STDOUT)
+        base_ref = os.environ.get('GITHUB_BASE_REF')
+
+        print(base_ref)
+        diff_output = subprocess.check_output(['git', 'diff', base_ref], universal_newlines=True, stderr=subprocess.STDOUT)
 
     except subprocess.CalledProcessError as e:
         print("Exception on process, rc=", e.returncode, "output=", e.output)

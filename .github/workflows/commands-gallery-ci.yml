@@ -15,26 +15,7 @@ jobs:
             if: contains(github.event.pull_request.labels.*.name, 'Commands Gallery')
             steps:
             - run: echo "Building JumpCloud Commands Gallery Event"
-        # Check-PR-Labels:
-        #   needs: ["Filter-Branch"]
-        #   runs-on: ubuntu-latest
-        #   outputs:
-        #     RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
-        #   steps:
-        #     - name: Validate-PR-Version-Labels
-        #       id: validate
-        #       shell: pwsh
-        #       run: |
-        #         $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
-        #         if ("Commands Gallery" -in $PR_LABEL_LIST) {
-        #             write-host "Starting Build for Commands Gallery"
-        #         }
-        #         else {
-        #             write-host "No Commands Gallery label found, skipping build"
-        #             exit 1
-        #         }
-        #       env:
-        #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         Test-Commands-Gallery:
             needs: ["Filter-Branch"]
             runs-on: ubuntu-latest
@@ -47,9 +28,6 @@ jobs:
                 python-version: 3.9
             - name: Install dependencies
               run: pip install -r .github/scripts/requirements.txt
-            - name: Set base branch variable
-              run: |
-                BASE_BRANCH="$GITHUB_BASE_REF"
-                echo "::set-env name=BASE_BRANCH::$BASE_BRANCH"
+
             - name: Run Python Test
-              run: pytest .github/scripts/tests/test_build_commands_gallery.py $BASE_BRANCH
+              run: pytest .github/scripts/tests/test_build_commands_gallery.py
