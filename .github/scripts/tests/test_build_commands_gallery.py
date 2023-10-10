@@ -14,7 +14,7 @@ def test_script_functions():
 #subprocess.check_output(['git', 'diff', '--name-only', currentBranch + '..' + master])
 def test_diff():
     try:
-        git_diff_output = subprocess.check_output(['git', 'diff', 'origin/master'], universal_newlines=True, stderr=subprocess.STDOUT)
+        diff_output = subprocess.check_output(['git', 'diff', 'origin/master'], universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         print("Exception on process, rc=", e.returncode, "output=", e.output)
 
@@ -26,4 +26,4 @@ def test_diff():
     ]
 
     for line in expected_lines:
-        assert line in git_diff_output
+        assert line in diff_output
