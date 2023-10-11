@@ -1,6 +1,6 @@
 #### Name
 
-Windows - 64-Bit Command | v1.0 JCCGs
+Windows - 64-Bit Command | v1.0 JCCG
 
 #### commandType
 
