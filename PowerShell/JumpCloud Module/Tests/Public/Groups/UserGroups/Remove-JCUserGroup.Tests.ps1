@@ -1,5 +1,4 @@
 Describe -Tag:('JCUserGroup') 'New-JCUserGroup 1.0' {
-    BeforeAll { Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null }
     context 'Using the default parameter set' {
         It "Creates a new user group by Name" {
             $NewG = New-JCUserGroup -GroupName $(New-RandomString 8)
