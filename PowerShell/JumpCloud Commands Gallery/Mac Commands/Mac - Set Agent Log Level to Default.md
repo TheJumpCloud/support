@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Set Agent Log Level to Default | v1.0 JCCGsasdasad
+Mac - Set Agent Log Level to Default | v1.0
 
 #### commandType
 
