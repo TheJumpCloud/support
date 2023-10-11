@@ -1,0 +1,33 @@
+name: Commands Gallery CI
+on:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - "master"
+    paths:
+      - "PowerShell/JumpCloud Commands Gallery/**"
+      - "PowerShell/JumpCloud Commands Gallery/commands.json"
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+        Filter-Branch:
+            runs-on: ubuntu-latest
+            if: contains(github.event.pull_request.labels.*.name, 'Commands Gallery')
+            steps:
+            - run: echo "Building JumpCloud Commands Gallery Event"
+
+        Test-Commands-Gallery:
+            needs: ["Filter-Branch"]
+            runs-on: ubuntu-latest
+            steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Setup Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: 3.9
+            - name: Install dependencies
+              run: pip install -r .github/scripts/requirements.txt
+
+            - name: Run Python Test
+              run: pytest .github/scripts/tests/test_build_commands_gallery.py
