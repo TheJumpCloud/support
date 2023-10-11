@@ -1,9 +1,4 @@
 BeforeAll {
-    Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
-    # If (-not (Get-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') | Where-Object { $_.TargetId -eq $PesterParams_UserGroup.id }))
-    # {
-    #     Add-JCAssociation -Type:('user') -Id:($PesterParams_User1._id) -TargetType:('user_group') -TargetId:($PesterParams_UserGroup.id) -Force
-    # }
     $associationSystem = Get-JCSystem | Select-Object -First 1
 }
 Describe -Tag:('JCAssociation') "Copy-JCAssociation Tests" {

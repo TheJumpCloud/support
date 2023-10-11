@@ -9,6 +9,7 @@ Function Get-FunctionReport {
         $FileFullName = $File.FullName
         $FileName = $File.Name
         $FileBaseName = $File.BaseName
+
         # Parse the file and look for function syntax to identify functions
         [regex]$Function_Regex = '(?<=^Function)(.*?)(?=$|\{|\()'
         $FunctionContent = Get-Content -Path:($FileFullName)
@@ -22,10 +23,16 @@ Function Get-FunctionReport {
         # Remove the function from the current runspace
         $ScriptFunctions | ForEach-Object { Remove-Item -Path:('function:\' + $_) }
         # $ScriptFunctions.Visibility
-        $FolderLocation = If ($FileFullName -like '*Private*') { 'Private' }ElseIf ($FileFullName -like '*Public*') { 'Public' } Else { 'Unknown' }
+        $FolderLocation = If ($FileFullName -like '*Private*') {
+            'Private'
+        } ElseIf ($FileFullName -like '*Public*') {
+            'Public'
+        } Else {
+            'Unknown'
+        }
         # Build dataset to perform validations against
         [PSCustomObject]@{
-            # 'FullName'   = $FileFullName;
+            'FullName'       = $File.FullName;
             'FileName'       = $FileName;
             'LineNumber'     = $FunctionRegexMatchObject.LineNumber
             'FileBaseName'   = $FileBaseName;

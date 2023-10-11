@@ -15,7 +15,6 @@ Describe 'Get-JCEventCount' -Tag:('JCEvent') {
             }
         }
         # Create event records for tests
-        Connect-JCOnline -force | Out-Null
         For ($i = 1; $i -le 4; $i++) {
             $UserName = 'JCSystemUserTest-{0}' -f $i
             Write-Host ("Creating add/delete records for: $UserName")
