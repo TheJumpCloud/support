@@ -147,7 +147,7 @@ jobs:
           ./Deploy/utils/nuget.exe pack "./PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
       - name: Publishing to PSGallery repo
         env:
-          NuGetApiKey: ${{ secrets.NuGetApiKey }}
+          NuGetApiKey: ${{ secrets.NUGETAPIKEY }}
         run: |
           $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
           dotnet nuget push $NupkgPath --source PSGallery --api-key $env:NuGetApiKey
