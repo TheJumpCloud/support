@@ -89,7 +89,7 @@ jobs:
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
   Test-Module:
-    needs: ["Setup-Build-Dependancies", "Validate-Module"]
+    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 75
     name: Run Pester Tests and Upload Results
@@ -111,7 +111,7 @@ jobs:
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule", "JCAssociation" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
-    needs: ["Test-Module"]
+    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
