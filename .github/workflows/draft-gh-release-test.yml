@@ -1,0 +1,100 @@
+name: Test GH Draft and Nuget
+on:
+  push:
+    branches:
+      - SA-3608_Fix_Release_Workflow
+
+jobs:
+  Setup-Build-Dependancies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PowerShell Module Cache
+        id: cacher
+        uses: actions/cache@v3
+        with:
+          path: "/home/runner/.local/share/powershell/Modules/"
+          key: PS-Dependancies
+      - name: Install dependencies
+        if: steps.cacher.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+
+          If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
+              Write-Host ('[status]Installing package provider NuGet');
+              Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
+          }
+
+          $PSDependencies = @{
+              'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
+              'PackageManagement'                     = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
+              'PSScriptAnalyzer'                      = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
+              'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
+              'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+              'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.35'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.39'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = '0.0.23'}
+          }
+
+          foreach ($RequiredModule in $PSDependencies.Keys) {
+              If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
+                  Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
+                  Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
+              }
+          }
+  Draft-GH-Release:
+    needs: Setup-Build-Dependancies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Draft Release
+        run: |
+          # Module Version
+          VERSION=$(grep -o '\d\+\.\d\+\.\d\+' $env:GITHUB_WORKSPACE/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
+          TITLE="JumpCloud PowerShell Module v$VERSION"
+          # Get the changelog text between the latest release # and the next sequential "## SemanticVersionNumber"
+          CHANGELOG=$(cat $env:GITHUB_WORKSPACE/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
+          TAG="v$VERSION"
+          BODY="$TITLE $CHANGELOG"
+          # Post Draft Release
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository_owner }}/${{ github.repository }}/releases \
+            -f tag_name=$TAG \
+          -f name=$TITLE \
+          -f body=$BODY \
+          -F draft=true \
+          -F generate_release_notes=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  Deploy-Nupkg:
+    needs: Draft-GH-Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v3
+        with:
+          path: "/home/runner/.local/share/powershell/Modules/"
+          key: PS-Dependancies
+      - name: Build Nuspec
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . ".$env:GITHUB_WORKSPACE/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
+      - name: Add nuget sources
+        #env:
+          #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          #Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
+          #$CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
+          #dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
+          dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
+      - name: Pack nuspec
+        run: |
+          .$env:GITHUB_WORKSPACE/Deploy/utils/nuget.exe pack ".$env:GITHUB_WORKSPACE/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
