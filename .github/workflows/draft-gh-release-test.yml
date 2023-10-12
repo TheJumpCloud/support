@@ -51,7 +51,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Draft Release
-        working-directory: ./support
         run: |
           # Module Version
           VERSION=$(grep -o '\d\+\.\d\+\.\d\+' ${{ github.workspace }}/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
