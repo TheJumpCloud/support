@@ -66,17 +66,17 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
             switch ($env:RELEASE_TYPE) {
                 'major' {
                     $versionString = "$($(([version]$latestModule.Version).Major) + 1).0.0"
-                    Write-Host "[Module Validation Tests] Development Version Major Release Type: $($module.Version) Should be $versionString"
+                    Write-Host "[Module Validation Tests] Development Version Major Release Type: $($latestChangelogVersion) Should be $versionString"
                     ([Version]$latestChangelogVersion).Major | Should -Be (([version]$latestModule.Version).Major + 1)
                 }
                 'minor' {
                     $versionString = "$($(([version]$latestModule.Version).Major)).$(([version]$latestModule.Version).minor + 1).0"
-                    Write-Host "[Module Validation Tests] Development Version Minor Release Type: $($module.Version) Should be $versionString"
+                    Write-Host "[Module Validation Tests] Development Version Minor Release Type: $($latestChangelogVersion) Should be $versionString"
                     ([Version]$latestChangelogVersion).Minor | Should -Be (([version]$latestModule.Version).Minor + 1)
                 }
                 'patch' {
                     $versionString = "$($(([version]$latestModule.Version).Major)).$(([version]$latestModule.Version).minor).$(([version]$latestModule.Version).Build + 1)"
-                    Write-Host "[Module Validation Tests] Development Version Build Release Type: $($module.Version) Should be $versionString"
+                    Write-Host "[Module Validation Tests] Development Version Build Release Type: $($latestChangelogVersion) Should be $versionString"
                     ([Version]$latestChangelogVersion).Build | Should -Be (([version]$latestModule.Version).Build + 1)
                 }
             }
