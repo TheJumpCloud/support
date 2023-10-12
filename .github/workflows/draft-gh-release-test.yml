@@ -53,10 +53,10 @@ jobs:
       - name: Build Draft Release
         run: |
           # Module Version
-          VERSION=$(grep -o '\d\+\.\d\+\.\d\+' $env:GITHUB_WORKSPACE/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
+          VERSION=$(grep -o '\d\+\.\d\+\.\d\+' ${{ github.workspace }}/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
           TITLE="JumpCloud PowerShell Module v$VERSION"
           # Get the changelog text between the latest release # and the next sequential "## SemanticVersionNumber"
-          CHANGELOG=$(cat $env:GITHUB_WORKSPACE/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
+          CHANGELOG=$(cat ${{ github.workspace }}/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
           TAG="v$VERSION"
           BODY="$TITLE $CHANGELOG"
           # Post Draft Release
@@ -85,7 +85,7 @@ jobs:
       - name: Build Nuspec
         run: |
           $ErrorActionPreference = 'Stop'
-          . ".$env:GITHUB_WORKSPACE/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
+          . ".${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
       - name: Add nuget sources
         #env:
           #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -97,4 +97,4 @@ jobs:
           dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
       - name: Pack nuspec
         run: |
-          .$env:GITHUB_WORKSPACE/Deploy/utils/nuget.exe pack ".$env:GITHUB_WORKSPACE/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
+          .${{ github.workspace }}/Deploy/utils/nuget.exe pack ".${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
