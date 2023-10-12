@@ -5,12 +5,12 @@ Release Date: October 12, 2023
 #### RELEASE NOTES
 
 ```
-Addressed an issue with Remove-JCSystemGroup and Remove-JCUserGroup, groups can be removed by ID if specified
+Addressed an issue with Remove-JCSystemGroup and Remove-JCUserGroup, groups can be removed by ID if specified.
 ```
 
 ### BUG FIXES:
 
-Fixed an issue with Remove-JCSystemGroup and Remove-JCUserGroup where group names could not be identified
+Fixed an issue with Remove-JCSystemGroup and Remove-JCUserGroup where group names could not be identified.
 
 ## 2.7.0
 
