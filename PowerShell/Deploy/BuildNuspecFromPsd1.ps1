@@ -5,7 +5,7 @@ param (
     $RequiredModulesRepo = 'PSGallery'
 )
 
-. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+. "$PSScriptRoot/Get-Config.ps1"
 # $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 $nuspecFiles = @(
     @{src = "en-Us/**/*.*"; target = "./" },
@@ -92,9 +92,12 @@ function New-NuspecFile {
     # Append buildNumber
     if ($env:Source -eq "CodeArtifact") {
         $date = (Get-Date).ToString("yyyyMMddHHmm")
-        # $BuildString = "build$($env:CIRCLE_BUILD_NUM)datetime$($date)"
-        $build = $($env:CIRCLE_BUILD_NUM)
+        # $BuildString = "build$($env:GITHUB_RUN_NUMBER)datetime$($date)"
+        $build = $($env:GITHUB_RUN_NUMBER)
         $Version = $Version + ".$($build)" + "-$date"
+        Write-Host "Building Module Version: $Version"
+    } else {
+        Write-Host "Building Module Version: $Version"
     }
 
     $metaDataElementsHash = [ordered]@{
@@ -178,7 +181,7 @@ $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 $params = @{
     OutputPath   = $FolderPath_Module
     Id           = $(Get-Item ($FilePath_psd1)).BaseName
-    buildNumber  = $env:CIRCLE_BUILD_NUM
+    buildNumber  = $env:GITHUB_RUN_NUMBER
     Version      = $Psd1.ModuleVersion
     Authors      = $Psd1.Author
     Owners       = $Psd1.CompanyName

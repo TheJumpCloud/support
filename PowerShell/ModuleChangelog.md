@@ -1,3 +1,17 @@
+## 2.8.0
+
+Release Date: October 12, 2023
+
+#### RELEASE NOTES
+
+```
+Addressed an issue with Remove-JCSystemGroup and Remove-JCUserGroup, groups can be removed by ID if specified
+```
+
+### BUG FIXES:
+
+Fixed an issue with Remove-JCSystemGroup and Remove-JCUserGroup where group names could not be identified
+
 ## 2.7.0
 
 Release Date: August 1, 2023
@@ -15,7 +29,6 @@ Admins can now upload a .reg file to a new or existing Windows - Advanced: Custo
 ### BUG FIXES:
 
 Fixed an issue with sequential results not returning as expected with large datasets
-
 
 ## 2.5.1
 

@@ -5,7 +5,7 @@ param (
     $RequiredModulesRepo
 )
 
-. "$PSScriptRoot/Get-Config.ps1" -RequiredModulesRepo:($RequiredModulesRepo)
+. "$PSScriptRoot/Get-Config.ps1"
 ################################################################################
 # This script creates a new test file for each function in the PowerShell Module
 ################################################################################

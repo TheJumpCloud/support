@@ -4,6 +4,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
 )
 Try {
+    Write-Host "[Status] Begin SetupOrg"
+    $stopwatch = [system.diagnostics.stopwatch]::StartNew()
     # Import JC Module
     Import-Module "$PSScriptRoot/../JumpCloud.psd1"
     # Authenticate to JumpCloud
@@ -17,6 +19,7 @@ Try {
         VariableNamePrefix     = 'PesterParams_';
         VariableNamePrefixHash = 'PesterParamsHash_';
     }
+    Write-Host "[Status] Setup Variables: $($stopwatch.Elapsed)"
     # Tear down org
     Function Remove-Org {
         Param(
@@ -36,10 +39,12 @@ Try {
             $ExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and $_.externally_managed }
             $UpdateExternallyManagedUsersToRemove = $ExternallyManagedUsersToRemove | Set-JCUser -externally_managed $false
             $RemoveExternallyManagedUsers = $ExternallyManagedUsersToRemove | Remove-JCUser -force
+            write-host "[status] Removed users: $($stopwatch.Elapsed)"
         }
         # Remove all systems from an org
         If ($Systems) {
             $null = Get-JCSystem | Remove-JCSystem -force
+            write-host "[status] Removed systems: $($stopwatch.Elapsed)"
         }
         # Remove all groups from an org
         If ($Groups) {
@@ -47,30 +52,35 @@ Try {
             $null = Get-JCGroup | ForEach-Object {
                 If ($_.Type -eq 'system_group') {
                     # write-host $_.Name
-                    Remove-JCSystemGroup -GroupName:($_.Name) -force
+                    Remove-JcSdkSystemGroup -Id $_.id -ErrorAction Ignore
                 } elseif ($_.Type -eq 'user_group') {
                     # write-host $_.Name
-                    Remove-JCUserGroup -GroupName:($_.Name) -force
+                    Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
                 }
             }
+            write-host "[status] Removed groups: $($stopwatch.Elapsed)"
         }
         # Remove all Commands from an org
         If ($Commands) {
             $null = Get-JCCommand | Remove-JCCommand -force
             $null = Get-JCCommandResult | Remove-JCCommandResult -force
+            write-host "[status] Removed commands: $($stopwatch.Elapsed)"
         }
         # Remove all RadiusServers from an org
         If ($RadiusServers) {
             $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
+            write-host "[status] Removed Radius Servers: $($stopwatch.Elapsed)"
         }
         if ($Policies) {
             $allPolicies = Get-JCPolicy
             foreach ($policy in $allPolicies.id) {
                 $null = Remove-JcSdkPolicy -Id $policy
             }
+            write-host "[status] Removed Policies: $($stopwatch.Elapsed)"
         }
     }
     Remove-Org -Users -Groups -Commands -RadiusServers -Policies
+    Write-Host "[Status] Finished Cleaning Up Org: $($stopwatch.Elapsed)"
 
     # Generate required policies
     foreach ( $policyName in $PesterParamsHash_Common.MultiplePolicyList ) {
@@ -78,6 +88,7 @@ Try {
             New-JCpolicy -templateName linux_Disable_USB_Storage -Name $policyName
         }
     }
+    Write-Host "[Status] Finished Generating Policies: $($stopwatch.Elapsed)"
     # Setup org
     $PesterParamsHash_BuildOrg = @{
         # Newly created objects
@@ -107,44 +118,48 @@ Try {
 
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
-            If (-not (Get-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-                New-JCAssociation -Type:('policy') -Id:($_.id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
+            If (-not (Get-JcSdkPolicyAssociation -PolicyId:($_.id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+                Set-JcSdkPolicyAssociation -Op:("add") -PolicyId:($_.id) -Type:('system_group') -id:($PesterParamsHash_BuildOrg.SystemGroup.id);
             };
         };
-        UserGroupMembership           = If (-not (Get-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) {
-            New-JCAssociation -Type:('user_group') -Id:($PesterParamsHash_BuildOrg.UserGroup.id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force;
+        UserGroupMembership           = If (-not (Get-JcSdkUserGroupMember -GroupId:($PesterParamsHash_BuildOrg.UserGroup.id) | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.User1.id })) {
+            Set-JcSdkUserGroupMember -Op:("add") -GroupId:($PesterParamsHash_BuildOrg.UserGroup.id) -Id:($PesterParamsHash_BuildOrg.User1.id);
         };
-        SystemUserMembership          = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.User1.id })) {
-            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('user') -TargetId:($PesterParamsHash_BuildOrg.User1.id) -force;
+        SystemUserMembership          = If (-not (Get-JcSdkSystemAssociation -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Targets:('user') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.User1.id })) {
+            Set-JcSdkSystemAssociation -Op:("add") -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Type:('user') -Id:($PesterParamsHash_BuildOrg.User1.id);
         };
-        SystemPolicyMembership        = If (-not (Get-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) {
-            New-JCAssociation -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id) -TargetType:('policy') -TargetId:($PesterParamsHash_BuildOrg.SinglePolicy.id) -force;
+        SystemPolicyMembership        = If (-not (Get-JcSdkSystemAssociation -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Targets:('policy') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) {
+            Set-JcSdkSystemAssociation -Op:("add") -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Type:('policy') -Id:($PesterParamsHash_BuildOrg.SinglePolicy.id);
         };
-        Command1SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
+        Command1SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
         };
-        Command2SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command2._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
+        Command2SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command2._id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command2._id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
         };
-        Command3SystemGroupMembership = If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command3._id) -TargetType:('system_group') -TargetId:($PesterParamsHash_BuildOrg.SystemGroup.id) -force;
+        Command3SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command3._id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command3._id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
         };
     }
+    Write-Host "[Status] Finished Generating Associations: $($stopwatch.Elapsed)"
+
     # Generate command results if they dont exist
     If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount) {
-        If (-not (Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
-            New-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
+        If (-not (Get-JCSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
+            Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id)
         };
         For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++) {
             Invoke-JCCommand -trigger:($PesterParamsHash_BuildOrg.Command1.trigger)
         }
         While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParamsHash_BuildOrg.Command1.name }).Count -ge $PesterParams_CommandResultCount) {
-            Start-Sleep -Seconds:(1)
+            Start-Sleep -Milliseconds:(200)
         }
-        If ((Get-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
-            Remove-JCAssociation -Type:('command') -Id:($PesterParamsHash_BuildOrg.Command1._id) -TargetType:('system') -TargetId:($PesterParamsHash_BuildOrg.SystemLinux._id) -force
+        If ((Get-JCSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
+            Set-JcSdkCommandAssociation -Op:("remove") -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id)
+
         };
     }
+    Write-Host "[Status] Finished Generating Command Results: $($stopwatch.Elapsed)"
 
     # Combine all hash tables into one list and foreach of their values create a new global parameter
     (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
@@ -152,6 +167,8 @@ Try {
             Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
         }
     }
+    $stopwatch.Stop()
+    Write-Host "[Status] SetupOrg took $($stopwatch.Elapsed) to complete!"
 } Catch {
     Write-Error ($_.Exception)
     Write-Error ($_.FullyQualifiedErrorId)

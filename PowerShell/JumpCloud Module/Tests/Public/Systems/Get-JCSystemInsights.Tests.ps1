@@ -1,5 +1,5 @@
 BeforeAll {
-    Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
+
     $ErrorActionPreference = 'Stop' # Continue (Default), Ignore, Inquire, SilentlyContinue, Stop, Suspend
 }
 Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
