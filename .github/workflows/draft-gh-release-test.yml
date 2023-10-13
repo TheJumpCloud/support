@@ -58,7 +58,7 @@ jobs:
           TAG="v$VERSION"
           BODY="$TITLE $CHANGELOG"
 
-          RELEASE = gh release view $TAG
+          RELEASE=$(gh release view $TAG)
           if [[ -n "$RELEASE" ]]
           then
                 echo "Release for $TAG exists"
