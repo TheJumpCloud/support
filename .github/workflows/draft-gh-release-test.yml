@@ -71,10 +71,12 @@ jobs:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
       - name: Build Nuspec
+        shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
       - name: Add nuget sources
+        shell: pwsh
         #env:
           #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
