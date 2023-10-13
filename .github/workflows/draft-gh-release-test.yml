@@ -58,13 +58,7 @@ jobs:
           TAG="v$VERSION"
           BODY="$TITLE $CHANGELOG"
 
-          RELEASE=$(gh release view $TAG)
-          if [[ -n "$RELEASE" ]]
-          then
-                echo "Release for $TAG exists"
-          else
-                gh release create $TAG --title "$TITLE" --notes "$BODY" --draft
-          fi
+          (gh release view $TAG && echo "Release exists for $TAG") || gh release create $TAG --title "$TITLE" --notes "$BODY" --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
