@@ -53,17 +53,11 @@ jobs:
       - name: Build Draft Release
         run: |
           VERSION=$(grep -Po '(\d+\.\d+\.\d+)' ${{ github.workspace }}/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
-          echo $VERSION
           TITLE="JumpCloud PowerShell Module v$VERSION"
-          echo $TITLE
           CHANGELOG=$(cat ${{ github.workspace }}/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
-          echo $CHANGELOG
           TAG="v$VERSION"
-          echo $TAG
           BODY="$TITLE $CHANGELOG"
-          echo $BODY
-
-          gh release create $TAG --title $TITLE --notes $BODY --draft
+          gh release create $TAG --title $TITLE --notes $BODY --draft --repo ${{ github.repository_owner }}/${{ github.repository }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
