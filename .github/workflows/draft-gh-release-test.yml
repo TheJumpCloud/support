@@ -86,5 +86,6 @@ jobs:
           #dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
           dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
       - name: Pack nuspec
+        shell: pwsh
         run: |
           .${{ github.workspace }}/Deploy/utils/nuget.exe pack ".${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
