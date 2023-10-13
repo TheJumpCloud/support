@@ -63,16 +63,7 @@ jobs:
           BODY="$TITLE $CHANGELOG"
           echo $BODY
 
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository_owner }}/${{ github.repository }}/releases \
-            -f tag_name=$TAG \
-          -f name=$TITLE \
-          -f body=$BODY \
-          -F draft=true \
-          -F generate_release_notes=false
+          gh release create $TAG --title $TITLE --notes $BODY --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
