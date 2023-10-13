@@ -57,7 +57,7 @@ jobs:
           CHANGELOG=$(cat ${{ github.workspace }}/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
           TAG="v$VERSION"
           BODY="$TITLE $CHANGELOG"
-          gh release create $TAG --title "$TITLE" --notes "$BODY" --draft --repo ${{ github.repository_owner }}/${{ github.repository }}
+          gh release create $TAG --title "$TITLE" --notes "$BODY" --draft
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
