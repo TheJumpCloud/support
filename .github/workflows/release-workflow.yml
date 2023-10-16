@@ -144,10 +144,10 @@ jobs:
         run: |
           $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
           dotnet nuget push $NupkgPath --source PSGallery --api-key $env:NuGetApiKey
-      - name: Publishing to CodeArtifact repo
-        run: |
-          $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-          dotnet nuget push $NupkgPath --source CodeArtifact
+      #- name: Publishing to CodeArtifact repo
+      #  run: |
+      #    $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+      #    dotnet nuget push $NupkgPath --source CodeArtifact
 
   Cleanup-Cache:
     needs: Deploy-Nupkg
