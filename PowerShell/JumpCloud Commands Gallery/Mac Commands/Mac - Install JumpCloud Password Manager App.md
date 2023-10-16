@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.2 JCCG
+Mac - Install JumpCloud Password Manager App | v1.3 JCCG
 
 #### commandType
 
@@ -135,6 +135,7 @@ do
         if [[ -d /Users/$user/Applications/JumpCloud\ Password\ Manager.app ]]; then
             # remove if exists
             rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
+            rm -rf /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
         fi
 
         # Copy the contents of the DMG file to /Users/$user/Applications/
