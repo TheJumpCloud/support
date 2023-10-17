@@ -3,7 +3,7 @@ on: push
 
 jobs:
   Deploy-Nupkg:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v3
@@ -14,9 +14,6 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          install-module JumpCloud.SDK.V1 -Force
-          install-module JumpCloud.SDK.V2 -Force
-          install-module JumpCloud.SDK.DirectoryInsights -Force
           . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
       - name: Add nuget sources
         shell: pwsh
@@ -38,3 +35,5 @@ jobs:
           $moduleRootDirectories = Get-ChildItem -Directory -Path:("$NupkgPathDirectory/nupkg_module")
           Write-Host "Module Files:\n$moduleRootFiles"
           Write-Host "Module Directories:\n$moduleRootDirectories"
+          "Private" | should -bein $moduleRootDirectories.name
+          "Public" | should -bein $moduleRootDirectories.name
