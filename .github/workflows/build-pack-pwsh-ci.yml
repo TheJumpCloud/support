@@ -49,12 +49,12 @@ jobs:
         with:
           name: jumpcloud-module-nupkg
       - shell: pwsh
-      run : |
-        # add nuget source:
-        dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
-        # get nupkg artifact:
-        $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-        # test
-        $nupkgPath | Should -Exist
-        Write-Host $nupkgPath
-        # nuget push from here:
+        run: |
+          # add nuget source:
+          dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
+          # get nupkg artifact:
+          $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+          # test
+          $nupkgPath | Should -Exist
+          Write-Host $nupkgPath
+          # nuget push from here:
