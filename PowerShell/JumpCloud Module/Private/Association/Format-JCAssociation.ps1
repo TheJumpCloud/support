@@ -55,7 +55,7 @@ Function Format-JCAssociation {
                 $AssociationProperties = $_ |
                 ForEach-Object { $_.PSObject.Properties.name } | Select-Object -Unique
                 If ($AssociationProperties) {
-                    ForEach ($AssociationProperty In $AssociationProperties | Where-Object { $_ -notin ('id', 'type') }) {
+                    ForEach ($AssociationProperty In $AssociationProperties | Where-Object { $_ -notin ('id', 'type', 'name') }) {
                         $AssociationHash.Add($AssociationProperty, $_.($AssociationProperty)) | Out-Null
                     }
                 } Else {
