@@ -168,8 +168,7 @@ jobs:
           $nupkgPath | Should -Exist
           Write-Host "Nupkg Artifact Restored: $nupkgPath"
           # nuget push from here:
-          $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-          dotnet nuget push $NupkgPath --source PSGallery --api-key $env:NuGetApiKey
+          dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NUGETAPIKEY
         env:
           NuGetApiKey: ${{ secrets.NUGETAPIKEY }}
 
