@@ -15,10 +15,6 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
-      - name: Add nuget sources
-        shell: pwsh
-        run: |
-          dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
       - name: Pack nuspec
         shell: pwsh
         run: |
@@ -37,3 +33,28 @@ jobs:
           Write-Host "Module Directories:\n$moduleRootDirectories"
           "Private" | should -bein $moduleRootDirectories.name
           "Public" | should -bein $moduleRootDirectories.name
+      - name: Upload Nupkg
+        uses: actions/upload-artifact@v3
+        with:
+          name: jumpcloud-module-nupkg
+          path: /home/runner/work/support/support/JumpCloud.*.nupkg
+          retention-days: 1
+
+  Publish-Nupkg:
+    runs-on: ubuntu-latest
+    needs: Deploy-Nupkg
+    steps:
+      - name: download artifact and test
+        uses: actions/download-artifact@v3
+        with:
+          name: jumpcloud-module-nupkg
+      - shell: pwsh
+      run : |
+        # add nuget source:
+        dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
+        # get nupkg artifact:
+        $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+        # test
+        $nupkgPath | Should -Exist
+        Write-Host $nupkgPath
+        # nuget push from here:
