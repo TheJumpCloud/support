@@ -14,6 +14,9 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          install-module JumpCloud.SDK.V1 -Force
+          install-module JumpCloud.SDK.V2 -Force
+          install-module JumpCloud.SDK.DirectoryInsights -Force
           . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
       - name: Add nuget sources
         shell: pwsh
