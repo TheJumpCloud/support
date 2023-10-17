@@ -48,9 +48,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: jumpcloud-module-nupkg
-      - shell: pwsh
+      - name: publish
+        shell: pwsh
         run: |
-          # add nuget source:
+          # add nuget source for PSGallery:
           dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
           # get nupkg artifact:
           $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
