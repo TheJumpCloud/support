@@ -1,10 +1,5 @@
 name: PowerShell Module CI
 
-env:
-  # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
-  # RELEASE_TYPE: "patch"
-  # override version boolean. If specified, valid vlaues are 'true' or 'false'
-  OVERRIDE_VERSION: "false"
 on:
   pull_request:
     # Sequence of patterns matched against refs/heads
@@ -39,7 +34,7 @@ jobs:
               write-host "Starting Build for PowerShell Module Release"
           }
           # validate type from label list:
-          $types = @('major', 'minor', 'patch')
+          $types = @('major', 'minor', 'patch', 'manual')
           $typeCount = 0
           foreach ($item in $PR_LABEL_LIST) {
               if ($item -in $types) {

@@ -22,23 +22,32 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
         $latestModule = Find-Module -Name JumpCloud
         Write-Host "[Module Validation Tests] Development Module Version: $($module.Version)"
         Write-Host "[Module Validation Tests] Latest Module Version:      $($latestModule.version)"
-        $module.Version | should -BeGreaterThan $latestModule.version
         # GHA Env Variables
         switch ($env:RELEASE_TYPE) {
             'major' {
                 $versionString = "$($(([version]$latestModule.Version).Major) + 1).0.0"
-                Write-Host "[Module Validation Tests] Development Version Major Release Type: $($module.Version) Should be $versionString"
+                Write-Host "[Module Validation Tests] Development Version Major Release Version: $($module.Version) Should be $versionString"
                 $module.Version.Major | Should -Be (([version]$latestModule.Version).Major + 1)
+                $module.Version | should -BeGreaterThan $latestModule.version
+
             }
             'minor' {
                 $versionString = "$($(([version]$latestModule.Version).Major)).$(([version]$latestModule.Version).minor + 1).0"
-                Write-Host "[Module Validation Tests] Development Version Minor Release Type: $($module.Version) Should be $versionString"
+                Write-Host "[Module Validation Tests] Development Version Minor Release Version: $($module.Version) Should be $versionString"
                 $module.Version.Minor | Should -Be (([version]$latestModule.Version).Minor + 1)
+                $module.Version | should -BeGreaterThan $latestModule.version
+
             }
             'patch' {
                 $versionString = "$($(([version]$latestModule.Version).Major)).$(([version]$latestModule.Version).minor).$(([version]$latestModule.Version).Build + 1)"
-                Write-Host "[Module Validation Tests] Development Version Build Release Type: $($module.Version) Should be $versionString"
+                Write-Host "[Module Validation Tests] Development Version Build Release Version: $($module.Version) Should be $versionString"
                 $module.Version.Build | Should -Be (([version]$latestModule.Version).Build + 1)
+                $module.Version | should -BeGreaterThan $latestModule.version
+
+            }
+            'manual' {
+                Write-Host "[Module Validation Tests] Development Version Release Version: $($module.Version) is going to be manually released to PowerShell Gallery"
+                $module.Version | should -BeGreaterThan $latestModule.version
             }
         }
 
@@ -66,18 +75,25 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
             switch ($env:RELEASE_TYPE) {
                 'major' {
                     $versionString = "$($(([version]$latestModule.Version).Major) + 1).0.0"
-                    Write-Host "[Module Validation Tests] Development Version Major Release Type: $($latestChangelogVersion) Should be $versionString"
+                    Write-Host "[Module Validation Tests] Development Version Major Changelog Version: $($latestChangelogVersion) Should be $versionString"
                     ([Version]$latestChangelogVersion).Major | Should -Be (([version]$latestModule.Version).Major + 1)
+                    ([Version]$latestChangelogVersion) | Should -BeGreaterThan (([version]$latestModule.Version))
                 }
                 'minor' {
                     $versionString = "$($(([version]$latestModule.Version).Major)).$(([version]$latestModule.Version).minor + 1).0"
-                    Write-Host "[Module Validation Tests] Development Version Minor Release Type: $($latestChangelogVersion) Should be $versionString"
+                    Write-Host "[Module Validation Tests] Development Version Minor Changelog Version: $($latestChangelogVersion) Should be $versionString"
                     ([Version]$latestChangelogVersion).Minor | Should -Be (([version]$latestModule.Version).Minor + 1)
+                    ([Version]$latestChangelogVersion) | Should -BeGreaterThan (([version]$latestModule.Version))
                 }
                 'patch' {
                     $versionString = "$($(([version]$latestModule.Version).Major)).$(([version]$latestModule.Version).minor).$(([version]$latestModule.Version).Build + 1)"
-                    Write-Host "[Module Validation Tests] Development Version Build Release Type: $($latestChangelogVersion) Should be $versionString"
+                    Write-Host "[Module Validation Tests] Development Version Build Changelog Version: $($latestChangelogVersion) Should be $versionString"
                     ([Version]$latestChangelogVersion).Build | Should -Be (([version]$latestModule.Version).Build + 1)
+                    ([Version]$latestChangelogVersion) | Should -BeGreaterThan (([version]$latestModule.Version))
+                }
+                'manual' {
+                    Write-Host "[Module Validation Tests] Development Version Changelog Version: $($latestChangelogVersion) is going to be manually released to PowerShell Gallery"
+                    ([Version]$latestChangelogVersion) | Should -BeGreaterThan (([version]$latestModule.Version))
                 }
             }
             $todayDate = Get-Date -UFormat "%B %d, %Y"
