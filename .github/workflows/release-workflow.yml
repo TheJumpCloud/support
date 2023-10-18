@@ -15,8 +15,8 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-    - name: Check if Merged
-      run: echo {GITHUB_HEAD_REF} merged into master
+      - name: Check if Merged
+        run: echo {GITHUB_HEAD_REF} merged into master
 
   Filter-Branch:
     runs-on: ubuntu-latest
@@ -84,6 +84,46 @@ jobs:
               }
           }
 
+  Build-Nuspec-Nupkg:
+    needs: Setup-Build-Dependancies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v3
+        with:
+          path: "/home/runner/.local/share/powershell/Modules/"
+          key: PS-Dependancies
+      - name: Build Nuspec
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
+      - name: Pack nuspec
+        shell: pwsh
+        run: |
+          nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
+      - name: Validate NuPkg File
+        shell: pwsh
+        run: |
+          $NupkgPathDirectory = (Get-ChildItem -Path:("./*.nupkg")).Directory
+          $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+          Write-Host "NuPkg Path: $nupkgPath"
+          mkdir $NupkgPathDirectory/nupkg_module
+          unzip $nupkgPath -d $NupkgPathDirectory/nupkg_module
+          $moduleRootFiles = Get-ChildItem -File -Path:("$NupkgPathDirectory/nupkg_module")
+          $moduleRootDirectories = Get-ChildItem -Directory -Path:("$NupkgPathDirectory/nupkg_module")
+          Write-Host "Module Files:\n$moduleRootFiles"
+          Write-Host "Module Directories:\n$moduleRootDirectories"
+          # Validate that the nuspec directory contains a Public/ Private directory
+          "Private" | should -bein $moduleRootDirectories.name
+          "Public" | should -bein $moduleRootDirectories.name
+      - name: Upload Nupkg
+        uses: actions/upload-artifact@v3
+        with:
+          name: jumpcloud-module-nupkg
+          path: /home/runner/work/support/support/JumpCloud.*.nupkg
+          retention-days: 1
+
   Manual-Approval-Release:
     needs: ["Check-PR-Labels", "Setup-Build-Dependancies"]
     environment: PublishToPSGallery
@@ -110,67 +150,48 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Deploy-Nupkg:
-    needs: Draft-GH-Release
+    needs: [Manual-Approval-Release, Build-Nuspec-Nupkg]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v3
+      - name: Download nupkg artifact
+        uses: actions/download-artifact@v3
         with:
-          path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
-      - name: Build Nuspec
+          name: jumpcloud-module-nupkg
+      - name: Publish
         shell: pwsh
         run: |
-          $ErrorActionPreference = 'Stop'
-          . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
-      - name: Add nuget sources
-        shell: pwsh
-        #env:
-          #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          #Set-AWSCredential -AccessKey:($env:AWS_ACCESS_KEY_ID) -SecretKey:($env:AWS_SECRET_ACCESS_KEY)
-          #$CARepoEndpoint = "$(Get-CARepositoryEndpoint -Domain jumpcloud-artifacts -Region us-east-1 -Repository jumpcloud-nuget-modules -Format nuget)v3/index.json"
-          #dotnet nuget add source $CARepoEndpoint --name CodeArtifact --username aws --password (Get-CAAuthorizationToken -Domain:("jumpcloud-artifacts") -Region:("us-east-1")).AuthorizationToken
+          # add nuget source for PSGallery:
           dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
-      - name: Pack nuspec
-        shell: pwsh
-        run: |
-          nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
-      - name: Publishing to PSGallery repo
-        shell: pwsh
+          # get nupkg artifact:
+          $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+          # test
+          $nupkgPath | Should -Exist
+          Write-Host "Nupkg Artifact Restored: $nupkgPath"
+          # nuget push from here:
+          dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NUGETAPIKEY
         env:
           NuGetApiKey: ${{ secrets.NUGETAPIKEY }}
-        run: |
-          $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-          dotnet nuget push $NupkgPath --source PSGallery --api-key $env:NuGetApiKey
-      #- name: Publishing to CodeArtifact repo
-      #  run: |
-      #    $NupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-      #    dotnet nuget push $NupkgPath --source CodeArtifact
 
   Cleanup-Cache:
     needs: Deploy-Nupkg
     runs-on: ubuntu-latest
     steps:
-    - name: Cleanup
-      run: |
-        gh extension install actions/gh-actions-cache
+      - name: Cleanup
+        run: |
+          gh extension install actions/gh-actions-cache
 
-        echo "Fetching list of cache key"
-        cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
+          echo "Fetching list of cache key"
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH -L 100 | cut -f 1 )
 
-        ## Setting this to not fail the workflow while deleting cache keys.
-        set +e
-        echo "Deleting caches..."
-        for cacheKey in $cacheKeysForPR
-        do
-            gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
-        done
-        echo "Done"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        REPO: ${{ github.repository }}
-        BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
-
-
+          ## Setting this to not fail the workflow while deleting cache keys.
+          set +e
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+              gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+          done
+          echo "Done"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
