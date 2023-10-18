@@ -61,8 +61,7 @@ jobs:
         shell: pwsh
         run: |
           # validate release type variables
-          $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
-          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
+          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
   Setup-Build-Dependancies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
     runs-on: ubuntu-latest
