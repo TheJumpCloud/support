@@ -1,10 +1,5 @@
 name: PowerShell Module CI
 
-env:
-  # Set the release type of the release, valid values are 'major', 'minor' or 'patch'
-  # RELEASE_TYPE: "patch"
-  # override version boolean. If specified, valid vlaues are 'true' or 'false'
-  OVERRIDE_VERSION: "false"
 on:
   pull_request:
     # Sequence of patterns matched against refs/heads
@@ -39,7 +34,7 @@ jobs:
               write-host "Starting Build for PowerShell Module Release"
           }
           # validate type from label list:
-          $types = @('major', 'minor', 'patch')
+          $types = @('major', 'minor', 'patch', 'manual')
           $typeCount = 0
           foreach ($item in $PR_LABEL_LIST) {
               if ($item -in $types) {
@@ -66,8 +61,7 @@ jobs:
         shell: pwsh
         run: |
           # validate release type variables
-          $env:OVERRIDE_VERSION | Should -BeIn @('true', 'false')
-          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch')
+          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
   Setup-Build-Dependancies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
     runs-on: ubuntu-latest
@@ -148,7 +142,7 @@ jobs:
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
-          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule", "JCAssociation" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest

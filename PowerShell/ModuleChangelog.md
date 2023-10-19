@@ -1,3 +1,18 @@
+## 2.8.1
+
+Release Date: October 18, 2023
+
+#### RELEASE NOTES
+
+```
+Addressed the issue with Get-JCAssociation errors when param Type is sent through dynamic parameter and duplicate key in property hash
+```
+
+### BUG FIXES:
+
+- Fixed an issue with param targetType defaulting when dynamicParam is set
+- Fixed an issue with system associated to a command where duplicate key being added
+
 ## 2.8.0
 
 Release Date: October 16, 2023
