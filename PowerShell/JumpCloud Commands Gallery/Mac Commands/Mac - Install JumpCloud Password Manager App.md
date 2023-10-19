@@ -137,9 +137,8 @@ do
             rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
         fi
 
-        # Copy the contents of the DMG file to /Users/$user/Applications/
-        # Preserves all file attributes and ACLs
-        cp -pPR "$DMGAppPath" /Users/$user/Applications/
+        # Move the contents of the DMG file to /Users/$user/Applications/
+        mv -f "$DMGAppPath" /Users/$user/Applications/
 
         err=$?
         if [ ${err} -ne 0 ]; then
