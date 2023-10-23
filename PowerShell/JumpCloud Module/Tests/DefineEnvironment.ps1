@@ -245,6 +245,7 @@ $variableArray = New-Object System.Collections.Generic.List[PSCustomObject]
 # Combine all hash tables into one list and foreach of their values create a new global parameter
 (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
     $_.GetEnumerator() | ForEach-Object {
+        Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
         $variableObject = [PSCustomObject]@{
             Name  = "$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)"
             Value = $_.Value
