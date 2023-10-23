@@ -125,6 +125,10 @@ jobs:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        job_group: [0, 1, 2]
     name: Run Pester Tests and Upload Results
     steps:
       - uses: actions/checkout@v4

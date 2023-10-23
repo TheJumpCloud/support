@@ -46,9 +46,23 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
         "$PSScriptRoot/ModuleValidation/"
     )
 } elseif ($PSCmdlet.ParameterSetName -eq 'dataTests') {
-    $PesterRunPaths = @(
-        "$PSScriptRoot"
-    )
+    if ($env:CI) {
+        $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
+        $counter = [pscustomobject] @{ Value = 0 }
+        $groupSize = 30
+        $PesterGroups = $PesterTestsPaths | Group-Object -Property { [math]::Floor($counter.Value++ / $groupSize) }
+        $jobMatrixSet = @{
+            0 = $PesterGroups[0].Group.FullName
+            1 = $PesterGroups[1].Group.FullName
+            2 = $PesterGroups[2].Group.FullName
+        }
+        Write-Host "Running CI job group $env:job_group"
+        $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
+    } else {
+        $PesterRunPaths = @(
+            "$PSScriptRoot"
+        )
+    }
     # For online tests we need to run setup org and generate resources within an organization
     # Load DefineEnvironment
     . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
@@ -78,7 +92,7 @@ Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
 # create the directory if it does not exist:
 if (-not (Test-Path $PesterResultsFileXmldir)) {
-    new-item -path $PesterResultsFileXmldir -ItemType Directory
+    New-Item -Path $PesterResultsFileXmldir -ItemType Directory
 }
 
 
@@ -96,7 +110,7 @@ $configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml'
 
 Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 # Run Pester tests
-Invoke-Pester -configuration $configuration
+Invoke-Pester -Configuration $configuration
 
 $PesterTestResultPath = (Get-ChildItem -Path:("$($PesterResultsFileXmldir)")).FullName | Where-Object { $_ -match "results.xml" }
 If (Test-Path -Path:($PesterTestResultPath)) {
