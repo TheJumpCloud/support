@@ -77,6 +77,10 @@ jobs:
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
+        env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+          PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
 
@@ -103,6 +107,13 @@ jobs:
                   Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
               }
           }
+
+          # Load Get-Config.ps1
+          . "${{ github.workspace }}/PowerShell/Deploy/Get-Config.ps1"
+          Write-Host ('[status]Setting up org')
+          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
+          # Load DefineEnvironment
+          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -RequiredModulesRepo PSGallery
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
@@ -139,19 +150,6 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
-      - name: DefineEnvironment and SetupOrg
-        shell: pwsh
-        env:
-          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
-          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
-          PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
-        run: |
-          # Load Get-Config.ps1
-          . "${{ github.workspace }}/PowerShell/Deploy/Get-Config.ps1"
-          Write-Host ('[status]Setting up org')
-          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
-          # Load DefineEnvironment
-          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
       - name: Test PWSH Module
         shell: pwsh
         env:
@@ -159,6 +157,12 @@ jobs:
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
+          $PesterParams = Get-Content -Raw /home/runner/.local/share/powershell/Modules/PesterVariables.json | ConvertFrom-JSON
+          $PesterParams | Foreach-Object {
+            Set-Variable -Name $_.Name -Value $_.Value -Scope Global
+          }
+          $PesterParams_ApiKey = "$env:PESTER_APIKEY"
+          $PesterParams_ApiKeyMsp = "$env:PESTER_MSP_APIKEY"
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
