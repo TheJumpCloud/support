@@ -109,11 +109,11 @@ jobs:
           }
 
           # Load Get-Config.ps1
-          . "${{ github.workspace }}/PowerShell/Deploy/Get-Config.ps1"
-          Write-Host ('[status]Setting up org')
-          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
+          . "./PowerShell/Deploy/Get-Config.ps1"
           # Load DefineEnvironment
-          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -RequiredModulesRepo PSGallery
+          . ("./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -RequiredModulesRepo PSGallery
+          Write-Host ('[status]Setting up org')
+          . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
