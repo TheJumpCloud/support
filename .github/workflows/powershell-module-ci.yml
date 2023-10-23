@@ -111,8 +111,9 @@ jobs:
           # Load Get-Config.ps1
           . "./PowerShell/Deploy/Get-Config.ps1"
           # Load DefineEnvironment
+          Write-Host ('[status] Defining Environment')
           . ("./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -RequiredModulesRepo PSGallery
-          Write-Host ('[status]Setting up org')
+          Write-Host ('[status] Setting up org')
           . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
@@ -157,12 +158,13 @@ jobs:
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
+          $env:job_group = ${{ matrix.job_group }}
           $PesterParams = Get-Content -Raw /home/runner/.local/share/powershell/Modules/PesterVariables.json | ConvertFrom-JSON
           $PesterParams | Foreach-Object {
             Set-Variable -Name $_.Name -Value $_.Value -Scope Global
           }
-          $PesterParams_ApiKey = "$env:PESTER_APIKEY"
-          $PesterParams_ApiKeyMsp = "$env:PESTER_MSP_APIKEY"
+          Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
+          Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
