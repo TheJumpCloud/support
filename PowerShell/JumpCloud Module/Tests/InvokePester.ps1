@@ -65,7 +65,7 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
     }
     # For online tests we need to run setup org and generate resources within an organization
     # Load DefineEnvironment
-    . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
+    #. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
     # Load SetupOrg
     if ("MSP" -in $IncludeTags) {
         Write-Host ('[status] MSP Tests setting API Key, OrgID')
@@ -77,8 +77,8 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
         Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force
         # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
     } else {
-        Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
-        . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
+        #Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
+        #. ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
     }
 }
 # Load private functions

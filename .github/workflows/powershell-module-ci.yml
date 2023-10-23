@@ -139,6 +139,19 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
+      - name: DefineEnvironment and SetupOrg
+        shell: pwsh
+        env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+          PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
+        run: |
+          # Load Get-Config.ps1
+          . "${{ github.workspace }}/PowerShell/Deploy/Get-Config.ps1"
+          Write-Host ('[status]Setting up org')
+          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
+          # Load DefineEnvironment
+          . ("${{ github.workspace }}/PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
       - name: Test PWSH Module
         shell: pwsh
         env:
