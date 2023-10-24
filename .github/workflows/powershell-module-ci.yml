@@ -164,8 +164,8 @@ jobs:
             Write-Host ("[status] Setting variable $($_.Name) with value $($_.Value)")
             Set-Variable -Name $_.Name -Value $_.Value -Scope Global
           }
-          $env:JumpCloudApiKey = $env:PESTER_APIKEY
-          $env:JCAPIKEY = $env:PESTER_APIKEY
+          Set-Variable -Name JCAPIKEY -Value "$env:PESTER_APIKEY" -Scope Global
+          Set-Variable -Name JumpCloudApiKey -Value "$env:PESTER_APIKEY" -Scope Global
           Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
           Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
