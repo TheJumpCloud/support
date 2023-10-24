@@ -47,6 +47,8 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
     )
 } elseif ($PSCmdlet.ParameterSetName -eq 'dataTests') {
     if ($env:CI) {
+        $env:JCAPIKEY = $env:PESTER_APIKEY
+        $env:JCOrgId = $env:PESTER_ORGID
         $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
         $counter = [pscustomobject] @{ Value = 0 }
         $groupSize = 30
@@ -56,7 +58,7 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
             1 = $PesterGroups[1].Group.FullName
             2 = $PesterGroups[2].Group.FullName
         }
-        Write-Host "Running CI job group $env:job_group"
+        Write-Host "[status] Running CI job group $env:job_group"
         $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
     } else {
         $PesterRunPaths = @(
