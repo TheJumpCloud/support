@@ -171,6 +171,7 @@ jobs:
           $env:JCAPIKEY = "$env:PESTER_APIKEY"
           Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
           Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
+          Connect-JCOnline -JumpCloudApiKey:($JCAPIKEY) -JumpCloudOrgId:($JCOrgID) -force | Out-Null
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
