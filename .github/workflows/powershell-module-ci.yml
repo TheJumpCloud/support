@@ -108,6 +108,7 @@ jobs:
               }
           }
 
+          $variableArray = New-Object System.Collections.Generic.List[PSCustomObject]
           # Load Get-Config.ps1
           . "./PowerShell/Deploy/Get-Config.ps1"
           # Load DefineEnvironment
@@ -115,6 +116,7 @@ jobs:
           . ("./PowerShell/JumpCloud Module/Tests/DefineEnvironment.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -RequiredModulesRepo PSGallery
           Write-Host ('[status] Setting up org')
           . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
+          $variableArray | ConvertTo-Json -Depth 10 | Out-File -FilePath /home/runner/.local/share/powershell/Modules/PesterVariables.json
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest

@@ -241,7 +241,6 @@ $PesterParamsHash_Definitions = @{
     }
 };
 
-$variableArray = New-Object System.Collections.Generic.List[PSCustomObject]
 # Combine all hash tables into one list and foreach of their values create a new global parameter
 (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
     $_.GetEnumerator() | ForEach-Object {
@@ -253,5 +252,3 @@ $variableArray = New-Object System.Collections.Generic.List[PSCustomObject]
         $variableArray.Add($variableObject)
     }
 }
-
-$variableArray | ConvertTo-Json -Depth 10 | Out-File -FilePath /home/runner/.local/share/powershell/Modules/PesterVariables.json
