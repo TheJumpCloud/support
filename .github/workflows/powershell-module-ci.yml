@@ -171,7 +171,7 @@ jobs:
           Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
 
           # Import JC Module
-          Import-Module "$PSScriptRoot/../JumpCloud.psd1"
+          Import-Module "${{github.workspace}}/PowerShell/JumpCloud Module/JumpCloud.psd1"
 
           # Authenticate to JC Org
           Connect-JCOnline -JumpCloudApiKey:($JCAPIKEY) -JumpCloudOrgId:($JCOrgID) -force | Out-Null
