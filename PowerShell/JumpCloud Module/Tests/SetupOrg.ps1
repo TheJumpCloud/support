@@ -4,7 +4,7 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
 )
 Try {
-    Write-Host "[Status] Run Define ENV:"
+    Write-Host "[Status] Run Define Environment"
     $envVars = . "$PSScriptRoot/DefineEnvironment.ps1" -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:('PSGallery')
     Write-Host "[Status] Begin SetupOrg"
     $stopwatch = [system.diagnostics.stopwatch]::StartNew()
@@ -168,7 +168,7 @@ Try {
     # Combine all hash tables into one list and foreach of their values create a new global parameter
     (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
         $_.GetEnumerator() | ForEach-Object {
-            Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
+            # Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
             $variableObject = [PSCustomObject]@{
                 Name  = "$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)"
                 Value = $_.Value
@@ -186,12 +186,12 @@ Try {
     Write-Error ($_.PSMessageDetails)
 }
 
-$envVars | foreach-Object {
-    $variableObject = [PSCustomObject]@{
-        Name  = "$($_.Name)"
-        Value = $_.Value
-    }
-    $variableArray.Add($variableObject)
+# $envVars | foreach-Object {
+#     $variableObject = [PSCustomObject]@{
+#         Name  = "$($_.Name)"
+#         Value = $_.Value
+#     }
+#     $variableArray.Add($variableObject)
 
-}
+# }
 Return $variableArray
