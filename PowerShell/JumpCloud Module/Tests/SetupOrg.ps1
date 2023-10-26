@@ -4,6 +4,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
 )
 Try {
+    Write-Host "[Status] Run Define ENV:"
+    $envVars = . "$PSScriptRoot/DefineEnvironment.ps1" -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:('PSGallery')
     Write-Host "[Status] Begin SetupOrg"
     $stopwatch = [system.diagnostics.stopwatch]::StartNew()
     # Import JC Module
@@ -161,6 +163,8 @@ Try {
     }
     Write-Host "[Status] Finished Generating Command Results: $($stopwatch.Elapsed)"
 
+    $variableArray = New-Object System.Collections.Generic.List[PSCustomObject]
+
     # Combine all hash tables into one list and foreach of their values create a new global parameter
     (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
         $_.GetEnumerator() | ForEach-Object {
@@ -181,3 +185,13 @@ Try {
     Write-Error ($_.TargetObject)
     Write-Error ($_.PSMessageDetails)
 }
+
+$envVars | foreach-Object {
+    $variableObject = [PSCustomObject]@{
+        Name  = "$($_.Name)"
+        Value = $_.Value
+    }
+    $variableArray.Add($variableObject)
+
+}
+Return $variableArray

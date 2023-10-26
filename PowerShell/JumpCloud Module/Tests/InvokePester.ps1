@@ -48,7 +48,7 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
 } elseif ($PSCmdlet.ParameterSetName -eq 'dataTests') {
     if ($env:CI) {
         $env:JCAPIKEY = $env:PESTER_APIKEY
-        Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY)  -force
+        Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY)  -force
         $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
         $counter = [pscustomobject] @{ Value = 0 }
         $groupSize = 30
