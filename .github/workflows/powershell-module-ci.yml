@@ -129,7 +129,7 @@ jobs:
   Setup-Org:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
-    name: Run Pester Tests and Upload Results
+    name: Setup Org Upload Variable Artifact
     steps:
       - uses: actions/checkout@v4
         with:
@@ -178,7 +178,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: jumpcloud-vars
-          path: /home/runner/.local/share/powershell/Modules/PesterVariables.json
       - name: Test PWSH Module
         shell: pwsh
         env:
