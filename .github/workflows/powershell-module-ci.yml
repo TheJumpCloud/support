@@ -190,8 +190,10 @@ jobs:
           $PesterParams = Get-Content -Raw ${{ github.workspace }}/PesterVariables.json | ConvertFrom-JSON
           write-host "[status] Importing $($PesterParams.count) variables from SetupOrg"
           $PesterParams | Foreach-Object {
-            Write-Host ("[status] Setting variable $($_.Name) with value $($_.Value)")
-            Set-Variable -Name $_.Name -Value $_.Value -Scope Global
+            if ($_.Name){
+              Write-Host ("[status] Setting variable $($_.Name) with value $($_.Value)")
+              Set-Variable -Name $_.Name -Value $_.Value -Scope Global
+            }
           }
           Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
           Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
