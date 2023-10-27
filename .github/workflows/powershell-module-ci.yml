@@ -187,7 +187,7 @@ jobs:
         run: |
           # Setup Variables for Pester Run
           $env:job_group = ${{ matrix.job_group }}
-          $PesterParams = Get-Content -Raw /home/runner/.local/share/powershell/Modules/PesterVariables.json | ConvertFrom-JSON
+          $PesterParams = Get-Content -Raw ${{ github.workspace }}\pesterVariables.json | ConvertFrom-JSON
           write-host "[status] Importing $($PesterParams.count) variables from SetupOrg"
           $PesterParams | Foreach-Object {
             Write-Host ("[status] Setting variable $($_.Name) with value $($_.Value)")
