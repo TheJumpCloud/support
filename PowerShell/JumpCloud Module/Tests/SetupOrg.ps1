@@ -194,4 +194,5 @@ Try {
 #     $variableArray.Add($variableObject)
 
 # }
+write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
 Return $variableArray
