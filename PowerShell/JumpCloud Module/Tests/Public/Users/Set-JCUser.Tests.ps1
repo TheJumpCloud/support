@@ -348,7 +348,7 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
 }
 Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
     It "Updates a custom attribute on a User" {
-        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
         $UpdatedUser = Set-JCUser $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'Department' -Attribute1_value 'IT'
         [string]$NewUserAttr = $NewUser.attributes.name | Sort-Object
         [string]$UpdatedUserAttr = $UpdatedUser.attributes.name | Sort-Object
@@ -361,7 +361,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Adds a custom attribute to a User" {
-        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
         $UpdatedUser = Set-JCUser $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'NewAttribute' -Attribute1_value 'IT'
         [int]$NewUserAttr = $NewUser.attributes.name.count
         [int]$UpdatedUserAttr = $UpdatedUser.attributes.name.count
@@ -375,7 +375,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Removes a custom attribute from a User" {
-        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
         $UpdatedUser = Set-JCUser $NewUser.username -RemoveAttribute 'Department'
         [int]$NewUserAttr = $NewUser.attributes.name.count
         [int]$UpdatedUserAttr = $UpdatedUser.attributes.name.count
@@ -1249,73 +1249,73 @@ Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
 }
 Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True " {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $false
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $false
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $false
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $false
         $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq True and a 365 days specified for EnrollmentDays" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $false
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $false
         $EnrollmentDays = 365
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True -ByID" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $false
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $false
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -ByID
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq False to enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays -ByID" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $false
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $false
         $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -ByID
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq True and a 365 days specified for EnrollmentDays -ByID" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $false
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $false
         $EnrollmentDays = 365
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -ByID
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq True with Attributes" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'attr1v'
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays with Attributes" {
         $EnrollmentDays = 7
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'attr1v'
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq True with removeAttributes" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -RemoveAttribute 'Department', 'Lang'
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates an existing user with enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays with removeAttributes" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $true
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $true
         $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Disabled MFA enrollment by setting enable_user_portal_multifactor to False" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $true
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $true
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $false
         $Newuser.mfa.exclusion | Should -Be $false
         $Newuser.mfa.exclusionUntil | Should -BeNullOrEmpty
@@ -1323,7 +1323,7 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
 }
 Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
     It "Updates a users home poBox" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -home_poBox "myhome"
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -home_poBox "myhome"
         $NewUser = $CreateUser | Set-JCUser -home_poBox "yourHome"
         $NewUser.addresses | Where-Object type -EQ home | Select-Object -ExpandProperty poBox | Should -Be "yourHome"
         #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
@@ -1331,7 +1331,7 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a users work poBox" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -work_poBox "mywork"
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -work_poBox "mywork"
         $NewUser = $CreateUser | Set-JCUser -work_poBox "yourwork"
         $NewUser.addresses | Where-Object type -EQ work | Select-Object -ExpandProperty poBox | Should -Be "yourwork"
         #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
@@ -1339,7 +1339,7 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a mobile_number" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -mobile_number "mobile1"
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -mobile_number "mobile1"
         $NewUser = $CreateUser | Set-JCUser -mobile_number "mobile2"
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile2"
         #$NullCheck = Get-JCUser $CreateUser.username | ConvertTo-Json -Depth 5 | Select-String null
@@ -1347,7 +1347,7 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a users home poBox and work poBox" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -home_poBox "myhome"
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -home_poBox "myhome"
         $NewUser = $CreateUser | Set-JCUser -home_poBox "yourHome"
         $NewUser.addresses | Where-Object type -EQ home | Select-Object -ExpandProperty poBox | Should -Be "yourHome"
         $NewUser = $CreateUser | Set-JCUser -work_poBox "yourwork"
@@ -1357,7 +1357,7 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
         $Newuser | Remove-JCUser -ByID -force
     }
     It "Updates a mobile_number and work_number" {
-        $CreateUser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -mobile_number "mobile1"
+        $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -mobile_number "mobile1"
         $NewUser = $CreateUser | Set-JCUser -mobile_number "mobile2"
         $NewUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile2"
         $NewUser = $CreateUser | Set-JCUser -work_number "work2"
@@ -1369,7 +1369,7 @@ Describe -Tag:('JCUser') "Set-JCUser bug fix 1.10.2" {
 }
 Describe -Tag:('JCUser') "Set-JCUser 1.12" {
     It "Sets a users external_source_type" {
-        $Newuser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $Newuser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $Random1 = $(Get-Random)
         $Random2 = $(Get-Random)
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
@@ -1378,7 +1378,7 @@ Describe -Tag:('JCUser') "Set-JCUser 1.12" {
         $SearchUser.external_source_type | Should -Be $SetUser.external_source_type
     }
     It "Sets a users external_dn" {
-        $Newuser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $Newuser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $Random1 = $(Get-Random)
         $Random2 = $(Get-Random)
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
@@ -1387,7 +1387,7 @@ Describe -Tag:('JCUser') "Set-JCUser 1.12" {
         $SearchUser.external_dn | Should -Be $SetUser.external_dn
     }
     It "Sets a users external_dn and external_source_type" {
-        $Newuser = New-RandomUser -Domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $Newuser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $Random1 = $(Get-Random)
         $Random2 = $(Get-Random)
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
@@ -1399,19 +1399,19 @@ Describe -Tag:('JCUser') "Set-JCUser 1.12" {
 }
 Describe -Tag:('JCUser') "Set-JCUser with Suspend param 1.15 via pipeline" {
     It "Updates a user suspended -eq True " {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         # This is a conflicting and unsupport state/ suspended pairing
         { $NewUser | Set-JCUser -suspended $True } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Updates a user suspended -eq false " {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         # This is a conflicting and unsupport state/ suspended pairing
         { $NewUser | Set-JCUser -suspended $false } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         { $NewUser | Set-JCUser -state "ACTIVATED" -suspended $true } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
@@ -1419,19 +1419,19 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param 1.15 via pipeline" {
 
 Describe -Tag:('JCUser') "Set-JCUser with Suspend param via Username" {
     It "Updates a user suspended -eq True " {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = Set-JCUser -Username $NewUser.username -suspended $True
         $UpdatedUser.suspended | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Updates a user suspended -eq false " {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         $UpdatedUser = Set-JCUser -Username $NewUser.username -suspended $false
         $UpdatedUser.suspended | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         { Set-JCUser -Username $NewUser.username -state "ACTIVATED" -suspended $true } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
@@ -1439,19 +1439,19 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param via Username" {
 
 Describe -Tag:('JCUser') "Set-JCUser with Suspend param via UserID" {
     It "Updates a user suspended -eq True " {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -suspended $True
         $UpdatedUser.suspended | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Updates a user suspended -eq false " {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         $UpdatedUser = Set-JCUser -UserID $NewUser.id  -suspended $false
         $UpdatedUser.suspended | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         { Set-JCUser -UserID $NewUser.id -state "ACTIVATED" -suspended $true } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
@@ -1459,26 +1459,26 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param via UserID" {
 
 Describe -Tag:('JCUser') 'Set-JCUser with State param via pipeline' {
     It 'Updates a user state from ACTIVATED to SUSPENDED' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = $NewUser | Set-JCUser -state "SUSPENDED"
         $UpdatedUser.suspended | Should -Be True
         $UpdatedUser.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = $NewUser | Set-JCUser -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         { $NewUser | Set-JCUser -state "SUSPENDED" -suspended $false } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         { $NewUser | Set-JCUser -state "ACTIVATED" -suspended $true } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
@@ -1486,26 +1486,26 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via pipeline' {
 
 Describe -Tag:('JCUser') 'Set-JCUser with State param via Username' {
     It 'Updates a user state from ACTIVATED to SUSPENDED' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = Set-JCUser -Username $NewUser.username -state "SUSPENDED"
         $UpdatedUser.suspended | Should -Be True
         $UpdatedUser.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = Set-JCUser -Username $NewUser.username -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         { Set-JCUser -Username $NewUser.username -state "SUSPENDED" -suspended $false } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         { Set-JCUser -Username $NewUser.username -state "ACTIVATED" -suspended $true } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
@@ -1513,26 +1513,26 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via Username' {
 
 Describe -Tag:('JCUser') 'Set-JCUser with State param via UserID' {
     It 'Updates a user state from ACTIVATED to SUSPENDED' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -state "SUSPENDED"
         $UpdatedUser.suspended | Should -Be True
         $UpdatedUser.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         { Set-JCUser -UserID $NewUser.id -state "SUSPENDED" -suspended $false } | Should -Throw
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
-        $NewUser = New-RandomUser -domain "delSetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         { Set-JCUser -UserID $NewUser.id -state "ACTIVATED" -suspended $true | Should -Throw }
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }

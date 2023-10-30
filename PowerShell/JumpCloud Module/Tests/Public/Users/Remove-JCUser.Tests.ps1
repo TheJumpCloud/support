@@ -9,7 +9,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 
     It "Removes JumpCloud User by Username and -force" {
 
-        $NewUser = New-RandomUser -Domain "delUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         $RemoveUser = Remove-JCUser  -Username $NewUser.username -force
 
@@ -19,7 +19,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 
     It "Removes JumpCloud User by UserID and -force" {
 
-        $NewUser = New-RandomUser -Domain "delUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
+        $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         $RemoveUser = Remove-JCUser  -UserID $NewUser._id -force
 

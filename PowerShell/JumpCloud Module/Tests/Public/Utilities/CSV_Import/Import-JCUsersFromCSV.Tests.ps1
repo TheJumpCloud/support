@@ -541,7 +541,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
     It "New User Created with MFA Required" {
         # Setup Test
-        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username                       = $user.username
             LastName                       = $user.LastName
@@ -560,7 +560,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
     }
     It "New User Created with MFA Required and Enrollment Period Specified" {
         # Setup Test
-        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $today = Get-Date
         $EnrollmentDays = 14
         $CSVDATA = @{
@@ -584,7 +584,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
         $MFAUser.mfa.configured | Should -Be $false
     }
     It "Throw error if user create with invalid enrollment days" {
-        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username                       = $user.username
             LastName                       = $user.LastName
@@ -605,7 +605,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
 Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     It "New User Created and bound to LDAP server" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -624,7 +624,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     }
     It "New User created, bound to LDAP server and set as an Ldap Binding User" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -643,7 +643,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     }
     It "throw error with invalid params on ldap import" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -666,7 +666,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
     Context "Custom Attribute API error should be returned" {
         It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
             $today = Get-Date
             $EnrollmentDays = 14
             $CSVDATA = @{
@@ -682,7 +682,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
             $importResults[0].AdditionalInfo | Should -Match "Attribute names may not contain spaces"
         }
         It "When a custom attribute name has a non-alphanumeric in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
             $today = Get-Date
             $EnrollmentDays = 14
             $CSVDATA = @{
