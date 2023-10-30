@@ -6,8 +6,8 @@ Describe -Tag:('JCBackup') "Get-JCBackup 1.5.0" {
         }
         # Create new user and system group
 
-        BackupTestsUserGroup = New-JCUserGroup -GroupName "backup_usr_$(New-RandomString -NumberOfChars 5)"
-        BackupTestsSystemGroup = New-JCSystemGroup -GroupName "backup_sys_$(New-RandomString -NumberOfChars 5)"
+        $BackupTestsUserGroup = New-JCUserGroup -GroupName "backup_usr_$(New-RandomString -NumberOfChars 5)"
+        $BackupTestsSystemGroup = New-JCSystemGroup -GroupName "backup_sys_$(New-RandomString -NumberOfChars 5)"
         Add-JCUserGroupMember -GroupName $BackupTestsUserGroup.Name -username $PesterParams_User1.Username
         Add-JCSystemGroupMember -GroupName $BackupTestsSystemGroup.Name -SystemID $PesterParams_SystemLinux._id
     }
