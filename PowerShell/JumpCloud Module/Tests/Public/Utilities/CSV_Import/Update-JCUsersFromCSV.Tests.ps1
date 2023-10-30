@@ -302,9 +302,6 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         }
     }
 
-    It "Removes users Where-Object Email -like *"UpdateCSVUser.$(New-RandomString -NumberOfChars 5)"* " {
-        Get-JCUser | Where-Object Email -like *"UpdateCSVUser.$(New-RandomString -NumberOfChars 5)"* | Remove-JCUser -force
-    }
     It "Updates users from a CSV populated with uid/ gid attributes" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
         $UserCSVUpdate = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_uid_guid.csv" -force
@@ -317,7 +314,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.unix_uid | Should -Be $($NewUserInfo.unix_uid)
             $ImportCheck.unix_guid | Should -Be $($NewUserInfo.unix_guid)
         }
-        Get-JCUser | Where-Object Email -like *"UpdateCSVUser.$(New-RandomString -NumberOfChars 5)"* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *UpdateCSVUser* | Remove-JCUser -force
     }
 
     It "Updates users from a CSV populated with no information" {
@@ -476,7 +473,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Update Tests' {
         $ImportStatus.Status | Should -Match "Cannot bind parameter"
     }
     AfterAll {
-        Get-JCUser | Where-Object Email -like *"UpdateCSVUser.$(New-RandomString -NumberOfChars 5)"* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *UpdateCSVUser* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
