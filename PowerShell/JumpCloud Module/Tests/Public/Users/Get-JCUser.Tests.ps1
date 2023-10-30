@@ -26,7 +26,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by username" {
 
         $Username = New-RandomString -NumberOfChars 8
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -username $Username
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -username $Username
         $NewUser = Get-JCUser -Username $Username
         $NewUser.username | Should -Be $Username
         Remove-JCUser -UserID $NewUser._id -force
@@ -35,7 +35,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by lastname" {
 
         $lastname = New-RandomString -NumberOfChars 8
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -lastname $lastname
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -lastname $lastname
         $NewUser = Get-JCUser -lastname $lastname
         $NewUser.lastname | Should -Be $lastname
         Remove-JCUser -UserID $NewUser._id -force
@@ -43,7 +43,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
 
     It "Searches a JumpCloud user by firstname" {
         $firstname = New-RandomString -NumberOfChars 8
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -firstname $firstname
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -firstname $firstname
         $NewUser = Get-JCUser -firstname $firstname
         $NewUser.firstname | Should -Be $firstname
         Remove-JCUser -UserID $NewUser._id -force
@@ -51,35 +51,35 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
 
     It "Searches a JumpCloud user by email" {
         $email = "deleteme@$(New-RandomString -NumberOfChars 8).com"
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -email $email
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -email $email
         $NewUser = Get-JCUser -email $email
         $NewUser.email | Should -Be $email
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by alternateEmail" -Skip {
         $alternateEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -alternateEmail $alternateEmail
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -alternateEmail $alternateEmail
         $NewUser = Get-JCUser -alternateEmail $alternateEmail
         $NewUser.alternateEmail | Should -Be $alternateEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by recoveryEmail" {
         $recoveryEmail = "deleteme@$(New-RandomString -NumberOfChars 8).com"
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -recoveryEmail $recoveryEmail
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -recoveryEmail $recoveryEmail
         $NewUser = Get-JCUser -recoveryEmail $recoveryEmail
         $NewUser.recoveryEmail.address | Should -Be $recoveryEmail
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by managedAppleID" {
         $managedAppleID = "deleteme@$(New-RandomString -NumberOfChars 8).com"
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -managedAppleID $managedAppleID
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -managedAppleID $managedAppleID
         $NewUser = Get-JCUser -managedAppleID $managedAppleID
         $NewUser.managedAppleID | Should -Be $managedAppleID
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by managerID" {
         $manager = $PesterParams_User1.id
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $manager
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $manager
         $NewUser = Get-JCUser -manager $manager
         $NewUser.manager | Should -Be $manager
         Remove-JCUser -UserID $NewUser._id -force
@@ -87,7 +87,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by managerUsername" {
         $managerUsername = $PesterParams_User1.username
         $managerId = $PesterParams_User1.id
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerUsername
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerUsername
         $NewUser = Get-JCUser -manager $managerUsername
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
@@ -96,7 +96,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         # Define two users who's username is contained by another user
         $newUser1 = New-JCUser -username "jemartin" -firstname "je" -lastname "martin" -email "jemartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.com"
         $newUser2 = New-JCUser -username "emartin" -firstname "e" -lastname "martin" -email "emartin@$(get-random -Minimum 100 -Maximum 999)-deleteme.come"
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $newUser2.username
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $newUser2.username
         $NewUser = Get-JCUser -manager $newUser2.username
         $NewUser = Get-JCUser -manager $newUser2.email
         $NewUser.manager | Should -Be $newUser2.Id
@@ -109,7 +109,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by managerUsername (Case Insensitive)" {
         $managerUsername = $PesterParams_User1.username
         $managerId = $PesterParams_User1.id
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerUsername
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerUsername
         $NewUser = Get-JCUser -manager $($managerUsername.ToUpper())
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
@@ -117,7 +117,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by managerEmail" {
         $managerEmail = $PesterParams_User1.email
         $managerId = $PesterParams_User1.id
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerEmail
         $NewUser = Get-JCUser -manager $managerEmail
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
@@ -125,13 +125,13 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
     It "Searches a JumpCloud user by managerEmail (Case Insensitive)" {
         $managerEmail = $PesterParams_User1.email
         $managerId = $PesterParams_User1.id
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JCUser -manager $managerEmail
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerEmail
         $NewUser = Get-JCUser -manager $($managerEmail.ToUpper())
         $NewUser.manager | Should -Be $managerId
         Remove-JCUser -UserID $NewUser._id -force
     }
     It "Searches a JumpCloud user by state SUSPENDED" {
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JcUser -state "SUSPENDED"
         $SearchUser = Get-JCUser -state "SUSPENDED" | Select-Object -First 1
         $SearchUserLower = Get-JCUser -state "suspended" | Select-Object -First 1
         $SearchUserMixed = Get-JCUser -state "Suspended" | Select-Object -First 1
@@ -141,7 +141,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         Remove-JCUser -UserId $NewUser._id -force
     }
     It "Searches a JumpCloud user by state STAGED" {
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "STAGED"
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JcUser -state "STAGED"
         $SearchUser = Get-JCUser -state "STAGED" | Select-Object -First 1
         $SearchUserLower = Get-JCUser -state "staged" | Select-Object -First 1
         $SearchUserMixed = Get-JCUser -state "Staged" | Select-Object -First 1
@@ -151,7 +151,7 @@ Describe -Tag:('JCUser') 'Get-JCUser 1.1' {
         Remove-JCUser -UserId $NewUser._id -force
     }
     It "Searches a JumpCloud user by state ACTIVATED" {
-        $NewUser = New-RandomUser -Domain DeleteMe | New-JcUser -state "ACTIVATED"
+        $NewUser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JcUser -state "ACTIVATED"
         $SearchUser = Get-JCUser -state "ACTIVATED" | Select-Object -First 1
         $SearchUserLower = Get-JCUser -state "activated" | Select-Object -First 1
         $SearchUserMixed = Get-JCUser -state "Activated" | Select-Object -First 1
@@ -409,7 +409,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 
     It "Searches for a user by external_source_type" {
 
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Newuser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
         $Random1 = "$(Get-Random)\+?|{[()^$.#"
         $Random2 = "$(Get-Random)\+?|{[()^$.#"
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
@@ -422,7 +422,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 
     It "Searches for a user by external_dn" {
 
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Newuser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
         $Random1 = Get-Random
         $Random2 = Get-Random
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
@@ -434,7 +434,7 @@ Describe -Tag:('JCUser') "Get-JCUser 1.12" {
 
     It "Searches for a user by external_dn and external_source_type" {
 
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser
+        $Newuser = New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
         $Random1 = Get-Random
         $Random2 = Get-Random
         $SetUser = Set-JCUser -Username $Newuser.username -external_source_type "$Random1" -external_dn "$Random2"
@@ -509,7 +509,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
                 $splat.Add($param, $paramInput)
             }
         }
-        $NewUser = "New-RandomUser -Domain DeleteMe | New-JCUser @splat"
+        $NewUser = "New-RandomUser -Domain "delGetUser.$(Get-RandomString -NumofChars 5)" | New-JCUser @splat"
         $splat.add('username', (New-RandomString -numberofchars 8))
         $NewUserInvoke = Invoke-Expression -Command:($NewUser)
         foreach ($param in $splat.keys) {

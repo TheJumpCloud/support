@@ -1,8 +1,8 @@
 Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' -skip {
     #TODO: rework tests, dynamically populate groups/ system, else these tests fail
     BeforeAll {  }
-    It "Removes users Where-Object Email -like *del_set_user_* " {
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *ImportCSVUser.* " {
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
     It "Imports users from the ImportExample_Pester_Test using -Force" {
         $UserImport = Import-JCUsersFromCSV -CSVFilePath $PesterParams_Import_JCUsersFromCSV_1_1_Tests -force
@@ -338,8 +338,8 @@ Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' -skip {
 
 
     }
-    It "Removes users Where-Object Email -like *del_set_user_* " {
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *ImportCSVUser.* " {
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
@@ -361,8 +361,8 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         }
 
     }
-    It "Removes users Where-Object Email -like *del_set_user_* " {
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *ImportCSVUser.* " {
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
 
 
@@ -389,7 +389,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         }
 
 
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
 
     }
 
@@ -416,7 +416,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
     It "Imports users from a CSV populated with uid/ gid attributes" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
@@ -429,7 +429,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.unix_uid | Should -Be $($NewUserInfo.unix_uid)
             $ImportCheck.unix_guid | Should -Be $($NewUserInfo.unix_guid)
         }
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
 
     It "Imports users from a CSV populated with telephony, location, and user information attributes" {
@@ -474,7 +474,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
         }
 
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
 
     It "Imports users from a CSV populated with telephony, location, user information attributes, group additions, system binding, and custom attributes" {
@@ -526,14 +526,14 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             # $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty GroupsAdd | Select-Object Status -Unique | Select-Object -ExpandProperty Status | Should -Be "Added"
         }
 
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
 
     }
     It "Imports a new user from a CSV with a null custom attribute should throw" {
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_missingAttribute.csv"
         { Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_missingAttribute.csv" -force } | Should -Throw
 
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
 
     }
 
@@ -541,7 +541,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
     It "New User Created with MFA Required" {
         # Setup Test
-        $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
         $CSVDATA = @{
             Username                       = $user.username
             LastName                       = $user.LastName
@@ -560,7 +560,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
     }
     It "New User Created with MFA Required and Enrollment Period Specified" {
         # Setup Test
-        $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
         $today = Get-Date
         $EnrollmentDays = 14
         $CSVDATA = @{
@@ -584,7 +584,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
         $MFAUser.mfa.configured | Should -Be $false
     }
     It "Throw error if user create with invalid enrollment days" {
-        $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
         $CSVDATA = @{
             Username                       = $user.username
             LastName                       = $user.LastName
@@ -599,13 +599,13 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
         $ImportStatus.Status | Should -Match "Cannot bind parameter"
     }
     AfterAll {
-        Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     It "New User Created and bound to LDAP server" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -624,7 +624,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     }
     It "New User created, bound to LDAP server and set as an Ldap Binding User" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -643,7 +643,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     }
     It "throw error with invalid params on ldap import" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+        $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -666,7 +666,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
     Context "Custom Attribute API error should be returned" {
         It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+            $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
             $today = Get-Date
             $EnrollmentDays = 14
             $CSVDATA = @{
@@ -682,7 +682,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
             $importResults[0].AdditionalInfo | Should -Match "Attribute names may not contain spaces"
         }
         It "When a custom attribute name has a non-alphanumeric in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain "del_set_user_$(Get-Date -Format MM-dd-yyyy)"
+            $user = New-RandomUser -Domain "ImportCSVUser.$(Get-RandomString -NumofChars 5)"
             $today = Get-Date
             $EnrollmentDays = 14
             $CSVDATA = @{
@@ -701,5 +701,5 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
 }
 
 AfterAll {
-    Get-JCUser | Where-Object Email -like *del_set_user_* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
 }

@@ -1,155 +1,155 @@
 Describe -Tag:('JCUser') 'New-JCUser 1.0' {
     BeforeAll {  }
     It "Creates a new user" {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser
         $NewUser._id.count | Should -Be 1
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User allow_public_key -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -allow_public_key $true
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -allow_public_key $true
         $NewUser.allow_public_key | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User allow_public_key -eq False " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -allow_public_key $false
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -allow_public_key $false
         $NewUser.allow_public_key | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User sudo -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -sudo $true
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -sudo $true
         $NewUser.sudo | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User sudo -eq False " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -sudo $false
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -sudo $false
         $NewUser.sudo | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User enable_managed_uid -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -enable_managed_uid $true -unix_uid 1 -unix_guid 1
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -enable_managed_uid $true -unix_uid 1 -unix_guid 1
         $NewUser.enable_managed_uid | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User enable_managed_uid -eq False " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -enable_managed_uid $false
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -enable_managed_uid $false
         $NewUser.enable_managed_uid | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User passwordless_sudo -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -passwordless_sudo $true
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -passwordless_sudo $true
         $NewUser.passwordless_sudo | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User passwordless_sudo -eq False " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -passwordless_sudo $false
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -passwordless_sudo $false
         $NewUser.passwordless_sudo | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
 
     It "Creates a new User ldap_binding_user -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -ldap_binding_user $true
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -ldap_binding_user $true
         $NewUser.ldap_binding_user | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User ldap_binding_user -eq False " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -ldap_binding_user $false
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -ldap_binding_user $false
         $NewUser.ldap_binding_user | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User enable_user_portal_multifactor -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -enable_user_portal_multifactor $true
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -enable_user_portal_multifactor $true
         $NewUser.enable_user_portal_multifactor | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User enable_user_portal_multifactor -eq False " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -enable_user_portal_multifactor $false
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -enable_user_portal_multifactor $false
         $NewUser.enable_user_portal_multifactor | Should -Be False
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User sets unix_uid" {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -unix_uid 100
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -unix_uid 100
         $NewUser.unix_uid | Should -Be 100
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User sets unix_guid" {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser  -unix_guid 100
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser  -unix_guid 100
         $NewUser.unix_guid | Should -Be 100
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets manager" {
         $managerID = $PesterParams_User1.id
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -manager $managerID
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerID
         $NewUser.manager | Should -Be $managerID
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets managerUsername" {
         $managerUsername = $PesterParams_User1.username
         $managerID = $PesterParams_User1.id
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -manager $managerUsername
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerUsername
         $NewUser.manager | Should -Be $managerID
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets managerEmail" {
         $managerEmail = $PesterParams_User1.email
         $managerID = $PesterParams_User1.id
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -manager $managerEmail
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -manager $managerEmail
         $NewUser.manager | Should -Be $managerID
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets alternateEmail" {
         $alternateEmail = "$((New-RandomString -NumberOfChars 6))ae@DeleteMe.com"
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -alternateEmail $alternateEmail
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -alternateEmail $alternateEmail
         $NewUser.alternateEmail | Should -Be $alternateEmail
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets recoveryEmail" {
         $recoveryEmail = "$((New-RandomString -NumberOfChars 6))re@DeleteMe.com"
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -recoveryEmail $recoveryEmail
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -recoveryEmail $recoveryEmail
         $NewUser.recoveryEmail.address | Should -Be $recoveryEmail
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
     It "Creates a new User sets managedAppleID" {
         $managedAppleID = "$((New-RandomString -NumberOfChars 6))maid@DeleteMe.com"
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -managedAppleID $managedAppleID
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -managedAppleID $managedAppleID
         $NewUser.managedAppleID | Should -Be $managedAppleID
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User with 1 custom attributes" {
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 1
+        $NewUser = New-RandomUser -Attributes -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -NumberOfCustomAttributes 1
         $NewUser.attributes._id.Count | Should -Be 1
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User with 3 custom attributes" {
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -NumberOfCustomAttributes 3
+        $NewUser = New-RandomUser -Attributes -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -NumberOfCustomAttributes 3
         $NewUser.attributes._id.Count | Should -Be 3
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User with state SUSPENDED" {
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -state "SUSPENDED"
+        $NewUser = New-RandomUser -Attributes -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "SUSPENDED"
         $NewUser.suspended | Should -Be True
         $NewUser.state | Should -Be "SUSPENDED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 
     It "Creates a new User with state STAGED" {
-        $NewUser = New-RandomUser -Attributes -Domain DeleteMe | New-JCUser -state "STAGED"
+        $NewUser = New-RandomUser -Attributes -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -state "STAGED"
         $NewUser.state | Should -Be "STAGED"
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
@@ -160,7 +160,7 @@ Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
     #Linux UID, GUID
     It "Adds a JumpCloud user with a high UID and GUID" {
 
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -unix_uid 1000000 -unix_guid 1000000
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -unix_uid 1000000 -unix_guid 1000000
 
         $NewUser.unix_uid | Should -Be '1000000'
         $NewUser.unix_guid | Should -Be '1000000'
@@ -171,7 +171,7 @@ Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
 
     It "Adds a JumpCloud user with password_never_expires false " {
 
-        $ExpFalse = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -password_never_expires $false
+        $ExpFalse = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -password_never_expires $false
 
         $ExpFalse.password_never_expires | Should -Be $false
 
@@ -181,7 +181,7 @@ Describe -Tag:('JCUser') 'Add-JCUser 1.3.0' {
 
     It "Adds a JumpCloud user with password_never_expires true " {
 
-        $ExpTrue = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -password_never_expires $true
+        $ExpTrue = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -password_never_expires $true
 
         $ExpTrue.password_never_expires | Should -Be $true
 
@@ -340,7 +340,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
     It "Creates a new user with enable_user_portal_multifactor -eq True" {
 
 
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true
+        $Newuser = New-RandomUser -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $true
 
         $Newuser.mfa.exclusion | Should -Be $true
 
@@ -352,7 +352,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $EnrollmentDays = 30
 
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
+        $Newuser = New-RandomUser -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
 
         $Newuser.mfa.exclusion | Should -Be $true
 
@@ -364,7 +364,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $EnrollmentDays = 365
 
-        $Newuser = New-RandomUser -domain "deleteme" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
+        $Newuser = New-RandomUser -Domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
 
         $Newuser.mfa.exclusion | Should -Be $true
 
@@ -375,7 +375,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
     It "Creates a new user with enable_user_portal_multifactor -eq True with Attributes" {
 
-        $NewUser = New-RandomUser -domain "deleteme"-Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
+        $NewUser = New-RandomUser -Domain "delNewUser.$(Get-RandomString -NumofChars 5)"-Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True
 
         $Newuser.mfa.exclusion | Should -Be $true
 
@@ -387,7 +387,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 
         $EnrollmentDays = 30
 
-        $NewUser = New-RandomUser -domain "deleteme"-Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True -EnrollmentDays $EnrollmentDays
+        $NewUser = New-RandomUser -Domain "delNewUser.$(Get-RandomString -NumofChars 5)"-Attributes | New-JCUser -NumberOfCustomAttributes 2 -enable_user_portal_multifactor $True -EnrollmentDays $EnrollmentDays
 
         $Newuser.mfa.exclusion | Should -Be $true
 
@@ -425,7 +425,7 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
 Describe -Tag:('JCUser') "New-JCUser with suspend param 1.15" {
 
     It "Creates a new User suspended -eq True " {
-        $NewUser = New-RandomUser -domain "del_new_user_$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -suspended $true
+        $NewUser = New-RandomUser -domain "delNewUser.$(Get-RandomString -NumofChars 5)" | New-JCUser -suspended $true
         $NewUser.suspended | Should -Be True
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
