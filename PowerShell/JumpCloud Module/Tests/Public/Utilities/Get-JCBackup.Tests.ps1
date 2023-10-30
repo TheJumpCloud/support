@@ -4,8 +4,17 @@ Describe -Tag:('JCBackup') "Get-JCBackup 1.5.0" {
         If (-not (Get-JCAssociation -Type:('user') -Name:($PesterParams_User1.username) -TargetType:('system') -IncludeNames | Where-Object { $_.TargetName -eq $PesterParams_SystemLinux.displayName })) {
             Add-JCAssociation -Type:('user') -Name:($PesterParams_User1.username) -TargetType:('system') -TargetName:($PesterParams_SystemLinux.displayName) -Force
         }
-        Add-JCUserGroupMember -GroupName $PesterParams_UserGroup.Name -username $PesterParams_User1.Username
-        Add-JCSystemGroupMember -GroupName $PesterParams_SystemGroup.Name -SystemID $PesterParams_SystemLinux._id
+        # Create new user and system group
+
+        $BackupTestsUserGroup = New-JCUserGroup -GroupName "backup_usr_$(New-RandomString -NumberOfChars 5)"
+        $BackupTestsSystemGroup = New-JCSystemGroup -GroupName "backup_sys_$(New-RandomString -NumberOfChars 5)"
+        Add-JCUserGroupMember -GroupName $BackupTestsUserGroup.Name -username $PesterParams_User1.Username
+        Add-JCSystemGroupMember -GroupName $BackupTestsSystemGroup.Name -SystemID $PesterParams_SystemLinux._id
+    }
+    AfterAll {
+        # Remove user and system groups
+        Remove-JCUserGroup -GroupName $BackupTestsUserGroup.Name -force
+        Remove-JCSystemGroup -GroupName $BackupTestsSystemGroup.Name -force
     }
     It "Backs up JumpCloud users" {
         Get-JCBackup -All

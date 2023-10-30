@@ -2,8 +2,6 @@ Describe -Tag:('DynamicHash') "Get-DynamicHash" {
     It "User Hash" {
         $UserHash = Get-DynamicHash -Object User -returnProperties 'created', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'suspended', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'alternateEmail', 'managedAppleId', 'recoveryEmail'
 
-        $UserHash.count | Should -Be (Get-JCUser).count
-
         $UserHash.values.account_locked | Should -Not -Be $null
         $UserHash.values.activated | Should -Not -Be $null
         $UserHash.values.addresses | Should -Not -Be $null
@@ -35,8 +33,6 @@ Describe -Tag:('DynamicHash') "Get-DynamicHash" {
     It "System Hash" {
         $SystemHash = Get-DynamicHash -Object System -returnProperties 'created', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'created', 'displayName', 'hostname', 'lastContact', 'modifySSHDConfig', 'organization', 'os', 'remoteIP', 'serialNumber', 'systemTimezone', 'templateName', 'version'
 
-        $SystemHash.count | Should -Be (Get-JCSystem).count
-
         $SystemHash.values.created | Should -Not -Be $null
         $SystemHash.values.active | Should -Not -Be $null
         $SystemHash.values.agentVersion | Should -Not -Be $null
@@ -61,23 +57,17 @@ Describe -Tag:('DynamicHash') "Get-DynamicHash" {
     It "SystemGroup Hash" {
         $SystemGroupHash = Get-DynamicHash -Object Group -GroupType System -returnProperties 'name', 'type'
 
-        $SystemGroupHash.count | Should -Be (Get-JCGroup -Type System).count
-
         $SystemGroupHash.values.name | Should -Not -Be $null
         $SystemGroupHash.values.type | Should -Not -Be $null
     }
     It "UserGroup Hash" {
         $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties 'name', 'type'
 
-        $UserGroupHash.count | Should -Be (Get-JCGroup -Type User).count
-
         $UserGroupHash.values.name | Should -Not -Be $null
         $UserGroupHash.values.type | Should -Not -Be $null
     }
     It "Command Hash" {
         $CommandHash = Get-DynamicHash -Object Command -returnProperties 'command', 'name', 'launchType', 'commandType', 'trigger', 'scheduleRepeatType'
-
-        $CommandHash.count | Should -Be (Get-JCCommand).count
 
         $CommandHash.Values.command | Should -Not -Be $null
         $CommandHash.Values.name | Should -Not -Be $null

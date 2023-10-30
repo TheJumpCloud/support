@@ -4,10 +4,17 @@ Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
         If (-not $PesterParams_Command1) {
             $PesterParams_Command1 = New-JCCommand @PesterParams_NewCommand1
         }
-        $PesterParams_SystemGroup = Get-JCGroup -Type:('System') | Where-Object { $_.name -eq $PesterParams_SystemGroup.Name }
-        If (-not $PesterParams_SystemGroup) {
-            $PesterParams_SystemGroup = New-JCSystemGroup @PesterParams_NewSystemGroup
+        # System Group Definition:
+        $CmdTargetSystemGroup = @{
+            'GroupName' = "PesterTest_CmdTargetGroup_$(New-RandomString -NumberOfChars 5)"
+        };
+        $SystemGroupForCmdTarget = Get-JCGroup -Type:('System') | Where-Object { $_.name -match "PesterTest_CmdTargetGroup" }
+        If (-not $SystemGroupForCmdTarget) {
+            $SystemGroupForCmdTarget = New-JCSystemGroup @CmdTargetSystemGroup
         }
+    }
+    AfterAll {
+        Remove-JCSystemGroup -GroupName $SystemGroupForCmdTarget.Name -force
     }
     It "Adds a single system to a JumpCloud command" {
 
@@ -24,26 +31,26 @@ Describe -Tag:('JCCommandTarget') 'Add-JCCommandTarget 1.3' {
 
     It "Adds a single system group to a JumpCloud command by GroupName" {
 
-        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $PesterParams_SystemGroup.Name
+        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $SystemGroupForCmdTarget.Name
 
-        $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $PesterParams_SystemGroup.Name
+        $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $SystemGroupForCmdTarget.Name
 
         $TargetAdd.Status | Should -Be 'Added'
 
-        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $PesterParams_SystemGroup.Name
+        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $SystemGroupForCmdTarget.Name
 
 
     }
 
     It "Adds a single system group to a JumpCloud command by GroupID" {
 
-        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $PesterParams_SystemGroup.Name
+        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $SystemGroupForCmdTarget.Name
 
-        $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupID $PesterParams_SystemGroup.Id
+        $TargetAdd = Add-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupID $SystemGroupForCmdTarget.Id
 
         $TargetAdd.Status | Should -Be 'Added'
 
-        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $PesterParams_SystemGroup.Name
+        $TargetRemove = Remove-JCCommandTarget -CommandID $PesterParams_Command1.id -GroupName $SystemGroupForCmdTarget.Name
 
 
     }

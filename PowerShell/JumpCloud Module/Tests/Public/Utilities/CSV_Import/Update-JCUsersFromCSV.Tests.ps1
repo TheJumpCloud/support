@@ -302,9 +302,6 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         }
     }
 
-    It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-    }
     It "Updates users from a CSV populated with uid/ gid attributes" {
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
         $UserCSVUpdate = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_uid_guid.csv" -force
@@ -317,7 +314,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.unix_uid | Should -Be $($NewUserInfo.unix_uid)
             $ImportCheck.unix_guid | Should -Be $($NewUserInfo.unix_guid)
         }
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *UpdateCSVUser* | Remove-JCUser -force
     }
 
     It "Updates users from a CSV populated with no information" {
@@ -414,14 +411,14 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
         $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/UpdateExample_missingAttribute.csv"
         { Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/UpdateExample_missingAttribute.csv" -force } | Should -Throw
     }
-    It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    It "Removes users Where-Object Email -like *UpdateCSVUser.* " {
+        Get-JCUser | Where-Object Email -like *UpdateCSVUser.* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUsersFromCSV') 'MFA Update Tests' {
     It "User Created/ Updated with Update-JCUserFromCSV with MFA Required" {
         # Setup Test
-        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $CSVDATA = @{
             Username                       = $user.username
             enable_user_portal_multifactor = $true
@@ -440,7 +437,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Update Tests' {
     }
     It "New User Created with MFA Required and Enrollment Period Specified" {
         # Setup Test
-        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $today = Get-Date
         $EnrollmentDays = 14
         $CSVDATA = @{
@@ -464,7 +461,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Update Tests' {
         $MFAUser.mfa.configured | Should -Be $false
     }
     It "Throw error if user updated with invalid enrollment days" {
-        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $CSVDATA = @{
             Username                       = $user.username
             enable_user_portal_multifactor = $true
@@ -476,13 +473,13 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Update Tests' {
         $ImportStatus.Status | Should -Match "Cannot bind parameter"
     }
     AfterAll {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *UpdateCSVUser* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
     It "New User updated and bound to LDAP server" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $CSVDATA = @{
             Username          = $user.username
             ldapserver_id     = $ldapServer.id
@@ -498,7 +495,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
     }
     It "New User Updated, bound to LDAP server and set as an Ldap Binding User" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $CSVDATA = @{
             Username          = $user.username
             ldapserver_id     = $ldapServer.id
@@ -514,7 +511,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
     }
     It "throw error with invalid params on ldap import" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain pleasedelete | New-JCUser
+        $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $CSVDATA = @{
             Username          = $user.username
             ldapserver_id     = "$($ldapServer.id)"
@@ -534,7 +531,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Update Tests' {
 Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
     Context "Custom Attribute API error should be returned" {
         It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain pleasedelete | New-JCUser
+            $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
             $CSVDATA = @{
                 Username         = $user.username
                 Attribute1_name  = "bad value"
@@ -547,7 +544,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
             $UpdateStatus[0].status | Should -Not -Match "User does not exist"
         }
         It "When a custom attribute name has a non-alphanumeric in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain pleasedelete | New-JCUser
+            $user = New-RandomUser -Domain "UpdateCSVUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
             $CSVDATA = @{
                 Username         = $user.username
                 Attribute1_name  = "bad.value"
@@ -562,5 +559,5 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
     }
 }
 AfterAll {
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -like *UpdateCSVUser.* | Remove-JCUser -force
 }
