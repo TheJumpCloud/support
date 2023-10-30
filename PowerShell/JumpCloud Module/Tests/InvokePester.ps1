@@ -47,20 +47,25 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
     )
 } elseif ($PSCmdlet.ParameterSetName -eq 'dataTests') {
     if ($env:CI) {
-        $env:JCAPIKEY = $env:PESTER_APIKEY
-        Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY)  -force
-        $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
-        $counter = [pscustomobject] @{ Value = 0 }
-        $groupSize = 30
-        $PesterGroups = $PesterTestsPaths | Group-Object -Property { [math]::Floor($counter.Value++ / $groupSize) }
-        $jobMatrixSet = @{
-            0 = $PesterGroups[0].Group.FullName
-            1 = $PesterGroups[1].Group.FullName
-            2 = $PesterGroups[2].Group.FullName
+        If ($env:job_group) {
+            # split tests by job group:
+            $env:JCAPIKEY = $env:PESTER_APIKEY
+            Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY)  -force
+            $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
+            $counter = [pscustomobject] @{ Value = 0 }
+            $groupSize = 30
+            $PesterGroups = $PesterTestsPaths | Group-Object -Property { [math]::Floor($counter.Value++ / $groupSize) }
+            $jobMatrixSet = @{
+                0 = $PesterGroups[0].Group.FullName
+                1 = $PesterGroups[1].Group.FullName
+                2 = $PesterGroups[2].Group.FullName
+            }
+            Write-Host "[status] Running CI job group $env:job_group"
+            $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
         }
-        Write-Host "[status] Running CI job group $env:job_group"
-        $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
-    } else {
+    }
+
+    if (-Not $PesterRunPaths) {
         $PesterRunPaths = @(
             "$PSScriptRoot"
         )

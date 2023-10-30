@@ -4,7 +4,7 @@ Describe -Tag:('JCSystemGroupMember') 'Add-JCSystemGroupMember 1.0' {
         $SystemMemberGroup = @{
             'GroupName' = "PesterTest_SysMember_$(New-RandomString -NumberOfChars 5)"
         };
-        $SystemMemberGroupForMemberTests = Get-JCGroup -Type:('System') | Where-Object { $_.name -match "PesterTest_CmdTargetGroup" }
+        $SystemMemberGroupForMemberTests = Get-JCGroup -Type:('System') | Where-Object { $_.name -match "PesterTest_SysMember_" }
         If (-not $SystemMemberGroupForMemberTests) {
             $SystemMemberGroupForMemberTests = New-JCSystemGroup @CmdTargetSystemGroup
         }
