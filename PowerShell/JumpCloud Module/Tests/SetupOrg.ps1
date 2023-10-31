@@ -194,5 +194,11 @@ Try {
 #     $variableArray.Add($variableObject)
 
 # }
+# Clean up unnecessary Radius Server Attributes to Export:
+$r1 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusAzureServer' }
+$r2 = $variableArray | Where-Object { $_.name -eq 'PesterTest_RadiusServer' }
+$r1.value | % { $_.psobject.properties.remove('httpMetaData') }
+$r2.value | % { $_.psobject.properties.remove('httpMetaData') }
+
 write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
 Return $variableArray

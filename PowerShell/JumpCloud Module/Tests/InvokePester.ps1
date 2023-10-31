@@ -2,13 +2,15 @@
 # There are two parameter sets
 
 Param(
-    [Parameter(ParameterSetName = 'moduleValidation', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5)][switch]$ModuleValidation,
-    [Parameter(ParameterSetName = 'dataTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
-    , [Parameter(ParameterSetName = 'dataTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
-    , [Parameter(ParameterSetName = 'dataTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
-    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
-    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+    [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$ProviderID
+    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
+    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
+    , [Parameter(ParameterSetName = 'ModuleValidation', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5)][switch]$ModuleValidation
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 6)][switch]$MSP
 )
 
 # Load Get-Config.ps1
@@ -40,17 +42,16 @@ $IncludeTags = If ($IncludeTagList) {
 }
 
 # Determine the parameter set path
-if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
+if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     $IncludeTags = "ModuleValidation"
     $PesterRunPaths = @(
         "$PSScriptRoot/ModuleValidation/"
     )
-} elseif ($PSCmdlet.ParameterSetName -eq 'dataTests') {
+} elseif ($PSCmdlet.ParameterSetName -eq 'SingleOrgTests') {
     if ($env:CI) {
         If ($env:job_group) {
             # split tests by job group:
-            $env:JCAPIKEY = $env:PESTER_APIKEY
-            Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY)  -force
+            $env:JCAPIKEY = $JumpCloudApiKey
             $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
             $counter = [pscustomobject] @{ Value = 0 }
             $groupSize = 30
@@ -70,23 +71,22 @@ if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
             "$PSScriptRoot"
         )
     }
+    Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
+} elseif ($PSCmdlet.ParameterSetName -eq 'MSPTests') {
     # For online tests we need to run setup org and generate resources within an organization
     # Load DefineEnvironment
-    #. ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
-    # Load SetupOrg
-    if ("MSP" -in $IncludeTags) {
-        Write-Host ('[status] MSP Tests setting API Key, OrgID')
-        $env:JCAPIKEY = $env:PESTER_MSP_APIKEY
-        $env:JCOrgId = $env:PESTER_ORGID
-        $env:JCProviderID = $env:PESTER_PROVIDER_ID
-        # force import module
-        Import-Module $FilePath_psd1 -Force
-        Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force
-        # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
-    } else {
-        #Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
-        #. ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-    }
+    $IncludeTags = "MSP"
+    $PesterRunPaths = @(
+        "$PSScriptRoot/ModuleValidation/"
+    )
+    . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKeyMsp) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
+    # Set Env Variables
+    $env:JCAPIKEY = $JumpCloudApiKeyMsp
+    $env:JCOrgId = $JumpCloudMspOrg
+    $env:JCProviderID = $ProviderID
+    # force import module
+    Import-Module $FilePath_psd1 -Force
+    Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -JumpCloudOrgId:($env:JCOrgId) -force
 }
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
