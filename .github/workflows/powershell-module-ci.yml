@@ -227,4 +227,4 @@ jobs:
         run: |
           Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
 
-          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ProviderID "$env:PESTER_PROVIDER_ID" -RequiredModulesRepo "PSGallery"
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ProviderID "$env:PESTER_PROVIDER_ID" -RequiredModulesRepo "PSGallery"

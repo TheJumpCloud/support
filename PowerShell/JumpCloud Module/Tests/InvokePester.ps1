@@ -77,9 +77,9 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     # Load DefineEnvironment
     $IncludeTags = "MSP"
     $PesterRunPaths = @(
-        "$PSScriptRoot/ModuleValidation/"
+        "$PSScriptRoot"
     )
-    . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKeyMsp) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
+    $MSPVars = . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKeyMsp) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
     # Set Env Variables
     $env:JCAPIKEY = $JumpCloudApiKeyMsp
     $env:JCOrgId = $JumpCloudMspOrg
@@ -115,7 +115,7 @@ $configuration.Filter.ExcludeTag = $ExcludeTagList
 $configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
 $configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
 
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PesterRunPaths') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 # Run Pester tests
 Invoke-Pester -Configuration $configuration
 
