@@ -451,14 +451,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
         $parameters = $gmr | Where-Object {
-            ($_.Definition -notmatch "organization")
-            -And ($_.Definition -notmatch "id")
-            -And ($_.Name -In $commandParameters.Keys)
-            -And ($_.Definition -notmatch "bool")
-            -And ($_.Definition -notmatch "manager")
-            -And ($_.Definition -notmatch "external_dn")
-            -And ($_.Definition -notmatch "activated")
-            -And ($_.Definition -notmatch "external_source_type") }
+            ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -And ($_.Definition -notmatch "manager") -And ($_.Definition -notmatch "external_dn") -And ($_.Definition -notmatch "activated") -And ($_.Definition -notmatch "external_source_type") }
         foreach ($param in $parameters.Name) {
             $string = ""
             $searchPester = ""
