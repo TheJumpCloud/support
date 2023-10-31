@@ -2,8 +2,12 @@ Describe -Tag:('JCOrganization') 'Set-JCOrganization Tests' {
     BeforeAll {
         # Prevent the Update-JCModule from running
         $env:JcUpdateModule = $false
-        $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) { $env:JCApiKey }
-        $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) { $env:JCOrgId }
+        $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+            $env:JCApiKey
+        }
+        $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+            $env:JCOrgId
+        }
     }
     Context 'Single Org Tests' {
         It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
@@ -30,36 +34,5 @@ Describe -Tag:('JCOrganization') 'Set-JCOrganization Tests' {
             $Connect.JCOrgId | Should -Be $env:JCOrgId
             $Connect.JCOrgId | Should -Be $PesterParams_Org.OrgID
         }
-    }
-    Context 'MSP OrgId 1 Tests' {
-        It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
-            $Connect = Set-JCOrganization -JumpCloudApiKey:($PesterParams_ApiKeyMsp) -JumpCloudOrgId:($PesterParams_OrgIDMsp1)
-            $PesterParams_ApiKeyMsp | Should -Be $env:JCApiKey
-            $Connect.JCOrgId | Should -Be $env:JCOrgId
-            $Connect.JCOrgId | Should -Be $PesterParams_OrgIDMsp1
-        }
-        It ('Should connect using the JumpCloudOrgId parameter.') {
-            $Connect = Set-JCOrganization -JumpCloudOrgId:($PesterParams_OrgIDMsp1)
-            $PesterParams_ApiKeyMsp | Should -Be $env:JCApiKey
-            $Connect.JCOrgId | Should -Be $env:JCOrgId
-            $Connect.JCOrgId | Should -Be $PesterParams_OrgIDMsp1
-        }
-    }
-    Context 'MSP OrgId 2 Tests' {
-        It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
-            $Connect = Set-JCOrganization -JumpCloudApiKey:($PesterParams_ApiKeyMsp) -JumpCloudOrgId:($PesterParams_OrgIDMsp2)
-            $PesterParams_ApiKeyMsp | Should -Be $env:JCApiKey
-            $Connect.JCOrgId | Should -Be $env:JCOrgId
-            $Connect.JCOrgId | Should -Be $PesterParams_OrgIDMsp2
-        }
-        It ('Should connect using the JumpCloudOrgId parameter.') {
-            $Connect = Set-JCOrganization -JumpCloudOrgId:($PesterParams_OrgIDMsp2)
-            $PesterParams_ApiKeyMsp | Should -Be $env:JCApiKey
-            $Connect.JCOrgId | Should -Be $env:JCOrgId
-            $Connect.JCOrgId | Should -Be $PesterParams_OrgIDMsp2
-        }
-    }
-    AfterAll {
-        Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
     }
 }
