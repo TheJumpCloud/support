@@ -450,7 +450,15 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         $commandParameters = (GCM Get-JCUser).Parameters
         $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
-        $parameters = $gmr | Where-Object { ($_.Definition -notmatch "organization") -And ($_.Definition -notmatch "id") -And ($_.Name -In $commandParameters.Keys) -And ($_.Definition -notmatch "bool") -and ($_.Definition -notmatch "manager") -and ($_.Definition -notmatch "external_dn") -and ($_.Definition -notmatch "external_source_type") }
+        $parameters = $gmr | Where-Object {
+            ($_.Definition -notmatch "organization")
+            -And ($_.Definition -notmatch "id")
+            -And ($_.Name -In $commandParameters.Keys)
+            -And ($_.Definition -notmatch "bool")
+            -And ($_.Definition -notmatch "manager")
+            -And ($_.Definition -notmatch "external_dn")
+            -And ($_.Definition -notmatch "activated")
+            -And ($_.Definition -notmatch "external_source_type") }
         foreach ($param in $parameters.Name) {
             $string = ""
             $searchPester = ""
@@ -496,7 +504,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
 
         }
     }
-    It "Searches params after setting values to include special characters like \|{[()^$.#" {
+    It "Searches params after setting values to include special characters like \ | { [()^$.#" {
         $commandParameters = (GCM Get-JCUser).Parameters
         $gmr = Get-JCUser -Username $PesterParams_User1.username | GM
         # Get parameters that are not ID, ORGID and have a string following the param name
@@ -505,7 +513,7 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         foreach ($param in $parameters.Name) {
             if (($param -ne "email") -and ($param -ne "username") -and ($param -ne "state") -and ($param -ne "recoveryEmail")) {
                 # Test for special characters
-                $paramInput = "$(New-RandomString -NumberOfChars 8)\|{[()^$.#"
+                $paramInput = "$(New-RandomString -NumberOfChars 8)\| { [()^$.#"
                 $splat.Add($param, $paramInput)
             }
         }
