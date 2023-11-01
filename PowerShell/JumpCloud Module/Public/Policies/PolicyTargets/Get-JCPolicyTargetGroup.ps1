@@ -9,7 +9,7 @@ Function Get-JCPolicyTargetGroup {
 
         Write-Verbose 'Verifying JCAPI Key'
         If ($JCAPIKEY.length -ne 40) {
-            Connect-JCOnline 
+            Connect-JCOnline
         }
 
         Write-Verbose 'Populating API headers'
@@ -35,10 +35,10 @@ Function Get-JCPolicyTargetGroup {
     Process {
         switch ($PSCmdlet.ParameterSetName) {
             'ByName' {
-                $Policy = Get-JCPolicy -Name:($PolicyName) 
+                $Policy = Get-JCPolicy -Name:($PolicyName)
             }
             'ById' {
-                $Policy = Get-JCPolicy -PolicyID:($PolicyID) 
+                $Policy = Get-JCPolicy -PolicyID:($PolicyID)
             }
         }
         If ($Policy) {
@@ -47,8 +47,14 @@ Function Get-JCPolicyTargetGroup {
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
             $Results = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
             ForEach ($Result In $Results) {
-                $GroupID = $Result.id
-                $GroupName = $SystemGroupNameHash[$GroupID].name
+                # Try-catch block to handle the case where policy group is not assigned a a device group
+                Try {
+                    $GroupID = $Result.id
+                    $GroupName = $SystemGroupNameHash[$GroupID].name
+                } Catch {
+                    $GroupID = $null
+                    $GroupName = $null
+                }
                 $OutputObject = [PSCustomObject]@{
                     'PolicyID'   = $PolicyID
                     'PolicyName' = $PolicyName
