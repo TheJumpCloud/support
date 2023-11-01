@@ -995,6 +995,9 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
             $UpdateStatus[0].status | Should -Match "Attribute names may only contain letters and numbers"
             $UpdateStatus[0].status | Should -Not -Match "User does not exist"
         }
+        It "should fail" {
+            "Test" | Should -be "fail"
+        }
     }
 }
 AfterAll {
