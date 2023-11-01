@@ -40,7 +40,10 @@ $IncludeTags = If ($IncludeTagList) {
 } Else {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
-
+# locally, clear pester run paths if it exists before run:
+If ($PesterRunPaths) {
+    Clear-Variable -Name PesterRunPaths
+}
 # Determine the parameter set path
 if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     $IncludeTags = "ModuleValidation"
@@ -74,11 +77,7 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
         }
     }
 
-    if (-Not $PesterRunPaths) {
-        $PesterRunPaths = @(
-            "$PSScriptRoot"
-        )
-    }
+
     $env:JCAPIKEY = $JumpCloudApiKey
     Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
 } elseif ($PSCmdlet.ParameterSetName -eq 'MSPTests') {
@@ -96,6 +95,11 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     # force import module
     Import-Module $FilePath_psd1 -Force
     Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -JumpCloudOrgId:($env:JCOrgId) -force
+}
+if (-Not $PesterRunPaths) {
+    $PesterRunPaths = @(
+        "$PSScriptRoot"
+    )
 }
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
