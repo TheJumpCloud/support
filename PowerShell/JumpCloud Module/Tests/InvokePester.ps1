@@ -51,7 +51,6 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     if ($env:CI) {
         If ($env:job_group) {
             # split tests by job group:
-            $env:JCAPIKEY = $JumpCloudApiKey
             $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
             $counter = [pscustomobject] @{ Value = 0 }
             $groupSize = 30
@@ -64,6 +63,15 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
             Write-Host "[status] Running CI job group $env:job_group"
             $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
         }
+    } else {
+        # run setup org locally and set variables
+        $variables = . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$JumpCloudApiKey" -JumpCloudApiKeyMsp "$JumpCloudApiKey"
+        Write-Host "[status] Setting Env Variables for tests"
+        $variables | Foreach-Object {
+            if ($_.Name) {
+                Set-Variable -Name $_.Name -Value $_.Value -Scope Global
+            }
+        }
     }
 
     if (-Not $PesterRunPaths) {
@@ -71,6 +79,7 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
             "$PSScriptRoot"
         )
     }
+    $env:JCAPIKEY = $JumpCloudApiKey
     Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
 } elseif ($PSCmdlet.ParameterSetName -eq 'MSPTests') {
     # For online tests we need to run setup org and generate resources within an organization
