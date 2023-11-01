@@ -5,7 +5,7 @@ Release Date: November 1, 2023
 #### RELEASE NOTES
 
 ```
-Addressed the issue with Get-JCPolicyTargetGroup indexing error
+Addressed the issue with Get-JCPolicyTargetGroup indexing error. Update several module tests to run in parallel.
 ```
 
 ### BUG FIXES:
