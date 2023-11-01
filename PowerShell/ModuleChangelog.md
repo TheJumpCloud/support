@@ -1,3 +1,17 @@
+## 2.8.2
+
+Release Date: November 1, 2023
+
+#### RELEASE NOTES
+
+```
+Addressed the issue with Get-JCPolicyTargetGroup indexing error
+```
+
+### BUG FIXES:
+
+- Fixed an issue with Get-JCPolicyTargetGroup index error when a policy group is not bound to a device group
+
 ## 2.8.1
 
 Release Date: October 19, 2023
