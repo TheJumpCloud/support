@@ -4,6 +4,8 @@ Param(
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
 )
 Try {
+    Write-Host "[Status] Run Define Environment"
+    $envVars = . "$PSScriptRoot/DefineEnvironment.ps1" -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:('PSGallery')
     Write-Host "[Status] Begin SetupOrg"
     $stopwatch = [system.diagnostics.stopwatch]::StartNew()
     # Import JC Module
@@ -39,12 +41,12 @@ Try {
             $ExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and $_.externally_managed }
             $UpdateExternallyManagedUsersToRemove = $ExternallyManagedUsersToRemove | Set-JCUser -externally_managed $false
             $RemoveExternallyManagedUsers = $ExternallyManagedUsersToRemove | Remove-JCUser -force
-            write-host "[status] Removed users: $($stopwatch.Elapsed)"
+            Write-Host "[status] Removed users: $($stopwatch.Elapsed)"
         }
         # Remove all systems from an org
         If ($Systems) {
             $null = Get-JCSystem | Remove-JCSystem -force
-            write-host "[status] Removed systems: $($stopwatch.Elapsed)"
+            Write-Host "[status] Removed systems: $($stopwatch.Elapsed)"
         }
         # Remove all groups from an org
         If ($Groups) {
@@ -58,25 +60,25 @@ Try {
                     Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
                 }
             }
-            write-host "[status] Removed groups: $($stopwatch.Elapsed)"
+            Write-Host "[status] Removed groups: $($stopwatch.Elapsed)"
         }
         # Remove all Commands from an org
         If ($Commands) {
             $null = Get-JCCommand | Remove-JCCommand -force
             $null = Get-JCCommandResult | Remove-JCCommandResult -force
-            write-host "[status] Removed commands: $($stopwatch.Elapsed)"
+            Write-Host "[status] Removed commands: $($stopwatch.Elapsed)"
         }
         # Remove all RadiusServers from an org
         If ($RadiusServers) {
             $null = Get-JCRadiusServer | Remove-JCRadiusServer -Force
-            write-host "[status] Removed Radius Servers: $($stopwatch.Elapsed)"
+            Write-Host "[status] Removed Radius Servers: $($stopwatch.Elapsed)"
         }
         if ($Policies) {
             $allPolicies = Get-JCPolicy
             foreach ($policy in $allPolicies.id) {
                 $null = Remove-JcSdkPolicy -Id $policy
             }
-            write-host "[status] Removed Policies: $($stopwatch.Elapsed)"
+            Write-Host "[status] Removed Policies: $($stopwatch.Elapsed)"
         }
     }
     Remove-Org -Users -Groups -Commands -RadiusServers -Policies
@@ -85,7 +87,7 @@ Try {
     # Generate required policies
     foreach ( $policyName in $PesterParamsHash_Common.MultiplePolicyList ) {
         If (-not (Get-JCPolicy -Name $policyName)) {
-            New-JCpolicy -templateName linux_Disable_USB_Storage -Name $policyName
+            New-JCPolicy -TemplateName linux_Disable_USB_Storage -Name $policyName
         }
     }
     Write-Host "[Status] Finished Generating Policies: $($stopwatch.Elapsed)"
@@ -119,7 +121,7 @@ Try {
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
             If (-not (Get-JcSdkPolicyAssociation -PolicyId:($_.id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
-                Set-JcSdkPolicyAssociation -Op:("add") -PolicyId:($_.id) -Type:('system_group') -id:($PesterParamsHash_BuildOrg.SystemGroup.id);
+                Set-JcSdkPolicyAssociation -Op:("add") -PolicyId:($_.id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
             };
         };
         UserGroupMembership           = If (-not (Get-JcSdkUserGroupMember -GroupId:($PesterParamsHash_BuildOrg.UserGroup.id) | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.User1.id })) {
@@ -145,7 +147,7 @@ Try {
 
     # Generate command results if they dont exist
     If ([System.String]::IsNullOrEmpty($PesterParamsHash_BuildOrg.CommandResults) -or $PesterParamsHash_BuildOrg.CommandResults.Count -lt $PesterParams_CommandResultCount) {
-        If (-not (Get-JCSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
+        If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
             Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id)
         };
         For ($i = 1; $i -le $PesterParams_CommandResultCount; $i++) {
@@ -154,17 +156,24 @@ Try {
         While ((Get-JCCommandResult | Where-Object { $_.Name -eq $PesterParamsHash_BuildOrg.Command1.name }).Count -ge $PesterParams_CommandResultCount) {
             Start-Sleep -Milliseconds:(200)
         }
-        If ((Get-JCSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
+        If ((Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system') | Where-Object { $_.targetId -eq $PesterParamsHash_BuildOrg.SystemLinux._id })) {
             Set-JcSdkCommandAssociation -Op:("remove") -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Type:('system') -Id:($PesterParamsHash_BuildOrg.SystemLinux._id)
 
         };
     }
     Write-Host "[Status] Finished Generating Command Results: $($stopwatch.Elapsed)"
 
+    $variableArray = New-Object System.Collections.Generic.List[PSCustomObject]
+
     # Combine all hash tables into one list and foreach of their values create a new global parameter
     (Get-Variable -Scope:('Script') -Name:("$($PesterParamsHash_VariableName.VariableNamePrefixHash)*")).Value | ForEach-Object {
         $_.GetEnumerator() | ForEach-Object {
             Set-Variable -Name:("$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)") -Value:($_.Value) -Scope:('Global')
+            $variableObject = [PSCustomObject]@{
+                Name  = "$($PesterParamsHash_VariableName.VariableNamePrefix)$($_.Name)"
+                Value = $_.Value
+            }
+            $variableArray.Add($variableObject)
         }
     }
     $stopwatch.Stop()
@@ -176,3 +185,20 @@ Try {
     Write-Error ($_.TargetObject)
     Write-Error ($_.PSMessageDetails)
 }
+
+# $envVars | foreach-Object {
+#     $variableObject = [PSCustomObject]@{
+#         Name  = "$($_.Name)"
+#         Value = $_.Value
+#     }
+#     $variableArray.Add($variableObject)
+
+# }
+# Clean up unnecessary Radius Server Attributes to Export:
+$r1 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusAzureServer' }
+$r2 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusServer' }
+$r1.value | % { $_.psobject.properties.remove('httpMetaData') }
+$r2.value | % { $_.psobject.properties.remove('httpMetaData') }
+
+write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
+Return $variableArray

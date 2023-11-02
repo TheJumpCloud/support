@@ -97,6 +97,9 @@ Describe -Tag:('ModuleValidation') 'Module Manifest Tests' {
                 }
             }
             $todayDate = Get-Date -UFormat "%B %d, %Y"
+            if ($todayDate | Select-String -Pattern "0\d,") {
+                $todayDate = "$(Get-Date -UFormat %B) $($(Get-Date -Uformat %d) -replace '0', ''), $(Get-Date -UFormat %Y)"
+            }
             $latestReleaseDate | Should -Be $todayDate
         }
     }

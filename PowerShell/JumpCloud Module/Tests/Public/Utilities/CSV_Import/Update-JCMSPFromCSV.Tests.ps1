@@ -4,9 +4,9 @@ Describe -Tag:('MSP') 'Update-JCMSPFromCSV' {
         # Validate MSP Test org is set to default:
         $updatedOrgName = 'Updated PesterMSP'
         $defaultOrgName = 'PesterMSP'
-        $org = Get-JCSdkOrganization -id $env:PESTER_ORGID
+        $org = Get-JCSdkOrganization -id $env:JCOrgId
         if (($org.Settings.Name -ne $defaultOrgName) -And ($org.Settings.Name -eq $updatedOrgName)) {
-            Set-JcSdkOrganization -Id $env:PESTER_ORGID -Settings @{Name = $defaultOrgName }
+            Set-JcSdkOrganization -Id $env:JCOrgId -Settings @{Name = $defaultOrgName }
             Write-Host "resetting org name"
         }
     }

@@ -26,6 +26,7 @@ Function Add-JCAssociation {
         $FunctionParameters = [ordered]@{ }
         # Add input parameters from function in to hash table and filter out unnecessary parameters
         $PSBoundParameters.GetEnumerator() | Where-Object { -not [System.String]::IsNullOrEmpty($_.Value) } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
+        # Check if the type is in param block or a dynamic type
         # Add action
         ($FunctionParameters).Add('Action', $Action) | Out-Null
         # Run the command

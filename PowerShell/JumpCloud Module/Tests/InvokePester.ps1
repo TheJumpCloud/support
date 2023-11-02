@@ -2,13 +2,15 @@
 # There are two parameter sets
 
 Param(
-    [Parameter(ParameterSetName = 'moduleValidation', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5)][switch]$ModuleValidation,
-    [Parameter(ParameterSetName = 'dataTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
-    , [Parameter(ParameterSetName = 'dataTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
-    , [Parameter(ParameterSetName = 'dataTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
-    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
-    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+    [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKeyMsp
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$JumpCloudMspOrg
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][ValidateNotNullOrEmpty()][System.String]$ProviderID
+    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
+    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 4)][System.String]$RequiredModulesRepo = 'PSGallery'
+    , [Parameter(ParameterSetName = 'ModuleValidation', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 5)][switch]$ModuleValidation
+    , [Parameter(ParameterSetName = 'MSPTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 6)][switch]$MSP
 )
 
 # Load Get-Config.ps1
@@ -38,34 +40,83 @@ $IncludeTags = If ($IncludeTagList) {
 } Else {
     $Tags | Where-Object { $_ -notin $ExcludeTags } | Select-Object -Unique
 }
-
+# locally, clear pester run paths if it exists before run:
+If ($PesterRunPaths) {
+    Clear-Variable -Name PesterRunPaths
+}
 # Determine the parameter set path
-if ($PSCmdlet.ParameterSetName -eq 'moduleValidation') {
+if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     $IncludeTags = "ModuleValidation"
     $PesterRunPaths = @(
         "$PSScriptRoot/ModuleValidation/"
     )
-} elseif ($PSCmdlet.ParameterSetName -eq 'dataTests') {
+} elseif ($PSCmdlet.ParameterSetName -eq 'SingleOrgTests') {
+    if ($env:CI) {
+        If ($env:job_group) {
+            # split tests by job group:
+            $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
+            Write-Host "[Status] $($PesterTestsPaths.count) tests found"
+            $CIindex = @()
+            $numItems = $($PesterTestsPaths.count)
+            $numBuckets = 3
+            $itemsPerBucket = [math]::Floor(($numItems / $numBuckets))
+            $remainder = ($numItems % $numBuckets)
+            $extra = 0
+            for ($i = 0; $i -lt $numBuckets; $i++) {
+                <# Action that will repeat until the condition is met #>
+                if ($i -eq ($numBuckets - 1)) {
+                    $extra = $remainder
+                }
+                $indexList = ($itemsPerBucket + $extra)
+                # Write-Host "Container $i contains $indexList items:"
+                $CIIndexList = @()
+                $CIIndexList += for ($k = 0; $k -lt $indexList; $k++) {
+                    <# Action that will repeat until the condition is met #>
+                    $bucketIndex = $i * $itemsPerBucket
+                    # write-host "`$tags[$($bucketIndex + $k)] ="$tags[($bucketIndex + $k)]
+                    $PesterTestsPaths[$bucketIndex + $k]
+                }
+                # add to ciIndex Array
+                $CIindex += , ($CIIndexList)
+            }
+            $PesterRunPaths = $CIindex[[int]$($env:job_group)]
+            Write-Host "[status] The following $($($CIindex[[int]$($env:job_group)]).count) tests will be run:"
+            $($CIindex[[int]$($env:job_group)]) | ForEach-Object { Write-Host "$_" }
+        }
+    } else {
+        # run setup org locally and set variables
+        $variables = . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$JumpCloudApiKey" -JumpCloudApiKeyMsp "$JumpCloudApiKey"
+        Write-Host "[status] Setting Env Variables for tests"
+        $variables | Foreach-Object {
+            if ($_.Name) {
+                Set-Variable -Name $_.Name -Value $_.Value -Scope Global
+            }
+        }
+    }
+
+
+    $env:JCAPIKEY = $JumpCloudApiKey
+    Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
+} elseif ($PSCmdlet.ParameterSetName -eq 'MSPTests') {
+    # For online tests we need to run setup org and generate resources within an organization
+    # Load DefineEnvironment
+    $IncludeTags = "MSP"
     $PesterRunPaths = @(
         "$PSScriptRoot"
     )
-    # For online tests we need to run setup org and generate resources within an organization
-    # Load DefineEnvironment
-    . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
-    # Load SetupOrg
-    if ("MSP" -in $IncludeTags) {
-        Write-Host ('[status] MSP Tests setting API Key, OrgID')
-        $env:JCAPIKEY = $env:PESTER_MSP_APIKEY
-        $env:JCOrgId = $env:PESTER_ORGID
-        $env:JCProviderID = $env:PESTER_PROVIDER_ID
-        # force import module
-        Import-Module $FilePath_psd1 -Force
-        Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force
-        # . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -JumpCloudMspOrg:($JumpCloudMspOrg)
-    } else {
-        Write-Host ('[status]Setting up org: ' + "$PSScriptRoot/SetupOrg.ps1")
-        . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey:($JumpCloudApiKey) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp)
-    }
+    $MSPVars = . ("$PSScriptRoot/DefineEnvironment.ps1") -JumpCloudApiKey:($JumpCloudApiKeyMsp) -JumpCloudApiKeyMsp:($JumpCloudApiKeyMsp) -RequiredModulesRepo:($RequiredModulesRepo)
+    # Set Env Variables
+    $env:JCAPIKEY = $JumpCloudApiKeyMsp
+    $env:JCOrgId = $JumpCloudMspOrg
+    $env:JCProviderID = $ProviderID
+    # force import module
+    Import-Module $FilePath_psd1 -Force
+    Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -JumpCloudOrgId:($env:JCOrgId) -force
+}
+if (-Not $PesterRunPaths) {
+    $PesterRunPaths = @(
+        "$PSScriptRoot"
+    )
 }
 # Load private functions
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Private/*.ps1")
@@ -78,7 +129,7 @@ Write-Host ('[status]Load HelperFunctions: ' + "$PSScriptRoot/HelperFunctions.ps
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
 # create the directory if it does not exist:
 if (-not (Test-Path $PesterResultsFileXmldir)) {
-    new-item -path $PesterResultsFileXmldir -ItemType Directory
+    New-Item -Path $PesterResultsFileXmldir -ItemType Directory
 }
 
 
@@ -94,9 +145,9 @@ $configuration.Filter.ExcludeTag = $ExcludeTagList
 $configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
 $configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
 
-Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PSScriptRoot') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PesterRunPaths') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 # Run Pester tests
-Invoke-Pester -configuration $configuration
+Invoke-Pester -Configuration $configuration
 
 $PesterTestResultPath = (Get-ChildItem -Path:("$($PesterResultsFileXmldir)")).FullName | Where-Object { $_ -match "results.xml" }
 If (Test-Path -Path:($PesterTestResultPath)) {

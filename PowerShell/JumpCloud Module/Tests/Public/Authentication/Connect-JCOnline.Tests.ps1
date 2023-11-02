@@ -1,7 +1,11 @@
 Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
     BeforeAll {
-        $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) { $env:JCApiKey }
-        $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) { $env:JCOrgId }
+        $StartingApiKey = If (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+            $env:JCApiKey 
+        }
+        $StartingOrgId = If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+            $env:JCOrgId 
+        }
     }
     Context 'Single Org Tests' {
         It ('Should connect using the JumpCloudApiKey and JumpCloudOrgId parameters.') {
@@ -34,9 +38,14 @@ Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
         }
     }
     AfterAll {
-        If (-not [System.String]::IsNullOrEmpty($StartingApiKey) -and -not [System.String]::IsNullOrEmpty($StartingOrgId)) { Connect-JCOnline -JumpCloudApiKey:($StartingApiKey) -JumpCloudOrgId:($StartingOrgId) -force | Out-Null }
-        ElseIf (-not [System.String]::IsNullOrEmpty($StartingApiKey) -and [System.String]::IsNullOrEmpty($StartingOrgId)) { Connect-JCOnline -JumpCloudApiKey:($StartingApiKey) -force | Out-Null }
-        ElseIf ([System.String]::IsNullOrEmpty($StartingApiKey) -and -not [System.String]::IsNullOrEmpty($StartingOrgId)) { Connect-JCOnline -JumpCloudOrgId:($StartingOrgId) -force | Out-Null }
-        Else { Write-Error ('Unknown scenario encountered') }
+        If (-not [System.String]::IsNullOrEmpty($StartingApiKey) -and -not [System.String]::IsNullOrEmpty($StartingOrgId)) {
+            Connect-JCOnline -JumpCloudApiKey:($StartingApiKey) -JumpCloudOrgId:($StartingOrgId) -force | Out-Null 
+        } ElseIf (-not [System.String]::IsNullOrEmpty($StartingApiKey) -and [System.String]::IsNullOrEmpty($StartingOrgId)) {
+            Connect-JCOnline -JumpCloudApiKey:($StartingApiKey) -force | Out-Null 
+        } ElseIf ([System.String]::IsNullOrEmpty($StartingApiKey) -and -not [System.String]::IsNullOrEmpty($StartingOrgId)) {
+            Connect-JCOnline -JumpCloudOrgId:($StartingOrgId) -force | Out-Null 
+        } Else {
+            Write-Error ('Unknown scenario encountered') 
+        }
     }
 }

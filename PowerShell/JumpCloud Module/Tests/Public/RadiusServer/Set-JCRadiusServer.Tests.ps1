@@ -2,7 +2,16 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
     BeforeAll {
         $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)
         If (-not $PesterParams_RadiusServer) {
-            $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
+            try {
+                $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
+            } catch {
+                $PesterParams_NewRadiusServer = @{
+                    networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+                    sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
+                    name            = 'PesterTest_RadiusServer'
+                };
+                $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
+            }
         }
     }
     Context 'Set-JCRadiusServer' {
@@ -39,7 +48,11 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
             try {
                 $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
             } catch {
-                $PesterParams_NewRadiusServer.networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+                $PesterParams_NewRadiusServer = @{
+                    networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+                    sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
+                    name            = 'PesterTest_RadiusServer'
+                };
                 $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
             }
         }

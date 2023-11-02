@@ -1,350 +1,22 @@
-Describe -Tag:('JCUsersFromCSV') 'Import-JCUserFromCSV 1.1' -skip {
-    #TODO: rework tests, dynamically populate groups/ system, else these tests fail
-    BeforeAll {  }
-    It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-    }
-    It "Imports users from the ImportExample_Pester_Test using -Force" {
-        $UserImport = Import-JCUsersFromCSV -CSVFilePath $PesterParams_Import_JCUsersFromCSV_1_1_Tests -force
-    }
-
-    It "Verifies a.user user" {
-
-        $User = Get-JCUser -Username 'a.user' | Where-Object Username -EQ 'a.user'
-
-        $User.activated | Should -Be true
-
-    }
-
-    It "Verifies ia.user user" {
-
-        $User = Get-JCUser -Username 'ia.user' | Where-Object Username -EQ 'ia.user'
-
-
-        $User.activated | Should -Be false
-    }
-
-    It "Verifies " {
-
-        $User = Get-JCUser -Username 'a.bound.std' | Where-Object Username -EQ 'a.bound.std'
-
-        $User.activated | Should -Be true
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'a.bound.std'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be false
-
-    }
-
-    It "Verifies a.bound.true1 user" {
-
-        $User = Get-JCUser -Username 'a.bound.true1' | Where-Object username -EQ 'a.bound.true1'
-
-        $User.activated | Should -Be true
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'a.bound.true1'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be true
-
-    }
-
-    It "Verifies a.bound.false1 user" {
-
-        $User = Get-JCUser -Username 'a.bound.false1' | Where-Object username -EQ 'a.bound.false1'
-
-        $User.activated | Should -Be true
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'a.bound.false1'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be false
-
-    }
-
-    It "Verifies a.bound.true2 user" {
-
-        $User = Get-JCUser -Username 'a.bound.true2' | Where-Object username -EQ 'a.bound.true2'
-
-        $User.activated | Should -Be true
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'a.bound.true2'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be true
-
-    }
-
-    It "Verifies a.bound.false2 user" {
-
-        $User = Get-JCUser -Username 'a.bound.false2' | Where-Object username -EQ 'a.bound.false2'
-
-        $User.activated | Should -Be true
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'a.bound.false2'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be false
-
-    }
-
-    It "Verifies ia.bound.std user" {
-
-        $User = Get-JCUser -Username 'ia.bound.std' | Where-Object username -EQ 'ia.bound.std'
-
-        $User.activated | Should -Be false
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'ia.bound.std'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be false
-
-    }
-
-    It "Verifies ia.bound.true1 user" {
-
-        $User = Get-JCUser -Username 'ia.bound.true1' | Where-Object username -EQ 'ia.bound.true1'
-
-        $User.activated | Should -Be false
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'ia.bound.true1'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be true
-
-    }
-
-    It "Verifies ia.bound.false1 user" {
-
-        $User = Get-JCUser -Username 'ia.bound.false1' | Where-Object username -EQ 'ia.bound.false1'
-
-        $User.activated | Should -Be false
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'ia.bound.false1'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be false
-
-    }
-
-    It "Verifies ia.bound.true2 user" {
-
-        $User = Get-JCUser -Username 'ia.bound.true2'
-
-        $User.activated | Should -Be false
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'ia.bound.true2'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be true
-
-    }
-
-    It "Verifies ia.bound.false2 user" {
-
-        $User = Get-JCUser -Username 'ia.bound.false2' | Where-Object username -EQ 'ia.bound.false2'
-
-        $User.activated | Should -Be false
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'ia.bound.false2'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be false
-
-    }
-
-    It "Verifies a.1group user" {
-
-        $User = Get-JCUser -Username 'a.1group' | Where-Object username -EQ 'a.1group'
-
-        $User.activated | Should -Be true
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-    }
-
-    It "Verifies ia.1group user" {
-
-        $User = Get-JCUser -Username 'ia.1group' | Where-Object username -EQ 'ia.1group'
-
-        $User.activated | Should -Be false
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-    }
-
-    It "Verifies a.2group user" {
-
-        $User = Get-JCUser -Username 'a.2group' | Where-Object Username -EQ 'a.2group'
-
-        $User.activated | Should -Be true
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-    }
-
-    It "Verifies ia.2group user" {
-
-        $User = Get-JCUser -Username 'ia.2group' | Where-Object username -EQ 'ia.2group'
-
-        $User.activated | Should -Be false
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-    }
-
-    It "Verifies a.5group user" {
-
-        $User = Get-JCUser -Username 'a.5group' | Where-Object username -EQ 'a.5group'
-
-        $User.activated | Should -Be true
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-    }
-
-    It "Verifies ia.5group user" {
-
-        $User = Get-JCUser -Username 'ia.5group' | Where-Object Username -EQ 'ia.5group'
-
-        $User.activated | Should -Be false
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-    }
-
-    It "Verifies a.1attr user" {
-
-        $User = Get-JCUser -Username 'a.1attr'
-
-        $User.activated | Should -Be true
-
-        $User.attributes.count | Should -Be
-
-    }
-
-    It "Verifies ia.1attr user" {
-
-        $User = Get-JCUser -Username 'ia.1attr'
-
-        $User.activated | Should -Be false
-
-        $User.attributes.count | Should -Be
-
-    }
-
-    It "Verifies a.2attr user" {
-
-        $User = Get-JCUser -Username 'a.2attr' | Where-Object username -EQ 'a.2attr'
-
-        $User.activated | Should -Be true
-
-        $User.attributes.count | Should -Be
-
-    }
-
-    It "Verifies ia.2attr user" {
-
-        $User = Get-JCUser -Username 'ia.2attr' | Where-Object username -EQ 'ia.2attr'
-
-        $User.activated | Should -Be false
-
-
-        $User.attributes.count | Should -Be
-
-    }
-
-    It "Verifies a.5attr user" {
-
-        $User = Get-JCUser -Username 'a.5attr' | Where-Object username -EQ 'a.5attr'
-
-        $User.activated | Should -Be true
-
-        $User.attributes.count | Should -Be
-
-    }
-
-    It "Verifies ia.5attr user" {
-
-        $User = Get-JCUser -Username 'ia.5attr' | Where-Object username -EQ 'ia.5attr'
-
-        $User.activated | Should -Be false
-
-
-        $User.attributes.count | Should -Be
-
-    }
-
-    It "Verifies a.all" {
-
-        $User = Get-JCUser -Username 'a.all' | Where-Object username -EQ 'a.all'
-
-        $User.activated | Should -Be true
-
-        $User.attributes.count | Should -Be
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'a.all'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be true
-
-    }
-
-    It "Verifies ia.all" {
-
-        $User = Get-JCUser -Username 'ia.all' | Where-Object username -EQ 'ia.all'
-
-        $User.activated | Should -Be false
-
-        $User.attributes.count | Should -Be
-
-        $Groups = Get-JCAssociation -Type:('user') -Id:($User.id) -TargetType:('user_group')
-
-        $Groups.count | Should -Be
-
-        # $Bound = Get-JCSystemUser -SystemID $PesterParams_SystemLinux._id | Where-Object username -EQ 'ia.all'
-
-        $Bound.DirectBind | Should -Be true
-
-        $Bound.Administrator | Should -Be true
-
-
-    }
-    It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-    }
-}
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 
     It "Imports users from a CSV populated with telephony attributes" {
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @(
+            @{
+                "FirstName"          = "delete$($user1RandomString)"
+                "LastName"           = "me$($user1RandomString)"
+                "Username"           = "delete.me$($user1RandomString)"
+                "Email"              = "deleteme$($user1RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "mobile_number"      = "$($user1RandomString)"
+                "home_number"        = "$($user1RandomString)"
+                "work_number"        = "$($user1RandomString)"
+                "work_mobile_number" = "$($user1RandomString)"
+                "work_fax_number"    = "$($user1RandomString)"
+            }
+        )
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -Force
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_telephonyAttributes.csv"
@@ -361,13 +33,32 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
         }
 
     }
-    It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-    }
-
 
     It "Imports users from a CSV populated with information attributes" {
-
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @(
+            @{
+                "FirstName"          = "delete$($user1RandomString)"
+                "LastName"           = "me$($user1RandomString)"
+                "Username"           = "delete.me$($user1RandomString)"
+                "Email"              = "deleteme$($user1RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "MiddleName"         = "$($user1RandomString)"
+                "preferredName"      = "$($user1RandomString)"
+                "jobTitle"           = "$($user1RandomString)"
+                "employeeIdentifier" = "eid$($user1RandomString)"
+                "alternateEmail"     = "deleteme$($user1RandomString)ae@testimportcsvuser.com"
+                "manager"            = ""
+                "managedAppleID"     = "deleteme$($user1RandomString)maid@testimportcsvuser.com"
+                "department"         = "$($user1RandomString)"
+                "costCenter"         = "$($user1RandomString)"
+                "company"            = "$($user1RandomString)"
+                "employeeType"       = "$($user1RandomString)"
+                "description"        = "$($user1RandomString)"
+                "location"           = "$($user1RandomString)"
+            }
+        )
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv" -Force
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userInformationAttributes.csv"
 
@@ -387,13 +78,32 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.location | Should -Be $NewUserInfo.location
 
         }
-
-
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-
     }
 
     It "Imports users from a CSV populated with user location attributes" {
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @(
+            @{
+                "FirstName"          = "delete$($user1RandomString)"
+                "LastName"           = "me$($user1RandomString)"
+                "Username"           = "delete.me$($user1RandomString)"
+                "Email"              = "deleteme$($user1RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "home_streetAddress" = "$($user1RandomString)"
+                "home_poBox"         = "$($user1RandomString)"
+                "home_city"          = "$($user1RandomString)"
+                "home_state"         = "$($user1RandomString)"
+                "home_postalCode"    = "$($user1RandomString)"
+                "home_country"       = "$($user1RandomString)"
+                "work_streetAddress" = "$($user1RandomString)"
+                "work_poBox"         = "$($user1RandomString)"
+                "work_city"          = "$($user1RandomString)"
+                "work_state"         = "$($user1RandomString)"
+                "work_postalCode"    = "$($user1RandomString)"
+                "work_country"       = "$($user1RandomString)"
+            }
+        )
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv" -Force
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_userLocationAttributes.csv"
 
@@ -416,11 +126,22 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
     It "Imports users from a CSV populated with uid/ gid attributes" {
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid.csv" -force
-        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_uid_guid.csv"
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @{
+            "FirstName" = "delete$($user1RandomString)"
+            "LastName"  = "me$($user1RandomString)"
+            "Username"  = "delete.me$($user1RandomString)"
+            "Email"     = "deleteme$($user1RandomString)@testimportcsvuser.com"
+            "Password"  = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+            "unix_guid" = "9837"
+            "unix_uid"  = "9837"
+        }
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_uid_guid_import.csv" -Force
+
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_uid_guid_import.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_uid_guid_import.csv"
 
         foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
@@ -429,10 +150,88 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.unix_uid | Should -Be $($NewUserInfo.unix_uid)
             $ImportCheck.unix_guid | Should -Be $($NewUserInfo.unix_guid)
         }
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
 
     It "Imports users from a CSV populated with telephony, location, and user information attributes" {
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $user2RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @(
+            @{
+                "FirstName"          = "delete$($user1RandomString)"
+                "LastName"           = "me$($user1RandomString)"
+                "Username"           = "delete.me$($user1RandomString)"
+                "Email"              = "deleteme$($user1RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "MiddleName"         = "$($user1RandomString)"
+                "preferredName"      = "$($user1RandomString)"
+                "jobTitle"           = "$($user1RandomString)"
+                "employeeIdentifier" = "eid$($user1RandomString)"
+                "alternateEmail"     = "deleteme$($user1RandomString)ae@testimportcsvuser.com"
+                "manager"            = ""
+                "managedAppleID"     = "deleteme$($user1RandomString)maid@testimportcsvuser.com"
+                "department"         = "$($user1RandomString)"
+                "costCenter"         = "$($user1RandomString)"
+                "company"            = "$($user1RandomString)"
+                "employeeType"       = "$($user1RandomString)"
+                "description"        = "$($user1RandomString)"
+                "location"           = "$($user1RandomString)"
+                "home_streetAddress" = "$($user1RandomString)"
+                "home_poBox"         = "$($user1RandomString)"
+                "home_city"          = "$($user1RandomString)"
+                "home_state"         = "$($user1RandomString)"
+                "home_postalCode"    = "$($user1RandomString)"
+                "home_country"       = "$($user1RandomString)"
+                "work_streetAddress" = "$($user1RandomString)"
+                "work_poBox"         = "$($user1RandomString)"
+                "work_city"          = "$($user1RandomString)"
+                "work_state"         = "$($user1RandomString)"
+                "work_postalCode"    = "$($user1RandomString)"
+                "work_country"       = "$($user1RandomString)"
+                "mobile_number"      = "$($user1RandomString)"
+                "home_number"        = "$($user1RandomString)"
+                "work_number"        = "$($user1RandomString)"
+                "work_mobile_number" = "$($user1RandomString)"
+                "work_fax_number"    = "$($user1RandomString)"
+            },
+            @{
+                "FirstName"          = "delete$($user2RandomString)"
+                "LastName"           = "me$($user2RandomString)"
+                "Username"           = "delete.me$($user2RandomString)"
+                "Email"              = "deleteme$($user2RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "MiddleName"         = "$($user2RandomString)"
+                "preferredName"      = "$($user2RandomString)"
+                "jobTitle"           = "$($user2RandomString)"
+                "employeeIdentifier" = "eid$($user2RandomString)"
+                "alternateEmail"     = "deleteme$($user2RandomString)ae@testimportcsvuser.com"
+                "manager"            = ""
+                "managedAppleID"     = "deleteme$($user2RandomString)maid@testimportcsvuser.com"
+                "department"         = "$($user2RandomString)"
+                "costCenter"         = "$($user2RandomString)"
+                "company"            = "$($user2RandomString)"
+                "employeeType"       = "$($user2RandomString)"
+                "description"        = "$($user2RandomString)"
+                "location"           = "$($user2RandomString)"
+                "home_streetAddress" = "$($user2RandomString)"
+                "home_poBox"         = "$($user2RandomString)"
+                "home_city"          = "$($user2RandomString)"
+                "home_state"         = "$($user2RandomString)"
+                "home_postalCode"    = "$($user2RandomString)"
+                "home_country"       = "$($user2RandomString)"
+                "work_streetAddress" = "$($user2RandomString)"
+                "work_poBox"         = "$($user2RandomString)"
+                "work_city"          = "$($user2RandomString)"
+                "work_state"         = "$($user2RandomString)"
+                "work_postalCode"    = "$($user2RandomString)"
+                "work_country"       = "$($user2RandomString)"
+                "mobile_number"      = "$($user2RandomString)"
+                "home_number"        = "$($user2RandomString)"
+                "work_number"        = "$($user2RandomString)"
+                "work_mobile_number" = "$($user2RandomString)"
+                "work_fax_number"    = "$($user2RandomString)"
+            }
+        )
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv" -Force
 
         $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv" -force
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributes.csv"
@@ -473,14 +272,109 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.work_country | Should -Be $($NewUserInfo.addresses | Where-Object type -eq work | Select-Object -ExpandProperty country)
 
         }
-
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
     }
 
     It "Imports users from a CSV populated with telephony, location, user information attributes, group additions, system binding, and custom attributes" {
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $user2RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @(
+            @{
+                "FirstName"          = "delete$($user1RandomString)"
+                "LastName"           = "me$($user1RandomString)"
+                "Username"           = "delete.me$($user1RandomString)"
+                "Email"              = "deleteme$($user1RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "MiddleName"         = "$($user1RandomString)"
+                "preferredName"      = "$($user1RandomString)"
+                "jobTitle"           = "$($user1RandomString)"
+                "employeeIdentifier" = "eid$($user1RandomString)"
+                "alternateEmail"     = "deleteme$($user1RandomString)ae@testimportcsvuser.com"
+                "manager"            = ""
+                "managedAppleID"     = "deleteme$($user1RandomString)maid@testimportcsvuser.com"
+                "department"         = "$($user1RandomString)"
+                "costCenter"         = "$($user1RandomString)"
+                "company"            = "$($user1RandomString)"
+                "employeeType"       = "$($user1RandomString)"
+                "description"        = "$($user1RandomString)"
+                "location"           = "$($user1RandomString)"
+                "home_streetAddress" = "$($user1RandomString)"
+                "home_poBox"         = "$($user1RandomString)"
+                "home_city"          = "$($user1RandomString)"
+                "home_state"         = "$($user1RandomString)"
+                "home_postalCode"    = "$($user1RandomString)"
+                "home_country"       = "$($user1RandomString)"
+                "work_streetAddress" = "$($user1RandomString)"
+                "work_poBox"         = "$($user1RandomString)"
+                "work_city"          = "$($user1RandomString)"
+                "work_state"         = "$($user1RandomString)"
+                "work_postalCode"    = "$($user1RandomString)"
+                "work_country"       = "$($user1RandomString)"
+                "mobile_number"      = "$($user1RandomString)"
+                "home_number"        = "$($user1RandomString)"
+                "work_number"        = "$($user1RandomString)"
+                "work_mobile_number" = "$($user1RandomString)"
+                "work_fax_number"    = "$($user1RandomString)"
+                "SystemID"           = ""
+                "Administrator"      = ""
+                "Group1"             = ""
+                "Group2"             = ""
+                "Group3"             = ""
+                "Attribute1_name"    = "attr1"
+                "Attribute1_value"   = "one"
+                "Attribute2_name"    = "attr2"
+                "Attribute2_value"   = "two"
+            },
+            @{
+                "FirstName"          = "delete$($user2RandomString)"
+                "LastName"           = "me$($user2RandomString)"
+                "Username"           = "delete.me$($user2RandomString)"
+                "Email"              = "deleteme$($user2RandomString)@testimportcsvuser.com"
+                "Password"           = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+                "MiddleName"         = "$($user2RandomString)"
+                "preferredName"      = "$($user2RandomString)"
+                "jobTitle"           = "$($user2RandomString)"
+                "employeeIdentifier" = "eid$($user2RandomString)"
+                "alternateEmail"     = "deleteme$($user2RandomString)ae@testimportcsvuser.com"
+                "manager"            = ""
+                "managedAppleID"     = "deleteme$($user2RandomString)maid@testimportcsvuser.com"
+                "department"         = "$($user2RandomString)"
+                "costCenter"         = "$($user2RandomString)"
+                "company"            = "$($user2RandomString)"
+                "employeeType"       = "$($user2RandomString)"
+                "description"        = "$($user2RandomString)"
+                "location"           = "$($user2RandomString)"
+                "home_streetAddress" = "$($user2RandomString)"
+                "home_poBox"         = "$($user2RandomString)"
+                "home_city"          = "$($user2RandomString)"
+                "home_state"         = "$($user2RandomString)"
+                "home_postalCode"    = "$($user2RandomString)"
+                "home_country"       = "$($user2RandomString)"
+                "work_streetAddress" = "$($user2RandomString)"
+                "work_poBox"         = "$($user2RandomString)"
+                "work_city"          = "$($user2RandomString)"
+                "work_state"         = "$($user2RandomString)"
+                "work_postalCode"    = "$($user2RandomString)"
+                "work_country"       = "$($user2RandomString)"
+                "mobile_number"      = "$($user2RandomString)"
+                "home_number"        = "$($user2RandomString)"
+                "work_number"        = "$($user2RandomString)"
+                "work_mobile_number" = "$($user2RandomString)"
+                "work_fax_number"    = "$($user2RandomString)"
+                "SystemID"           = ""
+                "Administrator"      = ""
+                "Group1"             = ""
+                "Group2"             = ""
+                "Group3"             = ""
+                "Attribute1_name"    = "attr1"
+                "Attribute1_value"   = "one"
+                "Attribute2_name"    = "attr2"
+                "Attribute2_value"   = "two"
+            }
+        )
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom_import.csv" -Force
 
-        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv"
-        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom.csv" -force
+        $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom_import.csv"
+        $UserCSVImport = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_allNewAttributesAndAllCustom_import.csv" -force
 
         foreach ($User in $UserCSVImport) {
             $NewUserInfo = Get-JCUser -username $User.username
@@ -525,15 +419,22 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             # $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty systemAdd | Should -Be "Added"
             # $UserCSVImport | Where-Object Username -eq "$($User.username)" | Select-Object -ExpandProperty GroupsAdd | Select-Object Status -Unique | Select-Object -ExpandProperty Status | Should -Be "Added"
         }
-
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
-
     }
     It "Imports a new user from a CSV with a null custom attribute should throw" {
+        $user1RandomString = $(New-RandomString -NumberOfChars 5)
+        $CSVData = @{
+            "FirstName"        = "delete$($user1RandomString)"
+            "LastName"         = "me$($user1RandomString)"
+            "Username"         = "delete.me$($user1RandomString)"
+            "Email"            = "deleteme$($user1RandomString)@testimportcsvuser.com"
+            "Password"         = "$(New-RandomString -NumberOfChars 8)@#7Ah"
+            "Attribute1_name"  = "9837"
+            "Attribute1_value" = ""
+        }
+        $CSVDATA | Export-Csv "$PesterParams_ImportPath/ImportExample_missingAttribute.csv" -Force
+
         $UserImportInfo = Import-Csv "$PesterParams_ImportPath/ImportExample_missingAttribute.csv"
         { Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/ImportExample_missingAttribute.csv" -force } | Should -Throw
-
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
 
     }
 
@@ -541,7 +442,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
 Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
     It "New User Created with MFA Required" {
         # Setup Test
-        $user = New-RandomUser -Domain pleasedelete
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username                       = $user.username
             LastName                       = $user.LastName
@@ -560,7 +461,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
     }
     It "New User Created with MFA Required and Enrollment Period Specified" {
         # Setup Test
-        $user = New-RandomUser -Domain pleasedelete
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $today = Get-Date
         $EnrollmentDays = 14
         $CSVDATA = @{
@@ -584,7 +485,7 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
         $MFAUser.mfa.configured | Should -Be $false
     }
     It "Throw error if user create with invalid enrollment days" {
-        $user = New-RandomUser -Domain pleasedelete
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username                       = $user.username
             LastName                       = $user.LastName
@@ -599,13 +500,13 @@ Describe -Tag:('JCUsersFromCSV') 'MFA Import Tests' {
         $ImportStatus.Status | Should -Match "Cannot bind parameter"
     }
     AfterAll {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -like *ImportCSVUser.* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     It "New User Created and bound to LDAP server" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain pleasedelete
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -624,7 +525,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     }
     It "New User created, bound to LDAP server and set as an Ldap Binding User" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain pleasedelete
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -643,7 +544,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
     }
     It "throw error with invalid params on ldap import" {
         $ldapServer = Get-JcSdkLdapServer
-        $user = New-RandomUser -Domain pleasedelete
+        $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
         $CSVDATA = @{
             Username          = $user.username
             LastName          = $user.LastName
@@ -666,7 +567,7 @@ Describe -Tag:('JCUsersFromCSV') 'LDAP Import Tests' {
 Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
     Context "Custom Attribute API error should be returned" {
         It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain pleasedelete
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
             $today = Get-Date
             $EnrollmentDays = 14
             $CSVDATA = @{
@@ -682,7 +583,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
             $importResults[0].AdditionalInfo | Should -Match "Attribute names may not contain spaces"
         }
         It "When a custom attribute name has a non-alphanumeric in the field, the API should return an error message in the status field" {
-            $user = New-RandomUser -Domain pleasedelete
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
             $today = Get-Date
             $EnrollmentDays = 14
             $CSVDATA = @{
@@ -701,5 +602,5 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
 }
 
 AfterAll {
-    Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -like *testimportcsvuser* | Remove-JCUser -force
 }
