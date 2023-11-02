@@ -65,6 +65,8 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
             }
             Write-Host "[status] Running CI job group $env:job_group"
             $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
+            Write-Host "[status] The following tests will be run:"
+            $($PesterGroups[[int]$($env:job_group)].group.name) | ForEach-Object { Write-Host "$_" }
         }
     } else {
         # run setup org locally and set variables
