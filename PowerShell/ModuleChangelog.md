@@ -1,6 +1,6 @@
 ## 2.8.2
 
-Release Date: November 1, 2023
+Release Date: November 2, 2023
 
 #### RELEASE NOTES
 
