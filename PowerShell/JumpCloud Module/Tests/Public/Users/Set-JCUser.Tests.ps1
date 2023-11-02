@@ -1537,3 +1537,6 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via UserID' {
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
 }
+AfterAll {
+    Get-JCUser | Where-Object Email -like *delSetUser* | Remove-JCUser -force
+}

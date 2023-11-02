@@ -521,3 +521,6 @@ Describe -Tag:('JCUser') "Case Insensitivity Tests" {
         Remove-JCUser -username $NewUserInvoke.username -force
     }
 }
+AfterAll {
+    Get-JCUser | Where-Object Email -like *delGetUser* | Remove-JCUser -force
+}
