@@ -55,18 +55,33 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
         If ($env:job_group) {
             # split tests by job group:
             $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
-            $counter = [pscustomobject] @{ Value = 0 }
-            $groupSize = 30
-            $PesterGroups = $PesterTestsPaths | Group-Object -Property { [math]::Floor($counter.Value++ / $groupSize) }
-            $jobMatrixSet = @{
-                0 = $PesterGroups[0].Group.FullName
-                1 = $PesterGroups[1].Group.FullName
-                2 = $PesterGroups[2].Group.FullName
+            Write-Host "[Status] $($PesterTestsPaths.count) tests found"
+            $CIindex = @()
+            $numItems = $($PesterTestsPaths.count)
+            $numBuckets = 3
+            $itemsPerBucket = [math]::Floor(($numItems / $numBuckets))
+            $remainder = ($numItems % $numBuckets)
+            $extra = 0
+            for ($i = 0; $i -lt $numBuckets; $i++) {
+                <# Action that will repeat until the condition is met #>
+                if ($i -eq ($numBuckets - 1)) {
+                    $extra = $remainder
+                }
+                $indexList = ($itemsPerBucket + $extra)
+                # Write-Host "Container $i contains $indexList items:"
+                $CIIndexList = @()
+                $CIIndexList += for ($k = 0; $k -lt $indexList; $k++) {
+                    <# Action that will repeat until the condition is met #>
+                    $bucketIndex = $i * $itemsPerBucket
+                    # write-host "`$tags[$($bucketIndex + $k)] ="$tags[($bucketIndex + $k)]
+                    $PesterTestsPaths[$bucketIndex + $k]
+                }
+                # add to ciIndex Array
+                $CIindex += , ($CIIndexList)
             }
-            Write-Host "[status] Running CI job group $env:job_group"
-            $PesterRunPaths = $jobMatrixSet[[int]$($env:job_group)]
-            Write-Host "[status] The following tests will be run:"
-            $($PesterGroups[[int]$($env:job_group)].group.name) | ForEach-Object { Write-Host "$_" }
+            $PesterRunPaths = $CIindex[[int]$($env:job_group)]
+            Write-Host "[status] The following $($($CIindex[[int]$($env:job_group)]).count) tests will be run:"
+            $($CIindex[[int]$($env:job_group)]) | ForEach-Object { Write-Host "$_" }
         }
     } else {
         # run setup org locally and set variables
