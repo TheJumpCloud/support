@@ -602,5 +602,5 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
 }
 
 AfterAll {
-    Get-JCUser | Where-Object Email -like *testimportcsvuser.com* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -like *testimportcsvuser* | Remove-JCUser -force
 }
