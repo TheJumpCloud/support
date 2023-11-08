@@ -137,8 +137,14 @@ do
             rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
         fi
 
-        # Move the contents of the DMG file to /Users/$user/Applications/
-        mv -f "$DMGAppPath" /Users/$user/Applications/
+        # Copy the contents of the DMG file to /Users/$user/Applications/
+        # Preserves all file attributes and ACLs
+        cp -pPR "$DMGAppPath" /Users/$user/Applications/
+
+        if [[ -d /Users/$user/Desktop/JumpCloud\ Password\ Manager.app ]]; then
+            # remove alias on desktop if exists
+            rm -rf /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
+        fi
 
         err=$?
         if [ ${err} -ne 0 ]; then
