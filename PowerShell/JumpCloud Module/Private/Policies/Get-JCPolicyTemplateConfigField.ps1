@@ -36,15 +36,21 @@ function Get-JCPolicyTemplateConfigField {
                     # Get Both Values:
                     $val1 = $field.DisplayOptions.select[$i].text
                     $val2 = $field.DisplayOptions.select[$i].value
-                    # Determine which one is an int, these can sometimes be swapped
-                    try {
-                        [int]$val1 | Out-Null
-                        # write-host "$($val1) is an int in first position"
-                        $validationObject += @{$val1 = $val2 }
-                    } catch {
-                        [int]$val2 | Out-Null
-                        # write-host "$($val2) is an int in second position"
-                        $validationObject += @{$val2 = $val1 }
+
+                    # Check if the val2 is a string or int
+                    if (-not ([int]::TryParse($val2, [ref]$null))) {
+                        $validationObject += @{$val2 = $val2 }
+                        #Write-Error "$($val2) is a string in first position"
+                    } else {
+                        try {
+                            [int]$val1 | Out-Null
+                            # write-host "$($val1) is an int in first position"
+                            $validationObject += @{$val1 = $val2 }
+                        } catch {
+                            [int]$val2 | Out-Null
+                            # write-host "$($val2) is an int in second position"
+                            $validationObject += @{$val2 = $val1 }
+                        }
                     }
                 }
             }
@@ -77,4 +83,3 @@ function Get-JCPolicyTemplateConfigField {
         return $templateObject
     }
 }
-
