@@ -1,4 +1,17 @@
-## 2.8.2
+## 2.8.3
+
+Release Date: November 16, 2023
+
+#### RELEASE NOTES
+
+```
+Addressed the issue with Get-JCPolicyTemplateConfigField select/multi property string error
+```
+
+### BUG FIXES:
+
+- Fixed an issue with Get-JCPolicyTemplateConfigField error when a string select/multi property is passed to an int conversion
+
 
 Release Date: November 2, 2023
 
