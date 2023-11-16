@@ -16,7 +16,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         It 'Sets a policy with a string multi field' {
             # Update the policy with a new AUTO_INSTALL_SCHEDULE (this is a mult field)
             $stringMultiValue = "ScheduledInstallSecondWeek"
-            $updateSchedule = Set-JCPolicy -id PesterWindowsWindowsUpdateConfig.Id -AUTO_INSTALL_SCHEDULE $stringMultiValue
+            $updateSchedule = Set-JCPolicy -id $PesterWindowsWindowsUpdateConfig.Id -AUTO_INSTALL_SCHEDULE $stringMultiValue
 
             # Get the value of the Field
             $fieldName = "AUTO_INSTALL_SCHEDULE"
