@@ -21,10 +21,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # Get the value of the Field
             $fieldName = "AUTO_INSTALL_SCHEDULE"
             $index = 0
-            for ($i = 0; $i -lt $t.values.configFieldName.Count; $i++) {
-                if ($t.values.configFieldName[$i] -eq $fieldName) {
+            for ($i = 0; $i -lt $updateSchedule.values.configFieldName.Count; $i++) {
+                if ($updateSchedule.values.configFieldName[$i] -eq $fieldName) {
                     $index = $i
-                    $index
                     break
                 }
             }
