@@ -77,6 +77,8 @@ function Get-JCCloudDirectory () {
                 $CloudDirectory = $DirectoryHash | Where-Object name -EQ $Name
                 if (!$CloudDirectory) {
                     throw "$Name was not found. Please try again"
+                } elseif ($CloudDirectory.count -gt 1) {
+                    throw "Multiple directories with the same name detected, please use the -id parameter to specify which directory to edit"
                 }
             }
             ByID {
@@ -122,22 +124,28 @@ function Get-JCCloudDirectory () {
             if ($PSBoundParameters.ContainsKey('Association')) {
                 switch ($PSBoundParameters.Association) {
                     Users {
-                        $UserId = $_.Id
-                        $user = $UserHash.GetEnumerator().Where({ $_.Key -contains ($UserId) })
-                        $user = $user | Select-Object @{
-                            name = 'Id'
-                            expr = { $_.Name }
-                        } -ExpandProperty Value
-                        $resultsArray.Add($user)
+                        $Users = Get-JcSdkOffice365TraverseUser -Office365Id $CloudDirectory.Id
+                        $Users | ForEach-Object {
+                            $UserId = $_.Id
+                            $user = $UserHash.GetEnumerator().Where({ $_.Key -contains ($UserId) })
+                            $user = $user | Select-Object @{
+                                name = 'Id'
+                                expr = { $_.Name }
+                            } -ExpandProperty Value
+                            $resultsArray.Add($user)
+                        }
                     }
                     UserGroups {
-                        $UserGroupId = $_.Id
-                        $UserGroup = $UserGroupHash.GetEnumerator().Where({ $_.Key -contains ($UserGroupId) })
-                        $UserGroup = $UserGroup | Select-Object @{
-                            name = 'Id'
-                            expr = { $_.Name }
-                        } -ExpandProperty Value
-                        $resultsArray.Add($UserGroup)
+                        $UserGroups = Get-JcSdkOffice365TraverseUser -Office365Id $CloudDirectory.Id
+                        $UserGroups | ForEach-Object {
+                            $UserGroupId = $_.Id
+                            $UserGroup = $UserGroupHash.GetEnumerator().Where({ $_.Key -contains ($UserGroupId) })
+                            $UserGroup = $UserGroup | Select-Object @{
+                                name = 'Id'
+                                expr = { $_.Name }
+                            } -ExpandProperty Value
+                            $resultsArray.Add($UserGroup)
+                        }
                     }
                 }
             } else {
