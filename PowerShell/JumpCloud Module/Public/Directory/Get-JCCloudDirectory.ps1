@@ -54,7 +54,7 @@ function Get-JCCloudDirectory () {
             switch ($Association) {
                 Users {
                     Write-Debug 'Populating UserHash'
-                    $UserHash = Get-DynamicHash -Object User -returnProperties username, email, state
+                    $UserHash = Get-DynamicHash -Object User -returnProperties username, email, firstname, lastname
                 }
                 UserGroups {
                     Write-Debug 'Populating UserGroupHash'
