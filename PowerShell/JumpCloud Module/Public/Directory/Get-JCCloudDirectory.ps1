@@ -136,7 +136,7 @@ function Get-JCCloudDirectory () {
                         }
                     }
                     UserGroups {
-                        $UserGroups = Get-JcSdkOffice365TraverseUser -Office365Id $CloudDirectory.Id
+                        $UserGroups = Get-JcSdkOffice365TraverseUserGroup -Office365Id $CloudDirectory.Id
                         $UserGroups | ForEach-Object {
                             $UserGroupId = $_.Id
                             $UserGroup = $UserGroupHash.GetEnumerator().Where({ $_.Key -contains ($UserGroupId) })
