@@ -60,12 +60,6 @@ function Get-JCCloudDirectory () {
                     Write-Debug 'Populating UserGroupHash'
                     $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
                 }
-                All {
-                    Write-Debug 'Populating UserHash'
-                    $UserHash = Get-DynamicHash -Object User -returnProperties username, email, state
-                    Write-Debug 'Populating UserGroupHash'
-                    $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
-                }
             }
         }
     }
