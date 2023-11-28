@@ -7,7 +7,7 @@ function Get-JCCloudDirectory () {
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', HelpMessage = 'The name of cloud directory instance')]
         [String]$Name,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The ID of cloud directory instance')]
-        [Alias('_id', 'id')]
+        [Alias('_id')]
         [String]$ID
     )
 
@@ -50,8 +50,8 @@ function Get-JCCloudDirectory () {
         $DirectoryHash = Get-JcSdkDirectory | Select-Object id, type, name
 
         # Check to see if Association param is set and build respective hashtables
-        if ($Association) {
-            switch ($Association) {
+        if ($PSBoundParameters.ContainsKey('Association')) {
+            switch ($PSBoundParameters.Association) {
                 Users {
                     Write-Debug 'Populating UserHash'
                     $UserHash = Get-DynamicHash -Object User -returnProperties username, email, firstname, lastname
@@ -66,15 +66,21 @@ function Get-JCCloudDirectory () {
     process {
         switch ($PSCmdlet.ParameterSetName) {
             ReturnAll {
-                $resultsArray = Get-JcSdkDirectory | Where-Object { ($_.Type -eq 'g_suite' -or $_.Type -eq 'office_365') } | Select-Object Id, Name, Type
+                if ($Type) {
+                    $resultsArray = Get-JcSdkDirectory | Where-Object { ($_.Type -eq $Type) } | Select-Object Id, Name, Type
+                } else {
+                    $resultsArray = Get-JcSdkDirectory | Where-Object { ($_.Type -eq 'g_suite' -or $_.Type -eq 'office_365') } | Select-Object Id, Name, Type
+                }
             }
             ByName {
+                Write-Debug "Finding directory by Name"
                 $CloudDirectory = $DirectoryHash | Where-Object name -EQ $Name
                 if (!$CloudDirectory) {
                     throw "$Name was not found. Please try again"
                 }
             }
             ByID {
+                Write-Debug "Finding directory by ID"
                 $CloudDirectory = $DirectoryHash | Where-Object Id -EQ $ID
                 if (!$CloudDirectory) {
                     throw "$ID was not found. Please try again"
@@ -82,19 +88,29 @@ function Get-JCCloudDirectory () {
             }
         }
         if ($CloudDirectory.type -eq 'g_suite') {
-            if ($Association) {
-                switch ($Association) {
+            if ($PSBoundParameters.ContainsKey('Association')) {
+                switch ($PSBoundParameters.Association) {
                     Users {
                         $Users = Get-JcSdkGSuiteTraverseUser -GsuiteId $CloudDirectory.Id
                         $Users | ForEach-Object {
-                            $User = $UserHash | Where-Object _id -EQ $_.ID
-                            $resultsArray.Add($User)
+                            $UserId = $_.Id
+                            $user = $UserHash.GetEnumerator().Where({ $_.Key -contains ($UserId) })
+                            $user = $user | Select-Object @{
+                                name = 'Id'
+                                expr = { $_.Name }
+                            } -ExpandProperty Value
+                            $resultsArray.Add($user)
                         }
                     }
                     UserGroups {
                         $UserGroups = Get-JcSdkGSuiteTraverseUserGroup -GsuiteId $CloudDirectory.Id
                         $UserGroups | ForEach-Object {
-                            $UserGroup = $UserGroupHash | Where-Object id -EQ $_.ID
+                            $UserGroupId = $_.Id
+                            $UserGroup = $UserGroupHash.GetEnumerator().Where({ $_.Key -contains ($UserGroupId) })
+                            $UserGroup = $UserGroup | Select-Object @{
+                                name = 'Id'
+                                expr = { $_.Name }
+                            } -ExpandProperty Value
                             $resultsArray.Add($UserGroup)
                         }
                     }
@@ -103,21 +119,25 @@ function Get-JCCloudDirectory () {
                 $resultsArray = Get-JcSdkGSuite -Id $CloudDirectory.Id
             }
         } elseif ($CloudDirectory.type -eq 'office_365') {
-            if ($Association) {
-                switch ($Association) {
+            if ($PSBoundParameters.ContainsKey('Association')) {
+                switch ($PSBoundParameters.Association) {
                     Users {
-                        $Users = Get-JcSdkOffice365TraverseUser -Office365Id $CloudDirectory.Id
-                        $Users | ForEach-Object {
-                            $User = $UserHash | Where-Object _id -EQ $_.ID
-                            $resultsArray.Add($User)
-                        }
+                        $UserId = $_.Id
+                        $user = $UserHash.GetEnumerator().Where({ $_.Key -contains ($UserId) })
+                        $user = $user | Select-Object @{
+                            name = 'Id'
+                            expr = { $_.Name }
+                        } -ExpandProperty Value
+                        $resultsArray.Add($user)
                     }
                     UserGroups {
-                        $UserGroups = Get-JcSdkOffice365TraverseUser -Office365Id $CloudDirectory.Id
-                        $UserGroups | ForEach-Object {
-                            $UserGroup = $UserGroupHash | Where-Object id -EQ $_.ID
-                            $resultsArray.Add($UserGroup)
-                        }
+                        $UserGroupId = $_.Id
+                        $UserGroup = $UserGroupHash.GetEnumerator().Where({ $_.Key -contains ($UserGroupId) })
+                        $UserGroup = $UserGroup | Select-Object @{
+                            name = 'Id'
+                            expr = { $_.Name }
+                        } -ExpandProperty Value
+                        $resultsArray.Add($UserGroup)
                     }
                 }
             } else {
