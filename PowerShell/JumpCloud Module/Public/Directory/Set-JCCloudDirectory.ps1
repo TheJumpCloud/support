@@ -3,7 +3,7 @@ function Set-JCCloudDirectory () {
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByName', HelpMessage = 'The name of cloud directory instance')]
         [String]$Name,
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'The ID of cloud directory instance')]
-        [Alias('_id', 'id')]
+        [Alias('_id')]
         [String]$ID,
         [Parameter(HelpMessage = 'A string value that will change the name of the Cloud Directory instance')]
         [String]$NewName,
@@ -34,6 +34,8 @@ function Set-JCCloudDirectory () {
                 $CloudDirectory = $DirectoryHash | Where-Object name -EQ $Name
                 if (!$CloudDirectory) {
                     throw "$Name was not found. Please try again"
+                } elseif ($CloudDirectory.count -gt 1) {
+                    throw "Multiple directories with the same name detected, please use the -id parameter to specify which directory to edit. Use Get-JCCloudDirectory to find all directories"
                 }
             }
             ByID {
@@ -58,6 +60,13 @@ function Set-JCCloudDirectory () {
                 throw 'remove_access is not a valid User Password Expiriation action for office_365 instances'
             } else {
                 $body.Add('userPasswordExpirationAction', $UserPasswordExpirationAction)
+            }
+        }
+
+        if ($Debug) {
+            $body.GetEnumerator() | ForEach-Object {
+                $message = '{0} {1}' -f $_.key, $_.value
+                Write-Debug $message
             }
         }
 
