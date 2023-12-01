@@ -116,7 +116,14 @@ currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certHash.serial)"
 networkSsid="$($NETWORKSSID)"
-if [[ `$currentUser ==  $($user.localUsername) ]]; then
+# store orig case match value
+orig_nocasematch=`$(shopt -p nocasematch; true)
+# set to case insenitive
+shopt -s nocasematch
+userCompare="$($user.localUsername)"
+if [[ "`$currentUser" ==  "`$userCompare" ]]; then
+    # restore case match type
+    `$orig_nocasematch
     certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain)
     regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
     regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
@@ -213,6 +220,8 @@ if [[ `$currentUser ==  $($user.localUsername) ]]; then
         rm "/tmp/$($user.userName)-client-signed.pfx"
     fi
 else
+    # restore case match type
+    `$orig_nocasematch
     echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.localUsername) is signed in and retry"
     # Finally clean up files
     if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
