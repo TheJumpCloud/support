@@ -1,3 +1,19 @@
+## 1.0.7
+
+Release Date: December 1, 2023
+
+#### RELEASE NOTES
+
+```
+In macOS, it's possible for a user to define their username as `user1234` or `USER1234`. When JumpCloud takes of a user it'll perform a case insensive string comparison and take over the account that matches the username from JumpCloud.
+
+Commands executed by JumpCloud in macOS run as shell scripts `/bin/bash` by default, this shell does not perform case-insensitive string comparisons. This patch version of the Radius Certificate Utility addresses this limitation by explicitly changing the `bash` match patterns to be case-insensitive.
+```
+
+#### Bug Fixes:
+
+- Addressed a bug were users with differing casing (`user1234` vs `USER1234`) between the system and JumpCloud username
+
 ## 1.0.6
 
 Release Date: September 25, 2023
