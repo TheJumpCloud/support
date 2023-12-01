@@ -35,8 +35,9 @@ Function DownloadAndInstallAgent() {
         InstallAgent
 
         # Check if agent is running as a service
-        # Do a loop for 60 seconds to check if the agent is running as a service
-        for ($i = 0; $i -lt 60; $i++) {
+        # Do a loop for 5 minutes to check if the agent is running as a service
+        # The agent pulls cef files during install which may take longer then previously.
+        for ($i = 0; $i -lt 300; $i++) {
             Start-Sleep -Seconds 1
             #Output the errors encountered
             $AgentService = Get-Service -Name "jumpcloud-agent" -ErrorAction SilentlyContinue

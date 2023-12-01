@@ -6,6 +6,35 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         $policies | Where-Object { $_.Name -like "Pester -*" } | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
         $policyTemplates = Get-JcSdkPolicyTemplate
     }
+
+    Context 'Set policy with a select/multi config with string or int' {
+        BeforeAll {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "system_updates_windows" }
+            $templateId = $policyTemplate.id
+            $PesterWindowsWindowsUpdateConfig = New-JCPolicy -Name "Pester - Windows - Configure Windows" -templateID $templateId -AUTO_INSTALL_SCHEDULE ScheduledInstallFirstWeek
+        }
+        It 'Sets a policy with a string multi field' {
+            # Update the policy with a new AUTO_INSTALL_SCHEDULE (this is a mult field)
+            $stringMultiValue = "ScheduledInstallSecondWeek"
+            $updateSchedule = Set-JCPolicy -id $PesterWindowsWindowsUpdateConfig.Id -AUTO_INSTALL_SCHEDULE $stringMultiValue
+
+            # Get the value of the Field
+            $fieldName = "AUTO_INSTALL_SCHEDULE"
+            $index = 0
+            for ($i = 0; $i -lt $updateSchedule.values.configFieldName.Count; $i++) {
+                if ($updateSchedule.values.configFieldName[$i] -eq $fieldName) {
+                    $index = $i
+                    break
+                }
+            }
+            $updateSchedule.values.value[$index] | Should -Be $stringMultiValue
+        }
+        It 'Sets a policy with a int multi field' {
+            # Set the policy with an int multi field
+            $intMultiValue = 2
+            { Set-JCPolicy -id $PesterWindowsWindowsUpdateConfig.Id -AUTO_INSTALL_SCHEDULE $intMultiValue } | Should -Throw
+        }
+    }
     Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
         It 'Sets a policy with a string/text type dynamic parameter' {
             # Define a policy with a string parameter
