@@ -17,15 +17,15 @@ Describe -Tag:('JCCloudDirectory') 'Get-JCCloudDirectory' {
     }
     It "Returns all cloud directories" {
         $AllDirectories = Get-JCCloudDirectory
-        $AllDirectories | Should -Be 2
+        $AllDirectories.Count | Should -Be 2
     }
     It "Returns gsuite directories" {
-        $GsuiteDirectories = Get-JCCloudDirectory -Type gsuite
-        $GsuiteDirectories | Should -Be 1
+        $GsuiteDirectories = Get-JCCloudDirectory -Type g_suite
+        $GsuiteDirectories.Count | Should -Be 1
     }
     It "Returns office365 directories" {
         $Office365Directories = Get-JCCloudDirectory -Type office_365
-        $Office365Directories | Should -Be 1
+        $Office365Directories.Count | Should -Be 1
     }
     It "Returns directory by Name" {
         $DirectoryByName = Get-JCCloudDirectory -Name 'JumpCloud'

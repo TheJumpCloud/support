@@ -1,7 +1,7 @@
 Describe -Tag:('JCCloudDirectory') 'Set-JCCloudDirectory' {
     BeforeAll {
         $Office365Directory = Get-JCCloudDirectory -Type 'office_365'
-        $GsuiteDirectory = Get-JCCloudDirectory -Type 'gsuite'
+        $GsuiteDirectory = Get-JCCloudDirectory -Type 'g_suite'
     }
     It 'Sets GroupsEnabled field by Id' {
         $GroupsEnabledTest = Set-JCCloudDirectory -Id $Office365Directory.Id -GroupsEnabled $true
