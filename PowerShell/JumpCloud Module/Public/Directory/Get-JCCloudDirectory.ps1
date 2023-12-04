@@ -149,7 +149,7 @@ function Get-JCCloudDirectory () {
                     }
                 }
             } else {
-                $resultsArray = Get-JcSdkOffice365 -Id $CloudDirectory.Id
+                $resultsArray = Get-JcSdkOffice365 -Office365Id $CloudDirectory.Id
             }
         }
     }
