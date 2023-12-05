@@ -70,6 +70,8 @@ function Set-JCCloudDirectory () {
             }
         }
 
+        $body = $body | ConvertTo-Json
+
         if ($CloudDirectory.Type -eq 'office_365') {
             $resultsArray = Update-JcSdkOffice365 -Office365Id $CloudDirectory.Id -Body $body
         } elseif ($CloudDirectory.Type -eq 'g_suite') {

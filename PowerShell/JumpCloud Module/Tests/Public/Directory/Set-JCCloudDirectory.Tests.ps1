@@ -38,10 +38,10 @@ Describe -Tag:('JCCloudDirectory') 'Set-JCCloudDirectory' {
         $PasswordExpAction.UserPasswordExpirationAction | Should -Be 'suspend'
     }
     It 'Set UserPasswordExpirationAction to remove_access for Office365 directory' {
-        $PasswordExpAction = Set-JCCloudDirectory -Name $Office365Directory.Name -UserPasswordExpirationAction 'remove_access' | Should -Throw
+        { $PasswordExpAction = Set-JCCloudDirectory -Name $Office365Directory.Name -UserPasswordExpirationAction 'remove_access' } | Should -Throw
     }
     It 'Set UserPasswordExpirationAction to remove_access for Gsuite directory' {
-        $PasswordExpAction = Set-JCCloudDirectory -Name $GsuiteDirectory.Name -UserPasswordExpirationAction 'remove_access' | Should -Not -Throw
+        { $PasswordExpAction = Set-JCCloudDirectory -Name $GsuiteDirectory.Name -UserPasswordExpirationAction 'remove_access' } | Should -Not -Throw
         $PasswordExpAction.UserPasswordExpirationAction | Should -Be 'remove_access'
         Set-JCCloudDirectory -Name $GsuiteDirectory.Name -UserPasswordExpirationAction $GsuiteDirectory.UserPasswordExpirationAction
     }
