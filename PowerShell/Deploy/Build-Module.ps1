@@ -1,20 +1,7 @@
 [CmdletBinding()]
 param (
-    [Parameter()]
-    [String]
-    $GitSourceBranch,
-    [Parameter()]
-    [String]
-    $GitSourceRepo,
-    [Parameter()]
     [String]
     $ReleaseType,
-    [Parameter()]
-    [String]
-    $ModuleName,
-    [Parameter()]
-    [string]
-    $RequiredModulesRepo,
     [Parameter()]
     [Boolean]
     $ManualModuleVersion
@@ -22,7 +9,7 @@ param (
 . "$PSScriptRoot/Get-Config.ps1"
 # Region Checking PowerShell Gallery module version
 Write-Host ('[status]Check PowerShell Gallery for module version info')
-$PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
+$PSGalleryInfo = Get-PSGalleryModuleVersion -Name:("JumpCloud") -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
 # Check to see if ManualModuleVersion parameter is set to true
 if ($ManualModuleVersion) {
     $ManualModuleVersionRetrieval = Get-Content -Path:($FilePath_psd1) | Where-Object { $_ -like '*ModuleVersion*' }
