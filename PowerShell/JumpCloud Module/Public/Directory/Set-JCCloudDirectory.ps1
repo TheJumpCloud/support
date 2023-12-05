@@ -49,7 +49,7 @@ function Set-JCCloudDirectory () {
         if ($NewName) {
             $body.Add('name', $NewName)
         }
-        if ($GroupsEnabled) {
+        if (-not [System.String]::IsNullOrEmpty($GroupsEnabled)) {
             $body.Add('groupsEnabled', $GroupsEnabled)
         }
         if ($UserLockoutAction) {
