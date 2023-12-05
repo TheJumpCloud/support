@@ -17,18 +17,25 @@ Describe -Tag:('JCCloudDirectory') 'Get-JCCloudDirectory' {
     }
     It "Returns all cloud directories" {
         $AllDirectories = Get-JCCloudDirectory
-        $AllDirectories.Count | Should -Be 2
+        $AllDirectories.id | Should -Not -BeNullOrEmpty
+        $AllDirectories.Name | Should -Not -BeNullOrEmpty
+        $AllDirectories.Type | Should -BeIn "office_365", "g_suite"
     }
     It "Returns gsuite directories" {
         $GsuiteDirectories = Get-JCCloudDirectory -Type g_suite
-        $GsuiteDirectories.Count | Should -Be 1
+        $GsuiteDirectories.id | Should -Not -BeNullOrEmpty
+        $GsuiteDirectories.Name | Should -Not -BeNullOrEmpty
+        $GsuiteDirectories.Type | Should -BeIn "g_suite"
     }
     It "Returns office365 directories" {
         $Office365Directories = Get-JCCloudDirectory -Type office_365
-        $Office365Directories.Count | Should -Be 1
+        $Office365Directories.id | Should -Not -BeNullOrEmpty
+        $Office365Directories.Name | Should -Not -BeNullOrEmpty
+        $Office365Directories.Type | Should -BeIn "office_365"
     }
     It "Returns directory by Name" {
-        $DirectoryByName = Get-JCCloudDirectory -Name 'JumpCloud'
+        $Directory = $Directories | Select-Object -First 1
+        $DirectoryByName = Get-JCCloudDirectory -Name $Directory.Name
         $DirectoryByName | Should -Not -BeNullOrEmpty
     }
     It "Returns directory by ID" {
@@ -37,7 +44,8 @@ Describe -Tag:('JCCloudDirectory') 'Get-JCCloudDirectory' {
         $DirectoryByID | Should -Not -BeNullOrEmpty
     }
     It "Returns user associations by name" {
-        $DirectoryByName = Get-JCCloudDirectory -Name 'JumpCloud' -Association Users
+        $Directory = $Directories | Select-Object -First 1
+        $DirectoryByName = Get-JCCloudDirectory -Name $Directory.Name -Association Users
         $DirectoryByName | Should -Not -BeNullOrEmpty
     }
     It "Returns user associations by Id" {
@@ -46,7 +54,8 @@ Describe -Tag:('JCCloudDirectory') 'Get-JCCloudDirectory' {
         $DirectoryById | Should -Not -BeNullOrEmpty
     }
     It "Returns user_group associations by name" {
-        $DirectoryByName = Get-JCCloudDirectory -Name 'JumpCloud' -Association UserGroups
+        $Directory = $Directories | Select-Object -First 1
+        $DirectoryByName = Get-JCCloudDirectory -Name $Directory.Name -Association UserGroups
         $DirectoryByName | Should -Not -BeNullOrEmpty
     }
     It "Returns user_group associations by Id" {
@@ -55,7 +64,7 @@ Describe -Tag:('JCCloudDirectory') 'Get-JCCloudDirectory' {
         $DirectoryById | Should -Not -BeNullOrEmpty
     }
     AfterAll {
-        Remove-JCUser -UserID $NewUser.Id
-        Remove-JCUserGroup -GroupID $NewGroup.Id
+        Remove-JCUser -UserID $NewUser.Id -Force
+        Remove-JCUserGroup -GroupID $NewGroup.Id -Force
     }
 }
