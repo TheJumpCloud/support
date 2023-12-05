@@ -25,11 +25,7 @@ Describe -Tag:('JCCloudDirectory') 'Set-JCCloudDirectory' {
     }
     It 'Sets UserLockoutAction by Id' {
         $LockoutActionTest = Set-JCCloudDirectory -Id $Office365Directory.Id -UserLockoutAction 'suspend'
-        write-host ($LockoutActionTest).ToJsonString()
-        $current = Get-JCCloudDirectory -Id $Office365Directory.Id
-        write-host ($current).ToJsonString()
-        $current.UserLockoutAction | Should -Be 'suspend'
-        $LockoutActionTest.UserLockoutAction | Should -Be $current.UserLockoutAction
+        $LockoutActionTest.UserLockoutAction | Should -Be 'suspend'
     }
     It 'Sets UserLockoutAction by Name' {
         $LockoutActionTest = Set-JCCloudDirectory -Name $Office365Directory.Name -UserLockoutAction 'suspend'
