@@ -49,7 +49,7 @@ function Set-JCCloudDirectory () {
         if ($NewName) {
             $body.Add('name', $NewName)
         }
-        if (-not [System.String]::IsNullOrEmpty($GroupsEnabled)) {
+        if ($PSBoundParameters.ContainsKey('GroupsEnabled')) {
             $body.Add('groupsEnabled', $GroupsEnabled)
         }
         if ($UserLockoutAction) {
@@ -71,6 +71,7 @@ function Set-JCCloudDirectory () {
         }
 
         $body = $body | ConvertTo-Json
+        Write-Debug $body
 
         if ($CloudDirectory.Type -eq 'office_365') {
             $resultsArray = Update-JcSdkOffice365 -Office365Id $CloudDirectory.Id -Body $body
