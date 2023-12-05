@@ -1,7 +1,9 @@
 Describe -Tag:('JCCloudDirectory') 'Set-JCCloudDirectory' {
     BeforeAll {
-        $Office365Directory = Get-JCCloudDirectory -Type 'office_365'
-        $GsuiteDirectory = Get-JCCloudDirectory -Type 'g_suite'
+        $Office365DirectoryList = Get-JCCloudDirectory -Type 'office_365' | Select -First 1
+        $Office365Directory = Get-JCCloudDirectory -id $Office365DirectoryList.id
+        $GsuiteDirectoryList = Get-JCCloudDirectory -Type 'g_suite' | Select -First 1
+        $GsuiteDirectory = Get-JCCloudDirectory -id $GsuiteDirectoryList.id
     }
     It 'Sets GroupsEnabled field by Id' {
         $GroupsEnabledTest = Set-JCCloudDirectory -Id $Office365Directory.Id -GroupsEnabled $true
@@ -41,7 +43,8 @@ Describe -Tag:('JCCloudDirectory') 'Set-JCCloudDirectory' {
         { $PasswordExpAction = Set-JCCloudDirectory -Name $Office365Directory.Name -UserPasswordExpirationAction 'remove_access' } | Should -Throw
     }
     It 'Set UserPasswordExpirationAction to remove_access for Gsuite directory' {
-        { $PasswordExpAction = Set-JCCloudDirectory -Name $GsuiteDirectory.Name -UserPasswordExpirationAction 'remove_access' } | Should -Not -Throw
+        { Set-JCCloudDirectory -Name $GsuiteDirectory.Name -UserPasswordExpirationAction 'remove_access' } | Should -Not -Throw
+        $PasswordExpAction = Get-JCCloudDirectory -Name $GsuiteDirectory.Name
         $PasswordExpAction.UserPasswordExpirationAction | Should -Be 'remove_access'
         Set-JCCloudDirectory -Name $GsuiteDirectory.Name -UserPasswordExpirationAction $GsuiteDirectory.UserPasswordExpirationAction
     }
