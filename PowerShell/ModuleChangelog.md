@@ -1,6 +1,6 @@
 ## 2.9.0
 
-Release Date: December 4, 2023
+Release Date: December 5, 2023
 
 #### RELEASE NOTES
 
