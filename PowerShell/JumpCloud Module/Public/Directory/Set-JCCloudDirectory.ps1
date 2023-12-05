@@ -52,10 +52,10 @@ function Set-JCCloudDirectory () {
         if ($PSBoundParameters.ContainsKey('GroupsEnabled')) {
             $body.Add('groupsEnabled', $GroupsEnabled)
         }
-        if ($PSBoundParameters.ContainsKey('userLockoutAction')) {
+        if ($UserLockoutAction) {
             $body.Add('userLockoutAction', $UserLockoutAction)
         }
-        if ($PSBoundParameters.ContainsKey('userPasswordExpirationAction')) {
+        if ($UserPasswordExpirationAction) {
             if (($CloudDirectory.Type -eq 'office_365') -and $UserPasswordExpirationAction -eq 'remove_access') {
                 throw 'remove_access is not a valid User Password Expiriation action for office_365 instances'
             } else {
