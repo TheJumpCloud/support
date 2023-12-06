@@ -62,8 +62,14 @@ Function Get-JCPolicy () {
             }
         }
         ForEach ($URL In $URLs) {
+            if ($URL -match "name&filter") {
+                $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+                # search does not return values now need to return the policy by ID after matching name
+                $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:("$JCUrlBasePath/api/v2/policies/$($Result.id)")
+            } else {
+                $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+            }
 
-            $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
             $Result | Add-Member -MemberType NoteProperty -Name "templateID" -Value $Result.template.id
             if ($result.id) {
                 $Results += $Result

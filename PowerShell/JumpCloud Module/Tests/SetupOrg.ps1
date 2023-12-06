@@ -120,26 +120,26 @@ Try {
 
     $PesterParamsHash_Associations = @{
         PolicySystemGroupMembership   = $PesterParamsHash_BuildOrg.MultiplePolicy | ForEach-Object {
-            If (-not (Get-JcSdkPolicyAssociation -PolicyId:($_.id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+            If (-not (Get-JcSdkPolicyAssociation -PolicyId:($_.id) -Targets:('system_group') | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
                 Set-JcSdkPolicyAssociation -Op:("add") -PolicyId:($_.id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
             };
         };
-        UserGroupMembership           = If (-not (Get-JcSdkUserGroupMember -GroupId:($PesterParamsHash_BuildOrg.UserGroup.id) | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.User1.id })) {
+        UserGroupMembership           = If (-not (Get-JcSdkUserGroupMember -GroupId:($PesterParamsHash_BuildOrg.UserGroup.id) | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.User1.id })) {
             Set-JcSdkUserGroupMember -Op:("add") -GroupId:($PesterParamsHash_BuildOrg.UserGroup.id) -Id:($PesterParamsHash_BuildOrg.User1.id);
         };
-        SystemUserMembership          = If (-not (Get-JcSdkSystemAssociation -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Targets:('user') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.User1.id })) {
+        SystemUserMembership          = If (-not (Get-JcSdkSystemAssociation -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Targets:('user') | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.User1.id })) {
             Set-JcSdkSystemAssociation -Op:("add") -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Type:('user') -Id:($PesterParamsHash_BuildOrg.User1.id);
         };
-        SystemPolicyMembership        = If (-not (Get-JcSdkSystemAssociation -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Targets:('policy') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) {
+        SystemPolicyMembership        = If (-not (Get-JcSdkSystemAssociation -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Targets:('policy') | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.SinglePolicy.id })) {
             Set-JcSdkSystemAssociation -Op:("add") -SystemId:($PesterParamsHash_BuildOrg.SystemLinux._id) -Type:('policy') -Id:($PesterParamsHash_BuildOrg.SinglePolicy.id);
         };
-        Command1SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+        Command1SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Targets:('system_group') | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
             Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command1._id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
         };
-        Command2SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command2._id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+        Command2SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command2._id) -Targets:('system_group') | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
             Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command2._id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
         };
-        Command3SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command3._id) -Targets:('system_group') | Where-Object { $_.id -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
+        Command3SystemGroupMembership = If (-not (Get-JcSdkCommandAssociation -CommandId:($PesterParamsHash_BuildOrg.Command3._id) -Targets:('system_group') | Where-Object { $_.Toid -eq $PesterParamsHash_BuildOrg.SystemGroup.id })) {
             Set-JcSdkCommandAssociation -Op:("add") -CommandId:($PesterParamsHash_BuildOrg.Command3._id) -Type:('system_group') -Id:($PesterParamsHash_BuildOrg.SystemGroup.id);
         };
     }

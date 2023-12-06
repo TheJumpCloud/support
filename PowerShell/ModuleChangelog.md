@@ -1,3 +1,18 @@
+## 2.9.0
+
+Release Date: December 5, 2023
+
+#### RELEASE NOTES
+
+```
+New Directory Functions, Get-JCCloudDirectory, Set-JCCloudDirectory added to the module
+```
+
+#### FEATURES:
+
+Get-JCCloudDirectory Added, fetch JumpCloud Cloud Directory instances (gsuite, office_365) programmatically
+Set-JCCloudDirectory Added, update existing JumpCloud Cloud Directory instances (gsuite, office_365) programmatically
+
 ## 2.8.3
 
 Release Date: November 20, 2023
