@@ -70,7 +70,7 @@ If (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
 # EndRegion Updating module change log
 
 Write-Host "Building help files" -ForegroundColor Green
-."$PSScriptRoot/Build-HelpFiles.ps1" -ModuleName "JumpCloud" -ModulePath "./PowerShell/JumpCloud Module"
+."$PSScriptRoot/Build-HelpFiles.ps1" -ModuleName "JumpCloud" -ModulePath (Get-Item -Path:($FilePath_psd1)).directory
 
 Write-Host "Building Pester test files" -ForegroundColor Green
 ."$PSScriptRoot/Build-PesterTestFiles.ps1"
