@@ -1,5 +1,8 @@
 [CmdletBinding()]
 param (
+    # Validate Set for ReleaseType
+    [ValidateSet('Major', 'Minor', 'Patch')]
+    [Parameter(Mandatory = $true)]
     [String]
     $ReleaseType,
     [Parameter()]
