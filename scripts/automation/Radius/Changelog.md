@@ -1,3 +1,17 @@
+## 1.1.0
+
+Release Date: December 13, 2023
+
+#### RELEASE NOTES
+
+```
+Fixed an issue where similar usernames were having incorrect certificates deployed
+```
+
+#### Bug Fixes:
+
+- Addressed a bug where similar usernames were having incorrect certificates deployed. Ex: john.smith and john
+
 ## 1.0.7
 
 Release Date: December 1, 2023
