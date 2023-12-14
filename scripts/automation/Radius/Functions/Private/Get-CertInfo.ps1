@@ -64,7 +64,7 @@ function Get-CertInfo {
                     $certHash = @{}
                     # Use openssl to gather serial, subject, issuer and enddate information
                     $certInfo = Invoke-Expression "$opensslBinary x509 -in $($cert.Path) -enddate -serial -subject -issuer -noout"
-
+                    $certSHA1 = Get-FileHash -Path $($cert.Path) -Algorithm SHA1
                     # Convert string data into a key/value pair
                     $certInfo | ForEach-Object {
                         $property = $_ | ConvertFrom-StringData
@@ -79,6 +79,7 @@ function Get-CertInfo {
 
                         $certHash += $property
                     }
+                    $certHash.Add('sha1', $certSHA1.Hash)
 
                     # Add hash to certObj array
                     $certObj += $certHash
