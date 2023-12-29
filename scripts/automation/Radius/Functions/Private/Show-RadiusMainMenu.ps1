@@ -10,14 +10,14 @@ function Show-RadiusMainMenu {
     $cutoffDate = (Get-Date).AddDays(15).Date
 
     # Find all certs that will expire between current date and cut off date
-    $expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
+    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
 
     # Get UserGroup information from Config.ps1
-    $radiusUserGroup = Get-JcSdkUserGroup -Id $JCUSERGROUP | Select-Object Name
-    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $JCUSERGROUP).Count
+    $radiusUserGroup = Get-JcSdkUserGroup -Id $global:JCUSERGROUP | Select-Object Name
+    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $global:JCUSERGROUP).Count
 
     # Get SSID information from Config.ps1
-    $radiusSSID = $NETWORKSSID.Split(';').Trim()
+    $radiusSSID = $Global:NETWORKSSID.replace(';', ' ')
 
     # Output for Users
     Clear-Host
@@ -35,29 +35,34 @@ function Show-RadiusMainMenu {
         Write-Host $(PadCenter -string "Root CA Serial Number: $($rootCAInfo.serial)" -char ' ') -ForegroundColor Green
         Write-Host $(PadCenter -string "Root CA Expiration: $($rootCAInfo.notAfter)`n" -char ' ') -ForegroundColor Green
     }
-    if ($expiringCerts) {
-        Write-Host $(PadCenter -string "$($($expiringCerts.subject).Count) user certs will expire in 15 days `n" -char ' ') -ForegroundColor Red
+    if ($Global:expiringCerts) {
+        Write-Host $(PadCenter -string "$($($Global:expiringCerts.subject).Count) user certs will expire in 15 days `n" -char ' ') -ForegroundColor Red
     }
-    Write-Host $(PadCenter -string "-" -char '-')
+    Write-Host $(PadCenter -string " Details " -char '-')
     # /==== ROOT CA ====
 
-    # ==== GROUP/SSID ====
+    # ==== GROUP/SSID/Global Variables  ====
     Write-Host $(PadCenter -string "Radius User Group: $($radiusUserGroup.Name)" -char " ") -ForegroundColor Green
     Write-Host $(PadCenter -string "Radius Users: $($radiusUserGroupMemberCount)" -char " ") -ForegroundColor Green
-    if ($radiusSSID.count -gt 1) {
-        Write-Host $(PadCenter -string "Radius SSIDs:" -char " ") -ForegroundColor Green
-        $radiusSSID | ForEach-Object {
-            Write-Host $(PadCenter -string $_ -char " ") -ForegroundColor Green
-        }
-    } else {
-        Write-Host $(PadCenter -string "Radius SSID: $radiusSSID" -char " ") -ForegroundColor Green
-        Write-Host "`n"
-    }
+    Write-Host $(PadCenter -string "Radius SSID(s): $radiusSSID" -char " ") -ForegroundColor Green
+    Write-Host $(PadCenter -string "Last Updated User/System Data: $($Global:JCRConfig.globalVars.lastupdate)" -char " ") -ForegroundColor Green
+    # Write-Host "`n"
+    # if ($radiusSSID.count -gt 1) {
+    #     Write-Host $(PadCenter -string "Radius SSIDs:" -char " ") -ForegroundColor Green
+    #     $radiusSSID | ForEach-Object {
+    #         Write-Host $(PadCenter -string $_ -char " ") -ForegroundColor Green
+    #     }
+    # } else {
+    #     Write-Host $(PadCenter -string "Radius SSID: $radiusSSID" -char " ") -ForegroundColor Green
+    #     Write-Host "`n"
+    # }
     # /==== GROUP/SSID ====
+
     Write-Host $(PadCenter -string "-" -char '-')
     Write-Host "1: Press '1' to generate your Root Certificate."
     Write-Host "2: Press '2' to generate/update your User Certificate(s)."
     Write-Host "3: Press '3' to distribute your User Certificate(s)."
     Write-Host "4: Press '4' to monitor your User Certification Distribution."
+    Write-Host "4: Press '5' to update User/System Data"
     Write-Host "Q: Press 'Q' to quit."
 }

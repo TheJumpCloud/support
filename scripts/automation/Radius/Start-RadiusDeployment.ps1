@@ -25,6 +25,8 @@ do {
             . "$JCScriptRoot/Functions/Public/Distribute-UserCerts.ps1"
         } '4' {
             . "$JCScriptRoot/Functions/Public/Monitor-CertDeployment.ps1"
+        } '5' {
+            . "$JCScriptRoot/Functions/Public/Update-JCRData.ps1"
         }
     }
     Pause

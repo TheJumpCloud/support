@@ -1,7 +1,15 @@
 function Get-CertInfo {
+    [CmdletBinding()]
     param (
-        [switch]$RootCA,
-        [switch]$UserCerts
+        [Parameter(ParameterSetName = 'CA', Mandatory = $true)]
+        [switch]
+        $RootCA,
+        [Parameter(ParameterSetName = 'User', Mandatory = $true)]
+        [switch]
+        $UserCerts,
+        [Parameter(ParameterSetName = 'User', Mandatory = $false)]
+        [system.string]
+        $username
     )
     begin {
         # Import the Config.ps1 variables
@@ -14,10 +22,15 @@ function Get-CertInfo {
 
         if ($UserCerts) {
             # Find all userCert paths
-            $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/*.crt" -ErrorAction SilentlyContinue
+            if ($username) {
+                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-*.crt" -ErrorAction SilentlyContinue
+
+            } else {
+                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/*.crt" -ErrorAction SilentlyContinue
+            }
         }
 
-        $certObj = @()
+        $certObj = New-Object System.Collections.ArrayList
     }
     process {
         # If no cert is found, return null
@@ -37,6 +50,7 @@ function Get-CertInfo {
                 }
 
                 # Create hashtable to contain cert info
+                # TODO: pscustomobject insted of hash
                 $certHash = @{}
                 # Use openssl to gather serial, subject, issuer, and enddate information
                 $certInfo = Invoke-Expression "$opensslBinary x509 -in $($foundCerts.Path) -enddate -serial -subject -issuer -noout"
@@ -61,28 +75,35 @@ function Get-CertInfo {
             } elseif ($UserCerts) {
                 foreach ($cert in $foundCerts) {
                     # Create hashtable to contain cert info
-                    $certHash = @{}
+                    $certHash = [PSCustomObject]@{}
                     # Use openssl to gather serial, subject, issuer and enddate information
-                    $certInfo = Invoke-Expression "$opensslBinary x509 -in $($cert.Path) -enddate -serial -subject -issuer -noout"
-                    $certSHA1 = Get-FileHash -Path $($cert.Path) -Algorithm SHA1
+                    $certInfo = Invoke-Expression "$opensslBinary x509 -in $($cert.Path) -enddate -serial -subject -issuer -fingerprint -sha1 -noout"
                     # Convert string data into a key/value pair
                     $certInfo | ForEach-Object {
                         $property = $_ | ConvertFrom-StringData
-
-                        # Convert notAfter property into datetime format
-                        if ($property.notAfter) {
-                            $date = $property.notAfter
-                            $date = $date.replace('GMT', '').Trim()
-                            $date = $date -replace '\s+', ' '
-                            $property.notAfter = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy", $null)
+                        switch ($($property.keys)) {
+                            'notAfter' {
+                                $date = $property.notAfter
+                                $date = $date.replace('GMT', '').Trim()
+                                $date = $date -replace '\s+', ' '
+                                $property.notAfter = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy", $null)
+                            }
+                            'sha1 Fingerprint' {
+                                $property.Values = ($($property.Values)).ToLower().Replace(":", "")
+                                $property.keys = 'sha1'
+                            }
+                            Default {
+                            }
                         }
-
-                        $certHash += $property
+                        $certHash | Add-Member -Name $property.keys -Type NoteProperty -Value "$($property.Values)"
                     }
-                    $certHash.Add('sha1', $certSHA1.Hash)
-
+                    # lastly add the username of the certificate to the hash:
+                    $certFile = Get-Item $($cert.Path)
+                    $username = $certFile.name.split('-')[0]
+                    $certHash | Add-Member -Name 'username' -Type NoteProperty -Value $username
+                    $certHash | Add-Member -Name 'generated' -Type NoteProperty -Value ($certFile.LastWriteTime.ToString('MM/dd/yyyy HH:mm:ss'))
                     # Add hash to certObj array
-                    $certObj += $certHash
+                    $certObj.add( $certHash) | Out-Null
                 }
             }
         }

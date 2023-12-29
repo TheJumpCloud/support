@@ -16,6 +16,8 @@
 /scripts/automation/Radius/*/*.srl
 /scripts/automation/Radius/Config.ps1
 /scripts/automation/Radius/users.json
+/scripts/automation/Radius/settings.json
+/scripts/automation/Radius/data/*
 __pycache__/
 *.pyc
 # Ignore PWSH CSV Import/Update Files:

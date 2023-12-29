@@ -1,3 +1,5 @@
+# TODO: param for testing
+
 # Import Global Config:
 . "$JCScriptRoot/config.ps1"
 Connect-JCOnline $JCAPIKEY -force
@@ -24,7 +26,7 @@ if ($env:certKeyPassword) {
 }
 
 # Import the functions
-Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
+# Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
 
 # Import User.Json/ create list if it does not exist
 if (Test-Path -Path "$JCScriptRoot/users.json" -PathType Leaf) {
@@ -42,23 +44,6 @@ if (Test-Path -Path "$JCScriptRoot/users.json" -PathType Leaf) {
     $userArray = @()
 }
 
-# Get user membership of group
-# TODO: update group membership if last date is -gt 30 mins
-if ( -not $GLOBAL:RadiusUserMembership ) {
-    $GLOBAL:RadiusUserMembership = Get-JCUserGroupMember -ByID $JCUSERGROUP
-    $groupMembers = $GLOBAL:RadiusUserMembership
-} else {
-    $groupMembers = $GLOBAL:RadiusUserMembership
-}
-if ($groupMembers) {
-    Write-Host "[status] Found $($groupmembers.count) users in Radius User Group"
-}
-
-# Get SystemHash
-# TODO: update group membership if last date is -gt 30 mins
-# TODO: global variable and track time last updated
-$SystemHash = Get-JCSystem -returnProperties displayName, os
-
 # Create UserCerts dir
 if (Test-Path "$JCScriptRoot/UserCerts") {
     Write-Host "[status] User Cert Directory Exists"
@@ -68,155 +53,167 @@ if (Test-Path "$JCScriptRoot/UserCerts") {
 }
 
 function Show-GenerationMenu {
-    $title = 'JumpCloud Radius Cert Deployment'
+    $title = ' JumpCloud Radius Cert Deployment '
     Clear-Host
-    Write-Host "================ $Title ================"
-    Write-Host "1: Press '1' to generate new certificates for NEW RADIUS users. $([char]0x1b)[96mNOTE: This will only generate certificates for users who have not yet had a certificate generated."
-    Write-Host "2: Press '2' to generate new certificates for ONE Specific RADIUS user. $([char]0x1b)[96mNOTE: you will be prompted to overwrite any previously generated certificates"
-    Write-Host "3: Press '3' to re-generate new certificates for ALL users. $([char]0x1b)[96mNOTE: This will overwrite any previously generated certificates"
-    Write-Host "4: Press '4' to re-generate new certificates for users who's cert is set to expire shortly. $([char]0x1b)[96mNOTE: This will overwrite any previously generated certificates"
+    Write-Host $(PadCenter -string $Title -char '=')
+    Write-Host $(PadCenter -string "Select an option below to generate/regenerate user certificates`n" -char ' ') -ForegroundColor Yellow
+    # ==== instructions ====
+    # TODO: move notes from below into a more legible location
+    # Write-Host $(PadCenter -string ' User Certificate Options ' -char '-')
+    # Write-Host $(PadCenter -string "$([char]0x1b)[96m[]: This will only generate certificates for users who do not have a certificate file yet.`n" -char ' ')
+
+    if ($Global:expiringCerts) {
+        Write-Host $(PadCenter -string ' Certs Expiring Soon ' -char '-')
+        $Global:expiringCerts | Format-Table -Property username, @{name = 'Remaining Days'; expression = { (New-TimeSpan -Start (Get-Date) -End ("$($_.notAfter)")).Days } }, @{name = "Expires On"; expression = { $_.notAfter } }
+    }
+
+    Write-Host $(PadCenter -string "-" -char '-')
+    Write-Host "1: Press '1' to generate new certificates for NEW RADIUS users. `n`t$([char]0x1b)[96mNOTE: This will only generate certificates for users who do not have a certificate file yet."
+    Write-Host "2: Press '2' to generate new certificates for ONE RADIUS user. `n`t$([char]0x1b)[96mNOTE: you will be prompted to overwrite any previously generated certificates"
+    Write-Host "3: Press '3' to re-generate new certificates for ALL users. `n`t$([char]0x1b)[96mNOTE: This will overwrite any local generated certificates"
+    Write-Host "4: Press '4' to re-generate new certificates for users who's cert is set to expire shortly. `n`t$([char]0x1b)[96mNOTE: This will overwrite any local generated certificates"
     Write-Host "E: Press 'E' to exit."
 }
 Do {
     Show-GenerationMenu
     $confirmation = Read-Host "Please make a selection"
+
     switch ($confirmation) {
         '1' {
             # process all users, generate certificates for uses who do not yet have a certificate
-            foreach ($user in $groupMembers) {
+            # Get List of files, figure out userList of users who've not had a cert generated:
+            $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts/" -Filter "*-client-signed.pfx"
+            $certFileList = New-Object System.Collections.ArrayList
+            foreach ($file in $userCertFiles) {
+                $userFromFile = $file.BaseName.Replace("-client-signed", "")
+                $certFileList.add($userFromFile) | Out-Null
+            }
+            # Get each RadiusMember User:
+            foreach ($user in $Global:JCRRadiusMembers.keys) {
                 # Get the user details:
-                $MatchedUser = get-webjcuser -userID $user.id
-                Write-Host "Generating Cert for user: $($MatchedUser.username)"
-                if ($matchedUser.id -in $userArray.userid) {
-                    if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
-                        Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
-                    } else {
-                        # Generate a new cert for this user:
-                        Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
-                    }
+                $MatchedUser = $GLOBAL:JCRUsers[$user]
+                # If the user has a certificate continue
+                if ($MatchedUser.username -in $certFileList) {
+                    #if the cert already exists, break
+                    Write-Host "[status] $($MatchedUser.username) has a certificate already. skipping..."
                 } else {
-                    Write-Host "[status] $($MatchedUser.username) not found in users.json"
-
-                    # Find user system associations
-                    $SystemUserAssociations = @()
-                    $SystemUserAssociations += (Get-JCAssociation -Type user -Id $MatchedUser.id -TargetType system | Select-Object @{N = 'SystemID'; E = { $_.targetId } })
-
-                    $systemAssociations = @()
-                    foreach ($system in $SystemUserAssociations) {
-                        $systemInfo = $SystemHash | Where-Object _id -EQ $system.SystemID
-                        $systemTable = @{
-                            systemId    = $systemInfo._id
-                            displayName = $systemInfo.displayName
-                            osFamily    = $systemInfo.os
-                        }
-                        $systemAssociations += $systemTable
-                    }
-
-                    $userTable = @{
-                        userId              = $MatchedUser.id
-                        userName            = $MatchedUser.username
-                        localUsername       = $(If ($MatchedUser.hasLocalUsername) {
-                                $matchedUser.localUsername
-                            } else {
-                                $matchedUser.username
-                            })
-                        systemAssociations  = $systemAssociations
-                        commandAssociations = @()
-                    }
-
-                    if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
-                        Write-Host "[status] $($MatchedUser.username) has certs generated... adding to users.json"
+                    # if the user does not have a certificate, generate
+                    Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
+                    # Get the user from the users.json file
+                    $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $MatchedUser.id
+                    # set user table:
+                    if ($userIndex -ge 0) {
+                        # update the new certificate info & set commandAssociation to $null
+                        # TODO: commandAssociation not being set to null
+                        $certInfo = Get-CertInfo -UserCerts -username $MatchedUser.username
+                        Set-UserTable -index $userIndex -certInfoObject $certInfo -commandAssociationsObject $null
                     } else {
-                        Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
+                        # Create a new table entry
+                        New-UserTable -id $MatchedUser.id -username $MatchedUser.username -localUsername $MatchedUser.systemUsername
                     }
-                    $userArray += $userTable
                 }
             }
-            # Update UserArray
-            $userArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
             Break
         }
         '2' {
-            # process individual users, generate certificates for users who have not been added to users.json
-            # if users have been added to users.json, prompt to re-generate
-            Clear-Variable "ConfirmUser"
-            while (-not $confirmUser) {
+            while (-not $confirmUser.id) {
                 $confirmationUser = Read-Host "Enter the Username or UserID of the user"
-                $confirmUser = Test-User -username $confirmationUser -debug
+                $confirmUser = Test-UserFromHash -username $confirmationUser -debug
             }
-            # get data about the user
-            $MatchedUser = get-webjcuser -userID $confirmUser.UserID
             # Generate a new cert for this user:
-            if ($matchedUser.id -in $userArray.userid) {
-                if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
-                    Do {
-                        $overwrite = Read-Host "do you want to overwrite yn?"
-                        switch ($overwrite) {
-                            'y' {
-                                Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
-                                Break
+            if (Test-Path -Path "$JCScriptRoot/UserCerts/$($confirmUser.username)-client-signed.pfx") {
+                Do {
+                    $overwrite = Read-Host "do you want to overwrite y/n?"
+                    switch ($overwrite) {
+                        'y' {
+                            Generate-UserCert -CertType $CertType -user $confirmUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
+                            Break
 
-                            }
-                            'n' {
-                                Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
-                                Break
-
-                            }
                         }
-                    } until (($overwrite -eq "y") -or ($overwrite -eq "n"))
-                } else {
-                    # Generate a new cert for this user:
-                    Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
-                }
-            } else {
-                Write-Host "[status] $($MatchedUser.username) not found in users.json"
+                        'n' {
+                            Write-Host "[status] $($confirmUser.username) already has certs generated... skipping"
+                            Break
 
-                # Find user system associations
-                $SystemUserAssociations = @()
-                $SystemUserAssociations += (Get-JCAssociation -Type user -Id $MatchedUser.id -TargetType system | Select-Object @{N = 'SystemID'; E = { $_.targetId } })
-
-                $systemAssociations = @()
-                foreach ($system in $SystemUserAssociations) {
-                    $systemInfo = $SystemHash | Where-Object _id -EQ $system.SystemID
-                    $systemTable = @{
-                        systemId    = $systemInfo._id
-                        displayName = $systemInfo.displayName
-                        osFamily    = $systemInfo.os
+                        }
                     }
-                    $systemAssociations += $systemTable
-                }
-
-                $userTable = @{
-                    userId              = $MatchedUser.id
-                    userName            = $MatchedUser.username
-                    localUsername       = $(If ($MatchedUser.hasLocalUsername) {
-                            $matchedUser.localUsername
-                        } else {
-                            $matchedUser.username
-                        })
-                    systemAssociations  = $systemAssociations
-                    commandAssociations = @()
-                }
-
-                if (Test-Path -Path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-client-signed.pfx") {
-                    Write-Host "[status] $($MatchedUser.username) has certs generated... adding to users.json"
-                } else {
-                    Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
-                }
-                $userArray += $userTable
+                } until (($overwrite -eq "y") -or ($overwrite -eq "n"))
+            } else {
+                # Generate a new cert for this user:
+                Generate-UserCert -CertType $CertType -user $confirmUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
             }
-            # Update UserArray
-            $userArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
+            # Get the user from the users.json file
+            $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
+            # set user table:
+            if ($userIndex -ge 0) {
+                Write-Warning "setting existing table for user $($confirmUser.username)"
+                # update the new certificate info & set commandAssociation to $null
+                # TODO: commandAssociation not being set to null
+                $certInfo = Get-CertInfo -UserCerts -username $confirmUser.username
+                Set-UserTable -index $userIndex -certInfoObject $certInfo -commandAssociationsObject $null
+            } else {
+                Write-Warning "setting new table for user $($confirmUser.username)"
+                # Create a new table entry
+                New-UserTable -id $confirmUser.id -username $confirmUser.username -localUsername $confirmUser.systemUsername
+            }
+            # clear the user variable:
+            Clear-Variable "ConfirmUser"
             Break
         }
         '3' {
-            # process new users, re-generate certificates for users who have not been added to users.json
-            # TODO: implement
+            # re-generate new certificates for ALL users
+            foreach ($user in $Global:JCRRadiusMembers.keys) {
+                # Get the user details:
+                $MatchedUser = $GLOBAL:JCRUsers[$user]
+                # Regenerate
+                Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
+                # Get the user from the users.json file
+                $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $MatchedUser.id
+                # set user table:
+                if ($userIndex -ge 0) {
+                    # update the new certificate info & set commandAssociation to $null
+                    # TODO: commandAssociation not being set to null
+                    $certInfo = Get-CertInfo -UserCerts -username $MatchedUser.username
+                    Set-UserTable -index $userIndex -certInfoObject $certInfo -commandAssociationsObject $null
+                } else {
+                    # Create a new table entry
+                    New-UserTable -id $MatchedUser.id -username $MatchedUser.username -localUsername $MatchedUser.systemUsername
+                }
+            }
             Break
         }
         '4' {
-            #TODO: overwrite soon to expire certificates
 
+            do {
+                $overwrite = Read-Host "do you want to overwrite yn?"
+                switch ($overwrite) {
+                    'y' {
+                        foreach ($userCert in $Global:expiringCerts) {
+                            $userArrayIndex = $userArray.username.IndexOf($userCert.username)
+                            $IdentifiedUser = $userArray[$userArrayIndex]
+                            $MatchedUser = $GLOBAL:JCRUsers[$IdentifiedUser.userid]
+                            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" | Out-Null
+                            # Get the user from the users.json file
+                            $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $MatchedUser.id
+                            # set user table:
+                            if ($userIndex -ge 0) {
+                                # update the new certificate info & set commandAssociation to $null
+                                # TODO: commandAssociation not being set to null
+                                $certInfo = Get-CertInfo -UserCerts -username $MatchedUser.username
+                                Set-UserTable -index $userIndex -certInfoObject $certInfo -commandAssociationsObject $null
+                            } else {
+                                # Create a new table entry
+                                New-UserTable -id $MatchedUser.id -username $MatchedUser.username -localUsername $MatchedUser.systemUsername
+                            }
+                        }
+                        Break
+                    }
+                    'n' {
+                        Write-Host "[status] $($MatchedUser.username) already has certs generated... skipping"
+                        Break
+
+                    }
+                }
+            } until (($overwrite -eq "y") -or ($overwrite -eq "n"))
         }
         'E' {
             Write-Host "Returning to main menu"

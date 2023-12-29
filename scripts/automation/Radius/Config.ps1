@@ -1,9 +1,5 @@
-# READ/ WRITE API KEY
-$JCAPIKEY = 'YOURAPIKEY'
-# JUMPCLOUD ORGID
-$JCORGID = 'YOURORGID'
 # JUMPCLOUD USER GROUP ID
-$JCUSERGROUP = 'YOURJCUSERGROUP'
+$Global:JCUSERGROUP = 'YOURJCUSERGROUP'
 # USER CERT PASSWORD (this password is sent to the devices via JumpCloud Commands)
 $JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
@@ -11,7 +7,7 @@ $JCUSERCERTVALIDITY = 90
 # List Of Radius Network SSID(s)
 # For Multiple SSIDs enter as a single string seperated by a semicolon  ex:
 # "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network"
-$NETWORKSSID = "YOUR_SSID"
+$Global:NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
@@ -108,6 +104,6 @@ if (($JCAPIKEY).Length -ne 40) {
 if (($JCORGID).Length -ne 24) {
     throw "The entered JumpCloud Organization ID is not the expected length"
 }
-if (($JCUSERGROUP).Length -ne 24) {
+if (($Global:JCUSERGROUP).Length -ne 24) {
     throw "The entered JumpCloud UserGroup ID is not the expected length"
 }
