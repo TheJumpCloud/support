@@ -45,7 +45,7 @@ function Set-UserTable {
             $systemAssociationsInfo = $userObject.systemAssociations
         }
         if ($commandAssociationsObject) {
-            commandAssociationsInfo = $commandAssociationsObject
+            $commandAssociationsInfo = $commandAssociationsObject
         } else {
             $commandAssociationsInfo = $userObject.commandAssociations
         }
