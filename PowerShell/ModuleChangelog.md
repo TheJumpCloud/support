@@ -1,6 +1,6 @@
 ## 2.9.1
 
-Release Date: January 02, 2024
+Release Date: January 2, 2024
 
 #### RELEASE NOTES
 
