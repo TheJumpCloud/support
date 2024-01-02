@@ -12,8 +12,7 @@ Foreach ($Import in $Private) {
 
 $global:JCRConfig = Get-JCRSettingsFile
 
-Update-JCRGlobalVars
-
-# if ($global:JCConfig.globalVars.lastupdate - ) {
-
-# }
+# Get global variables or update if necessary
+Get-JCRGlobalVars
+# Update Users Json if there's a change
+Update-JCRUsersJson

@@ -50,4 +50,3 @@ function Get-UserFromTable {
         }
     }
 }
-Get-userFromTable -jsonFilePath "$JCScriptRoot/users.json" -userId "5ef5fee5c421153422df086c"

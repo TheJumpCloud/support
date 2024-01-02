@@ -1,4 +1,4 @@
-function Update-JCRGlobalVars {
+function Get-JCRGlobalVars {
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -24,6 +24,17 @@ function Update-JCRGlobalVars {
         if ($force) {
             $update = $true
         }
+
+        # also validate that the data files are non-null, if they are, force update]
+        $requiredHashFiles = @('associationHash.json', 'radiusMembers.json', 'systemHash.json', 'userHash.json')
+        foreach ($file in $requiredHashFiles) {
+            $fileContents = Get-Content "$JCScriptRoot/data/$file"
+            if ([string]::IsNullOrEmpty($file)) {
+                Write-Host "[status] $JCScriptRoot/data/$file file is null, updating global variables"
+                $update = $true
+                break
+            }
+        }
     }
     process {
         switch ($update) {
@@ -31,9 +42,18 @@ function Update-JCRGlobalVars {
                 # update the global variables
                 $systems = Get-DynamicHash -Object System -returnProperties hostname, os, osFamily, version, fde, lastContact
                 $users = Get-DynamicHash -Object User -returnProperties email, employeeIdentifier, department, suspended, location, Addresses, manager, sudo, Displayname, username, systemUsername
-                $users | ForEach-Object { $_ | Add-Member -name "userId" -value $_ -Type NoteProperty -force }
+                # $users | ForEach-Object { $_ | Add-Member -name "userId" -value $_ -Type NoteProperty -force }
                 # Get Radius membership list:
                 $radiusMembers = Get-JcSdkUserGroupMember -GroupId $Global:JCUSERGROUP
+                # add the username to the membership hash
+                $radiusMemberList = New-Object System.Collections.Hashtable
+                foreach ($member in $radiusMembers) {
+                    $radiusMemberList.Add(
+                        $member.toID, @{
+                            'userID'   = $member.toID
+                            'username' = $users[$member.toID].username
+                        })
+                }
                 # Get Report Hash:
                 $headers = @{
                     "accept"    = "application/json";
@@ -70,78 +90,24 @@ function Update-JCRGlobalVars {
                         }
                     }
                 }
+
+                # finally write out the data to file:
+                Write-host "writing files"
+                $users | ConvertTo-Json -Depth 100 -Compress |  Out-File "$JCScriptRoot/data/userHash.json"
+                $systems | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/systemHash.json"
+                $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
+                $radiusMemberList | ConvertTo-Json |  Out-File "$JCScriptRoot/data/radiusMembers.json"
             }
             $false {
                 Write-Warning "It's been $($lastUpdateTimespan.hours) hours since we last pulled user, system and association data, no need to update"
                 $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
             }
         }
-
-        # # validate that the system association data is correct in users.json:
-        $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
-        foreach ($userid in $Global:JCRRadiusMembers.keys) {
-            $MatchedUser = $GLOBAL:JCRUsers[$userid]
-            Write-Host "checking out $($MatchedUser.username) userid: $userid"
-            $userArrayObject, $userIndex = Get-UserFromTable -userID $userid -jsonFilePath "$JCScriptRoot/users.json"
-
-            if ($userIndex -ge 0) {
-                # $userArrayObject
-                $currentSystemObject = $userArrayObject.systemAssociations
-                $incomingSystemObject = $userAssociationList[$userid].systemAssociations
-                # determine if there's some difference that needs to be recorded:
-                try {
-                    $difference = Compare-Object -ReferenceObject $currentSystemObject.systemId -DifferenceObject $incomingSystemObject.systemId
-                    if ($difference) {
-
-                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingSystemObject | ConvertFrom-HashTable)
-                    }
-                } catch {
-                    <#Do this if a terminating exception happens#>
-                    $difference = $null
-                }
-                # if ($difference) {
-                #     # if there's a difference in systemIDS, update table with the incomingSystemObject
-                #     # $userTable = New-UserTable -id $userid -username $MatchedUser.username -localUsername $matchedUser.systemUsername
-                #     # Update-JsonData -jsonFilePath "$JCScriptRoot/users.json" -userID $userID -updatedUserTable $userTable
-                # }
-            } else {
-                # case for new user
-                New-UserTable -id $userid -username $MatchedUser.username -localUsername $matchedUser.systemUsername
-            }
-
-        }
-        # lastly validate users that should no longer be recorded:
-        $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
-        foreach ($user in $userArray) {
-            # If userID from users.json is no longer in RadiusMembers.keys, then:
-            If ( -Not ($user.userId -in $Global:JCRRadiusMembers.keys) ) {
-                # Get User From Table
-                $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $user.userId
-                $userArray = $userArray | Where-Object { $_.userID -ne $user.userId }
-                # "removing $($user.userid)"
-            }
-            # Remove the User From Table
-        }
-        $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"
     }
     end {
         switch ($update) {
             $true {
-                # write hash cache
-                $users | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/userHash.json"
-                $systems | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/systemHash.json"
-                $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
-                # add the username to the membership hash
-                $radiusMemberList = New-Object System.Collections.Hashtable
-                foreach ($member in $radiusMembers) {
-                    $radiusMemberList.Add(
-                        $member.toID, @{
-                            'userID'   = $member.toID
-                            'username' = $users[$member.toID].username
-                        })
-                }
-                # $radiusMemberList = ($radiusMembers | select @{name = 'userID'; expression = { $_.toID } }, @{name = 'username'; expression = { $users[$_.toID].username } })
-                $radiusMemberList | ConvertTo-Json |  Out-File "$JCScriptRoot/data/radiusMembers.json"
+
                 # set global vars
                 $Global:JCRUsers = $users
                 $Global:JCRSystems = $systems

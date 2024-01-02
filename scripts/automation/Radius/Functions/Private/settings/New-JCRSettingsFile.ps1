@@ -26,7 +26,7 @@ function New-JCRSettingsFile {
     process {
         # if creating the settings file for the first time, update global vars; lastupdate date
         write-host "update vars"
-        Update-JCRGlobalVars -force
+        Get-JCRGlobalVars -force
     }
 
     end {

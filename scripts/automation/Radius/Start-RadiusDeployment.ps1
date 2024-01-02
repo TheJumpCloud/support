@@ -1,6 +1,9 @@
 # Import Global Config:
+Write-Verbose 'Verifying JCAPI Key'
+if ($JCAPIKEY.length -ne 40) {
+    Connect-JCOnline -force
+}
 . "$psscriptroot/config.ps1"
-Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
 # Do not modify below
