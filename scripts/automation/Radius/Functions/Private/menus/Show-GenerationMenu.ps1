@@ -18,7 +18,7 @@ function Show-GenerationMenu {
     Write-Host "2: Press '2' to generate new certificates for ONE RADIUS user. `n`t$([char]0x1b)[96mNOTE: you will be prompted to overwrite any previously generated certificates"
     Write-Host "3: Press '3' to re-generate new certificates for ALL users. `n`t$([char]0x1b)[96mNOTE: This will overwrite any local generated certificates"
     Write-Host "4: Press '4' to re-generate new certificates for users who's cert is set to expire shortly. `n`t$([char]0x1b)[96mNOTE: This will overwrite any local generated certificates"
-    Write-Host "E: Press 'E' to exit."
+    Write-Host "E: Press 'E' to return to main menu."
 
     Write-Host $(PadCenter -string "-" -char '-')
 }

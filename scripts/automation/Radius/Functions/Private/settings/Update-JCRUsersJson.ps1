@@ -14,7 +14,6 @@ function Update-JCRUsersJson {
         foreach ($userid in $Global:JCRRadiusMembers.keys) {
 
             $MatchedUser = $GLOBAL:JCRUsers[$userid]
-            Show-ProgressBarText -completedItems $Global:JCRRadiusMembers.keys.IndexOf($userid) -totalItems ($Global:JCRRadiusMembers.keys).count -ActionText "Updating latest Radius group membership"
             $userArrayObject, $userIndex = Get-UserFromTable -userID $userid -jsonFilePath "$JCScriptRoot/users.json"
 
             if ($userIndex -ge 0) {
@@ -32,12 +31,6 @@ function Update-JCRUsersJson {
                     <#Do this if a terminating exception happens#>
                     $difference = $null
                 }
-                # if ($difference) {
-                #     # if there's a difference in systemIDS, update table with the incomingSystemObject
-                #     # $userTable = New-UserTable -id $userid -username $MatchedUser.username -localUsername $matchedUser.systemUsername
-                #     # Update-JsonData -jsonFilePath "$JCScriptRoot/users.json" -userID $userID -updatedUserTable $userTable
-                # }
-                Write-Host "`r" -NoNewline
 
             } else {
                 # case for new user
@@ -57,7 +50,6 @@ function Update-JCRUsersJson {
             }
             # Remove the User From Table
         }
-        Show-StatusMessage -message "Finished pulling radius group membership updates"
     }
     end {
         $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"

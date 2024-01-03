@@ -97,9 +97,21 @@ Do {
             Break
         }
         '2' {
-            while (-not $confirmUser.id) {
-                $confirmationUser = Read-Host "Enter the Username or UserID of the user"
-                $confirmUser = Test-UserFromHash -username $confirmationUser -debug
+            try {
+                Clear-Variable -Name "ConfirmUser" -ErrorAction Ignore
+            } catch {
+                New-Variable -Name "ConfirmUser" -Value $null
+            }
+            while (-not $confirmUser) {
+                $confirmationUser = Read-Host "Enter the Username of the user (or '@exit' to return to menu)"
+                if ($confirmationUser -eq '@exit') {
+                    break
+                }
+                try {
+                    $confirmUser = Test-UserFromHash -username $confirmationUser -debug
+                } catch {
+                    Write-Warning "User specified $confirmationUser was not found within the Radius Server Membership Lists"
+                }
             }
             # Generate a new cert for this user:
             if (Test-Path -Path "$JCScriptRoot/UserCerts/$($confirmUser.username)-client-signed.pfx") {

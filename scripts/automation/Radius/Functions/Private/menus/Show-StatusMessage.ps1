@@ -8,5 +8,5 @@ function Show-StatusMessage {
     )
     Write-Host "`r"
     write-host "[status] - $message"
-    start-sleep 1
+    start-sleep 3
 }

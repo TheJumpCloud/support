@@ -1,84 +1,118 @@
 # Import Global Config:
 # . "$JCScriptRoot/config.ps1"
 # Connect-JCOnline $JCAPIKEY -force
+[CmdletBinding(DefaultParameterSetName = 'gui')]
+param (
+    [Parameter(ParameterSetName = 'cli')]
+    [ValidateSet("All", "New", "ByUsername")]
+    [system.String]
+    $generateType,
+    # Parameter help description
+    [Parameter(ParameterSetName = 'cli')]
+    [System.String]
+    $username
+)
 
 ################################################################################
 # Do not modify below
 ################################################################################
+# TODO: move into function file & rename
+function pfi {
+    $promptForInvokeInput = $true
+    while ($promptForInvokeInput) {
+        $invokeCommands = Read-Host "Would you like to invoke commands after generating them y/n? (or 'E' to return to menu)"
+        switch ($invokeCommands) {
+            'e' {
+                $promptForInvokeInput = $false
+                break
+            }
+            'n' {
+                return $false
+            }
+            'y' {
+                return $true
+            }
+            default {
+                write-host "invalid input please type 'y' or 'n' (or 'E' to return to menu)"
+            }
+        }
+    }
+}
 
 # Import the users.json file and convert to PSObject
 $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 10
 
-# TODO: surface this information
-# Check to see if previous commands exist
-# $SearchFilter = @{
-#     searchTerm = "RadiusCert-Install:"
-#     fields     = @('name')
-# }
-# $RadiusCertCommands = Search-JcSdkCommand -SearchFilter $SearchFilter -Fields name
-
-# $RadiusCertCommandList = New-Object System.Collections.ArrayList
-# foreach ($command in $RadiusCertCommands) {
-#     $commandSplit = $command.name.split(':')
-#     $RadiusCertCommandList.Add([PSCustomObject]@{
-#             CommandName = $command.name
-#             Username    = $commandSplit[1]
-#             CommandID   = $command._id
-#         }) | Out-Null
-# }
-# $existingCommandUsers = $RadiusCertCommandList.Username | Get-Unique
-# $newRadiusUsers = (Compare-Object $userarray.username $existingCommandUsers).InputObject
-
-# TODO: revamp with menu screen
-# TODO: generate new commands for a single user
-# TODO: why this if statement here:
 do {
-    Show-DistributionMenu -CertObjectArray $userArray.certInfo
-    $confirmation = Read-Host "Please make a selection"
+    switch ($PSCmdlet.ParameterSetName) {
+        'gui' {
+            Show-DistributionMenu -CertObjectArray $userArray.certInfo
+            $confirmation = Read-Host "Please make a selection"
+            $invokeCommands = pfi
+        }
+        'cli' {
+            $confirmationMap = @{
+                'All'        = '1';
+                'New'        = '2';
+                "ByUsername" = '3';
+            }
+            $confirmation = $confirmationMap[$generateType]
+        }
+    }
 
     switch ($confirmation) {
         '1' {
             for ($i = 0; $i -lt $userArray.Count; $i++) {
-                <# Action that will repeat until the condition is met #>
-                Show-ProgressBarText -completedItems $i -totalItems $userArray.Count -ActionText "Distributing Radius Certificates"
-                $var = Deploy-UserCertificate -userObject $userArray[$i] -force | Out-Null
-                Write-Host "`r" -NoNewline
+                $result = Deploy-UserCertificate -userObject $userArray[$i] -invokeCommands $invokeCommands
+                Show-RadiusProgress -completedItems ($i + 1) -totalItems $userArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+                # Write-Host "`r" -NoNewline
             }
             Show-StatusMessage -Message "Finished Distributing Certificates"
         }
         '2' {
-            $usersWithoutLatestCert = $userArray | Where-Object { ( $_.deployed -eq $false) -or (-not $_.deployed) }
-
+            # TODO: prompt to invoke after creating commands
+            $usersWithoutLatestCert = $userArray | Where-Object { ( $_.certinfo.deployed -eq $false) -or (-not $_.certinfo.deployed) }
             for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
-                <# Action that will repeat until the condition is met #>
-                Show-ProgressBarText -completedItems $i -totalItems $usersWithoutLatestCert.Count -ActionText "Distributing Radius Certificates"
-                $var = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -force | Out-Null
-                Write-Host "`r" -NoNewline
+                $result = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -invokeCommands $invokeCommands
+                Show-RadiusProgress -completedItems ($i + 1) -totalItems $usersWithoutLatestCert.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+                # Write-Host "`r" -NoNewline
             }
             Show-StatusMessage -Message "Finished Distributing Certificates"
 
         }
         '3' {
-            try {
-                Clear-Variable -Name "ConfirmUser" -ErrorAction Ignore
-            } catch {
-                New-Variable -Name "ConfirmUser" -Value $null
+            switch ($PSCmdlet.ParameterSetName) {
+                'gui' {
+                    try {
+                        Clear-Variable -Name "ConfirmUser" -ErrorAction Ignore
+                    } catch {
+                        New-Variable -Name "ConfirmUser" -Value $null
+                    }
+                    while (-not $confirmUser) {
+                        $confirmationUser = Read-Host "Enter the Username of the user (or '@exit' to return to menu)"
+                        if ($confirmationUser -eq '@exit') {
+                            break
+                        }
+                        try {
+                            $confirmUser = Test-UserFromHash -username $confirmationUser -debug
+                        } catch {
+                            Write-Warning "User specified $confirmationUser was not found within the Radius Server Membership Lists"
+                        }
+                    }
+                }
+                'cli' {
+                    $confirmUser = Test-UserFromHash -username $username -debug
+                }
             }
-            while (-not $confirmUser) {
-                # TODO: Offer option to go back a step and exit the while loop
-                $confirmationUser = Read-Host "Enter the Username or UserID of the user"
-                $confirmUser = Test-UserFromHash -username $confirmationUser -debug
+            if ($confirmUser) {
+                # Get the userobject + index from users.json
+                $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
+                # Add user to a list for processing
+                $UserSelectionArray = $userArray[$userIndex]
+                # Process existing commands/ Generate new commands/ Deploy new Certificate
+                $result = Deploy-UserCertificate -userObject $UserSelectionArray -invokeCommands $invokeCommands
+                Show-RadiusProgress -completedItems $UserSelectionArray.count -totalItems $UserSelectionArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+                Show-StatusMessage -Message "Finished Distributing Certificates"
             }
-            # Get the userobject + index from users.json
-            $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
-            # Add user to a list for processing
-            $UserSelectionArray = $userArray[$userIndex]
-            # Process existing commands/ Generate new commands/ Deploy new Certificate
-            Deploy-UserCertificate -userObject $UserSelectionArray
         }
     }
 } while ($confirmation -ne 'E')
-
-
-Write-Host "[status] Select option '4' to monitor your User Certification Distribution"
-Write-Host "[status] Returning to main menu"
