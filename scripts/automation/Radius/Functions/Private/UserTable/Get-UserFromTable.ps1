@@ -32,14 +32,14 @@ function Get-UserFromTable {
             $userIndex = $userArray.userid.IndexOf($userid)
             if ($userIndex -ge 0) {
                 $userArrayObject = $userArray[$userIndex]
-                Write-Host "[status] $($userObject.username) found in users.json at index: $userIndex "
+                # Write-Host "[status] $($userObject.username) found in users.json at index: $userIndex "
             } else {
                 throw
             }
         } catch {
             # otherwise plan to append
             $userIndex = $null
-            Write-Host "[status] $($userObject.username) not found in users.json"
+            # Write-Host "[status] $($userObject.username) not found in users.json"
         }
     }
     end {

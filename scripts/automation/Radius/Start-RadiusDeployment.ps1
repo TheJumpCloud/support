@@ -9,6 +9,7 @@ if ($JCAPIKEY.length -ne 40) {
 # Do not modify below
 ################################################################################
 # set script root
+#TODO: move to global functions
 $global:JCScriptRoot = $PSScriptRoot
 
 # Import the functions

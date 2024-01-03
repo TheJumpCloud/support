@@ -22,14 +22,12 @@ function Deploy-UserCertificate {
         foreach ($user in $userObject) {
 
             #### Begin removal of queued commands + existing command:
-            # TODO: get existing command for the user + remove
-            Write-Warning "clearing existing commands for $($user.username)"
+            # remove commands
             $radiusCommandsByUser = Get-CommandByUsername -username $user.username
             foreach ($command in $radiusCommandsByUser) {
                 Remove-JcSdkCommand -Id $command.id | Out-Null
             }
-            Write-Warning "clearing queued commands for $($user.username)"
-            # TODO: get queued command for the user + remove
+            # remove queued commands
             $queuedRadiusCommandsByUser = Get-queuedCommandByUser -username $user.username
             foreach ($queuedCommand in $queuedRadiusCommandsByUser) {
                 Clear-JCQueuedCommand -workflowId $queuedCommand.id | Out-Null
@@ -37,9 +35,6 @@ function Deploy-UserCertificate {
             # now clear out the user command associations from users.json
             $User.commandAssociations = @()
             #### End removal of queued commands + existing command
-            Write-Warning "PROCESSING:"
-            $user
-            Write-Warning "..."
             # Get certificate and zip to upload to Commands
             $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)-*"
             # set crt and pfx filepaths
@@ -49,13 +44,7 @@ function Deploy-UserCertificate {
             $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
             # get certInfo for commands:
             $certInfo = Get-CertInfo -UserCerts -username $user.username
-
-            # $certInfo = Invoke-Expression "$opensslBinary x509 -in $($userCrt) -enddate -serial -subject -issuer -noout"
-            # $certHash = @{}
-            # $certInfo | ForEach-Object {
-            #     $property = $_ | ConvertFrom-StringData
-            #     $certHash += $property
-            # }
+            # determine certType
             switch ($certType) {
                 'EmailSAN' {
                     # set cert identifier to SAN email of cert
@@ -93,7 +82,7 @@ function Deploy-UserCertificate {
                     $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
 
                     if ($Command.Count -ge 1) {
-                        $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):MacOSX command already exists, skipping..."
+                        # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):MacOSX command already exists, skipping..."
                         continue
                     }
 
@@ -256,7 +245,7 @@ fi
 
                     $user.commandAssociations += $CommandTable
 
-                    Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Mac OS X"
+                    # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Mac OS X"
 
                 }
                 'Windows' {
@@ -267,7 +256,7 @@ fi
                     $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
 
                     if ($Command.Count -ge 1) {
-                        $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
+                        # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
                         continue
                     }
 
@@ -398,45 +387,72 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                     }
 
                     $user.commandAssociations += $CommandTable
-                    Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
+                    # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
 
                 }
                 $null {
-                    Write-Warning "$($user.username) is not associated with any systems, skipping command generation"
+                    # Write-host "$($user.username) is not associated with any systems, skipping command generation"
 
 
                 }
             }
             # Update the user table with the information from the generated commands:
             $userObjectFromTable, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot\users.json" -userid $user.userid
+
             Set-UserTable -index $userIndex -commandAssociationsObject $user.commandAssociations
             # Invoke Commands
             #TODO:: skip if this is not per user basis
-            $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
-            # $UserArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
-
-            while ($confirmation -ne 'y') {
-                if ($confirmation -eq 'n') {
-                    Write-Host "[status] To invoke the commands at a later time, select option '4' to monitor your User Certification Distribution"
-                    Write-Host "[status] Returning to main menu"
-                    exit
+            switch ($force) {
+                $true {
+                    # nothing do to
                 }
-                $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
+                $false {
+                    $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
+                    # $UserArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
+
+                    while ($confirmation -ne 'y') {
+                        if ($confirmation -eq 'n') {
+                            Write-Host "[status] To invoke the commands at a later time, select option '4' to monitor your User Certification Distribution"
+                            Write-Host "[status] Returning to main menu"
+                            exit
+                        }
+                        $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
+                    }
+                }
             }
 
             # TODO: for individual users, invoke command retry by username
             # else invoke for all?
+            # finally update the user table to note that the command has been run, the cert has been deployed
+            # get the object once more:
+            $userObjectFromTable, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot\users.json" -userid $user.userid
+            # Set commandPreviouslyRun property to true if there are command associations to set
+            if ($userObjectFromTable.commandAssociations) {
+                $userObjectFromTable.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $true }
+                # set the deployed status to true, set the date
+                if (Get-Member -inputObject $userObjectFromTable.certInfo -name "deployed" -MemberType Properties) {
+                    # if ($userObjectFromTable.certInfo.deployed) {
+                    $userObjectFromTable.certInfo.deployed = $true
+                } else {
+                    $userObjectFromTable.certInfo | Add-Member -Name 'deployed' -Type NoteProperty -Value $false
 
-            $invokeCommands = invoke-commandByUserId -userID $user.userid
-            # $invokeCommands = Invoke-CommandsRetry -jsonFile "$JCScriptRoot\users.json"
-            Write-Host "[status] Commands Invoked"
+                }
+                if (Get-Member -inputObject $userObjectFromTable.certInfo -name "deploymentDate" -MemberType Properties) {
+                    # if ($userObjectFromTable.certInfo.deploymentDate) {
+                    $userObjectFromTable.certInfo.deploymentDate = (Get-Date)
 
-            # TODO: Set-JCUserTable -Commands to update the user array.
-            # Set commandPreviouslyRun property to true
-            $user.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $true }
+                } else {
 
-            # $UserArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
-
+                    $userObjectFromTable.certInfo | Add-Member -Name 'deploymentDate' -Type NoteProperty -Value (Get-Date)
+                }
+                Set-UserTable -index $userIndex -commandAssociationsObject $userObjectFromTable.commandAssociations -certInfoObject $userObjectFromTable.certInfo
+                $invokeCommands = invoke-commandByUserId -userID $user.userid
+                # Write-Host "[status] Commands Invoked"
+            }
+            # if ($userObjectFromTable.certInfo.deployed)
+            # $userObjectFromTable.certInfo.deployed = $true
+            # $userObjectFromTable.certInfo.deploymentDate = (Get-Date)
+            # invoke the command
         }
     }
 

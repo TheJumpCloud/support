@@ -12,8 +12,9 @@ function Update-JCRUsersJson {
         # validate that the system association data is correct in users.json:
         $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
         foreach ($userid in $Global:JCRRadiusMembers.keys) {
+
             $MatchedUser = $GLOBAL:JCRUsers[$userid]
-            Write-Host "checking out $($MatchedUser.username) userid: $userid"
+            Show-ProgressBarText -completedItems $Global:JCRRadiusMembers.keys.IndexOf($userid) -totalItems ($Global:JCRRadiusMembers.keys).count -ActionText "Updating latest Radius group membership"
             $userArrayObject, $userIndex = Get-UserFromTable -userID $userid -jsonFilePath "$JCScriptRoot/users.json"
 
             if ($userIndex -ge 0) {
@@ -36,6 +37,8 @@ function Update-JCRUsersJson {
                 #     # $userTable = New-UserTable -id $userid -username $MatchedUser.username -localUsername $matchedUser.systemUsername
                 #     # Update-JsonData -jsonFilePath "$JCScriptRoot/users.json" -userID $userID -updatedUserTable $userTable
                 # }
+                Write-Host "`r" -NoNewline
+
             } else {
                 # case for new user
                 New-UserTable -id $userid -username $MatchedUser.username -localUsername $matchedUser.systemUsername
@@ -54,6 +57,7 @@ function Update-JCRUsersJson {
             }
             # Remove the User From Table
         }
+        Show-StatusMessage -message "Finished pulling radius group membership updates"
     }
     end {
         $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"

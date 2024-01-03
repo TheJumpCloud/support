@@ -34,12 +34,10 @@ function invoke-commandByUserid {
         }
         # invoke commands
         If ($macOS_commandId) {
-            Write-Warning "running command: Start-JCSDKCommand -id $($macOS_commandId) -SystemIDs $macOSArray"
             $macInvokedCommands = Start-JcSdkCommand -Id $macOS_commandId -SystemIds $macOSArray
         }
 
         if ($windows_commandId) {
-            Write-Warning "running command: Start-JCSDKCommand -id $($windows_commandId) -SystemIDs $windowsArray"
             $windowsInvokedCommands = Start-JcSdkCommand -Id $windows_commandId -SystemIds $windowsArray
         }
     }

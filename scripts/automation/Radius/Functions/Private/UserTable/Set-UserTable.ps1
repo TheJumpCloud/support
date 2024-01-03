@@ -29,8 +29,6 @@ function Set-UserTable {
         if ($PSBoundParameters.ContainsKey('index')) {
             $userIndex = $index
             $userObject = $userArray[$index]
-            Write-Warning "this is the old object"
-            $userObject
         }
         if (($PSBoundParameters.ContainsKey('lookup'))) {
             # Get User From Table
@@ -65,9 +63,6 @@ function Set-UserTable {
             commandAssociations = $commandAssociationsInfo
             certInfo            = $certInfo
         }
-        Write-Warning "this is the new object"
-        $userTable
-
         # set the user table to new object
         $userArray[$userIndex] = $userTable
 
