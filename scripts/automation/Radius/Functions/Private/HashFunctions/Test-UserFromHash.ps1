@@ -20,7 +20,7 @@ function Test-UserFromHash {
         switch ($PSCmdlet.ParameterSetName) {
             'userid' {
                 # validate that the userID is in the radiusMembership hash:
-                if ($Global:JCRRadiusMembers[$userID]) {
+                if ($Global:JCRRadiusMembers.userID.IndexOf($userID)) {
                     # finally return the $matchedUser object
                     $matchedUser = $Global:JCRUsers[$userID]
                 } else {
@@ -34,7 +34,7 @@ function Test-UserFromHash {
                 # Get the UserID from the keys
                 $matchedUserID = $Global:JCRUsers.keys[$matchedIndex]
                 # validate that the userID is in the radiusMembership hash:
-                if ($Global:JCRRadiusMembers[$matchedUserID]) {
+                if ($Global:JCRRadiusMembers.username.IndexOf($username)) {
                     # finally return the $matchedUser object
                     $matchedUser = $Global:JCRUsers[$matchedUserID]
                 } else {

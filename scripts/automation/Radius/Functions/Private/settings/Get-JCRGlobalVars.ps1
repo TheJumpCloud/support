@@ -46,13 +46,14 @@ function Get-JCRGlobalVars {
                 # Get Radius membership list:
                 $radiusMembers = Get-JcSdkUserGroupMember -GroupId $Global:JCUSERGROUP
                 # add the username to the membership hash
-                $radiusMemberList = New-Object System.Collections.Hashtable
+                $radiusMemberList = New-Object System.Collections.ArrayList
                 foreach ($member in $radiusMembers) {
                     $radiusMemberList.Add(
-                        $member.toID, @{
+                        [PSCustomObject]@{
                             'userID'   = $member.toID
                             'username' = $users[$member.toID].username
-                        })
+                        }
+                    )
                 }
                 # Get Report Hash:
                 $headers = @{
@@ -82,11 +83,11 @@ function Get-JCRGlobalVars {
                         if (-not $userAssociationList[$item.user_object_id]) {
                             $userAssociationList.add(
                                 $item.user_object_id, @{
-                                    'systemAssociations' = @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, device_os);
+                                    'systemAssociations' = @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, @{Name = 'osFamily'; Expression = { $_.device_os } });
                                     'userData'           = @($item | Select-Object -Property email, username)
                                 })
                         } else {
-                            $userAssociationList[$item.user_object_id].systemAssociations += @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, device_os)
+                            $userAssociationList[$item.user_object_id].systemAssociations += @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, @{Name = 'osFamily'; Expression = { $_.device_os } })
                         }
                     }
                 }

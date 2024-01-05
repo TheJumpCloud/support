@@ -22,15 +22,15 @@ do {
     $selection = Read-Host "Please make a selection"
     switch ($selection) {
         '1' {
-            . "$JCScriptRoot/Functions/Public/Generate-RootCert.ps1"
+            Generate-RootCert
         } '2' {
-            . "$JCScriptRoot/Functions/Public/Generate-UserCerts.ps1"
+            Generate-UserCerts
         } '3' {
-            . "$JCScriptRoot/Functions/Public/Distribute-UserCerts.ps1"
+            Distribute-UserCerts
         } '4' {
-            . "$JCScriptRoot/Functions/Public/Monitor-CertDeployment.ps1"
+            Monitor-CertDeployment
         } '5' {
-            . "$JCScriptRoot/Functions/Public/Update-JCRData.ps1"
+            Get-JCRGlobalVars -force
         }
     }
     Pause

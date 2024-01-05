@@ -77,7 +77,7 @@ Change the variable `$JCORGID` to the [organization ID value](https://support.ju
 
 #### Set Your User Group ID
 
-Change the variable `$JCUSERGROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
+Change the variable `$global:JCUSERGROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
 
 After selecting the User Group, view the url for the user group it should look similar to this url:
 `https://console.jumpcloud.com/#/groups/user/5f808a1bb544064831f7c9fb/details`
@@ -182,7 +182,7 @@ After successful import or generation of a self signed CA, the CA's serial numbe
 
 ### User Cert Generation
 
-With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
+With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$global:JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
 If local user certificates are set to expire within 15 days, a notification is displayed on the main menu:
 

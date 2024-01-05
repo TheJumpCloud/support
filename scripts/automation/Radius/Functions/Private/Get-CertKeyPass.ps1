@@ -16,7 +16,6 @@ function Get-CertKeyPass {
                     $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
                     $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                     $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($certKeyPass) 2>&1
-                    $checkKey
                     if ($checkKey -match "RSA key ok") {
                         # Save password to ENV variable
                         Write-Host "Saving password as Environment Variable"

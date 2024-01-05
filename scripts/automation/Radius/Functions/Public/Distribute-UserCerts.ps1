@@ -1,118 +1,136 @@
-# Import Global Config:
-# . "$JCScriptRoot/config.ps1"
-# Connect-JCOnline $JCAPIKEY -force
-[CmdletBinding(DefaultParameterSetName = 'gui')]
-param (
-    [Parameter(ParameterSetName = 'cli')]
-    [ValidateSet("All", "New", "ByUsername")]
-    [system.String]
-    $generateType,
-    # Parameter help description
-    [Parameter(ParameterSetName = 'cli')]
-    [System.String]
-    $username
-)
 
-################################################################################
-# Do not modify below
-################################################################################
-# TODO: move into function file & rename
-function pfi {
-    $promptForInvokeInput = $true
-    while ($promptForInvokeInput) {
-        $invokeCommands = Read-Host "Would you like to invoke commands after generating them y/n? (or 'E' to return to menu)"
-        switch ($invokeCommands) {
-            'e' {
-                $promptForInvokeInput = $false
-                break
-            }
-            'n' {
-                return $false
-            }
-            'y' {
-                return $true
-            }
-            default {
-                write-host "invalid input please type 'y' or 'n' (or 'E' to return to menu)"
-            }
-        }
-    }
-}
+function Distribute-UserCerts {
+    [CmdletBinding(DefaultParameterSetName = 'gui')]
+    param (
+        # Type of certs to distribute, All, New or byUsername
+        [Parameter(ParameterSetName = 'cli', Mandatory)]
+        [ValidateSet("All", "New", "ByUsername")]
+        [system.String]
+        $type,
+        # username
+        [Parameter(ParameterSetName = 'cli')]
+        [System.String]
+        $username,
+        # Force invoke commands after generation
+        [Parameter(ParameterSetName = 'cli')]
+        [switch]
+        $forceInvokeCommands
+    )
 
-# Import the users.json file and convert to PSObject
-$userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 10
+    # Import the users.json file and convert to PSObject
+    $userArray = Get-UserJsonData
 
-do {
-    switch ($PSCmdlet.ParameterSetName) {
-        'gui' {
-            Show-DistributionMenu -CertObjectArray $userArray.certInfo
-            $confirmation = Read-Host "Please make a selection"
-            $invokeCommands = pfi
-        }
-        'cli' {
-            $confirmationMap = @{
-                'All'        = '1';
-                'New'        = '2';
-                "ByUsername" = '3';
-            }
-            $confirmation = $confirmationMap[$generateType]
-        }
-    }
+    do {
+        switch ($PSCmdlet.ParameterSetName) {
+            'gui' {
+                Show-DistributionMenu -CertObjectArray $userArray.certInfo
+                $confirmation = Read-Host "Please make a selection"
 
-    switch ($confirmation) {
-        '1' {
-            for ($i = 0; $i -lt $userArray.Count; $i++) {
-                $result = Deploy-UserCertificate -userObject $userArray[$i] -invokeCommands $invokeCommands
-                Show-RadiusProgress -completedItems ($i + 1) -totalItems $userArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
-                # Write-Host "`r" -NoNewline
             }
-            Show-StatusMessage -Message "Finished Distributing Certificates"
-        }
-        '2' {
-            # TODO: prompt to invoke after creating commands
-            $usersWithoutLatestCert = $userArray | Where-Object { ( $_.certinfo.deployed -eq $false) -or (-not $_.certinfo.deployed) }
-            for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
-                $result = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -invokeCommands $invokeCommands
-                Show-RadiusProgress -completedItems ($i + 1) -totalItems $usersWithoutLatestCert.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
-                # Write-Host "`r" -NoNewline
-            }
-            Show-StatusMessage -Message "Finished Distributing Certificates"
-
-        }
-        '3' {
-            switch ($PSCmdlet.ParameterSetName) {
-                'gui' {
-                    try {
-                        Clear-Variable -Name "ConfirmUser" -ErrorAction Ignore
-                    } catch {
-                        New-Variable -Name "ConfirmUser" -Value $null
+            'cli' {
+                $confirmationMap = @{
+                    'All'        = '1';
+                    'New'        = '2';
+                    "ByUsername" = '3';
+                }
+                $confirmation = $confirmationMap[$type]
+                # if force invoke is set, invoke the commands after generation:
+                switch ($forceInvokeCommands) {
+                    $true {
+                        $invokeCommands = $true
                     }
-                    while (-not $confirmUser) {
-                        $confirmationUser = Read-Host "Enter the Username of the user (or '@exit' to return to menu)"
-                        if ($confirmationUser -eq '@exit') {
-                            break
-                        }
+                    $false {
+                        $invokeCommands = $false
+                    }
+                }
+            }
+        }
+
+        switch ($confirmation) {
+            '1' {
+                # case for all users
+                for ($i = 0; $i -lt $userArray.Count; $i++) {
+                    $result = Deploy-UserCertificate -userObject $userArray[$i] -forceInvokeCommands $invokeCommands
+                    Show-RadiusProgress -completedItems ($i + 1) -totalItems $userArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+                }
+                # return after an action if cli, else stay in function
+                switch ($PSCmdlet.ParameterSetName) {
+                    'gui' {
+                        Show-StatusMessage -Message "Finished Distributing Certificates"
+                    }
+                    'cli' {
+                        return
+                    }
+                }
+            }
+            '2' {
+                # case for new users; users that do not have certinfo marked as already deployed (i.e. users with new certs or un-deployed certs)
+                $usersWithoutLatestCert = $userArray | Where-Object { ( $_.certinfo.deployed -eq $false) -or (-not $_.certinfo.deployed) }
+                for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
+                    $result = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -forceInvokeCommands $invokeCommands
+                    Show-RadiusProgress -completedItems ($i + 1) -totalItems $usersWithoutLatestCert.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+                }
+                # return after an action if cli, else stay in function
+                switch ($PSCmdlet.ParameterSetName) {
+                    'gui' {
+                        Show-StatusMessage -Message "Finished Distributing Certificates"
+                    }
+                    'cli' {
+                        return
+                    }
+                }
+            }
+            '3' {
+                # case for users by username
+                switch ($PSCmdlet.ParameterSetName) {
+                    'gui' {
                         try {
-                            $confirmUser = Test-UserFromHash -username $confirmationUser -debug
+                            Clear-Variable -Name "ConfirmUser" -ErrorAction Ignore
                         } catch {
-                            Write-Warning "User specified $confirmationUser was not found within the Radius Server Membership Lists"
+                            New-Variable -Name "ConfirmUser" -Value $null
+                        }
+                        while (-not $confirmUser) {
+                            $confirmationUser = Read-Host "Enter the Username of the user (or '@exit' to return to menu)"
+                            if ($confirmationUser -eq '@exit') {
+                                break
+                            }
+                            try {
+                                $confirmUser = Test-UserFromHash -username $confirmationUser -debug
+                            } catch {
+                                Write-Warning "User specified $confirmationUser was not found within the Radius Server Membership Lists"
+                            }
                         }
                     }
+                    'cli' {
+                        $confirmUser = Test-UserFromHash -username $username -debug
+                    }
                 }
-                'cli' {
-                    $confirmUser = Test-UserFromHash -username $username -debug
+                if ($confirmUser) {
+                    # Get the userobject + index from users.json
+                    $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
+                    # Add user to a list for processing
+                    $UserSelectionArray = $userArray[$userIndex]
+                    # Process existing commands/ Generate new commands/ Deploy new Certificate
+                    switch ($PSCmdlet.ParameterSetName) {
+                        'gui' {
+                            $result = Deploy-UserCertificate -userObject $UserSelectionArray -prompt
+                        }
+                        'cli' {
+                            $result = Deploy-UserCertificate -userObject $UserSelectionArray -forceInvokeCommands $invokeCommands
+                        }
+                    }
+                    Show-RadiusProgress -completedItems $UserSelectionArray.count -totalItems $UserSelectionArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
                 }
-            }
-            if ($confirmUser) {
-                # Get the userobject + index from users.json
-                $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
-                # Add user to a list for processing
-                $UserSelectionArray = $userArray[$userIndex]
-                # Process existing commands/ Generate new commands/ Deploy new Certificate
-                $result = Deploy-UserCertificate -userObject $UserSelectionArray -invokeCommands $invokeCommands
-                Show-RadiusProgress -completedItems $UserSelectionArray.count -totalItems $UserSelectionArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
-                Show-StatusMessage -Message "Finished Distributing Certificates"
+                # return after an action if cli, else stay in function
+                switch ($PSCmdlet.ParameterSetName) {
+                    'gui' {
+                        Show-StatusMessage -Message "Finished Distributing Certificates"
+                    }
+                    'cli' {
+                        return
+                    }
+                }
             }
         }
-    }
-} while ($confirmation -ne 'E')
+    } while ($confirmation -ne 'E')
+}

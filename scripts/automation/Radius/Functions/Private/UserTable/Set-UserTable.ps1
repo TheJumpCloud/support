@@ -25,7 +25,7 @@ function Set-UserTable {
     )
     begin {
         # Get User Array:
-        $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
+        $userArray = Get-UserJsonData
         if ($PSBoundParameters.ContainsKey('index')) {
             $userIndex = $index
             $userObject = $userArray[$index]
@@ -33,6 +33,11 @@ function Set-UserTable {
         if (($PSBoundParameters.ContainsKey('lookup'))) {
             # Get User From Table
             $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $id
+        }
+
+        # TODO: if index is not correct make a stink about it
+        if ($userIndex -lt 0) {
+            throw "user not in user table exiting"
         }
 
         # determine if there's data to update from parameter input, else just
@@ -69,6 +74,6 @@ function Set-UserTable {
     }
     end {
         # update the userTable
-        $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"
+        Set-UserJsonData -userArray $userArray
     }
 }

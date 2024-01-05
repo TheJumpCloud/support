@@ -7,7 +7,7 @@ function Show-RadiusMainMenu {
     $userCertInfo = Get-CertInfo -UserCerts
 
     # Determine cut off date for expiring certs
-    $cutoffDate = (Get-Date).AddDays(15).Date
+    $global:cutoffDate = (Get-Date).AddDays(15).Date
 
     # Find all certs that will expire between current date and cut off date
     $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
@@ -43,7 +43,7 @@ function Show-RadiusMainMenu {
 
     # ==== GROUP/SSID/Global Variables  ====
     Write-Host $(PadCenter -string "Radius User Group: $($radiusUserGroup.Name)" -char " ") -ForegroundColor Green
-    Write-Host $(PadCenter -string "Radius Users: $($radiusUserGroupMemberCount)" -char " ") -ForegroundColor Green
+    Write-Host $(PadCenter -string "Total Radius Users: $($radiusUserGroupMemberCount)" -char " ") -ForegroundColor Green
     Write-Host $(PadCenter -string "Radius SSID(s): $radiusSSID" -char " ") -ForegroundColor Green
     Write-Host $(PadCenter -string "Last Updated User/System Data: $($Global:JCRConfig.globalVars.lastupdate)" -char " ") -ForegroundColor Green
     # Write-Host "`n"

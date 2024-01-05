@@ -4,25 +4,12 @@ function Get-UserFromTable {
         [Parameter()]
         [System.String]
         $jsonFilePath,
-        [Parameter()]
+        [Parameter(Mandatory)]
         [System.String]
-        $userid
+        $userId
     )
     begin {
-        # Import User.Json/ create list if it does not exist
-        if (Test-Path -Path $jsonFilePath -PathType Leaf) {
-            $userArray = Get-Content -Raw -Path $jsonFilePath | ConvertFrom-Json -Depth 6
-            # If the json is a single item, explicitly make it a list so we can add to it
-            If ($userArray.count -eq 1) {
-                $array = New-Object System.Collections.ArrayList
-                $array.add($userArray)
-                $userArray = $array
-            }
-
-        } else {
-            New-Item -Path $jsonFilePath
-            $userArray = @()
-        }
+        $userArray = Get-UserJsonData
         # Get the user from the jsonData
         $userObject = $Global:JCRUsers[$userid]
 

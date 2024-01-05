@@ -31,4 +31,3 @@ function get-queuedCommandByUser {
         return $response.results
     }
 }
-get-queuedCommandByUser -username "Farmer_100"

@@ -11,10 +11,10 @@ Function Show-RadiusProgress {
     $headerString = "{0,-$($($propertyNames[0]).length)}"
 
     for ($i = 1; $i -lt $propertyNames.Count; $i++) {
-        <# Action that will repeat until the condition is met #>
         $headerString += " | {$i,-$($($propertyNames[$i]).length)}"
     }
     if ($completedItems -eq 1) {
+        Write-Host $(PadCenter -string " results " -char '-')
         write-host ($headerString -f $propertyNames)
         $propertyvalues = @($previousOperationResult.Values)
         $propertyvalues += "$($completedItems) / $($TotalItems)"
@@ -26,5 +26,8 @@ Function Show-RadiusProgress {
     }
 
     write-host ($headerString -f $propertyValues)
+    if ($completedItems -eq $totalItems) {
+        Write-Host $(PadCenter -string "" -char '-')
+    }
 
 }

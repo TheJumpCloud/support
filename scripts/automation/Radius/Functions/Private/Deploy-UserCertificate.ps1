@@ -8,12 +8,37 @@ function Deploy-UserCertificate {
         # Parameter help description
         [Parameter()]
         [bool]
-        $invokeCommands
+        $forceInvokeCommands,
+        # prompt replace existing certificate
+        [Parameter()]
+        [switch]
+        $prompt
     )
 
     begin {
-        # $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 10
         #TODO: validate user object, if missing commandAssociations, or certInfo, return false
+
+        switch ($forceInvokeCommands) {
+            $true {
+                $invokeCommands = $true
+            }
+            $false {
+                $invokeCommands = $false
+            }
+        }
+        switch ($prompt) {
+            $true {
+                $invokeCommandsChoice = Get-ResponsePrompt -message "Would you like to invoke commands after they've been generated?"
+                switch ($invokeCommandsChoice) {
+                    $true {
+                        $invokeCommands = $true
+                    }
+                    $false {
+                        $invokeCommands = $false
+                    }
+                }
+            }
+        }
     }
 
     process {
@@ -71,7 +96,7 @@ function Deploy-UserCertificate {
             # Create the zip
             Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
             # Find OS of System
-            switch ($user.systemAssociations.device_os) {
+            switch ($user.systemAssociations.osFamily) {
                 'macOS' {
                     # Get the macOS system ids
                     $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'macOS' } | Select-Object systemId
@@ -388,12 +413,12 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                     }
 
                     $user.commandAssociations += $CommandTable
-                    # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
+                    Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
                     $status_commandGenerated = $true
 
                 }
                 $null {
-                    # Write-host "$($user.username) is not associated with any systems, skipping command generation"
+                    Write-host "$($user.username) is not associated with any systems, skipping command generation"
                     $status_commandGenerated = $false
                     $result_deployed = $false
                 }

@@ -12,7 +12,13 @@ function New-UserTable {
         $localUsername
     )
     begin {
-        $userArray = Get-Content -Raw -Path "$JCScriptRoot/users.json" | ConvertFrom-Json -Depth 6
+        $userArray = Get-UserJsonData
+        If ($userArray.count -eq 1) {
+            $array = New-Object System.Collections.ArrayList
+            $array.add($userArray) | Out-Null
+            $userArray = $array
+        }
+
         $systemAssociations = New-SystemTable -userID $id
         # for new users, just set the commandAssociation to $null as they have
         # not yet been issued a command
@@ -31,10 +37,10 @@ function New-UserTable {
             commandAssociations = $commandAssociations
             certInfo            = $certInfo
         }
-        $userArray += $userTable
+        $userArray += ($userTable)
 
     }
     end {
-        $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"
+        Set-UserJsonData -userArray $userArray
     }
 }

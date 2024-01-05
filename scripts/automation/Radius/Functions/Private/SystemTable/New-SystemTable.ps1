@@ -16,9 +16,9 @@ function New-SystemTable {
         foreach ($system in $AssociationTable.systemAssociations) {
             # $systemInfo = $GLOBAL:SystemHash[$system.resource_object_id]
             $systemTable = @{
-                systemId    = $system.resource_object_id
+                systemId    = $system.systemId
                 displayName = $system.hostname
-                osFamily    = $system.device_os
+                osFamily    = $system.osFamily
             }
             $systemAssociations += $systemTable
         }
