@@ -52,7 +52,7 @@ if ($RadiusCertCommands.Count -ge 1) {
 # Create commands for each user
 foreach ($user in $userArray) {
     # Get certificate and zip to upload to Commands
-    $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)*"
+    $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)-*"
     # set crt and pfx filepaths
     $userCrt = ($userCertFiles | Where-Object { $_.Name -match "crt" }).FullName
     $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
