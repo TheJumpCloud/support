@@ -1,5 +1,5 @@
 # Load all functions from private folders
-$Private = @( Get-ChildItem -Path "$PSScriptRoot/Private/*.ps1" -Recurse)
+$Private = @( Get-ChildItem -Path "$PSScriptRoot/Functions/Private/*.ps1" -Recurse)
 Foreach ($Import in $Private) {
     Try {
         . $Import.FullName
@@ -9,7 +9,7 @@ Foreach ($Import in $Private) {
 }
 
 # Load all public functions:
-$Private = @( Get-ChildItem -Path "$PSScriptRoot/Public/*.ps1" -Recurse)
+$Private = @( Get-ChildItem -Path "$PSScriptRoot/Functions/Public/*.ps1" -Recurse)
 Foreach ($Import in $Private) {
     Try {
         . $Import.FullName
@@ -21,7 +21,7 @@ Foreach ($Import in $Private) {
 # setup:
 # build required users.json file:
 # set script root:
-$global:JCScriptRoot = "$PSScriptRoot/../"
+$global:JCScriptRoot = "$PSScriptRoot"
 
 # import config:
 . "$JCScriptRoot/config.ps1"

@@ -1,4 +1,4 @@
-Function Generate-RootCert {
+Function Start-GenerateRootCert {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Force invoke commands after generation

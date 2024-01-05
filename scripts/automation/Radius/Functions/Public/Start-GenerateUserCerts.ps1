@@ -1,5 +1,5 @@
 # todo: rename to be PS-ApprovedVerb "New-UserCert"
-function Generate-UserCerts {
+function Start-GenerateUserCerts {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Type of certs to distribute, All, New or byUsername

@@ -1,6 +1,5 @@
 # InvokePester.ps1 is intended to be called directly as a file-function
 # There are two parameter sets
-
 Param(
     [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
     , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList

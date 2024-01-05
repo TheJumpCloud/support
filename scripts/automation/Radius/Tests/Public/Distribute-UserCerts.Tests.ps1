@@ -1,9 +1,20 @@
-Describe 'distribute tests' {
-    context 'certs for all users are generated' {
-        it 'generates certs for all users' {
-            . "/Users/jworkman/Documents/GitHub/support/scripts/automation/Radius/Functions/Public/Distribute-UserCerts.ps1"
-            Distribute-UserCerts -generateType all
-            # validate that the commands were created for valid users
-        }
+Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
+    Context 'Distribute all certificates for all users forcibly' {
+
+    }
+    Context 'Distribute all certificates for all users without invoking' {
+
+    }
+    Context 'Distribute new certificates for new users forcibly' {
+
+    }
+    Context 'Distribute new certificates for new users without invoking' {
+
+    }
+    Context 'Distribute new certificates for a single user forcibly' {
+
+    }
+    Context 'Distribute new certificates for a single user without invoking' {
+
     }
 }

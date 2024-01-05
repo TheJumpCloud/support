@@ -1,5 +1,5 @@
 
-function Distribute-UserCerts {
+function Start-DeployUserCerts {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Type of certs to distribute, All, New or byUsername
