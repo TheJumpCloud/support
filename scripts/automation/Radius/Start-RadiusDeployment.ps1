@@ -13,7 +13,7 @@ if ($JCAPIKEY.length -ne 40) {
 $global:JCScriptRoot = $PSScriptRoot
 
 # Import the functions
-Import-Module "$JCScriptRoot/JumpCloud-Radius.psm1" -DisableNameChecking -Force
+Import-Module "$JCScriptRoot/JumpCloud-Radius.psd1" -DisableNameChecking -Force
 
 # Show user selection
 do {
@@ -30,6 +30,7 @@ do {
         } '4' {
             Start-MonitorCertDeployment
         } '5' {
+            #TODO: move as a public function
             Get-JCRGlobalVars -force
         }
     }

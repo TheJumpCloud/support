@@ -9,9 +9,10 @@ Foreach ($Import in $Private) {
 }
 
 # Load all public functions:
-$Private = @( Get-ChildItem -Path "$PSScriptRoot/Functions/Public/*.ps1" -Recurse)
-Foreach ($Import in $Private) {
+$Public = @( Get-ChildItem -Path "$PSScriptRoot/Functions/Public/*.ps1" -Recurse)
+Foreach ($Import in $Public) {
     Try {
+        write-host "import function $($Import.FullName): $_"
         . $Import.FullName
     } Catch {
         Write-Error -Message "Failed to import function $($Import.FullName): $_"

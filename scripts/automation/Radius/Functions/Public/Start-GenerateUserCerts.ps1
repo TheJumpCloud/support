@@ -117,7 +117,14 @@ function Start-GenerateUserCerts {
                 if ($confirmUser) {
                     # Get the userobject + index from users.json
                     $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
-                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType -prompt
+                    switch ($forceReplaceCerts) {
+                        $true {
+                            $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType -forceReplaceCert
+                        }
+                        $false {
+                            $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType
+                        }
+                    }
                     Show-RadiusProgress -completedItems $userObject.count  -totalItems $userObject.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
                 }
                 switch ($PSCmdlet.ParameterSetName) {

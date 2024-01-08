@@ -1,4 +1,4 @@
-Function Start-CertDeploymentMonitoring {
+Function Start-MonitorCertDeployment {
 
 
     ################################################################################

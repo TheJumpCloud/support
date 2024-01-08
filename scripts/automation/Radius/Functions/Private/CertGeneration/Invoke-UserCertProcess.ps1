@@ -53,7 +53,6 @@ Function Invoke-UserCertProcess {
                     }
                 }
                 if ($prompt) {
-
                     $writeCert = Get-ResponsePrompt -message "A certifcate already exists for user: $($matchedUser.username) do you want to re-generate this certificate?"
                     switch ($writeCert) {
                         $true {
