@@ -20,7 +20,7 @@ function Add-JCGsuiteMember () {
             Connect-JCOnline
         }
         $resultsArray = [System.Collections.Generic.List[PSObject]]::new()
-        $DirectoryHash = Get-JcSdkDirectory | Where-Object type -EQ 'office_365' | Select-Object id, name
+        $DirectoryHash = Get-JcSdkDirectory | Where-Object type -EQ 'g_suite' | Select-Object id, name
         if (($Username -or $UserID) -and ($GroupID -or $GroupName)) {
             throw "Please add one type of association per call"
         } elseif ($Username -and $UserID) {
@@ -62,7 +62,19 @@ function Add-JCGsuiteMember () {
                     throw "Username: $Username was not found."
                 }
             }
-            $resultsArray = Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID
+            Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID -ErrorVariable addError -ErrorAction SilentlyContinue
+            if ($addError) {
+                $Status = $addError.ErrorDetails.Message
+            } else {
+                $Status = 'Added'
+            }
+            $FormattedResults = [PSCustomObject]@{
+
+                'DirectoryName' = $CloudDirectory.Name
+                'UserID'        = $UserID
+                'Status'        = $Status
+
+            }
         } else {
             if ($GroupName) {
                 if ($UserGroupHash.Values.Name -contains ($GroupName)) {
@@ -71,7 +83,20 @@ function Add-JCGsuiteMember () {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
-            $resultsArray = Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID
+            Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID -ErrorVariable addError -ErrorAction SilentlyContinue
+            if ($addError) {
+                $Status = $addError.ErrorDetails.Message
+            } else {
+                $Status = 'Added'
+            }
+            $FormattedResults = [PSCustomObject]@{
+
+                'DirectoryName' = $CloudDirectory.Name
+                'GroupID'       = $GroupID
+                'Status'        = $Status
+
+            }
+            $resultsArray += $FormattedResults
         }
     }
     end {

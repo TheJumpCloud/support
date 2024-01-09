@@ -62,7 +62,19 @@ function Add-JCOffice365Member () {
                     throw "Username: $Username was not found."
                 }
             }
-            $resultsArray = Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID
+            Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID -ErrorVariable addError -ErrorAction SilentlyContinue
+            if ($addError) {
+                $Status = $addError.ErrorDetails.Message
+            } else {
+                $Status = 'Added'
+            }
+            $FormattedResults = [PSCustomObject]@{
+
+                'DirectoryName' = $CloudDirectory.Name
+                'UserID'        = $UserID
+                'Status'        = $Status
+
+            }
         } else {
             if ($GroupName) {
                 if ($UserGroupHash.Values.Name -contains ($GroupName)) {
@@ -71,7 +83,20 @@ function Add-JCOffice365Member () {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
-            $resultsArray = Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID
+            Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID -ErrorVariable addError -ErrorAction SilentlyContinue
+            if ($addError) {
+                $Status = $addError.ErrorDetails.Message
+            } else {
+                $Status = 'Added'
+            }
+            $FormattedResults = [PSCustomObject]@{
+
+                'DirectoryName' = $CloudDirectory.Name
+                'GroupID'       = $GroupID
+                'Status'        = $Status
+
+            }
+            $resultsArray += $FormattedResults
         }
     }
     end {
