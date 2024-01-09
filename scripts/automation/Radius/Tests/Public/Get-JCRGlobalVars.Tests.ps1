@@ -125,5 +125,33 @@ Describe "Get Global Variable Data Tests" {
                 $beforeWriteTime | should -Not -Be $afterWriteTime
             }
         }
+        It "Data should be re-written when the -Force parameter is used and Association data should be skipped with -SkipAssociation; regardless of setings write date" {
+            # check the files before
+            $filesBefore = Get-ChildItem -Path $dataPath
+            # run Get-JCRGlobalVars with force param
+            Get-JCRGlobalVars -Force -SkipAssociation
+
+            # check the files after:
+            $filesAfter = Get-ChildItem -Path $dataPath
+            # test each file write date
+            foreach ($file in $requiredFiles) {
+                # write-host "validating write times for $file"
+                if ($file -ne "associationHash.json") {
+                    $beforeWriteTime = (($filesBefore | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
+                    $afterWriteTime = (($filesAfter | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
+                    # Write-Host "before: $beforeWriteTime should not be after: $afterWriteTime"
+                    # The file write time before running Get-JCRGlobalVars should not be the same after running the function
+                    $beforeWriteTime | should -Not -Be $afterWriteTime
+
+                } else {
+                    $beforeWriteTime = (($filesBefore | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
+                    $afterWriteTime = (($filesAfter | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
+                    # Write-Host "before: $beforeWriteTime should not be after: $afterWriteTime"
+                    # The file write time before running Get-JCRGlobalVars should not be the same after running the function
+                    $beforeWriteTime | should -Be $afterWriteTime
+
+                }
+            }
+        }
     }
 }

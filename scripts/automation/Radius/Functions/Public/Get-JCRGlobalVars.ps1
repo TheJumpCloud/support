@@ -3,7 +3,10 @@ function Get-JCRGlobalVars {
     param (
         [Parameter()]
         [switch]
-        $force
+        $force,
+        [Parameter()]
+        [switch]
+        $skipAssociation
     )
     begin {
         # ensure the data directory exists to cache the json files:
@@ -23,23 +26,59 @@ function Get-JCRGlobalVars {
         }
         if ($force) {
             $update = $true
+            switch ($skipAssociation) {
+                $true {
+                    $updateAssociation = $false
+                }
+                $false {
+                    $updateAssociation = $true
+                }
+            }
         }
 
         # also validate that the data files are non-null, if they are, force update]
-        $requiredHashFiles = @('associationHash.json', 'radiusMembers.json', 'systemHash.json', 'userHash.json')
+        $requiredHashFiles = @('radiusMembers.json', 'systemHash.json', 'userHash.json')
         foreach ($file in $requiredHashFiles) {
             if (Test-Path -Path "$JCScriptRoot/data/$file") {
                 $fileContents = Get-Content "$JCScriptRoot/data/$file"
             } else {
                 Write-Host "[status] $JCScriptRoot/data/$file file does not exist, updating global variables"
                 $update = $true
-                break
             }
             # if the file is null force update
-            if ([string]::IsNullOrEmpty($file)) {
+            if ([string]::IsNullOrEmpty($fileContents)) {
                 Write-Host "[status] $JCScriptRoot/data/$file file is null, updating global variables"
                 $update = $true
-                break
+            }
+        }
+
+        $requiredAssociationHashFiles = @('associationHash.json')
+        foreach ($file in $requiredAssociationHashFiles) {
+            if (Test-Path -Path "$JCScriptRoot/data/$file") {
+                $fileContents = Get-Content "$JCScriptRoot/data/$file"
+                switch ($skipAssociation) {
+                    $true {
+                        Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
+                        $updateAssociation = $false
+                    }
+                }
+            } else {
+                Write-Host "[status] $JCScriptRoot/data/$file file does not exist, updating global variables"
+                $update = $true
+                $updateAssociation = $true
+            }
+            # if the file is null force update
+            if ([string]::IsNullOrEmpty($fileContents)) {
+                Write-Host "[status] $JCScriptRoot/data/$file file is null, updating global variables"
+                $update = $true
+                $updateAssociation = $true
+            } else {
+                switch ($skipAssociation) {
+                    $true {
+                        Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
+                        $updateAssociation = $false
+                    }
+                }
             }
         }
     }
@@ -60,50 +99,52 @@ function Get-JCRGlobalVars {
                             'userID'   = $member.toID
                             'username' = $users[$member.toID].username
                         }
-                    )
+                    ) | Out-Null
                 }
-                # Get Report Hash:
-                $headers = @{
-                    "accept"    = "application/json";
-                    "x-api-key" = $Env:JCApiKey;
-                    "x-org-id"  = $Env:JCOrgId
-                }
-                # request new user to device report:
-                $reportRequest = Invoke-RestMethod -Uri 'https://api.jumpcloud.com/insights/directory/v1/reports/users-to-devices' -Method POST -Headers $headers
-                # now fetch available reports:
-                do {
-                    $reportList = Invoke-RestMethod -Uri 'https://api.jumpcloud.com/insights/directory/v1/reports?sort=CREATED_AT' -Method GET -Headers $headers
-                    $lastReport = $reportList | Where-Object { $_.id -eq $reportRequest.id }
-                    if ($lastReport.status -eq 'PENDING') {
-                        Write-Warning "[status] waiting 20s for jumpcloud report to complete"
-                        start-sleep -Seconds 20
+                if ($updateAssociation) {
+                    # Get Report Hash:
+                    $headers = @{
+                        "accept"    = "application/json";
+                        "x-api-key" = $Env:JCApiKey;
+                        "x-org-id"  = $Env:JCOrgId
                     }
-                } until ($lastReport.status -eq 'COMPLETED')
-                # download json
-                $artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'json' }).id
-                $reportID = $lastReport.id
-                $reportContent = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
-                # create the hashtable:
-                $userAssociationList = New-Object System.Collections.Hashtable
-                foreach ($item in $reportContent) {
-                    if ($item.user_object_id -And $item.resource_object_id) {
-                        if (-not $userAssociationList[$item.user_object_id]) {
-                            $userAssociationList.add(
-                                $item.user_object_id, @{
-                                    'systemAssociations' = @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, @{Name = 'osFamily'; Expression = { $_.device_os } });
-                                    'userData'           = @($item | Select-Object -Property email, username)
-                                })
-                        } else {
-                            $userAssociationList[$item.user_object_id].systemAssociations += @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, @{Name = 'osFamily'; Expression = { $_.device_os } })
+                    # request new user to device report:
+                    $reportRequest = Invoke-RestMethod -Uri 'https://api.jumpcloud.com/insights/directory/v1/reports/users-to-devices' -Method POST -Headers $headers
+                    # now fetch available reports:
+                    do {
+                        $reportList = Invoke-RestMethod -Uri 'https://api.jumpcloud.com/insights/directory/v1/reports?sort=CREATED_AT' -Method GET -Headers $headers
+                        $lastReport = $reportList | Where-Object { $_.id -eq $reportRequest.id }
+                        if ($lastReport.status -eq 'PENDING') {
+                            Write-Warning "[status] waiting 20s for jumpcloud report to complete"
+                            start-sleep -Seconds 20
+                        }
+                    } until ($lastReport.status -eq 'COMPLETED')
+                    # download json
+                    $artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'json' }).id
+                    $reportID = $lastReport.id
+                    $reportContent = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+                    # create the hashtable:
+                    $userAssociationList = New-Object System.Collections.Hashtable
+                    foreach ($item in $reportContent) {
+                        if ($item.user_object_id -And $item.resource_object_id) {
+                            if (-not $userAssociationList[$item.user_object_id]) {
+                                $userAssociationList.add(
+                                    $item.user_object_id, @{
+                                        'systemAssociations' = @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, @{Name = 'osFamily'; Expression = { $_.device_os } });
+                                        'userData'           = @($item | Select-Object -Property email, username)
+                                    }) | Out-Null
+                            } else {
+                                $userAssociationList[$item.user_object_id].systemAssociations += @($item | Select-Object -Property @{Name = 'systemId'; Expression = { $_.resource_object_id } }, hostname, @{Name = 'osFamily'; Expression = { $_.device_os } })
+                            }
                         }
                     }
+                    # write out the association hash
+                    $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
                 }
 
                 # finally write out the data to file:
-                Write-host "writing files"
                 $users | ConvertTo-Json -Depth 100 -Compress |  Out-File "$JCScriptRoot/data/userHash.json"
                 $systems | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/systemHash.json"
-                $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
                 $radiusMemberList | ConvertTo-Json |  Out-File "$JCScriptRoot/data/radiusMembers.json"
             }
             $false {
