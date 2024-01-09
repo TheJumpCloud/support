@@ -1,9 +1,9 @@
 # JUMPCLOUD USER GROUP ID
 $Global:JCUSERGROUP = 'YOURJCUSERGROUP'
 # USER CERT PASSWORD (this password is sent to the devices via JumpCloud Commands)
-$JCUSERCERTPASS = 'secret1234!'
+$Global:JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
-$JCUSERCERTVALIDITY = 90
+$Global:JCUSERCERTVALIDITY = 90
 # List Of Radius Network SSID(s)
 # For Multiple SSIDs enter as a single string seperated by a semicolon  ex:
 # "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network"
@@ -11,9 +11,9 @@ $Global:NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
-$opensslBinary = 'openssl'
+$Global:opensslBinary = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
-$Subj = [PSCustomObject]@{
+$Global:Subj = [PSCustomObject]@{
     countryCode      = "US"
     stateCode        = "CO"
     Locality         = "Boulder"
@@ -27,7 +27,7 @@ $Subj = [PSCustomObject]@{
 # EmailSAN
 # EmailDN
 # UsernameCn (Default)
-$CertType = "UsernameCn"
+$Global:CertType = "UsernameCn"
 
 ################################################################################
 # Do not modify below

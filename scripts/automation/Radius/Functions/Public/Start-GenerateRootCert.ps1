@@ -1,6 +1,11 @@
 Function Start-GenerateRootCert {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
+        # Cert Key Password
+        # Parameter help description
+        [Parameter(ParameterSetName = 'cli')]
+        [string]
+        $certKeyPassword,
         # Force invoke commands after generation
         [Parameter(ParameterSetName = 'cli')]
         [switch]
@@ -54,9 +59,16 @@ Function Start-GenerateRootCert {
     $outCA = "$CertPath/radius_ca_cert.pem"
     # Ask the user to enter a pass phrase for the CA key:
     # Clear the pass phrase from the env:
-    $env:certKeyPassword = ""
-    $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
-    $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+    switch ($PSCmdlet.ParameterSetName) {
+        'gui' {
+            $env:certKeyPassword = ""
+            $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
+            $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+        }
+        'cli' {
+            $certKeyPass = $certKeyPassword
+        }
+    }
     # Save the pass phrase in the env:
     $env:certKeyPassword = $certKeyPass
     Invoke-Expression "$opensslBinary req -x509 -newkey rsa:2048 -days 365 -keyout $outKey -out $outCA -passout pass:$($env:certKeyPassword) -subj /C=$($Subj.countryCode)/ST=$($Subj.stateCode)/L=$($Subj.Locality)/O=$($Subj.Organization)/OU=$($Subj.OrganizationUnit)/CN=$($Subj.CommonName)"
@@ -68,15 +80,16 @@ Function Start-GenerateRootCert {
     foreach ($ext in $exts) {
         Write-Host "Updating Subject Headers for $($ext.Name)"
         $extContent = Get-Content -Path $ext.FullName -Raw
-        $reqDistinguishedName = "[req_distinguished_name]
-    C = $($subj.countryCode)
-    ST = $($subj.stateCode)
-    L = $($subj.Locality)
-    O = $($subj.Organization)
-    OU = $($subj.OrganizationUnit)
-    CN = $($subj.CommonName)
+        $reqDistinguishedName = @"
+[req_distinguished_name]
+C = $($subj.countryCode)
+ST = $($subj.stateCode)
+L = $($subj.Locality)
+O = $($subj.Organization)
+OU = $($subj.OrganizationUnit)
+CN = $($subj.CommonName)
 
-    "
+"@
         $extContent -Replace ("\[req_distinguished_name\][\s\S]*(?=\[v3_req\])", $reqDistinguishedName) | Set-Content -Path $ext.FullName -NoNewline -Force
     }
 }

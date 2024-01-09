@@ -28,7 +28,14 @@ function Get-JCRGlobalVars {
         # also validate that the data files are non-null, if they are, force update]
         $requiredHashFiles = @('associationHash.json', 'radiusMembers.json', 'systemHash.json', 'userHash.json')
         foreach ($file in $requiredHashFiles) {
-            $fileContents = Get-Content "$JCScriptRoot/data/$file"
+            if (Test-Path -Path "$JCScriptRoot/data/$file") {
+                $fileContents = Get-Content "$JCScriptRoot/data/$file"
+            } else {
+                Write-Host "[status] $JCScriptRoot/data/$file file does not exist, updating global variables"
+                $update = $true
+                break
+            }
+            # if the file is null force update
             if ([string]::IsNullOrEmpty($file)) {
                 Write-Host "[status] $JCScriptRoot/data/$file file is null, updating global variables"
                 $update = $true
