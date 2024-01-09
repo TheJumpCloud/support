@@ -14,17 +14,17 @@ Returns all Cloud Directory instances within a JumpCloud tenant, a single Cloud 
 
 ### ReturnAll (Default)
 ```
-Get-JCCloudDirectory [<CommonParameters>]
+Get-JCCloudDirectory [-Type <String>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCCloudDirectory [-Type <String>] [-Name <String>] [-Association <String>] [<CommonParameters>]
+Get-JCCloudDirectory [-Type <String>] [-Name <String>] [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCCloudDirectory [-Type <String>] [-ID <String>] [-Association <String>] [<CommonParameters>]
+Get-JCCloudDirectory [-Type <String>] [-ID <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -112,22 +112,6 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -Association
-The associations of a cloud directory
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-Accepted values: Users, UserGroups
-
-Required: False
-Position: Dynamic
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

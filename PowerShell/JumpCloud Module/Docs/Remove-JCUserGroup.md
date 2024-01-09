@@ -12,14 +12,14 @@ Removes a JumpCloud User Group
 
 ## SYNTAX
 
-### warn (Default)
-```
-Remove-JCUserGroup [-GroupName] <String> [<CommonParameters>]
-```
-
-### force
+### byName (Default)
 ```
 Remove-JCUserGroup [-GroupName] <String> [-force] [<CommonParameters>]
+```
+
+### ByID
+```
+Remove-JCUserGroup -GroupID <String> [-force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -48,7 +48,7 @@ A SwitchParameter which suppresses the warning message when removing a JumpCloud
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-Parameter Sets: force
+Parameter Sets: (All)
 Aliases:
 
 Required: False
@@ -58,12 +58,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -GroupID
+The _id of the group which you want to remove. GroupID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically.
+
+```yaml
+Type: System.String
+Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -GroupName
 The name of the User Group you want to remove.
 
 ```yaml
 Type: System.String
-Parameter Sets: (All)
+Parameter Sets: byName
 Aliases: name
 
 Required: True
@@ -79,7 +94,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

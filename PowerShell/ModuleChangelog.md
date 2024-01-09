@@ -1,3 +1,25 @@
+## 2.9.1
+
+Release Date: January 2, 2024
+
+#### RELEASE NOTES
+
+```
+This release adds an available field for Get-JCUser to reutn, `systemUsername`.
+```
+
+#### FEATURES:
+
+NA
+
+#### IMPROVEMENTS:
+
+`SystemUsername` has been added to Get-JCUser -returnProperties. ex. `Get-JCuser -username defaultadmin -returnProperties systemUsername` will return the local systemUsername for a given user.
+
+#### BUG FIXES:
+
+NA
+
 ## 2.9.0
 
 Release Date: December 5, 2023
@@ -26,7 +48,6 @@ Addressed the issue with Get-JCPolicyTemplateConfigField select/multi property s
 ### BUG FIXES:
 
 - Fixed an issue with Get-JCPolicyTemplateConfigField error when a string select/multi property is passed to an int conversion
-
 
 Release Date: November 2, 2023
 

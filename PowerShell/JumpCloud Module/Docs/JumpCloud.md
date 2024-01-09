@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.7.0
+Help Version: 2.9.1
 Locale: en-US
 ---
 
@@ -43,6 +43,9 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### [Get-JCBackup](Get-JCBackup.md)
 Backs up JumpCloud directory information to CSV
+
+### [Get-JCCloudDirectory](Get-JCCloudDirectory.md)
+Returns all Cloud Directory instances within a JumpCloud tenant, a single Cloud Directory instance using the -ID or -Name Parameter, or directories matching a single type using the -Type Parameter.
 
 ### [Get-JCCommand](Get-JCCommand.md)
 Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud Command using the -ByID Parameter.
@@ -195,6 +198,9 @@ Removes a JumpCloud User from a JumpCloud User Group
 
 ### [Send-JCPasswordReset](Send-JCPasswordReset.md)
 Sends a JumpCloud activation/password reset email.
+
+### [Set-JCCloudDirectory](Set-JCCloudDirectory.md)
+Updates an existing Cloud Directory instance within a JumpCloud tenant
 
 ### [Set-JCCommand](Set-JCCommand.md)
 Updates an existing JumpCloud command
