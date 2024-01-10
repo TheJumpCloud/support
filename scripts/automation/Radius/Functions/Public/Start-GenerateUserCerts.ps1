@@ -168,6 +168,10 @@ function Start-GenerateUserCerts {
             }
             '4' {
                 # TODO: if there are no certs set to expire in 'x' days inform when pressing this option
+                # recalculate expiring certs:
+                $userCertInfo = Get-CertInfo -UserCerts
+                $global:cutoffDate = (Get-Date).AddDays(15).Date
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
                 for ($i = 0; $i -lt $ExpiringCerts.Count; $i++) {
                     $userCert = $ExpiringCerts[$i]
                     <# Action that will repeat until the condition is met #>
@@ -177,6 +181,8 @@ function Start-GenerateUserCerts {
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $ExpiringCerts.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
 
                     # recalculate expiring certs:
+                    $userCertInfo = Get-CertInfo -UserCerts
+                    $global:cutoffDate = (Get-Date).AddDays(15).Date
                     $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
                 }
                 switch ($PSCmdlet.ParameterSetName) {
