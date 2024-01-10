@@ -21,9 +21,12 @@ function Update-JCRUsersJson {
 
                 # determine if there's some difference that needs to be recorded:
                 try {
-                    $difference = Compare-Object -ReferenceObject $currentSystemObject.systemId -DifferenceObject $incomingSystemObject.systemId
+                    if ($currentSystemObject -eq $null) {
+                        $difference = $incomingSystemObject
+                    } else {
+                        $difference = Compare-Object -ReferenceObject $currentSystemObject.systemId -DifferenceObject $incomingSystemObject.systemId
+                    }
                     if ($difference) {
-
                         Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingSystemObject | ConvertFrom-HashTable)
                     }
                 } catch {

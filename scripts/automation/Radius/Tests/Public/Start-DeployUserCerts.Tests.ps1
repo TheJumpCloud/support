@@ -1,11 +1,17 @@
 Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
+    BeforeAll {
+        # Load all functions from private folders
+        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        Foreach ($Import in $Private) {
+            Try {
+                . $Import.FullName
+            } Catch {
+                Write-Error -Message "Failed to import function $($Import.FullName): $_"
+            }
+        }
+    }
     Context 'Distribute all certificates for all users forcibly' {
         BeforeAll {
-            # get required functions
-            . "$JCScriptRoot/Functions/Private/UserJson/Get-UserJsonData.ps1"
-            . "$JCScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
-            . "$JCScriptRoot/Functions/Private/UserTable/Get-UserFromTable.ps1"
-
             # clear certs:
             $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             foreach ($cert in $certs) {
@@ -59,8 +65,37 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
     }
     Context 'Distribute all certificates for all users without invoking' {
+        BeforeAll {
+            # clear certs:
+            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            foreach ($cert in $certs) {
+                Remove-Item -Path $cert.FullName
+            }
+            #remove existing users
+            $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
+            Get-JCRGlobalVars -force -skipAssociation
+        }
         It 'users with system associations will have new commands generated; command will not be invoked' {
-
+            # generate all new certs
+            Start-GenerateUserCerts -type All -forceReplaceCerts
+            $userArray = Get-UserJsonData
+            foreach ($user in $userArray) {
+                # cert should not be deployed
+                $user.certinfo.deployed | Should -Be $false
+            }
+            start-deployUserCerts -type All -forceInvokeCommands
+            Start-Sleep 1
+            $userArray = Get-UserJsonData
+            foreach ($user in $userArray) {
+                # cert should be deployed
+                if ($user.systemAssociations) {
+                    $user.certinfo.deployed | Should -Be $false
+                }
+                $user.commandAssociations | ForEach-Object {
+                    $command = Get-JcSdkCommand -Id $_.commandId -Fields name
+                    $command | should -Not -BeNullOrEmpty
+                }
+            }
         }
         It 'users with out system associations will not have new commands generated' {
 
@@ -68,7 +103,40 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
     }
     Context 'Distribute new certificates for new users forcibly' {
+        BeforeAll {
+            # clear certs:
+            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            foreach ($cert in $certs) {
+                Remove-Item -Path $cert.FullName
+            }
+            #remove existing users
+            $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
+            Get-JCRGlobalVars -force -skipAssociation
+        }
         it 'a new user with a system association will get a new command and it will be invoked' {
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
+            # add user to membership group
+            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            # get random system
+            $system = Get-JCSystem -os windows | Get-Random -Count 1
+            Add-JCSystemUser -UserID $user.id -SystemID $system.id
+
+            # update membership
+            Get-JCRGlobalVars -skipAssociation -force
+            # todo: manually update association table to account for new membership
+            Set-JCRAssociationHash -userId $user.id
+            Update-JCRUsersJson
+            # now generate the user certs
+            Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
+            start-deployUserCerts -type ByUsername -username $user.username -forceInvokeCommands
+
+            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
+            $obj.certInfo.deployed | Should -Be $true
+            $obj.commandAssociations | should -Not -BeNullOrEmpty
+            $obj.systemAssociations | should -Not -BeNullOrEmpty
+
 
         }
         it 'a new user without a system association will not get a new command and it will not be invoked' {
