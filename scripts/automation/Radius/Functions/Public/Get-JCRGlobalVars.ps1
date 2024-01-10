@@ -167,14 +167,15 @@ function Get-JCRGlobalVars {
                 $Global:JCRRadiusMembers = $radiusMemberList
                 # update the settings date
                 Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Update-JCRUsersJson
             }
             $false {
-                # write-host "pulling saved data from data file:"
                 # set global vars from local cache
                 $Global:JCRUsers = Get-Content -path "$JCScriptRoot/data/userHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRSystems = Get-Content -path "$JCScriptRoot/data/systemHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRAssociations = Get-Content -path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRRadiusMembers = Get-Content -path "$JCScriptRoot/data/radiusMembers.json" | ConvertFrom-Json -AsHashtable
+                Update-JCRUsersJson
             }
         }
     }

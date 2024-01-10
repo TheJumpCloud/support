@@ -31,5 +31,3 @@ $global:JCRConfig = Get-JCRSettingsFile
 
 # Get global variables or update if necessary
 Get-JCRGlobalVars
-# Update Users Json if there's a change
-Update-JCRUsersJson

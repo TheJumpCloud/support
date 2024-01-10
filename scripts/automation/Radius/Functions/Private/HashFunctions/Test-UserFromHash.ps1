@@ -31,6 +31,9 @@ function Test-UserFromHash {
             'username' {
                 # Get the index of the user within the hashtable
                 $matchedIndex = $Global:JCRUsers.values.username.ToLower().IndexOf($username.ToLower())
+                if ($matchedIndex -lt 0) {
+                    throw "could not find user in cached data: $username"
+                }
                 # Get the UserID from the keys
                 $matchedUserID = $Global:JCRUsers.keys | Select-Object -Index $matchedIndex
                 # validate that the userID is in the radiusMembership hash:

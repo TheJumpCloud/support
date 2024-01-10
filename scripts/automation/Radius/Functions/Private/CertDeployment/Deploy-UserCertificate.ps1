@@ -97,7 +97,7 @@ function Deploy-UserCertificate {
             Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
             # Find OS of System
             switch ($user.systemAssociations.osFamily) {
-                'macOS' {
+                'Mac OS X' {
                     # Get the macOS system ids
                     $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'macOS' } | Select-Object systemId
 
@@ -256,7 +256,8 @@ fi
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
                         $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                     } catch {
-                        throw $_
+                        status_commandGenerated = $false
+                        # throw $_
                     }
 
                     $CommandTable = [PSCustomObject]@{
@@ -401,7 +402,8 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
                         $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                     } catch {
-                        throw $_
+                        status_commandGenerated = $false
+                        # throw $_
                     }
 
                     $CommandTable = [PSCustomObject]@{
@@ -472,7 +474,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                             $userObjectFromTable.certInfo | Add-Member -Name 'deploymentDate' -Type NoteProperty -Value (Get-Date)
                         }
                         Set-UserTable -index $userIndex -commandAssociationsObject $userObjectFromTable.commandAssociations -certInfoObject $userObjectFromTable.certInfo
-                        $invokeCommands = invoke-commandByUserId -userID $user.userid
+                        $invokeCommands = invoke-commandByUserId -userID $user.userId
                         $result_deployed = $true
                     }
                 }

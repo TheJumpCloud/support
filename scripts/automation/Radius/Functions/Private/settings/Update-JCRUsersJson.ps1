@@ -6,13 +6,11 @@ function Update-JCRUsersJson {
         $force
     )
     begin {
-
     }
     process {
         # validate that the system association data is correct in users.json:
         # $userArray = Get-UserJsonData
         foreach ($user in $Global:JCRRadiusMembers) {
-
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID -jsonFilePath "$JCScriptRoot/users.json"
 
@@ -43,16 +41,15 @@ function Update-JCRUsersJson {
         $userArray = Get-UserJsonData
         foreach ($user in $userArray) {
             # If userID from users.json is no longer in RadiusMembers.keys, then:
-            If ( -Not ($user.userid -in $Global:JCRRadiusMembers.userid) ) {
+            If (($user.userId -notin $Global:JCRRadiusMembers.userID) ) {
                 # Get User From Table
                 $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $user.userId
+                # Remove the User From Table
                 $userArray = $userArray | Where-Object { $_.userID -ne $user.userId }
-                # "removing $($user.userid)"
             }
-            # Remove the User From Table
         }
     }
     end {
-        $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"
+        Set-UserJsonData -userArray $userArray
     }
 }

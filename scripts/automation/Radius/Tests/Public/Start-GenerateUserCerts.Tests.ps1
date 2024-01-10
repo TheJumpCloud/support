@@ -1,7 +1,6 @@
 Describe 'Generate User Cert Tests' -Tag "Generate" {
     Context 'Certs forcibly re-generated for all users' {
         It 'Certs re-generated have actually been re-written for all users' {
-            . "/Users/jworkman/Documents/GitHub/support/scripts/automation/Radius/Functions/Public/Distribute-UserCerts.ps1"
             $timeBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             $certsBefore = Get-CertInfo -UserCerts
             # wait one second.

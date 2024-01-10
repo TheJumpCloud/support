@@ -28,7 +28,7 @@ Function Invoke-UserCertProcess {
 
                     $MatchedUser = $GLOBAL:JCRUsers[$radiusMember.userID]
                 } catch {
-                    exit
+                    Write-Warning "could not identify user by userobject: $radiusMember"
                 }
             }
             'userObject' {
