@@ -32,7 +32,7 @@ function Test-UserFromHash {
                 # Get the index of the user within the hashtable
                 $matchedIndex = $Global:JCRUsers.values.username.ToLower().IndexOf($username.ToLower())
                 # Get the UserID from the keys
-                $matchedUserID = $Global:JCRUsers.keys[$matchedIndex]
+                $matchedUserID = $Global:JCRUsers.keys | Select-Object -Index $matchedIndex
                 # validate that the userID is in the radiusMembership hash:
                 if ($Global:JCRRadiusMembers.username.IndexOf($username)) {
                     # finally return the $matchedUser object

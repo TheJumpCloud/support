@@ -140,6 +140,9 @@ function Get-JCRGlobalVars {
                     }
                     # write out the association hash
                     $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
+                } else {
+                    $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
+
                 }
 
                 # finally write out the data to file:
@@ -148,7 +151,7 @@ function Get-JCRGlobalVars {
                 $radiusMemberList | ConvertTo-Json |  Out-File "$JCScriptRoot/data/radiusMembers.json"
             }
             $false {
-                Write-Warning "It's been $($lastUpdateTimespan.hours) hours since we last pulled user, system and association data, no need to update"
+                # write-host "It's been $($lastUpdateTimespan.hours) hours since we last pulled user, system and association data, no need to update"
                 $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
             }
         }
@@ -166,7 +169,7 @@ function Get-JCRGlobalVars {
                 Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
             }
             $false {
-                Write-Warning "pulling saved data from data file:"
+                # write-host "pulling saved data from data file:"
                 # set global vars from local cache
                 $Global:JCRUsers = Get-Content -path "$JCScriptRoot/data/userHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRSystems = Get-Content -path "$JCScriptRoot/data/systemHash.json" | ConvertFrom-Json -AsHashtable

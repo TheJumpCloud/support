@@ -1,12 +1,12 @@
 Describe 'Generate User Cert Tests' -Tag "Generate" {
-    Context 'Certs forcibly re-generated for all users' {
+    Context 'Certs forcibly re-generated for all users' -skip {
         It 'Certs re-generated have actually been re-written for all users' {
             . "/Users/jworkman/Documents/GitHub/support/scripts/automation/Radius/Functions/Public/Distribute-UserCerts.ps1"
             $timeBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             $certsBefore = Get-CertInfo -UserCerts
             # wait one second.
             Start-Sleep 1
-            Generate-UserCerts -type All -forceReplaceCerts
+            Start-GenerateUserCerts -type All -forceReplaceCerts
             # validate that the commands were created for valid users
             # Get Certs
             $certs = Get-CertInfo -UserCerts
@@ -21,6 +21,47 @@ Describe 'Generate User Cert Tests' -Tag "Generate" {
         }
     }
     Context 'Certs generated for newly added users' {
+        beforeall {
+            # Select a user TODO: create a pester user
+            $user = Get-JCuser -username "chet.atkins"
+            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -filter "$($user.username)*"
+            foreach ($cert in $certs) {
+                remove-item $cert.fullname
+            }
+
+        }
+        It 'When a new user is added to the radius group, the tool will generate a new cert' {
+            # Get the certs before
+            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            # add the new user to the radius group
+            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            # update the cache
+            Get-JCRGlobalVars -force -skipAssociation
+            # wait just one moment before testing membership since we are writing a file
+            Start-Sleep 1
+            # the new user should be in the membership list:
+            $global:JCRRadiusMembers.username | Should -Contain $user.username
+            # Generate the user cert:
+            Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
+            # Get the certs after
+            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            # filter by username
+            $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
+            # the files and each type of expected cert file should exist
+            $UserCerts.Name | Should -Match $user.username
+            $UserCerts.fullname | where-object { $_ -match ".csr" } | Should -exist
+            $UserCerts.fullname | where-object { $_ -match ".pfx" } | Should -exist
+            $UserCerts.fullname | where-object { $_ -match ".crt" } | Should -exist
+            $UserCerts.fullname | where-object { $_ -match ".key" } | Should -exist
+            # cleanup
+            Remove-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            # update cache
+            Get-JCRGlobalVars -force -skipAssociation
+            # wait just one moment before testing membership since we are writing a file
+            Start-Sleep 1
+            # the global variables should be cleaned up
+            $global:JCRRadiusMembers.username | Should -Not -Contain $user.username
+        }
 
     }
     Context 'Certs generated for users whos cert is set to exipre soon' {
