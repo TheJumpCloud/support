@@ -10,9 +10,7 @@ function Get-JCRGlobalVars {
     )
     begin {
         # ensure the data directory exists to cache the json files:
-        if (Test-Path "$JCScriptRoot/data") {
-            Write-Host "[status] Data Directory Exists"
-        } else {
+        if (-not (Test-Path "$JCScriptRoot/data")) {
             Write-Host "[status] Creating Data Directory"
             New-Item -ItemType Directory -Path "$JCScriptRoot/data"
         }
@@ -58,7 +56,7 @@ function Get-JCRGlobalVars {
                 $fileContents = Get-Content "$JCScriptRoot/data/$file"
                 switch ($skipAssociation) {
                     $true {
-                        Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
+                        # Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
                         $updateAssociation = $false
                     }
                 }
@@ -75,7 +73,7 @@ function Get-JCRGlobalVars {
             } else {
                 switch ($skipAssociation) {
                     $true {
-                        Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
+                        # Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
                         $updateAssociation = $false
                     }
                 }
@@ -144,7 +142,6 @@ function Get-JCRGlobalVars {
                     $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
 
                 }
-
                 # finally write out the data to file:
                 $users | ConvertTo-Json -Depth 100 -Compress |  Out-File "$JCScriptRoot/data/userHash.json"
                 $systems | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/systemHash.json"
@@ -159,7 +156,6 @@ function Get-JCRGlobalVars {
     end {
         switch ($update) {
             $true {
-
                 # set global vars
                 $Global:JCRUsers = $users
                 $Global:JCRSystems = $systems
@@ -167,6 +163,7 @@ function Get-JCRGlobalVars {
                 $Global:JCRRadiusMembers = $radiusMemberList
                 # update the settings date
                 Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                # update users.json
                 Update-JCRUsersJson
             }
             $false {
@@ -175,6 +172,7 @@ function Get-JCRGlobalVars {
                 $Global:JCRSystems = Get-Content -path "$JCScriptRoot/data/systemHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRAssociations = Get-Content -path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRRadiusMembers = Get-Content -path "$JCScriptRoot/data/radiusMembers.json" | ConvertFrom-Json -AsHashtable
+                # update users.json
                 Update-JCRUsersJson
             }
         }
