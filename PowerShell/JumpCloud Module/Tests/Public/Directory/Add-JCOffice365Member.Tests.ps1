@@ -53,6 +53,10 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCOffice365Member' {
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Added'
     }
+    AfterEach {
+        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'remove' -ErrorAction SilentlyContinue
+        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'remove' -ErrorAction SilentlyContinue
+    }
     AfterAll {
         Remove-JCUser -UserID $NewUser.Id -force
         Remove-JCUserGroup -GroupID $NewGroup.Id -force

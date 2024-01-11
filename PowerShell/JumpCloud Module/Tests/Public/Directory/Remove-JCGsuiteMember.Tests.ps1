@@ -56,6 +56,10 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCGsuiteMember' {
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Removed'
     }
+    AfterEach {
+        Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewUser.Id -Type user -Op 'add' -ErrorAction SilentlyContinue
+        Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add' -ErrorAction SilentlyContinue
+    }
     AfterAll {
         Remove-JCUser -UserID $NewUser.Id -force
         Remove-JCUserGroup -GroupID $NewGroup.Id -force
