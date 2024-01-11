@@ -3,7 +3,10 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCGsuiteMember' {
         $Directories = Get-JCCloudDirectory -Type g_suite
 
         $NewUser = New-RandomUser -domain "delCloudDirUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
-        $NewGroup = New-JCUserGroup -GroupName 'CloudDirTest'
+        $NewGroup = New-JCUserGroup -GroupName 'CloudDirTestRemoveGsuite'
+
+        Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewUser.Id -Type user -Op 'add'
+        Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add'
     }
     It 'Removes a user by username with directory id' {
         $User = Remove-JCGsuiteMember -Id $Directories.Id -Username $NewUser.username

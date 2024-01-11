@@ -3,7 +3,10 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCOffice365Member' {
         $Directories = Get-JCCloudDirectory -Type office_365
 
         $NewUser = New-RandomUser -domain "delCloudDirUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
-        $NewGroup = New-JCUserGroup -GroupName 'CloudDirTest'
+        $NewGroup = New-JCUserGroup -GroupName 'CloudDirTestRemoveO365'
+
+        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'add'
+        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add'
     }
     It 'Removes a user by username with directory id' {
         $User = Remove-JCOffice365Member -Id $Directories.Id -Username $NewUser.username

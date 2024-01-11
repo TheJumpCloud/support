@@ -3,7 +3,7 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCGSuiteMember' {
         $Directories = Get-JCCloudDirectory -Type g_suite
 
         $NewUser = New-RandomUser -domain "delCloudDirUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
-        $NewGroup = New-JCUserGroup -GroupName 'CloudDirTest'
+        $NewGroup = New-JCUserGroup -GroupName 'CloudDirTestAddGSuite'
     }
     It 'Adds a user by username with directory id' {
         $User = Add-JCGSuiteMember -Id $Directories.Id -Username $NewUser.username
@@ -24,7 +24,7 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCGSuiteMember' {
         $User.Status | Should -Be 'Added'
     }
     It 'Adds a user by userID with directory name' {
-        $User = Add-JCGSuiteMember -Name $Directories.Name -Username $NewUser.Id
+        $User = Add-JCGSuiteMember -Name $Directories.Name -UserID $NewUser.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.UserID | Should -Be $NewUser.ID
         $User.Status | Should -Be 'Added'
@@ -42,13 +42,13 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCGSuiteMember' {
         $User.Status | Should -Be 'Added'
     }
     It 'Adds a userGroup by ID with directory id' {
-        $User = Add-JCGSuiteMember -Id $Directories.Id -GroupName $NewGroup.Id
+        $User = Add-JCGSuiteMember -Id $Directories.Id -GroupID $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Added'
     }
     It 'Adds a userGroup by ID with directory Name' {
-        $User = Add-JCGSuiteMember -Name $Directories.Name -GroupName $NewGroup.Id
+        $User = Add-JCGSuiteMember -Name $Directories.Name -GroupID $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Added'
