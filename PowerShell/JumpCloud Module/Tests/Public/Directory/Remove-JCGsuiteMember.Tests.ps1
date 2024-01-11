@@ -27,7 +27,7 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCGsuiteMember' {
         $User.Status | Should -Be 'Removed'
     }
     It 'Removes a user by userID with directory name' {
-        $User = Remove-JCGsuiteMember -Name $Directories.Name -Username $NewUser.Id
+        $User = Remove-JCGsuiteMember -Name $Directories.Name -UserID $NewUser.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.UserID | Should -Be $NewUser.ID
         $User.Status | Should -Be 'Removed'
@@ -45,13 +45,13 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCGsuiteMember' {
         $User.Status | Should -Be 'Removed'
     }
     It 'Removes a userGroup by ID with directory id' {
-        $User = Remove-JCGsuiteMember -Id $Directories.Id -GroupName $NewGroup.Id
+        $User = Remove-JCGsuiteMember -Id $Directories.Id -GroupID $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Removed'
     }
     It 'Removes a userGroup by ID with directory Name' {
-        $User = Remove-JCGsuiteMember -Name $Directories.Name -GroupName $NewGroup.Id
+        $User = Remove-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Removed'

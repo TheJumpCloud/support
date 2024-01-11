@@ -27,7 +27,7 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCOffice365Member' {
         $User.Status | Should -Be 'Removed'
     }
     It 'Removes a user by userID with directory name' {
-        $User = Remove-JCOffice365Member -Name $Directories.Name -Username $NewUser.Id
+        $User = Remove-JCOffice365Member -Name $Directories.Name -UserID $NewUser.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.UserID | Should -Be $NewUser.ID
         $User.Status | Should -Be 'Removed'
@@ -45,13 +45,13 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCOffice365Member' {
         $User.Status | Should -Be 'Removed'
     }
     It 'Removes a userGroup by ID with directory id' {
-        $User = Remove-JCOffice365Member -Id $Directories.Id -GroupName $NewGroup.Id
+        $User = Remove-JCOffice365Member -Id $Directories.Id -GroupID $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Removed'
     }
     It 'Removes a userGroup by ID with directory Name' {
-        $User = Remove-JCOffice365Member -Name $Directories.Name -GroupName $NewGroup.Id
+        $User = Remove-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Removed'
