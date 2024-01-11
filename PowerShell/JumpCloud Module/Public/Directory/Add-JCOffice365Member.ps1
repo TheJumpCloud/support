@@ -57,7 +57,7 @@ function Add-JCOffice365Member () {
         if ($Username -or $UserID) {
             if ($Username) {
                 if ($UserHash.Values.username -contains ($Username)) {
-                    $UserID = $UserNameHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
+                    $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 } else {
                     throw "Username: $Username was not found."
                 }
@@ -78,7 +78,7 @@ function Add-JCOffice365Member () {
         } else {
             if ($GroupName) {
                 if ($UserGroupHash.Values.Name -contains ($GroupName)) {
-                    $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
+                    $GroupID = $UserGroupHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
                 } else {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
