@@ -24,7 +24,7 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCOffice365Member' {
         $User.Status | Should -Be 'Added'
     }
     It 'Adds a user by userID with directory name' {
-        $User = Add-JCOffice365Member -Id $Directories.Name -Username $NewUser.Id
+        $User = Add-JCOffice365Member -Name $Directories.Name -Username $NewUser.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.UserID | Should -Be $NewUser.ID
         $User.Status | Should -Be 'Added'
@@ -36,7 +36,7 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCOffice365Member' {
         $User.Status | Should -Be 'Added'
     }
     It 'Adds a userGroup by Name with directory Name' {
-        $User = Add-JCOffice365Member -Id $Directories.Name -GroupName $NewGroup.Name
+        $User = Add-JCOffice365Member -Name $Directories.Name -GroupName $NewGroup.Name
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Added'
@@ -48,7 +48,7 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCOffice365Member' {
         $User.Status | Should -Be 'Added'
     }
     It 'Adds a userGroup by ID with directory Name' {
-        $User = Add-JCOffice365Member -Id $Directories.Name -GroupName $NewGroup.Id
+        $User = Add-JCOffice365Member -Name $Directories.Name -GroupName $NewGroup.Id
         $User.DirectoryName | Should -Be $Directories.Name
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Added'
