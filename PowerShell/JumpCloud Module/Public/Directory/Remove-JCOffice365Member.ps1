@@ -75,6 +75,7 @@ function Remove-JCOffice365Member () {
                 'Status'        = $Status
 
             }
+            $resultsArray += $FormattedResults
         } else {
             if ($GroupName) {
                 if ($UserGroupHash.Values.Name -contains ($GroupName)) {

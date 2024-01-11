@@ -75,6 +75,7 @@ function Remove-JCGsuiteMember () {
                 'Status'        = $Status
 
             }
+            $resultsArray += $FormattedResults
         } else {
             if ($GroupName) {
                 if ($UserGroupHash.Values.Name -contains ($GroupName)) {
