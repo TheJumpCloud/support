@@ -5,7 +5,7 @@ $Global:JCUSERCERTPASS = 'secret1234!'
 # USER CERT Validity Length (days)
 $Global:JCUSERCERTVALIDITY = 90
 # List Of Radius Network SSID(s)
-# For Multiple SSIDs enter as a single string seperated by a semicolon  ex:
+# For Multiple SSIDs enter as a single string separated by a semicolon  ex:
 # "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network"
 $Global:NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
