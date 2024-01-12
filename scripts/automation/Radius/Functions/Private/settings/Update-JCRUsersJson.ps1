@@ -16,18 +16,32 @@ function Update-JCRUsersJson {
 
             if ($userIndex -ge 0) {
                 # $userArrayObject
-                $currentSystemObject = $userArrayObject.systemAssociations
-                $incomingSystemObject = $Global:JCRAssociations[$user.userID].systemAssociations
+                # write-host "$($userArrayObject.username) | $($userArrayObject.userId)"
+                $currentSystemObject = $userArrayObject.systemAssociations | Select-Object systemId, hostname, osFamily
+                $incomingSystemObject = $Global:JCRAssociations[$userArrayObject.userId].systemAssociations
+                $incomingList = New-Object System.Collections.ArrayList
+                foreach ($system in $Global:JCRAssociations[$userArrayObject.userId].systemAssociations) {
+                    $incomingList.Add(
+                        [pscustomobject]@{
+                            systemId = $system.systemId
+                            hostname = $system.hostname
+                            osFamily = $system.osFamily
+                        }) | Out-Null
+                }
 
                 # determine if there's some difference that needs to be recorded:
                 try {
                     if ($currentSystemObject -eq $null) {
-                        $difference = $incomingSystemObject
+                        $difference = $incomingList
+                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList)
                     } else {
-                        $difference = Compare-Object -ReferenceObject $currentSystemObject.systemId -DifferenceObject $incomingSystemObject.systemId
-                    }
-                    if ($difference) {
-                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingSystemObject | ConvertFrom-HashTable)
+                        # write-host "test for differences"
+                        if ($currentSystemObject -eq $incomingList) {
+                            # write-host "nothing to do"
+                        } else {
+                            # write-host "writing user to do"
+                            Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList)
+                        }
                     }
                 } catch {
                     <#Do this if a terminating exception happens#>

@@ -1,5 +1,5 @@
-Describe "Generate Root Certifcate Tests" {
-    Context "A new certificate can be generated" -skip {
+Describe "Generate Root Certifcate Tests" -Tag "GenerateRootCert" {
+    Context "A new certificate can be generated" {
         # If the /Cert/ folder is not empty, clear the directory
         $items = Get-ChildItem $JCScriptRoot/Cert
         if ($items) {

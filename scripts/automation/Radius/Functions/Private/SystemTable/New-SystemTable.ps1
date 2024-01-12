@@ -18,7 +18,11 @@ function New-SystemTable {
             $systemTable = @{
                 systemId    = $system.systemId
                 displayName = $system.hostname
-                osFamily    = $system.osFamily
+                osFamily    = if ($system.osFamily -eq "darwin") {
+                    "macOS"
+                } elseif ($system.osFamily -eq "windows") {
+                    "windows"
+                }
             }
             $systemAssociations += $systemTable
         }

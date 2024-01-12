@@ -9,6 +9,13 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 Write-Error -Message "Failed to import function $($Import.FullName): $_"
             }
         }
+        # import helper functions:
+        . "$PSScriptRoot/../../../../../PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
+        # Manually update user associations for radius members, cache won't pick them up before:
+        foreach ($user in $global:JCRRadiusMembers) {
+            Set-JCRAssociationHash -UserID $user.userID
+        }
+
     }
     Context 'Distribute all certificates for all users forcibly' {
         BeforeAll {
@@ -83,7 +90,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 # cert should not be deployed
                 $user.certinfo.deployed | Should -Be $false
             }
-            start-deployUserCerts -type All -forceInvokeCommands
+            start-deployUserCerts -type All
             Start-Sleep 1
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
@@ -136,19 +143,32 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $obj.certInfo.deployed | Should -Be $true
             $obj.commandAssociations | should -Not -BeNullOrEmpty
             $obj.systemAssociations | should -Not -BeNullOrEmpty
-
-
         }
-        it 'a new user without a system association will not get a new command and it will not be invoked' {
-
-        }
-
     }
     Context 'Distribute new certificates for new users without invoking' {
         it 'a new user with a system association will get a new command and it will not be invoked' {
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
+            # add user to membership group
+            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            # get random system
+            $system = Get-JCSystem -os windows | Get-Random -Count 1
+            Add-JCSystemUser -UserID $user.id -SystemID $system.id
 
-        }
-        it 'a new user without a system association will not get a new command and it will not be invoked' {
+            # update membership
+            Get-JCRGlobalVars -skipAssociation -force
+            # todo: manually update association table to account for new membership
+            Set-JCRAssociationHash -userId $user.id
+            Update-JCRUsersJson
+            # now generate the user certs
+            Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
+            start-deployUserCerts -type ByUsername -username $user.username
+
+            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
+            $obj.certInfo.deployed | Should -Be $false
+            $obj.commandAssociations | should -Not -BeNullOrEmpty
+            $obj.systemAssociations | should -Not -BeNullOrEmpty
 
         }
 

@@ -18,7 +18,11 @@ function Set-JCRAssociationHash {
             $systemList.Add(
                 [PSCustomObject]@{
                     systemId = $systemDetails.id
-                    osFamily = $systemDetails.osFamily
+                    osFamily = if ($systemDetails.osFamily -eq "darwin") {
+                        "macOS"
+                    } elseif ($systemDetails.osFamily -eq "windows") {
+                        "windows"
+                    }
                     hostname = $systemDetails.hostname
                 }
             ) | Out-Null

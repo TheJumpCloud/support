@@ -1,4 +1,4 @@
-Describe "Get Global Variable Data Tests" {
+Describe "Get Global Variable Data Tests" -Tag "Cache" {
     BeforeAll {
         $dataPath = "$JCScriptRoot/data/"
         $requiredFiles = @(
@@ -7,7 +7,15 @@ Describe "Get Global Variable Data Tests" {
             'systemHash.json',
             'userHash.json'
         )
-
+        # explicitly import the settings file functions for these tests:
+        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/settings/*.ps1" -Recurse)
+        Foreach ($Import in $Private) {
+            Try {
+                . $Import.FullName
+            } Catch {
+                Write-Error -Message "Failed to import function $($Import.FullName): $_"
+            }
+        }
     }
     Context "When no 'data' directory exists" {
         BeforeAll {
@@ -31,17 +39,10 @@ Describe "Get Global Variable Data Tests" {
         BeforeAll {
             # if the data directory does not exist, generate the global vars + directory
             if (-not (Test-Path -Path ($dataPath))) {
+                Write-Host "Generating data:"
                 Get-JCRGlobalVars
             }
-            # explicitly import the settings file functions for these tests:
-            $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/settings/*.ps1" -Recurse)
-            Foreach ($Import in $Private) {
-                Try {
-                    . $Import.FullName
-                } Catch {
-                    Write-Error -Message "Failed to import function $($Import.FullName): $_"
-                }
-            }
+
         }
         It "Data should not be refreshed when running Get-JCRGlobalVars if it's been less than 24 hours since last update" {
             # Get the settings data
@@ -87,10 +88,10 @@ Describe "Get Global Variable Data Tests" {
             } else {
                 # set the settings file to a mocked value of now
                 Set-JCRSettingsFile -globalVarslastUpdate (Get-Date).AddHours(-25)
-                Start-Sleep 1
+                Start-Sleep 2
                 $settingsData = Get-JCRSettingsFile
-                $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
-                # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+                $timespan = New-TimeSpan -Start  $settingsData.globalVars.lastupdate -End (Get-Date).AddHours(-24)
+                Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
             }
             # run Get-JCRGlobalVars
             Get-JCRGlobalVars
@@ -99,10 +100,10 @@ Describe "Get Global Variable Data Tests" {
             $filesAfter = Get-ChildItem -Path $dataPath
             # test each file write date
             foreach ($file in $requiredFiles) {
-                # write-host "validating write times for $file"
+                write-host "validating write times for $file"
                 $beforeWriteTime = (($filesBefore | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
                 $afterWriteTime = (($filesAfter | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
-                # Write-Host "before: $beforeWriteTime should not be after: $afterWriteTime"
+                Write-Host "before: $beforeWriteTime should not be after: $afterWriteTime"
                 # The file write time before running Get-JCRGlobalVars should not be the same after running the function
                 $beforeWriteTime | should -Not -Be $afterWriteTime
             }

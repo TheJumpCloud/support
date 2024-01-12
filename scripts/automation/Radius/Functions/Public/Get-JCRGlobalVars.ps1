@@ -19,8 +19,10 @@ function Get-JCRGlobalVars {
         $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -end (Get-Date)
         if ($lastUpdateTimespan.TotalHours -gt 24) {
             $update = $true
+            $updateAssociation = $true
         } else {
             $update = $false
+            $updateAssociation = $false
         }
         if ($force) {
             $update = $true

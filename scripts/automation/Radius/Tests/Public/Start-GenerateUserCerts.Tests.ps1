@@ -1,4 +1,15 @@
-Describe 'Generate User Cert Tests' -Tag "Generate" {
+Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
+    BeforeAll {
+        # Load all functions from private folders
+        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        Foreach ($Import in $Private) {
+            Try {
+                . $Import.FullName
+            } Catch {
+                Write-Error -Message "Failed to import function $($Import.FullName): $_"
+            }
+        }
+    }
     Context 'Certs forcibly re-generated for all users' {
         It 'Certs re-generated have actually been re-written for all users' {
             $timeBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
@@ -21,9 +32,10 @@ Describe 'Generate User Cert Tests' -Tag "Generate" {
     }
     Context 'Certs generated for newly added users' {
         beforeall {
-            # Select a user TODO: create a pester user
-            $user = Get-JCuser -username "chet.atkins"
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
             $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -filter "$($user.username)*"
+            # if user cert exists, for random user, remove:
             foreach ($cert in $certs) {
                 remove-item $cert.fullname
             }

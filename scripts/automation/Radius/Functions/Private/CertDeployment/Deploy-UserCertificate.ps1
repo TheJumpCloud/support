@@ -97,7 +97,7 @@ function Deploy-UserCertificate {
             Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
             # Find OS of System
             switch ($user.systemAssociations.osFamily) {
-                'Mac OS X' {
+                'macOS' {
                     # Get the macOS system ids
                     $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'macOS' } | Select-Object systemId
 
@@ -274,9 +274,9 @@ fi
                     $status_commandGenerated = $true
 
                 }
-                'Windows' {
+                'windows' {
                     # Get the Windows system ids
-                    $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'Windows' } | Select-Object systemId
+                    $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'windows' } | Select-Object systemId
 
                     # Check to see if previous commands exist
                     $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
@@ -415,7 +415,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                     }
 
                     $user.commandAssociations += $CommandTable
-                    Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
+                    # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
                     $status_commandGenerated = $true
 
                 }
