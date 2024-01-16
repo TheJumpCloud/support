@@ -53,6 +53,23 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCGSuiteMember' {
         $User.GroupID | Should -Be $NewGroup.ID
         $User.Status | Should -Be 'Added'
     }
+    It 'Attempts to add user by username and userid' {
+        {Add-JCGsuiteMember -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID} | Should -Throw
+    }
+    It 'Attempts to add userGroup by name and ID' {
+        {Add-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name} | Should -Throw
+    }
+    It 'Attempts to add a user and a usergroup' {
+        {Add-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
+    }
+    It 'Attempts to add a non-existent user' {
+        {Add-JCGsuiteMember -Name $Directories.Name -Username "Dummy.User"} | Should -Throw
+        {Add-JCGsuiteMember -Name $Directories.Name -UserID 123456} | Should -Throw
+    }
+    It 'Attempts to add a non-existent group' {
+        {Add-JCGsuiteMember -Name $Directories.Name -GroupName 'Dummy Group'} | Should -Throw
+        {Add-JCGsuiteMember -Name $Directories.Name -GroupID 123456} | Should -Throw
+    }
     AfterEach {
         Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewUser.Id -Type user -Op 'remove' -ErrorAction SilentlyContinue
         Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'remove' -ErrorAction SilentlyContinue
