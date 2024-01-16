@@ -50,7 +50,7 @@ function Add-JCOffice365Member () {
         }
         if ($Username -or $UserID) {
             if ($Username) {
-                $UserID = Get-JCUser -username $Username -returnProperties username | Select-Object _id
+                $UserID = Get-JCUser -username $Username -returnProperties username | Select-Object -ExpandProperty _id
                 if (!$UserID) {
                     throw "Username: $Username was not found."
                 }
@@ -71,7 +71,7 @@ function Add-JCOffice365Member () {
             $resultsArray += $FormattedResults
         } else {
             if ($GroupName) {
-                $GroupID = Get-JcSdkUserGroup -Filter "name:search:$GroupName" | Select-Object Id
+                $GroupID = Get-JcSdkUserGroup -Filter "name:search:$GroupName" | Select-Object -ExpandProperty Id
                 if (!$GroupID) {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
