@@ -2,8 +2,8 @@
 
 # PowerShell Module
 
-/PowerShell/ @TheJumpCloud/jc-sa
+/PowerShell/ @TheJumpCloud/customer-tools
 
 # Scripts
 
-/scripts/ @TheJumpCloud/jc-sa
+/scripts/ @TheJumpCloud/customer-tools
