@@ -66,12 +66,16 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCGsuiteMember' {
         {Remove-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
     }
     It 'Attempts to remove a non-existent user' {
-        {Remove-JCGsuiteMember -Name $Directories.Name -Username "Dummy.User"} | Should -Throw
-        {Remove-JCGsuiteMember -Name $Directories.Name -UserID 123456} | Should -Throw
+        $User = Remove-JCGsuiteMember -Name $Directories.Name -Username "Dummy.User"
+        $User.Status | Should -Be 'Not Found'
+        $User = Remove-JCGsuiteMember -Name $Directories.Name -UserID 123456
+        $User.Status | Should -Be 'Not Found'
     }
     It 'Attempts to remove a non-existent group' {
-        {Remove-JCGsuiteMember -Name $Directories.Name -GroupName 'Dummy Group'} | Should -Throw
-        {Remove-JCGsuiteMember -Name $Directories.Name -GroupID 123456} | Should -Throw
+        $Group = Remove-JCGsuiteMember -Name $Directories.Name -GroupName 'Dummy Group'
+        $Group.Status | Should -Be 'Not Found'
+        $Group = Remove-JCGsuiteMember -Name $Directories.Name -GroupID 123456
+        $Group.Status | Should -Be 'Not Found'
     }
     AfterEach {
         Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewUser.Id -Type user -Op 'add' -ErrorAction SilentlyContinue
