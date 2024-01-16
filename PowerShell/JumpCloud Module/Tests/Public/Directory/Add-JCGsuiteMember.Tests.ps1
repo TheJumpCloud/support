@@ -63,14 +63,12 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCGSuiteMember' {
         {Add-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
     }
     It 'Attempts to add a non-existent user' {
-        $User = Add-JCGsuiteMember -Name $Directories.Name -Username "Dummy.User"
-        $User.Status | Should -Be 'Not Found'
+        { $User = Add-JCGsuiteMember -Name $Directories.Name -Username "Dummy.User" } | Should -Throw
         $User = Add-JCGsuiteMember -Name $Directories.Name -UserID 123456
         $User.Status | Should -Be 'Not Found'
     }
     It 'Attempts to add a non-existent group' {
-        $Group = Add-JCGsuiteMember -Name $Directories.Name -GroupName 'Dummy Group'
-        $Group.Status | Should -Be 'Not Found'
+        { $Group = Add-JCGsuiteMember -Name $Directories.Name -GroupName 'Dummy Group' } | Should -Throw
         $Group = Add-JCGsuiteMember -Name $Directories.Name -GroupID 123456
         $Group.Status | Should -Be 'Not Found'
     }

@@ -66,14 +66,12 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCOffice365Member' {
         {Remove-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
     }
     It 'Attempts to remove a non-existent user' {
-        $User = Remove-JCOffice365Member -Name $Directories.Name -Username "Dummy.User"
-        $User.Status | Should -Be 'Not Found'
+        { $User = Remove-JCOffice365Member -Name $Directories.Name -Username "Dummy.User" } | Should -Throw
         $User = Remove-JCOffice365Member -Name $Directories.Name -UserID 123456
         $User.Status | Should -Be 'Not Found'
     }
     It 'Attempts to remove a non-existent group' {
-        $Group = Remove-JCOffice365Member -Name $Directories.Name -GroupName 'Dummy Group'
-        $Group.Status | Should -Be 'Not Found'
+        { $Group = Remove-JCOffice365Member -Name $Directories.Name -GroupName 'Dummy Group' } | Should -Throw
         $Group = Remove-JCOffice365Member -Name $Directories.Name -GroupID 123456
         $Group.Status | Should -Be 'Not Found'
     }
