@@ -56,9 +56,8 @@ function Remove-JCGsuiteMember () {
         }
         if ($Username -or $UserID) {
             if ($Username) {
-                if ($UserHash.Values.username -contains ($Username)) {
-                    $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
-                } else {
+                $UserID = Get-JCUser -username $Username -returnProperties username | Select-Object _id
+                if (!$UserID) {
                     throw "Username: $Username was not found."
                 }
             }
@@ -78,9 +77,8 @@ function Remove-JCGsuiteMember () {
             $resultsArray += $FormattedResults
         } else {
             if ($GroupName) {
-                if ($UserGroupHash.Values.Name -contains ($GroupName)) {
-                    $GroupID = $UserGroupHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
-                } else {
+                $GroupID = Get-JcSdkUserGroup -Filter "name:search:$GroupName" | Select-Object Id
+                if (!$GroupID) {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
