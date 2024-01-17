@@ -1,31 +1,29 @@
 Function Invoke-UserCertProcess {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = 'radiusMember')]
+        [Parameter(HelpMessage = 'The user object from users.json', ParameterSetName = 'radiusMember')]
         [System.object]
         $radiusMember,
         [Parameter(ParameterSetName = 'selectedUserObject')]
         [System.String]
         $selectedUserObject,
-        [Parameter(Mandatory)]
+        [Parameter(HelpMessage = 'The type of certificate to generate, either: "EmailSAN", "EmailDN" or "UsernameCN"', Mandatory)]
         [ValidateSet('EmailSAN', 'EmailDN', 'UsernameCN')]
         [System.String]
         $certType,
         # force replace existing certificate
-        [Parameter()]
+        [Parameter(HelpMessage = 'When specified, existing certificates will be replaced')]
         [switch]
         $forceReplaceCert,
         # prompt replace existing certificate
-        [Parameter()]
+        [Parameter(HelpMessage = 'When specified, this parameter will prompt for user imput and ask if existing certificates should be replaced' )]
         [switch]
         $prompt
     )
     begin {
-
         switch ($PSCmdlet.ParameterSetName) {
             'radiusMember' {
                 try {
-
                     $MatchedUser = $GLOBAL:JCRUsers[$radiusMember.userID]
                 } catch {
                     Write-Warning "could not identify user by userobject: $radiusMember"

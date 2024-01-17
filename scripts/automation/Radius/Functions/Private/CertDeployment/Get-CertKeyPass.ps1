@@ -1,4 +1,5 @@
 function Get-CertKeyPass {
+    #TODO: params required to test if a CA password is correct
     $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
     Write-Host "Found key: $($foundKeyPem)"
 

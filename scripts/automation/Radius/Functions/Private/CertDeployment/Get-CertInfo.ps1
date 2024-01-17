@@ -1,13 +1,13 @@
 function Get-CertInfo {
     [CmdletBinding()]
     param (
-        [Parameter(ParameterSetName = 'CA', Mandatory = $true)]
+        [Parameter(HelpMessage = 'When specified this function will return certificate information for the root CA located in /Cert', ParameterSetName = 'CA', Mandatory = $true)]
         [switch]
         $RootCA,
-        [Parameter(ParameterSetName = 'User', Mandatory = $true)]
+        [Parameter(HelpMessage = 'When specified this function will return all user certificate information for user certs located in /UserCerts', ParameterSetName = 'User', Mandatory = $true)]
         [switch]
         $UserCerts,
-        [Parameter(ParameterSetName = 'User', Mandatory = $false)]
+        [Parameter(HelpMessage = 'When specified this function will return a single users certificate infomration for a cert located in /UserCerts', ParameterSetName = 'User', Mandatory = $false)]
         [system.string]
         $username
     )

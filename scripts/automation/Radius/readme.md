@@ -4,11 +4,11 @@ This set of PowerShell automations are designed to help administrators generate 
 
 ## Requirements
 
-This automation has been tested with OpenSSL 3.0.7. OpenSSL 3.x.x is required to generate the Radius Authentication user certificates. The following items are required to use this automation workflow
+This automation has been tested with OpenSSL 3.1.1. OpenSSL 3.x.x is required to generate the Radius Authentication user certificates. The following items are required to use this automation workflow
 
 - PowerShell 7.x.x ([PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3))
 
-- OpenSSL 3.x.x (Tested with 3.0.7) (see macOS/ Windows requirements below)
+- OpenSSL 3.x.x (Tested with 3.1.1) (see macOS/ Windows requirements below)
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 - Certificate Authority (CA) (either from a vendor or self-generated)
 - Variables in `config.ps1` updated
@@ -22,14 +22,14 @@ macOS ships with a version of OpenSSL titled LibreSSL. LibreSSL is sufficient to
 
 To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
 
-Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$openSSLBinary` variable to point to the Homebrew bin location ex:
+Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$global:openSSLBinary` variable to point to the Homebrew bin location ex:
 
-In `Config.ps1` change `$opensslBinary` to point to `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'`
+In `Config.ps1` change `$opensslBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`\*\*\*\*
 
 ex:
 
 ```powershell
-$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+$opensslBinary = '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
 ```
 
 ### Windows Requirements
@@ -67,14 +67,6 @@ At the time of this writing JumpCloud Module 2.1.3 was the latest version. Pleas
 
 Before Running the `Start-RadiusDeployment.ps1` script, the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
 
-#### Set Your API Key ID
-
-Change the variable `$JCAPIKEY` to an [API Key](https://support.jumpcloud.com/s/article/jumpcloud-apis1) from an administrator in your JumpCloud Tenant. An administrator API Key with at least [read/write access](https://support.jumpcloud.com/support/s/article/JumpCloud-Roles) is required.
-
-#### Set Your Organization ID
-
-Change the variable `$JCORGID` to the [organization ID value](https://support.jumpcloud.com/s/article/Settings-in-the-JumpCloud-Admin-Portal#AccessOrgID) from your JumpCloud Tenant.
-
 #### Set Your User Group ID
 
 Change the variable `$global:JCUSERGROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
@@ -86,23 +78,23 @@ The ID of the selected userGroup is the 24 character string between `/user/` and
 
 #### Set your network SSID Name
 
-Change the variable `$NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a space, ex: "CorpNetwork_Denver CorpNetwork_Boulder". **Note: The SSID and user certificate are only associated with macOS system commands are generated. This parameter does not affect windows generated commands**
+Change the variable `$global:NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a semicolon, ex: "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network". **Note: The SSID and user certificates are only associated with macOS system commands. This parameter does not affect windows generated commands**
 
 #### Set the openSSL Binary location
 
 Depending on the host system and how OpenSSL is installed, this variable can either point to a path or call the binary with just the name `openssl`.
 
-[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'` if installed through Homebrew.
+[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'` if installed through Homebrew.
 
-Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$opensslBinary` necessary)
+Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$global:opensslBinary` necessary)
 
 #### Set Your Certificate Subject Headers
 
-Change the default values provided in the `$Subj` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
+Change the default values provided in the `$global:Subj` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
 
 #### Set Desired User Certificate Type
 
-Change the `$certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
+Change the `$global:certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
 
 ##### Email Subject Alternative Name (EmailSAN)
 
@@ -184,15 +176,25 @@ After successful import or generation of a self signed CA, the CA's serial numbe
 
 With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$global:JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
-If local user certificates are set to expire within 15 days, a notification is displayed on the main menu:
+If local user certificates are set to expire within 15 days, a notification is displayed on the main menu and the certificate generation window:
 
 ![certs due to expire](./images/expireCert.png)
+
+Selection option 2 from the main menu presents the various choices to generate/ re-generate user certificates:
+
+![certs due to expire from window](./images/expireCertFromWindow.png)
 
 At any time user certificates can be manually removed from the `/projectDirectory/Radius/UserCerts/` directory and regenerated using option 2 from the main menu. User certificates can be continuously re-applied to devices using option 3 to distribute user certificates.
 
 ## Certificate Distribution
 
-Option 3 in the main menu will enable admins to distribute user certificates to end user devices. Commands will be generated in your JumpCloud Tenant for each user in the Radius User Group and their corresponding system associations. This script will prompt you to kick off the generated commands. If the commands are invoked, they should be queued for all users in the Radius User Group. These commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCLoud console and wait for the device to come online before attempting to run.
+Option 3 in the main menu will enable admins to distribute user certificates to end user devices.
+
+![radius re-issue workflow](./images/deployMenu.png)
+
+Windows and macOS commands will be generated for each user in the Radius User Group.
+
+This script will prompt you to kick off the generated commands. Commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCloud console and wait for the device to come online before attempting to run.
 
 On the device, certificates are replaced if a command is sent to a device with a newer certificate. i.e.
 
@@ -230,7 +232,7 @@ After a user's certificate has been distributed to a system, those users can the
 
 ### macOS
 
-If the `$NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
+If the `$global:NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
 
 In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 

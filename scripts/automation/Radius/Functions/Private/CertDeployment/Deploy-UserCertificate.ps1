@@ -1,16 +1,16 @@
 function Deploy-UserCertificate {
     [CmdletBinding()]
     param (
-        # Parameter help description
-        [Parameter(Mandatory)]
+        # Input from users.json
+        [Parameter(HelpMessage = 'An individual or array of user objects from users.json', Mandatory)]
         [System.Object[]]
         $userObject,
-        # Parameter help description
-        [Parameter()]
+        # when specified will force newly generated commands to be invoked on systems
+        [Parameter(HelpMessage = 'When specified, this parameter will invoke commands on systems associated to the user from the "userObject" parameter')]
         [bool]
         $forceInvokeCommands,
         # prompt replace existing certificate
-        [Parameter()]
+        [Parameter(HelpMessage = 'When specified, this parameter will prompt for user imput and ask if generated commands should be invoked on associated systems')]
         [switch]
         $prompt
     )

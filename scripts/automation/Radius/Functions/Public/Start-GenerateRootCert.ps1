@@ -2,14 +2,9 @@ Function Start-GenerateRootCert {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Cert Key Password
-        # Parameter help description
-        [Parameter(ParameterSetName = 'cli')]
+        [Parameter(HelpMessage = 'The root certificate key password', ParameterSetName = 'cli')]
         [string]
-        $certKeyPassword,
-        # Force invoke commands after generation
-        [Parameter(ParameterSetName = 'cli')]
-        [switch]
-        $forceReplcaeCert
+        $certKeyPassword
     )
     # this script will generate a Self Signed CA (root cert) to be imported on the
     # Radius CBA-BYO Authentication UI

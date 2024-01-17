@@ -3,16 +3,16 @@ function Start-DeployUserCerts {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Type of certs to distribute, All, New or byUsername
-        [Parameter(ParameterSetName = 'cli', Mandatory)]
+        [Parameter(HelpMessage = 'Type of cert deployment to initiate', ParameterSetName = 'cli', Mandatory)]
         [ValidateSet("All", "New", "ByUsername")]
         [system.String]
         $type,
         # username
-        [Parameter(ParameterSetName = 'cli')]
+        [Parameter(HelpMessage = 'The JumpCloud username of a user to deploy a certificate', ParameterSetName = 'cli')]
         [System.String]
         $username,
         # Force invoke commands after generation
-        [Parameter(ParameterSetName = 'cli')]
+        [Parameter(HelpMessage = 'Switch to force invoke generated commands on systems', ParameterSetName = 'cli')]
         [switch]
         $forceInvokeCommands
     )

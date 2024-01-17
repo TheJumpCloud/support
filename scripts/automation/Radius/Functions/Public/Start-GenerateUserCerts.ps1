@@ -3,16 +3,16 @@ function Start-GenerateUserCerts {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Type of certs to distribute, All, New or byUsername
-        [Parameter(ParameterSetName = 'cli', Mandatory)]
+        [Parameter(HelpMessage = 'Type of certificate to initialize. To generate all new certificates for existing users, specify "all", To generate certificates for users who have not yet had certificates generated, specify "new". To generate certificates by an individual, speficy "ByUsername" and populate the "username" parameter. To generate certificates for users who have certificates expiring in 15 days or less, specify "ExpiringSoon".', ParameterSetName = 'cli', Mandatory)]
         [ValidateSet("All", "New", "ByUsername", "ExpiringSoon")]
         [system.String]
         $type,
         # username
-        [Parameter(ParameterSetName = 'cli')]
+        [Parameter(HelpMessage = 'The JumpCloud username of an individual user', ParameterSetName = 'cli')]
         [System.String]
         $username,
         # Force invoke commands after generation
-        [Parameter(ParameterSetName = 'cli')]
+        [Parameter(HelpMessage = 'When specified, this parameter will replace certificates if they already exist on the current filesystem', ParameterSetName = 'cli')]
         [switch]
         $forceReplaceCerts
     )
@@ -119,10 +119,24 @@ function Start-GenerateUserCerts {
                     $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
                     switch ($forceReplaceCerts) {
                         $true {
-                            $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType -forceReplaceCert
+                            switch ($PSCmdlet.ParameterSetName) {
+                                'gui' {
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType -forceReplaceCert
+                                }
+                                'cli' {
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType -forceReplaceCert
+                                }
+                            }
                         }
                         $false {
-                            $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType
+                            switch ($PSCmdlet.ParameterSetName) {
+                                'gui' {
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType -Prompt
+                                }
+                                'cli' {
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $CertType
+                                }
+                            }
                         }
                     }
                     Show-RadiusProgress -completedItems $userObject.count  -totalItems $userObject.count -ActionText "Generating Radius Certificates" -previousOperationResult $result

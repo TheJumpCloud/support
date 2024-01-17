@@ -1,7 +1,7 @@
 function Generate-UserCert {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(HelpMessage = 'The type of certificate to generate, either: "EmailSAN", "EmailDN" or "UsernameCN"', Mandatory = $true)]
         [ValidateSet("EmailSAN", "EmailDn", "UsernameCN")]
         [system.String]
         $CertType,

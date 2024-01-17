@@ -1,10 +1,10 @@
 function Get-JCRGlobalVars {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(HelpMessage = "Force update all cached users, systems, associations, radius group members")]
         [switch]
         $force,
-        [Parameter()]
+        [Parameter(HelpMessage = "Skips the user to system association cache, which may take a long time on larger organizations")]
         [switch]
         $skipAssociation
     )
