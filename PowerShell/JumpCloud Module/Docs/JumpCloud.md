@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.9.1
+Help Version: 2.10.0
 Locale: en-US
 ---
 
@@ -16,6 +16,12 @@ Create an association between two object within the JumpCloud console.
 
 ### [Add-JCCommandTarget](Add-JCCommandTarget.md)
 Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command
+
+### [Add-JCGsuiteMember](Add-JCGsuiteMember.md)
+Adds users or usergroups to a GSuite Cloud Directory Instance
+
+### [Add-JCOffice365Member](Add-JCOffice365Member.md)
+Adds users or usergroups to an Office365 Cloud Directory Instance
 
 ### [Add-JCRadiusReplyAttribute](Add-JCRadiusReplyAttribute.md)
 Adds Radius reply attributes to a JumpCloud user group.
@@ -165,6 +171,12 @@ Removes a JumpCloud Command Result
 
 ### [Remove-JCCommandTarget](Remove-JCCommandTarget.md)
 Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command
+
+### [Remove-JCGsuiteMember](Remove-JCGsuiteMember.md)
+Removes users or usergroups from a GSuite Cloud Directory Instance
+
+### [Remove-JCOffice365Member](Remove-JCOffice365Member.md)
+Removes users or usergroups from an Office365 Cloud Directory Instance
 
 ### [Remove-JCPolicy](Remove-JCPolicy.md)
 Removes a JumpCloud Policy

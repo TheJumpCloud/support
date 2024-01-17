@@ -1,6 +1,24 @@
+## 2.10.0
+
+Release Date: January 17, 2024
+
+#### RELEASE NOTES
+
+```
+New Directory Functions, Add-JCGsuiteMember, Add-JCOffice365Member, Remove-JCGsuiteMember, and Remove-JCOffice365Member added to the module
+```
+
+#### FEATURES:
+
+Add-JCGsuiteMember - Add a user or user group to a Gsuite instance
+Add-JCOffice365Member - Add a user or user group to an Office365 instance
+Remove-JCGsuiteMember - Remove a user or user group from a Gsuite instance
+Remove-JCOffice365Member - Remove a user or user group from an Office365 instance
+
+
 ## 2.9.1
 
-Release Date: January 2, 2024
+Release Date: January 11, 2024
 
 #### RELEASE NOTES
 
