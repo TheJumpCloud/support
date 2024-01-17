@@ -65,12 +65,12 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCOffice365Member' {
     It 'Attempts to add a non-existent user' {
         { $User = Add-JCOffice365Member -Name $Directories.Name -Username "Dummy.User" } | Should -Throw
         $User = Add-JCOffice365Member -Name $Directories.Name -UserID 123456
-        $User.Status | Should -Be 'Not Found'
+        $User.Status | Should -BeLike 'Bad Request*'
     }
     It 'Attempts to add a non-existent group' {
         { $Group = Add-JCOffice365Member -Name $Directories.Name -GroupName 'Dummy Group' } | Should -Throw
         $Group = Add-JCOffice365Member -Name $Directories.Name -GroupID 123456
-        $Group.Status | Should -Be 'Not Found'
+        $Group.Status | Should -BeLike 'Bad Request*'
     }
     AfterEach {
         Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'remove' -ErrorAction SilentlyContinue
