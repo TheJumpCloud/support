@@ -27,12 +27,6 @@ function Remove-JCGsuiteMember () {
             throw "Please use either a username or a userID"
         } elseif ($GroupID -and $GroupName) {
             throw "Please use either a UserGroup Name or a UserGroup ID"
-        } elseif ($Username -or $UserID) {
-            Write-Debug 'Populating UserHash'
-            $UserHash = Get-DynamicHash -Object User -returnProperties username
-        } elseif ($GroupID -or $GroupName) {
-            Write-Debug 'Populating UserGroupHash'
-            $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
         }
     }
     process {
