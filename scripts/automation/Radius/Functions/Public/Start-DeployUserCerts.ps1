@@ -49,6 +49,14 @@ function Start-DeployUserCerts {
         switch ($confirmation) {
             '1' {
                 # case for all users
+                switch ($PSCmdlet.ParameterSetName) {
+                    'gui' {
+                        $invokeCommands = Get-ResponsePrompt -message "Would you like to invoke commands after they've been generated?"
+                        if (($invokeCommands -ne $true) -And ($invokeCommands -ne $false)) {
+                            return
+                        }
+                    }
+                }
                 for ($i = 0; $i -lt $userArray.Count; $i++) {
                     $result = Deploy-UserCertificate -userObject $userArray[$i] -forceInvokeCommands $invokeCommands
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $userArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
@@ -65,6 +73,14 @@ function Start-DeployUserCerts {
             }
             '2' {
                 # case for new users; users that do not have certinfo marked as already deployed (i.e. users with new certs or un-deployed certs)
+                switch ($PSCmdlet.ParameterSetName) {
+                    'gui' {
+                        $invokeCommands = Get-ResponsePrompt -message "Would you like to invoke commands after they've been generated?"
+                        if (($invokeCommands -ne $true) -And ($invokeCommands -ne $false)) {
+                            return
+                        }
+                    }
+                }
                 $usersWithoutLatestCert = $userArray | Where-Object { ( $_.certinfo.deployed -eq $false) -or (-not $_.certinfo.deployed) }
                 for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
                     $result = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -forceInvokeCommands $invokeCommands

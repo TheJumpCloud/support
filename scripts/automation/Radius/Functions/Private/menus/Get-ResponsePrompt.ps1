@@ -1,7 +1,7 @@
 function Get-ResponsePrompt {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(HelpMessage = "The message prompt to display to the console", Mandatory)]
         [System.String]
         $message
     )
