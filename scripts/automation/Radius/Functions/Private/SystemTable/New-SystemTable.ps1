@@ -15,10 +15,10 @@ function New-SystemTable {
         # $SystemUserAssociations += (Get-JCAssociation -Type user -Id $userID -TargetType system | Select-Object @{N = 'SystemID'; E = { $_.targetId } })
         foreach ($system in $AssociationTable.systemAssociations) {
             # $systemInfo = $GLOBAL:SystemHash[$system.resource_object_id]
-            $systemTable = @{
-                systemId    = $system.systemId
-                displayName = $system.hostname
-                osFamily    = if ($system.osFamily -eq "darwin") {
+            $systemTable = [ordered]@{
+                systemId = $system.systemId
+                hostname = $system.hostname
+                osFamily = if (($system.osFamily -eq "darwin") -or ($system.osFamily -eq "macOS")) {
                     "macOS"
                 } elseif ($system.osFamily -eq "windows") {
                     "windows"
