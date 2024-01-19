@@ -197,7 +197,7 @@ main
 
 #### Description
 
-This script installs rempte assist application on the Linux machine.
+This script installs remote assist application on the Linux machine.
 
 #### _Import This Command_
 
