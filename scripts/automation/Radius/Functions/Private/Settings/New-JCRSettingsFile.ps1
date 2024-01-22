@@ -25,16 +25,13 @@ function New-JCRSettingsFile {
 
     process {
         # if creating the settings file for the first time, update global vars; lastupdate date
-        write-host "update vars"
         Get-JCRGlobalVars -force
     }
 
     end {
-        write-host "endblock"
         if ((test-path -Path $configFilePath) -And ($force)) {
             $config | ConvertTo-Json | Out-File -FilePath $configFilePath
         } else {
-            write-host "create new settings file:"
             $config | ConvertTo-Json | Out-File -FilePath $configFilePath
         }
     }
