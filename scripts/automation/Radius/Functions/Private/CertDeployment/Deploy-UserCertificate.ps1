@@ -16,8 +16,6 @@ function Deploy-UserCertificate {
     )
 
     begin {
-        #TODO: validate user object, if missing commandAssociations, or certInfo, return false
-
         switch ($forceInvokeCommands) {
             $true {
                 $invokeCommands = $true
@@ -252,7 +250,6 @@ fi
                         $NewCommand = New-JcSdkCommand @CommandBody
 
                         # Find newly created command and add system as target
-                        # TODO: Condition for duplicate commands
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
                         $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                     } catch {
@@ -429,26 +426,6 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
             $userObjectFromTable, $userIndex = Get-UserFromTable -userid $user.userid
 
             Set-UserTable -index $userIndex -commandAssociationsObject $user.commandAssociations
-            # Invoke Commands
-            #TODO:: skip if this is not per user basis
-            # switch ($force) {
-            #     $true {
-            #         # nothing do to
-            #         $action_invoke = $true
-            #     }
-            #     $false {
-            #         $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
-            #         # $UserArray | ConvertTo-Json -Depth 6 | Out-File "$JCScriptRoot\users.json"
-
-            #         while ($confirmation -ne 'y') {
-            #             if ($confirmation -eq 'n') {
-            #                 $action_invoke = $false
-            #                 break
-            #             }
-            #             $confirmation = Read-Host "Would you like to invoke commands? [y/n]"
-            #         }
-            #     }
-            # }
             switch ($invokeCommands) {
                 $true {
                     # finally update the user table to note that the command has been run, the cert has been deployed
