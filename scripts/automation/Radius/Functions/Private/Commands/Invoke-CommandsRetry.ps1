@@ -1,14 +1,7 @@
 Function Invoke-CommandsRetry {
-    [CmdletBinding()]
-    param (
-        [Parameter()]
-        [System.string]
-        $jsonFile
-    )
     begin {
         $RetryCommands = @()
         $userArray = Get-UserJsonData
-        # $commandsObject = Get-Content -Raw -Path $jsonFile | ConvertFrom-Json -Depth 6
         $queuedCommands = Get-JCQueuedCommands
         $SearchFilter = @{
             searchTerm = 'RadiusCert-Install'
@@ -51,10 +44,6 @@ Function Invoke-CommandsRetry {
         }
     }
     end {
-        # TODO: validate no need to write this out since it's done in Set-UserTable
-        # # write out/ update jsonFile
-        # Set-UserJsonData -userArray $userArray
-        # $commandsObject | ConvertTo-Json -Depth 6 | Out-File $jsonFile
         return $RetryCommands
     }
 }

@@ -21,7 +21,7 @@ Function Start-MonitorCertDeployment {
                 Get-CommandObjectTable -Failed -jsonFile $jsonFile
                 Pause
             } '3' {
-                $retryCommands = Invoke-CommandsRetry -jsonFile $jsonFile
+                $retryCommands = Invoke-CommandsRetry
                 Pause
             }
         }
