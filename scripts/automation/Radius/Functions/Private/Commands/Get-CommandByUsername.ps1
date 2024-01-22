@@ -1,4 +1,4 @@
-function get-CommandByUsername {
+function Get-CommandByUsername {
     [CmdletBinding()]
     param (
         # Parameter help description

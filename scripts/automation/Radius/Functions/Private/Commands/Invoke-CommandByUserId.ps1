@@ -1,4 +1,4 @@
-function invoke-commandByUserid {
+function Invoke-CommandByUserid {
     [CmdletBinding(DefaultParameterSetName = 'all')]
     param (
         # The userID to of which to invoke the command

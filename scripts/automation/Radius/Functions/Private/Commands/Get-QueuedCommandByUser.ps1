@@ -1,4 +1,4 @@
-function get-queuedCommandByUser {
+function Get-QueuedCommandByUser {
     [CmdletBinding()]
     param (
         # Parameter help description
