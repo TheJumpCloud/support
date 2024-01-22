@@ -12,7 +12,7 @@ function Update-JCRUsersJson {
         # $userArray = Get-UserJsonData
         foreach ($user in $Global:JCRRadiusMembers) {
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
-            $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID -jsonFilePath "$JCScriptRoot/users.json"
+            $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
 
             if ($userIndex -ge 0) {
                 # $userArrayObject
