@@ -22,7 +22,7 @@ function Show-DistributionMenu {
     # ==== instructions ====
     Write-Host $(PadCenter -string ' User Certificate Deployment Options ' -char '-')
     # List options:
-    Write-Host "1: Press '1' to generate new commands for ALL users. `n`t$([char]0x1b)[96mNOTE: This will remove any previously generated Radius User Certificate Commands titled 'RadiusCert-Install:*'`n`tand re-deploy their certificate file"
+    Write-Host "1: Press '1' to generate new commands for ALL users. `n`t$([char]0x1b)[96mNOTE: This will remove any previously generated Radius User Certificate Commands titled 'RadiusCert-Install:*'`n`tand re-deploy their certificate file."
     Write-Host "2: Press '2' to generate new commands for NEW RADIUS users. `n`t$([char]0x1b)[96mNOTE: This will only generate commands for users whos certificate has not been deployed."
     Write-Host "3: Press '3' to generate new commands for ONE Specific RADIUS user."
     Write-Host "E: Press 'E' to return to main menu."

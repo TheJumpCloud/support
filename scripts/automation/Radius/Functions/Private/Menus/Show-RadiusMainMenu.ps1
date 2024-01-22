@@ -63,6 +63,6 @@ function Show-RadiusMainMenu {
     Write-Host "2: Press '2' to generate/update your User Certificate(s)."
     Write-Host "3: Press '3' to distribute your User Certificate(s)."
     Write-Host "4: Press '4' to monitor your User Certification Distribution."
-    Write-Host "4: Press '5' to update User/System Data"
+    Write-Host "4: Press '5' to update User/System Data."
     Write-Host "Q: Press 'Q' to quit."
 }
