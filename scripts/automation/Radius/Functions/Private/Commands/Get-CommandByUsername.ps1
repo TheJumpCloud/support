@@ -2,7 +2,7 @@ function Get-CommandByUsername {
     [CmdletBinding()]
     param (
         # Parameter help description
-        [Parameter()]
+        [Parameter(Mandatory)]
         [system.string]
         $username
     )
