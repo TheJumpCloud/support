@@ -1,7 +1,7 @@
 function New-SystemTable {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Mandatory)]
         [System.String]
         $userID
     )
