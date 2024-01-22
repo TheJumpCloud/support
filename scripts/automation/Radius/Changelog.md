@@ -13,7 +13,7 @@ This release offers a significant overhaul for the Radius Cert Deployment tool, 
 - Added an option to both generate and deploy radius certificates by username
 - Association data is cached up front rather than gathered throughout the script, offering performance improvements for organizations with a large number of radius users
 - Added ability to run each public function headless in order to automate cert generation and distribution
-- Added an table to keep track of generated/ deployed certificates when using the tool
+- Added a table to keep track of generated/deployed certificates when using the tool
 
 ## 1.1.0
 
