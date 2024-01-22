@@ -60,7 +60,7 @@ function Update-JCRUsersJson {
             # If userID from users.json is no longer in RadiusMembers.keys, then:
             If (($user.userId -notin $Global:JCRRadiusMembers.userID) ) {
                 # Get User From Table
-                $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $user.userId
+                $userObject, $userIndex = Get-UserFromTable -userID $user.userId
                 # Remove the User From Table
                 $userArray = $userArray | Where-Object { $_.userID -ne $user.userId }
             }

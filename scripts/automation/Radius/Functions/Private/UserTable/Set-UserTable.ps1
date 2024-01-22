@@ -32,7 +32,7 @@ function Set-UserTable {
         }
         if (($PSBoundParameters.ContainsKey('lookup'))) {
             # Get User From Table
-            $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $id
+            $userObject, $userIndex = Get-UserFromTable -userID $id
         }
 
         # TODO: if index is not correct make a stink about it

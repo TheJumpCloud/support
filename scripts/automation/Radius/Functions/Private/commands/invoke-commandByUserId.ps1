@@ -10,7 +10,7 @@ function invoke-commandByUserid {
 
     begin {
         # get the command id
-        $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot\users.json" -userid $userID
+        $userObject, $userIndex = Get-UserFromTable -userid $userID
 
         # get macOS Command
         $macOS_commandId = ($userObject.commandAssociations | Where-Object { $_.commandName -match "MacOSX" }).commandId

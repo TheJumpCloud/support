@@ -123,7 +123,7 @@ function Start-DeployUserCerts {
                 }
                 if ($confirmUser) {
                     # Get the userobject + index from users.json
-                    $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
+                    $userObject, $userIndex = Get-UserFromTable -userID $confirmUser.id
                     # Add user to a list for processing
                     $UserSelectionArray = $userArray[$userIndex]
                     # Process existing commands/ Generate new commands/ Deploy new Certificate

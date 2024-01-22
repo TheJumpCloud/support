@@ -1,9 +1,6 @@
 function Get-UserFromTable {
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [System.String]
-        $jsonFilePath,
         [Parameter(Mandatory)]
         [System.String]
         $userId
@@ -21,7 +18,7 @@ function Get-UserFromTable {
                 $userArrayObject = $userArray[$userIndex]
                 # Write-Host "[status] $($userObject.username) found in users.json at index: $userIndex "
             } else {
-                throw
+                throw "userId: $($userId) was not found in users.json"
             }
         } catch {
             # otherwise plan to append

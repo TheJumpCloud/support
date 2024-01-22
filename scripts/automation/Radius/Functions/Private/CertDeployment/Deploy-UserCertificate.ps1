@@ -426,7 +426,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                 }
             }
             # Update the user table with the information from the generated commands:
-            $userObjectFromTable, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot\users.json" -userid $user.userid
+            $userObjectFromTable, $userIndex = Get-UserFromTable -userid $user.userid
 
             Set-UserTable -index $userIndex -commandAssociationsObject $user.commandAssociations
             # Invoke Commands
@@ -453,7 +453,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                 $true {
                     # finally update the user table to note that the command has been run, the cert has been deployed
                     # get the object once more:
-                    $userObjectFromTable, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot\users.json" -userid $user.userid
+                    $userObjectFromTable, $userIndex = Get-UserFromTable -userid $user.userid
                     # Set commandPreviouslyRun property to true if there are command associations to set
                     if ($userObjectFromTable.commandAssociations) {
                         $userObjectFromTable.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $true }

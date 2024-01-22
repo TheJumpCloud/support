@@ -116,7 +116,7 @@ function Start-GenerateUserCerts {
                 }
                 if ($confirmUser) {
                     # Get the userobject + index from users.json
-                    $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $confirmUser.id
+                    $userObject, $userIndex = Get-UserFromTable -userID $confirmUser.id
                     switch ($forceReplaceCerts) {
                         $true {
                             switch ($PSCmdlet.ParameterSetName) {

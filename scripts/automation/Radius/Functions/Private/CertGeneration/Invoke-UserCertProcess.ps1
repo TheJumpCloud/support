@@ -35,7 +35,7 @@ Function Invoke-UserCertProcess {
         }
 
         # get the user from user.json
-        $userObject, $userIndex = Get-UserFromTable -jsonFilePath "$JCScriptRoot/users.json" -userID $MatchedUser.id
+        $userObject, $userIndex = Get-UserFromTable -userID $MatchedUser.id
         # Test if the file exists:
         switch (Test-Path "$JCScriptRoot/UserCerts/$($matchedUser.username)-client-signed.pfx") {
             $true {
