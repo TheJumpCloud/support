@@ -184,6 +184,7 @@ function Start-GenerateUserCerts {
                 # TODO: if there are no certs set to expire in 'x' days inform when pressing this option
                 # recalculate expiring certs:
                 $userCertInfo = Get-CertInfo -UserCerts
+                # Get expiring certs:
                 $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
                 for ($i = 0; $i -lt $ExpiringCerts.Count; $i++) {
                     $userCert = $ExpiringCerts[$i]
@@ -195,8 +196,8 @@ function Start-GenerateUserCerts {
 
                     # recalculate expiring certs:
                     $userCertInfo = Get-CertInfo -UserCerts
-                    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
                 }
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
                         Show-StatusMessage -Message "Finished Generating Certificates"
