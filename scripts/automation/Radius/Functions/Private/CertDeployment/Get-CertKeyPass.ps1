@@ -1,4 +1,5 @@
 function Get-CertKeyPass {
+    #TODO: params required to test if a CA password is correct
     $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
     Write-Host "Found key: $($foundKeyPem)"
 
@@ -16,7 +17,6 @@ function Get-CertKeyPass {
                     $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
                     $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                     $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($certKeyPass) 2>&1
-                    $checkKey
                     if ($checkKey -match "RSA key ok") {
                         # Save password to ENV variable
                         Write-Host "Saving password as Environment Variable"

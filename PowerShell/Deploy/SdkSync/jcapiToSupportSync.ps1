@@ -1,3 +1,9 @@
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [string]
+    $RequiredModulesRepo
+)
 . "$PSScriptRoot/../Get-Config.ps1"
 ###########################################################################
 $ApprovedFunctions = [Ordered]@{

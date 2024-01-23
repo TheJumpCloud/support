@@ -95,9 +95,9 @@ Function Get-CommandObjectTable {
                 }
 
                 # Iterate through all the associated commands
-                foreach ($command in $commandsObject.commandAssociations) {
+                foreach ($command in $commandsObject.commandAssociations | Where-Object { $_ -ne $null }) {
                     # Check to see if the current command is pending/queued
-                    if ($command.commandId -in $QueuedCommands.command) {
+                    if (($command.commandId -in $QueuedCommands.command)) {
                         # Get the queued command info for all workflows
                         $queuedCommandInfo = $QueuedCommands | Where-Object command -EQ $command.commandId
                         # Get the individual workflow information
@@ -137,7 +137,7 @@ Function Get-CommandObjectTable {
                         }
                     }
 
-                    if ($CommandObjectTable.commandName -notcontains $command.commandName) {
+                    if (($CommandObjectTable.commandName -notcontains $command.commandName)) {
                         if (!(Get-JcSdkCommandAssociation -CommandId $command.commandId -Targets system)) {
                             $CommandTable = @{
                                 commandName       = $command.commandName

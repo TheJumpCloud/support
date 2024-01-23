@@ -1,3 +1,20 @@
+## 2.0.0
+
+Release Date: January 5, 2024
+
+#### RELEASE NOTES
+
+```
+This release offers a significant overhaul for the Radius Cert Deployment tool, many new underlying functions have been introducted to reduce the number of required API calls. Most notably, the tool will cache data from an organization on load.
+```
+
+#### Features:
+
+- Added an option to both generate and deploy radius certificates by username
+- Association data is cached up front rather than gathered throughout the script, offering performance improvements for organizations with a large number of radius users
+- Added ability to run each public function headless in order to automate cert generation and distribution
+- Added a table to keep track of generated/deployed certificates when using the tool
+
 ## 1.1.0
 
 Release Date: December 13, 2023
