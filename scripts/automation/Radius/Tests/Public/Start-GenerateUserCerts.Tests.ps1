@@ -33,7 +33,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     Context 'Certs generated for newly added users' {
         beforeall {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
-            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -filter "$($user.username)*"
             # if user cert exists, for random user, remove:
             foreach ($cert in $certs) {
@@ -45,7 +45,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # add the new user to the radius group
-            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # update the cache
             Get-JCRGlobalVars -force -skipAssociation
             # wait just one moment before testing membership since we are writing a file
@@ -65,7 +65,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $UserCerts.fullname | where-object { $_ -match ".crt" } | Should -exist
             $UserCerts.fullname | where-object { $_ -match ".key" } | Should -exist
             # cleanup
-            Remove-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
             # wait just one moment before testing membership since we are writing a file
@@ -84,7 +84,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $configPath = "$JCScriptRoot/config.ps1"
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
-            $content -replace ('\$Global:JCUSERCERTVALIDITY = *.+', '$Global:JCUSERCERTVALIDITY = 10') | Set-Content -Path $configPath
+            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath
 
             # get user from membership list
             $RandomUsername = $global:JCRRadiusMembers.username | Get-Random -count 1
@@ -95,9 +95,8 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Update Global Expiring list:
             $userCertInfo = Get-CertInfo -UserCerts
             # Determine cut off date for expiring certs
-            $global:cutoffDate = (Get-Date).AddDays(15).Date
             # Find all certs that will expire between current date and cut off date
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
 
         }
         It 'Certs that are set to expire soon can be updated' {
@@ -106,7 +105,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # reset the validity counter
             $content = Get-Content -path $configPath
             # set the user cert validity to 90 days
-            $content -replace ('\$Global:JCUSERCERTVALIDITY = *.+', '$Global:JCUSERCERTVALIDITY = 90') | Set-Content -Path $configPath
+            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
             # Get the certs before generation minus the .zip if it exists
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # get the date before
@@ -116,7 +115,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             Start-GenerateUserCerts -type ExpiringSoon -forceReplaceCerts
             # Update Global Expiring list:
             $userCertInfo = Get-CertInfo -UserCerts
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
             # there should be no more certs left in the expiring cert var
             $Global:expiringCerts | Should -BeNullOrEmpty
             # Get the certs after generation minus the .zip if it exists
@@ -138,7 +137,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # reset the validity counter
             $content = Get-Content -path $configPath
             # set the user cert validity to 90 days
-            $content -replace ('\$Global:JCUSERCERTVALIDITY = *.+', '$Global:JCUSERCERTVALIDITY = 90') | Set-Content -Path $configPath
+            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
         }
 
 

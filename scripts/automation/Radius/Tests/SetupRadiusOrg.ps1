@@ -47,7 +47,7 @@ Write-Warning "Updating Config File"
 $configPath = "$PSScriptRoot/../config.ps1"
 $configContent = Get-Content -path $configPath
 # Update the userGroupID:
-$configContent -replace ('\$Global:JCUSERGROUP = *.+', "`$Global:JCUSERGROUP = `"$($radiusUserGroup.id)`"") | Set-Content -Path $configPath
+$configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GROUP = `"$($radiusUserGroup.id)`"") | Set-Content -Path $configPath
 # update the openSSL path:
 if ($IsMacOS) {
     $brewList = brew list openssl@3
@@ -60,7 +60,7 @@ if ($IsMacOS) {
 
     Write-Warning "OpenSSL Version: $opensslVersion is installed via homebrew on this system; updating config:"
     $configContent = Get-Content -path $configPath
-    $configContent -replace ('\$Global:opensslBinary = *.+', "`$Global:opensslBinary = `"$($brewListBinary)`"") | Set-Content -Path $configPath
+    $configContent -replace ('\$Global:JCR_OPENSSL = *.+', "`$Global:JCR_OPENSSL = `"$($brewListBinary)`"") | Set-Content -Path $configPath
 }
 
 Import-Module "$psscriptRoot/../JumpCloud-Radius.psd1" -Force

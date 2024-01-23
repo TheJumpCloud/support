@@ -28,5 +28,9 @@ $global:JCScriptRoot = "$PSScriptRoot"
 # try to get the settings file, create new one if it does not exist:
 $global:JCRConfig = Get-JCRSettingsFile
 
+# Set expire warning days:
+$global:JCR_WarningDays = (Get-Date).AddDays($JCR_USER_CERT_EXPIRE_WARNING_DAYS
+).Date
+
 # Get global variables or update if necessary
 Get-JCRGlobalVars

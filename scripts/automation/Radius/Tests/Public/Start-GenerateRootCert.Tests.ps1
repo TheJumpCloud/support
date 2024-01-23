@@ -16,22 +16,22 @@ Describe "Generate Root Certifcate Tests" -Tag "GenerateRootCert" {
         $itemsAfter.BaseName | Should -Contain "radius_ca_key"
 
         #validate the subject matches what's defined in config:
-        $CA_subject = Invoke-Expression "$opensslBinary x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
+        $CA_subject = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
         $CA_subject = $CA_subject.split("subject=").split(",")
-        ($CA_subject | Where-Object { $_ -match "C = " }) | Should -Match $Global:Subj.countryCode
-        ($CA_subject | Where-Object { $_ -match "ST = " }) | Should -Match $Global:Subj.stateCode
-        ($CA_subject | Where-Object { $_ -match "L = " }) | Should -Match $Global:Subj.Locality
-        ($CA_subject | Where-Object { $_ -match "O = " }) | Should -Match $Global:Subj.Organization
-        ($CA_subject | Where-Object { $_ -match "OU = " }) | Should -Match $Global:Subj.OrganizationUnit
-        ($CA_subject | Where-Object { $_ -match "CN = " }) | Should -Match $Global:Subj.CommonName
+        ($CA_subject | Where-Object { $_ -match "C = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.countryCode
+        ($CA_subject | Where-Object { $_ -match "ST = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.stateCode
+        ($CA_subject | Where-Object { $_ -match "L = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Locality
+        ($CA_subject | Where-Object { $_ -match "O = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
+        ($CA_subject | Where-Object { $_ -match "OU = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
+        ($CA_subject | Where-Object { $_ -match "CN = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
     }
     Context "An existing certificate can be replaced" {
         # get existing cert serial:
-        $origSN = Invoke-Expression "$opensslBinary x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
+        $origSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
         # force generate new CA
         Start-GenerateRootCert -forceReplcaeCert -certKeyPassword "newTest1234"
         # get new SN
-        $newSN = Invoke-Expression "$opensslBinary x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
+        $newSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
         # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
         $origSN | Should -Not -Be $newSN
         # both the key and the cert should be generated
@@ -40,14 +40,14 @@ Describe "Generate Root Certifcate Tests" -Tag "GenerateRootCert" {
         $itemsAfter.BaseName | Should -Contain "radius_ca_key"
 
         #validate the subject matches what's defined in config:
-        $CA_subject = Invoke-Expression "$opensslBinary x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
+        $CA_subject = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
         $CA_subject = $CA_subject.split("subject=").split(",")
-        ($CA_subject | Where-Object { $_ -match "C = " }) | Should -Match $Global:Subj.countryCode
-        ($CA_subject | Where-Object { $_ -match "ST = " }) | Should -Match $Global:Subj.stateCode
-        ($CA_subject | Where-Object { $_ -match "L = " }) | Should -Match $Global:Subj.Locality
-        ($CA_subject | Where-Object { $_ -match "O = " }) | Should -Match $Global:Subj.Organization
-        ($CA_subject | Where-Object { $_ -match "OU = " }) | Should -Match $Global:Subj.OrganizationUnit
-        ($CA_subject | Where-Object { $_ -match "CN = " }) | Should -Match $Global:Subj.CommonName
+        ($CA_subject | Where-Object { $_ -match "C = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.countryCode
+        ($CA_subject | Where-Object { $_ -match "ST = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.stateCode
+        ($CA_subject | Where-Object { $_ -match "L = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Locality
+        ($CA_subject | Where-Object { $_ -match "O = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
+        ($CA_subject | Where-Object { $_ -match "OU = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
+        ($CA_subject | Where-Object { $_ -match "CN = " }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
 
     }
     Context "An existing certificate can be renewed" {

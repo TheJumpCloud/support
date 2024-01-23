@@ -1,19 +1,23 @@
 # JUMPCLOUD USER GROUP ID
-$Global:JCUSERGROUP = 'YOURJCUSERGROUP'
+$Global:JCR_USER_GROUP = 'your_radius_user_group'
 # USER CERT PASSWORD (this password is sent to the devices via JumpCloud Commands)
-$Global:JCUSERCERTPASS = 'secret1234!'
+$Global:JCR_USER_CERT_PASS = 'secret1234!'
 # USER CERT Validity Length (days)
-$Global:JCUSERCERTVALIDITY = 90
+$Global:JCR_USER_CERT_VALIDITY_DAYS = 90
+# Days until cert expire warning length (default: 15)
+# The tool will display certs that are set to expire if the expiration date is
+# within this number of days
+$Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS = 15
 # List Of Radius Network SSID(s)
 # For Multiple SSIDs enter as a single string separated by a semicolon  ex:
 # "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network"
-$Global:NETWORKSSID = "YOUR_SSID"
+$Global:JCR_NETWORKSSID = "YOUR_SSID"
 # OpenSSLBinary by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
-$Global:opensslBinary = 'openssl'
+$Global:JCR_OPENSSL = 'openssl'
 # Enter Cert Subject Headers (do not enter strings with spaces)
-$Global:Subj = [PSCustomObject]@{
+$Global:JCR_SUBJECT_HEADERS = [PSCustomObject]@{
     countryCode      = "US"
     stateCode        = "CO"
     Locality         = "Boulder"
@@ -27,7 +31,7 @@ $Global:Subj = [PSCustomObject]@{
 # EmailSAN
 # EmailDN
 # UsernameCn (Default)
-$Global:CertType = "UsernameCn"
+$Global:JCR_CERT_TYPE = "UsernameCn"
 
 ################################################################################
 # Do not modify below
@@ -45,13 +49,13 @@ function Get-OpenSSLVersion {
     param (
         [Parameter()]
         [system.string]
-        $opensslBinary
+        $JCR_OPENSSL
     )
     begin {
         try {
-            $version = Invoke-Expression "& '$opensslBinary' version"
+            $version = Invoke-Expression "& '$JCR_OPENSSL' version"
         } catch {
-            throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$opensslBinary variable in the config.ps1 file to the correct path"
+            throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$JCR_OPENSSL variable in the config.ps1 file to the correct path"
         }
 
         # Required OpenSSL Version
@@ -89,12 +93,12 @@ function Get-OpenSSLVersion {
         }
     }
 }
-Get-OpenSSLVersion -opensslBinary $opensslBinary
+Get-OpenSSLVersion -opensslBinary $JCR_OPENSSL
 
-# Validate no spaces in $Subj
-foreach ($subjObj in $subj.psObject.Properties) {
-    if ($subjObj.value -match " ") {
-        throw "Subject Header: $($subjObj.Name):$($subjObj.value) Contains a space character. subject headers cannot contain spaces, please remove and re-run"
+# Validate no spaces in $JCR_SUBJECT_HEADERS
+foreach ($JCR_SUBJECT_HEADERSObj in $JCR_SUBJECT_HEADERS.psObject.Properties) {
+    if ($JCR_SUBJECT_HEADERSObj.value -match " ") {
+        throw "Subject Header: $($JCR_SUBJECT_HEADERSObj.Name):$($JCR_SUBJECT_HEADERSObj.value) Contains a space character. subject headers cannot contain spaces, please remove and re-run"
     }
 }
 # Validate API KEY, OrgID, SystemGroupID, length
@@ -104,6 +108,6 @@ if (($JCAPIKEY).Length -ne 40) {
 if (($JCORGID).Length -ne 24) {
     throw "The entered JumpCloud Organization ID is not the expected length"
 }
-if (($Global:JCUSERGROUP).Length -ne 24) {
+if (($Global:JCR_USER_GROUP).Length -ne 24) {
     throw "The entered JumpCloud UserGroup ID is not the expected length"
 }

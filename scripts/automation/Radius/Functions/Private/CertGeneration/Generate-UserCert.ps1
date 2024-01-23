@@ -4,7 +4,7 @@ function Generate-UserCert {
         [Parameter(HelpMessage = 'The type of certificate to generate, either: "EmailSAN", "EmailDN" or "UsernameCN"', Mandatory = $true)]
         [ValidateSet("EmailSAN", "EmailDn", "UsernameCN")]
         [system.String]
-        $CertType,
+        $JCR_CERT_TYPE,
         [Parameter(Mandatory = $true,
             HelpMessage = "Path to one or more locations.")]
         [ValidateNotNullOrEmpty()]
@@ -33,65 +33,65 @@ function Generate-UserCert {
     }
     process {
         # Set Extension Path
-        $ExtensionPath = "$JCScriptRoot/Extensions/extensions-$($CertType).cnf"
+        $ExtensionPath = "$JCScriptRoot/Extensions/extensions-$($JCR_CERT_TYPE).cnf"
         # User Certificate Signing Request:
         $userCSR = "$JCScriptRoot/UserCerts/$($user.username)-cert-req.csr"
         # Set key, crt, pfx variables:
-        $userKey = "$JCScriptRoot/UserCerts/$($user.username)-$($CertType)-client-signed.key"
-        $userCert = "$JCScriptRoot/UserCerts/$($user.username)-$($CertType)-client-signed-cert.crt"
+        $userKey = "$JCScriptRoot/UserCerts/$($user.username)-$($JCR_CERT_TYPE)-client-signed.key"
+        $userCert = "$JCScriptRoot/UserCerts/$($user.username)-$($JCR_CERT_TYPE)-client-signed-cert.crt"
         $userPfx = "$JCScriptRoot/UserCerts/$($user.username)-client-signed.pfx"
 
-        switch ($CertType) {
+        switch ($JCR_CERT_TYPE) {
             'EmailSAN' {
                 # replace extension subjectAltName
                 $extContent = Get-Content -Path $ExtensionPath -Raw
                 $extContent -replace ("subjectAltName.*", "subjectAltName = email:$($user.email)") | Set-Content -Path $ExtensionPath -NoNewline -Force
                 # Get CSR & Key
                 Write-Host "[status] Get CSR & Key"
-                Invoke-Expression "$opensslBinary req -newkey rsa:2048 -nodes -keyout $userKey -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)`" -out $userCSR"
+                Invoke-Expression "$JCR_OPENSSL req -newkey rsa:2048 -nodes -keyout $userKey -subj `"/C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCORGID)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)`" -out $userCSR"
 
                 # take signing request, make cert # specify extensions requets
                 Write-Host "[status] take signing request, make cert # specify extensions requets"
-                Invoke-Expression "$opensslBinary x509 -req -extfile $ExtensionPath -days $JCUSERCERTVALIDITY -in $userCSR -CA $rootCA -CAkey $rootCAKey -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extensions v3_req"
+                Invoke-Expression "$JCR_OPENSSL x509 -req -extfile $ExtensionPath -days $JCR_USER_CERT_VALIDITY_DAYS -in $userCSR -CA $rootCA -CAkey $rootCAKey -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extensions v3_req"
 
                 # validate the cert we cant see it once it goes to pfx
                 Write-Host "[status] validate the cert we cant see it once it goes to pfx"
-                Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
+                Invoke-Expression "$JCR_OPENSSL x509 -noout -text -in $userCert"
                 # legacy needed if we take a cert like this then pass it out
                 Write-Host "[status] legacy needed if we take a cert like this then pass it out"
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCUSERCERTPASS) -legacy"
+                Invoke-Expression "$JCR_OPENSSL pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCR_USER_CERT_PASS) -legacy"
             }
             'EmailDn' {
                 # Create Client cert with email in the subject distinguished name
-                Invoke-Expression "$opensslBinary genrsa -out $userKey 2048"
+                Invoke-Expression "$JCR_OPENSSL genrsa -out $userKey 2048"
                 # Generate User CSR
-                Invoke-Expression "$opensslBinary req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword) -out $($userCSR) -subj /C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
-                Invoke-Expression "$opensslBinary req -new -key $userKey -out $userCsr -config $ExtensionPath -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=/emailAddress=$($user.email)`""
+                Invoke-Expression "$JCR_OPENSSL req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword) -out $($userCSR) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCORGID)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
+                Invoke-Expression "$JCR_OPENSSL req -new -key $userKey -out $userCsr -config $ExtensionPath -subj `"/C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCORGID)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=/emailAddress=$($user.email)`""
 
                 # Gennerate User Cert
-                Invoke-Expression "$opensslBinary x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extfile $ExtensionPath"
+                Invoke-Expression "$JCR_OPENSSL x509 -req -in $userCsr -CA $rootCA -CAkey $rootCAKey -days $JCR_USER_CERT_VALIDITY_DAYS -passin pass:$($env:certKeyPassword) -CAcreateserial -out $userCert -extfile $ExtensionPath"
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCUSERCERTPASS) -legacy"
+                Invoke-Expression "$JCR_OPENSSL pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -passout pass:$($JCR_USER_CERT_PASS) -legacy"
                 # Output
-                Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
-                # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)"
+                Invoke-Expression "$JCR_OPENSSL x509 -noout -text -in $userCert"
+                # invoke-expression "$JCR_OPENSSL pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCR_USER_CERT_PASS)"
             }
             'UsernameCN' {
                 # Create Client cert with email in the subject distinguished name
-                Invoke-Expression "$opensslBinary genrsa -out $userKey 2048"
+                Invoke-Expression "$JCR_OPENSSL genrsa -out $userKey 2048"
                 # Generate User CSR
-                Invoke-Expression "$opensslBinary req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword) -out $($userCSR) -subj /C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($subj.CommonName)"
-                Invoke-Expression "$opensslBinary req -new -key $userKey -out $userCSR -config $ExtensionPath -subj `"/C=$($subj.countryCode)/ST=$($subj.stateCode)/L=$($subj.Locality)/O=$($JCORGID)/OU=$($subj.OrganizationUnit)/CN=$($user.username)`""
+                Invoke-Expression "$JCR_OPENSSL req -nodes -new -key $rootCAKey -passin pass:$($env:certKeyPassword) -out $($userCSR) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCORGID)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
+                Invoke-Expression "$JCR_OPENSSL req -new -key $userKey -out $userCSR -config $ExtensionPath -subj `"/C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCORGID)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($user.username)`""
 
                 # Gennerate User Cert
-                Invoke-Expression "$opensslBinary x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days $JCUSERCERTVALIDITY -CAcreateserial -passin pass:$($env:certKeyPassword) -out $userCert -extfile $ExtensionPath"
+                Invoke-Expression "$JCR_OPENSSL x509 -req -in $userCSR -CA $rootCA -CAkey $rootCAKey -days $JCR_USER_CERT_VALIDITY_DAYS -CAcreateserial -passin pass:$($env:certKeyPassword) -out $userCert -extfile $ExtensionPath"
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$opensslBinary pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($JCUSERCERTPASS) -legacy"
+                Invoke-Expression "$JCR_OPENSSL pkcs12 -export -out $userPfx -inkey $userKey -in $userCert -inkey $userKey -passout pass:$($JCR_USER_CERT_PASS) -legacy"
                 # Output
-                Invoke-Expression "$opensslBinary x509 -noout -text -in $userCert"
-                # invoke-expression "$opensslBinary pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCUSERCERTPASS)"
+                Invoke-Expression "$JCR_OPENSSL x509 -noout -text -in $userCert"
+                # invoke-expression "$JCR_OPENSSL pkcs12 -clcerts -nokeys -in $userPfx -passin pass:$($JCR_USER_CERT_PASS)"
             }
         }
 

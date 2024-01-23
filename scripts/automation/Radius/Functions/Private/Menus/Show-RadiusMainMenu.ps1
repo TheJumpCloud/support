@@ -6,18 +6,15 @@ function Show-RadiusMainMenu {
     $rootCAInfo = Get-CertInfo -rootCa
     $userCertInfo = Get-CertInfo -UserCerts
 
-    # Determine cut off date for expiring certs
-    $global:cutoffDate = (Get-Date).AddDays(15).Date
-
     # Find all certs that will expire between current date and cut off date
-    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $cutoffDate
+    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
 
     # Get UserGroup information from Config.ps1
-    $radiusUserGroup = Get-JcSdkUserGroup -Id $global:JCUSERGROUP | Select-Object Name
-    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $global:JCUSERGROUP).Count
+    $radiusUserGroup = Get-JcSdkUserGroup -Id $Global:JCR_USER_GROUP | Select-Object Name
+    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $Global:JCR_USER_GROUP).Count
 
     # Get SSID information from Config.ps1
-    $radiusSSID = $Global:NETWORKSSID.replace(';', ' ')
+    $radiusSSID = $Global:JCR_NETWORKSSID.replace(';', ' ')
 
     # Output for Users
     Clear-Host

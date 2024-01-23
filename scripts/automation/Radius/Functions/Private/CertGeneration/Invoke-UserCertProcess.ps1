@@ -10,7 +10,7 @@ Function Invoke-UserCertProcess {
         [Parameter(HelpMessage = 'The type of certificate to generate, either: "EmailSAN", "EmailDN" or "UsernameCN"', Mandatory)]
         [ValidateSet('EmailSAN', 'EmailDN', 'UsernameCN')]
         [System.String]
-        $certType,
+        $JCR_CERT_TYPE,
         # force replace existing certificate
         [Parameter(HelpMessage = 'When specified, existing certificates will be replaced')]
         [switch]
@@ -78,7 +78,7 @@ Function Invoke-UserCertProcess {
     process {
         # if writeCert, generate the cert
         if ($writeCert) {
-            Generate-UserCert -CertType $CertType -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" *> /dev/null
+            Generate-UserCert -CertType $JCR_CERT_TYPE -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" *> /dev/null
             # validate that the cert was written correctly:
             #TODO: validate and return as variable
         }

@@ -22,14 +22,14 @@ macOS ships with a version of OpenSSL titled LibreSSL. LibreSSL is sufficient to
 
 To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
 
-Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$global:openSSLBinary` variable to point to the Homebrew bin location ex:
+Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$Global:JCR_OPENSSL` variable to point to the Homebrew bin location ex:
 
-In `Config.ps1` change `$opensslBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`\*\*\*\*
+In `Config.ps1` change `$JCR_OPENSSL` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`\*\*\*\*
 
 ex:
 
 ```powershell
-$opensslBinary = '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
+$JCR_OPENSSL = '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
 ```
 
 ### Windows Requirements
@@ -69,7 +69,7 @@ Before Running the `Start-RadiusDeployment.ps1` script, the environment variable
 
 #### Set Your User Group ID
 
-Change the variable `$global:JCUSERGROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
+Change the variable `$Global:JCR_USER_GROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
 
 After selecting the User Group, view the url for the user group it should look similar to this url:
 `https://console.jumpcloud.com/#/groups/user/5f808a1bb544064831f7c9fb/details`
@@ -78,7 +78,7 @@ The ID of the selected userGroup is the 24 character string between `/user/` and
 
 #### Set your network SSID Name
 
-Change the variable `$global:NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a semicolon, ex: "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network". **Note: The SSID and user certificates are only associated with macOS system commands. This parameter does not affect windows generated commands**
+Change the variable `$Global:JCR_NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a semicolon, ex: "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network". **Note: The SSID and user certificates are only associated with macOS system commands. This parameter does not affect windows generated commands**
 
 #### Set the openSSL Binary location
 
@@ -86,15 +86,15 @@ Depending on the host system and how OpenSSL is installed, this variable can eit
 
 [For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'` if installed through Homebrew.
 
-Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$global:opensslBinary` necessary)
+Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$Global:JCR_OPENSSL` necessary)
 
 #### Set Your Certificate Subject Headers
 
-Change the default values provided in the `$global:Subj` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
+Change the default values provided in the `$Global:JCR_SUBJECT_HEADERS` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
 
 #### Set Desired User Certificate Type
 
-Change the `$global:certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
+Change the `$Global:JCR_CERT_TYPE` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
 
 ##### Email Subject Alternative Name (EmailSAN)
 
@@ -174,7 +174,7 @@ After successful import or generation of a self signed CA, the CA's serial numbe
 
 ### User Cert Generation
 
-With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$global:JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
+With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$Global:JCR_USER_GROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
 If local user certificates are set to expire within 15 days, a notification is displayed on the main menu and the certificate generation window:
 
@@ -232,7 +232,7 @@ After a user's certificate has been distributed to a system, those users can the
 
 ### macOS
 
-If the `$global:NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
+If the `$Global:JCR_NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
 
 In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 

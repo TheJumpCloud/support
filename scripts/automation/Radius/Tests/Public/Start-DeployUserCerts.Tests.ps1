@@ -55,7 +55,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
 
-            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
 
             # update membership
             Get-JCRGlobalVars -skipAssociation -force
@@ -124,7 +124,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # get random system
             $system = Get-JCSystem -os windows | Get-Random -Count 1
             Add-JCSystemUser -UserID $user.id -SystemID $system.id
@@ -150,7 +150,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $Global:JCUSERGROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # get random system
             $system = Get-JCSystem -os windows | Get-Random -Count 1
             Add-JCSystemUser -UserID $user.id -SystemID $system.id
