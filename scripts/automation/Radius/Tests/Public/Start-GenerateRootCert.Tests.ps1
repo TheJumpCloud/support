@@ -29,7 +29,7 @@ Describe "Generate Root Certifcate Tests" -Tag "GenerateRootCert" {
         # get existing cert serial:
         $origSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
         # force generate new CA
-        Start-GenerateRootCert -forceReplcaeCert -certKeyPassword "newTest1234"
+        Start-GenerateRootCert -certKeyPassword "newTest1234"
         # get new SN
         $newSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
         # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one

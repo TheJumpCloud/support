@@ -4,7 +4,7 @@ function Generate-UserCert {
         [Parameter(HelpMessage = 'The type of certificate to generate, either: "EmailSAN", "EmailDN" or "UsernameCN"', Mandatory = $true)]
         [ValidateSet("EmailSAN", "EmailDn", "UsernameCN")]
         [system.String]
-        $JCR_CERT_TYPE,
+        $certType,
         [Parameter(Mandatory = $true,
             HelpMessage = "Path to one or more locations.")]
         [ValidateNotNullOrEmpty()]
@@ -33,15 +33,15 @@ function Generate-UserCert {
     }
     process {
         # Set Extension Path
-        $ExtensionPath = "$JCScriptRoot/Extensions/extensions-$($JCR_CERT_TYPE).cnf"
+        $ExtensionPath = "$JCScriptRoot/Extensions/extensions-$($certType).cnf"
         # User Certificate Signing Request:
         $userCSR = "$JCScriptRoot/UserCerts/$($user.username)-cert-req.csr"
         # Set key, crt, pfx variables:
-        $userKey = "$JCScriptRoot/UserCerts/$($user.username)-$($JCR_CERT_TYPE)-client-signed.key"
-        $userCert = "$JCScriptRoot/UserCerts/$($user.username)-$($JCR_CERT_TYPE)-client-signed-cert.crt"
+        $userKey = "$JCScriptRoot/UserCerts/$($user.username)-$($certType)-client-signed.key"
+        $userCert = "$JCScriptRoot/UserCerts/$($user.username)-$($certType)-client-signed-cert.crt"
         $userPfx = "$JCScriptRoot/UserCerts/$($user.username)-client-signed.pfx"
 
-        switch ($JCR_CERT_TYPE) {
+        switch ($certType) {
             'EmailSAN' {
                 # replace extension subjectAltName
                 $extContent = Get-Content -Path $ExtensionPath -Raw

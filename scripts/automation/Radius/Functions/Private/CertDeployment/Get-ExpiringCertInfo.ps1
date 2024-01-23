@@ -1,10 +1,10 @@
 function Get-ExpiringCertInfo {
     param (
         $certInfo,
-        $JCR_WarningDays
+        $cutoffDate
     )
     process {
-        $expiringCerts = $certInfo | Where-Object -Property notAfter -LT $JCR_WarningDays
+        $expiringCerts = $certInfo | Where-Object -Property notAfter -LT $cutoffDate
     }
     end {
         return $expiringCerts

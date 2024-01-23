@@ -10,7 +10,7 @@ Function Invoke-UserCertProcess {
         [Parameter(HelpMessage = 'The type of certificate to generate, either: "EmailSAN", "EmailDN" or "UsernameCN"', Mandatory)]
         [ValidateSet('EmailSAN', 'EmailDN', 'UsernameCN')]
         [System.String]
-        $JCR_CERT_TYPE,
+        $certType,
         # force replace existing certificate
         [Parameter(HelpMessage = 'When specified, existing certificates will be replaced')]
         [switch]
