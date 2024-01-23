@@ -37,7 +37,7 @@ $Global:JCR_CERT_TYPE = "UsernameCn"
 # Do not modify below
 ################################################################################
 
-$UserAgent_ModuleVersion = '1.1.0'
+$UserAgent_ModuleVersion = '2.0.0'
 $UserAgent_ModuleName = 'PasswordlessRadiusConfig'
 #Build the UserAgent string
 $UserAgent_ModuleName = "JumpCloud_$($UserAgent_ModuleName).PowerShellModule"
@@ -49,11 +49,11 @@ function Get-OpenSSLVersion {
     param (
         [Parameter()]
         [system.string]
-        $JCR_OPENSSL
+        $opensslBinary
     )
     begin {
         try {
-            $version = Invoke-Expression "& '$JCR_OPENSSL' version"
+            $version = Invoke-Expression "& '$opensslBinary' version"
         } catch {
             throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$JCR_OPENSSL variable in the config.ps1 file to the correct path"
         }
