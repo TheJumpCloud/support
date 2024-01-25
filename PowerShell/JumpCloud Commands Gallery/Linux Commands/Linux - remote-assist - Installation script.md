@@ -25,12 +25,12 @@ fi
 set -u
 
 # set the RAA version string in the below variable before running the script.
-# the example format of version: v0.75.0
+# the example format of version: v0.172.0
 declare -t raa_version=""
 
 if [[ "$raa_version" == "" ]]; then
-    echo "'raa_version' need to be provided in the script (eg. v0.75.0)"
-    exit 0
+    echo "'raa_version' need to be provided in the script (eg. v0.172.0)"
+    exit 1
 fi
 
 tmp_dir=$(mktemp -d)
@@ -44,15 +44,12 @@ declare -r max_retry_time=3600
 declare -r tmp_dir
 
 declare -r pub_key_name="jumpcloud-remote-assist-agent.gpg.asc"
-declare -r raa_binary_name="jumpcloud-remote-assist"
-declare -r raa_binary_path="$raa_directory/jumpcloud-remote-assist"
-
 declare -r install_prefix="/opt/jc_user_ro"
 declare -r apps_path="/usr/share/applications"
 declare -r raa_directory="${install_prefix}/jumpcloud-remote-assist"
 declare -r raa_desktop_file="${raa_directory}/resources/build-app/linux/jumpcloud-remote-assist.desktop"
-declare -r uninstaller_path="${install_prefix}/bin/uninstall-${raa_binary_name}"
 declare -r raa_service_install_file="${raa_directory}/resources/build-app/linux/raasvc-install.sh"
+declare -r raa_binary_path="${raa_directory}/jumpcloud-remote-assist"
 
 declare -r remote_pub_key_url="https://cdn02.jumpcloud.com/production/remote-assist/jumpcloud-remote-assist-agent.gpg.asc"
 declare -r remote_tgz_url="https://cdn02.jumpcloud.com/production/remote-assist/versions/${raa_version}/jumpcloud-remote-assist-agent_${arch}.tar.gz"
@@ -172,15 +169,6 @@ function install_raasvc_file() {
   fi
 }
 
-function install_uninstall_script() {
-  mkdir -p "$(dirname "${uninstaller_path}")"
-  cat > "${uninstaller_path}" <<'EOF'
-{{template "linuxUninstall.tmpl.sh" .}}
-EOF
-  chmod -x "${uninstaller_path}"
-  chmod 700 "${uninstaller_path}"
-}
-
 function main() {
   trap cleanup EXIT
   install_pub_key
@@ -189,7 +177,6 @@ function main() {
   install_new_raa
   install_desktop_file
   install_raasvc_file
-  install_uninstall_script
 }
 
 main
