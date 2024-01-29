@@ -39,6 +39,8 @@ EOF
 
 #### Description
 
+NOTE: As of MacOS 12.3 or higher, this command does not work. Please use an MDM configuration profile to deploy wallpapers as a workaround.
+
 The "JumpCloud_Background.png" file is downloaded to the local machine and saved in the folder "/Users/Shared"/
 
 To modify this command to download and set a background image of your choice follow the steps under '*** Customize ***' by updating the backgroundURL and corresponding fileType variables.
@@ -56,6 +58,8 @@ Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/Power
 ```
 
 #### **Troubleshooting Tips**
+
+NOTE: As of MacOS 12.3 or higher, this command does not work. Please use an MDM configuration profile to deploy wallpapers as a workaround.
 
 Check to see if the file is downloading on the machine by navigating to /Users/Shared folder.
 If the image file is not downloading to the machine it is likely that the 'fileType' has not been updated to match the file (png/jpg)
