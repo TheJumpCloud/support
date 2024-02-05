@@ -191,4 +191,115 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
 
     }
+    Context 'Cert Commands are generated for EmailSAN, EmailDN, UsernameCn type certs' {
+        BeforeAll {
+            # Member content | Get the user with 2 system associations mac and windows
+            $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
+            while ($Global:JCRAssociations[$($certTypeUser.userID)].systemAssociations.count -ne 2) {
+                $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
+            }
+        }
+        It 'EmailSAN certs are created and command generated with correct identifiers' {
+            # Set config
+            $configPath = "$JCScriptRoot/config.ps1"
+            $content = Get-Content -path $configPath
+            # set the user cert validity to just 10 days
+            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "EmailSAN"') | Set-Content -Path $configPath
+            # Get Cert Before
+            $CertInfoBefore = Get-CertInfo -UserCerts -username $certTypeUser.username
+            # Generate the user cert:
+            Start-GenerateUserCerts -type ByUsername -username $($certTypeUser.username) -forceReplaceCerts
+            # CertInfo After
+            $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
+            # Cert Subject headers should be contain required EmailSAN identifier:
+            $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
+            $foundCert = Get-ChildItem -path "$JCScriptRoot/UserCerts/$($certTypeUser.username)-EmailSAN*.crt"
+            $foundCert.count | Should -Be 1
+            $CertSANInfo = Invoke-Expression "$JCR_OPENSSL x509 -in $($foundCert.fullname) -ext subjectAltName -noout"
+            # The cert info should contain the subject alternative name of the user's email
+            $CertSANInfo -match "email:" | Should -match "email:$($Global:JCRUsers[$($certTypeUser.userID)].email)"
+            # Create the new commands
+            Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
+            # Go fetch the mac command for the user
+            $macCommand = Get-JCCommand -name "RadiusCert-Install:$($certTypeUser.username):MacOSX"
+            $windowsCommand = Get-JCCommand -name "RadiusCert-Install:$($certTypeUser.username):Windows"
+
+            # macCommand should contain SN
+            $snPattern = 'currentCertSN=\"(.*)\"'
+            $snMacMatch = $macCommand.Command | Select-String -Pattern $snPattern
+            $snMacMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
+            # windows should contain SN
+            $snPattern = '\(\$\(\$cert\.serialNumber\) -eq \"(.*)\"\)'
+            $snWinMatch = $windowsCommand.Command | Select-String -Pattern $snPattern
+            $snWinMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
+        }
+        It 'EmailDN certs are created and command generated with correct identifiers' {
+            # Set config
+            $configPath = "$JCScriptRoot/config.ps1"
+            $content = Get-Content -path $configPath
+            # set the cert type
+            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "EmailDN"') | Set-Content -Path $configPath
+            # Get Cert Before
+            $CertInfoBefore = Get-CertInfo -UserCerts -username $certTypeUser.username
+            # Generate the user cert:
+            Start-GenerateUserCerts -type ByUsername -username $($certTypeUser.username) -forceReplaceCerts
+            # CertInfo After
+            $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
+            # Cert Subject headers should be contain required EmailDN identifier:
+            $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
+            $CertInfoAfter.subject | Should -Match "emailAddress = $($Global:JCRUsers[$($certTypeUser.userID)].email)"
+            # Create the new commands
+            Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
+            # Go fetch the mac command for the user
+            $macCommand = Get-JCCommand -name "RadiusCert-Install:$($certTypeUser.username):MacOSX"
+            $windowsCommand = Get-JCCommand -name "RadiusCert-Install:$($certTypeUser.username):Windows"
+
+            # macCommand should contain SN
+            $snPattern = 'currentCertSN=\"(.*)\"'
+            $snMacMatch = $macCommand.Command | Select-String -Pattern $snPattern
+            $snMacMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
+            # windows should contain SN
+            $snPattern = '\(\$\(\$cert\.serialNumber\) -eq \"(.*)\"\)'
+            $snWinMatch = $windowsCommand.Command | Select-String -Pattern $snPattern
+            $snWinMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
+        }
+        It 'UsernameCn certs are created and command generated with correct identifiers' {
+            # Set config
+            $configPath = "$JCScriptRoot/config.ps1"
+            $content = Get-Content -path $configPath
+            # set the cert type
+            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath
+            # Get Cert Before
+            $CertInfoBefore = Get-CertInfo -UserCerts -username $certTypeUser.username
+            # Generate the user cert:
+            Start-GenerateUserCerts -type ByUsername -username $($certTypeUser.username) -forceReplaceCerts
+            # CertInfo After
+            $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
+            # Cert Subject headers should be contain required UsernameCn identifier:
+            $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
+            $CertInfoAfter.subject | Should -Match "CN = $($certTypeUser.username)"
+            # Create the new commands
+            Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
+            # Go fetch the mac command for the user
+            $macCommand = Get-JCCommand -name "RadiusCert-Install:$($certTypeUser.username):MacOSX"
+            $windowsCommand = Get-JCCommand -name "RadiusCert-Install:$($certTypeUser.username):Windows"
+
+            # macCommand should contain SN
+            $snPattern = 'currentCertSN=\"(.*)\"'
+            $snMacMatch = $macCommand.Command | Select-String -Pattern $snPattern
+            $snMacMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
+            # windows should contain SN
+            $snPattern = '\(\$\(\$cert\.serialNumber\) -eq \"(.*)\"\)'
+            $snWinMatch = $windowsCommand.Command | Select-String -Pattern $snPattern
+            $snWinMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
+
+        }
+        AfterAll {
+            # Set config
+            $configPath = "$JCScriptRoot/config.ps1"
+            $content = Get-Content -path $configPath
+            # set the cert type
+            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = UsernameCn') | Set-Content -Path $configPath
+        }
+    }
 }

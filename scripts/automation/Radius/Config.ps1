@@ -12,7 +12,7 @@ $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS = 15
 # For Multiple SSIDs enter as a single string separated by a semicolon  ex:
 # "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network"
 $Global:JCR_NETWORKSSID = "YOUR_SSID"
-# OpenSSLBinary by default this is (openssl)
+# JCR_OPENSSL by default this is (openssl)
 # NOTE: If openssl does not work, try using the full path to the openssl file
 # MacOS HomeBrew Example: '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
 $Global:JCR_OPENSSL = 'openssl'
