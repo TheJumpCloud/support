@@ -81,6 +81,16 @@ Function Invoke-UserCertProcess {
             Generate-UserCert -CertType $JCR_CERT_TYPE -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" *> /dev/null
             # validate that the cert was written correctly:
             #TODO: validate and return as variable
+
+            #TODO: cert should be written with $JCR_CERT_TYPE, if other certs exist, remove them.
+            $CertInfo = Get-CertInfo -UserCerts -username $MatchedUser.username
+            if ($CertInfo.count -gt 1) {
+                $foundCerts = Get-ChildItem -path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-*.crt"
+                $orderedCerts = $founDcerts | Sort-Object -Property LastWriteTime -Descending | select -Skip 1
+                foreach ($cert in $orderedCerts) {
+                    Remove-Item $cert.FullName
+                }
+            }
         }
 
         # generate the cert depending if -force or if new

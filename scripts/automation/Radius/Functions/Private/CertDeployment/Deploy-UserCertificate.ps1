@@ -79,7 +79,7 @@ function Deploy-UserCertificate {
                 'EmailDN' {
                     # Else set cert identifier to email of cert subject
                     $regex = 'emailAddress = (.*?)$'
-                    $JCR_SUBJECT_HEADERSMatch = Select-String -InputObject "$($certHash.Subject)" -Pattern $regex
+                    $JCR_SUBJECT_HEADERSMatch = Select-String -InputObject "$($certInfo.Subject)" -Pattern $regex
                     $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
                     # in macOS search user certs by email
                     $macCertSearch = 'e'
@@ -117,7 +117,7 @@ unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
 chmod 755 /tmp/$($user.userName)-client-signed.pfx
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
-currentCertSN="$($certHash.serial)"
+currentCertSN="$($certInfo.serial)"
 networkSsid="$($JCR_NETWORKSSID)"
 # store orig case match value
 caseMatchOrigValue=`$(shopt -p nocasematch; true)
@@ -329,7 +329,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
 
         foreach (`$cert in `$certs){
             if (`$cert.subject -match "$($certIdentifier)") {
-                if (`$(`$cert.serialNumber) -eq "$($certHash.serial)"){
+                if (`$(`$cert.serialNumber) -eq "$($certInfo.serial)"){
                     write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
                 } else {
                     write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
