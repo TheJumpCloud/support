@@ -13,6 +13,8 @@ function New-JCRSettingsFile {
         $ModuleRoot = (Get-Item -Path:($global:JCScriptRoot))
         $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
 
+    }
+    process {
         # Define Default Settings for the Config file
         $date = Get-Date
         $config = @{
@@ -22,12 +24,6 @@ function New-JCRSettingsFile {
             }
         }
     }
-
-    process {
-        # if creating the settings file for the first time, update global vars; lastupdate date
-        Get-JCRGlobalVars -force
-    }
-
     end {
         if ((test-path -Path $configFilePath) -And ($force)) {
             $config | ConvertTo-Json | Out-File -FilePath $configFilePath

@@ -53,7 +53,7 @@ function Get-CertInfo {
                 # TODO: pscustomobject insted of hash
                 $certHash = @{}
                 # Use openssl to gather serial, subject, issuer, and enddate information
-                $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in $($foundCerts.Path) -enddate -serial -subject -issuer -noout"
+                $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in `"$($foundCerts.Path)`" -enddate -serial -subject -issuer -noout"
 
                 # Convert string data into a key/value pair
                 $certInfo | ForEach-Object {
@@ -77,7 +77,7 @@ function Get-CertInfo {
                     # Create hashtable to contain cert info
                     $certHash = [PSCustomObject]@{}
                     # Use openssl to gather serial, subject, issuer and enddate information
-                    $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in $($cert.Path) -enddate -serial -subject -issuer -fingerprint -sha1 -noout"
+                    $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in `"$($cert.Path)`" -enddate -serial -subject -issuer -fingerprint -sha1 -noout"
                     # Convert string data into a key/value pair
                     $certInfo | ForEach-Object {
                         $property = $_ | ConvertFrom-StringData
