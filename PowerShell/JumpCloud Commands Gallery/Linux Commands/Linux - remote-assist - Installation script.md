@@ -25,15 +25,17 @@ fi
 set -u
 
 # set the RAA version string in the below variable before running the script.
-# the example format of version: v0.75.0
+# the example format of version: v0.172.0
 declare -t raa_version=""
 
 if [[ "$raa_version" == "" ]]; then
-    echo "'raa_version' need to be provided in the script (eg. v0.75.0)"
-    exit 0
+    echo "'raa_version' need to be provided in the script (eg. v0.172.0)"
+    exit 1
 fi
 
 tmp_dir=$(mktemp -d)
+arch="$(uname -m)"
+echo $(arch)
 
 declare -r timeout=900
 declare -r max_retries=4
@@ -42,17 +44,15 @@ declare -r max_retry_time=3600
 declare -r tmp_dir
 
 declare -r pub_key_name="jumpcloud-remote-assist-agent.gpg.asc"
-declare -r raa_binary_name="jumpcloud-remote-assist"
-
 declare -r install_prefix="/opt/jc_user_ro"
 declare -r apps_path="/usr/share/applications"
 declare -r raa_directory="${install_prefix}/jumpcloud-remote-assist"
 declare -r raa_desktop_file="${raa_directory}/resources/build-app/linux/jumpcloud-remote-assist.desktop"
-declare -r uninstaller_path="${install_prefix}/bin/uninstall-${raa_binary_name}"
 declare -r raa_service_install_file="${raa_directory}/resources/build-app/linux/raasvc-install.sh"
+declare -r raa_binary_path="${raa_directory}/jumpcloud-remote-assist"
 
-declare -r remote_pub_key_url="https://jumpcloud-windows-agent.s3.amazonaws.com/production/remote-assist/jumpcloud-remote-assist-agent.gpg.asc"
-declare -r remote_tgz_url="https://jumpcloud-windows-agent.s3.amazonaws.com/production/remote-assist/versions/${raa_version}/jumpcloud-remote-assist-agent_x86_64.tar.gz"
+declare -r remote_pub_key_url="https://cdn02.jumpcloud.com/production/remote-assist/jumpcloud-remote-assist-agent.gpg.asc"
+declare -r remote_tgz_url="https://cdn02.jumpcloud.com/production/remote-assist/versions/${raa_version}/jumpcloud-remote-assist-agent_${arch}.tar.gz"
 
 declare -r old_pub_key_fingerprint="83463C47A34D1BC1"
 declare -r pub_key_fingerprint="8C31C1376B37D307"
@@ -139,10 +139,10 @@ function remove_old_raa_dir() {
 
 function kill_running_raa_instance() {
   local pid_list
-  pid_list=$(pidof "${raa_binary_name}")
+  pid_list=$(pidof "${raa_binary_path}")
   for raa_pid in ${pid_list}; do
     echo "Stopping remote assist process ${raa_pid}"
-    kill "${raa_pid}"
+    kill -9 "${raa_pid}"
   done
 }
 
@@ -169,15 +169,6 @@ function install_raasvc_file() {
   fi
 }
 
-function install_uninstall_script() {
-  mkdir -p "$(dirname "${uninstaller_path}")"
-  cat > "${uninstaller_path}" <<'EOF'
-{{template "linuxUninstall.tmpl.sh" .}}
-EOF
-  chmod -x "${uninstaller_path}"
-  chmod 700 "${uninstaller_path}"
-}
-
 function main() {
   trap cleanup EXIT
   install_pub_key
@@ -186,7 +177,6 @@ function main() {
   install_new_raa
   install_desktop_file
   install_raasvc_file
-  install_uninstall_script
 }
 
 main
@@ -194,7 +184,7 @@ main
 
 #### Description
 
-This script installs rempte assist application on the Linux machine.
+This script installs remote assist application on the Linux machine.
 
 #### _Import This Command_
 
