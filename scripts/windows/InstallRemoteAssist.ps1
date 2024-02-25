@@ -6,7 +6,7 @@
 
 $uninstallerPath="C:\Program Files\JumpCloud\Jumpcloud Assist App\Uninstall Jumpcloud Assist App.exe"
 $installerURL="https://cdn02.jumpcloud.com/production/jumpcloud-remote-assist-agent.exe"
-$JumpCloudThumbprint="B6ACC0000E31294E175A27509975131032B6A073"
+$JumpCloudThumbprint="be14ed7df412b4db4747c44059db837d94b635ae"
 $installerTempLocation=Join-Path $([System.IO.Path]::GetTempPath()) JumpCloudRemoteAssistInstaller.exe
 
 Write-Host "Downloading JumpCloud Remote Assist installer"
