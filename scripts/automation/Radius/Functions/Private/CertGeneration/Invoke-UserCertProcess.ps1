@@ -78,7 +78,7 @@ Function Invoke-UserCertProcess {
     process {
         # if writeCert, generate the cert
         if ($writeCert) {
-            Generate-UserCert -CertType $JCR_CERT_TYPE -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" *> /dev/null
+            Generate-UserCert -CertType $JCR_CERT_TYPE -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" 2>&1 | out-null
             # validate that the cert was written correctly:
             #TODO: validate and return as variable
 
