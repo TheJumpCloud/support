@@ -54,7 +54,11 @@ Try {
             $null = Get-JCGroup | ForEach-Object {
                 If ($_.Type -eq 'system_group') {
                     # write-host $_.Name
-                    Remove-JcSdkSystemGroup -Id $_.id -ErrorAction Ignore
+                    try {
+                        Remove-JcSdkSystemGroup -Id $_.id -ErrorAction Ignore
+                    } catch {
+                        Set-JCsdkSystemGroup -Id $_.id -Name "MDM-$(Get-Random)"
+                    }
                 } elseif ($_.Type -eq 'user_group') {
                     # write-host $_.Name
                     Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
