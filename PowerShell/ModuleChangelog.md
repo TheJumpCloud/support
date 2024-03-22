@@ -1,3 +1,17 @@
+## 2.10.1
+
+Release Date: January 17, 2024
+
+#### RELEASE NOTES
+
+```
+Added several missing filter fields to Get-JCUser, Get-JCSystem, Get-JCCommand
+```
+
+#### FEATURES:
+
+Additional `returnProperties` added to Get-JCUser, Get-JCSystem, Get-JCCommand functions
+
 ## 2.10.0
 
 Release Date: January 17, 2024
@@ -14,7 +28,6 @@ Add-JCGsuiteMember - Add a user or user group to a Gsuite instance
 Add-JCOffice365Member - Add a user or user group to an Office365 instance
 Remove-JCGsuiteMember - Remove a user or user group from a Gsuite instance
 Remove-JCOffice365Member - Remove a user or user group from an Office365 instance
-
 
 ## 2.9.1
 

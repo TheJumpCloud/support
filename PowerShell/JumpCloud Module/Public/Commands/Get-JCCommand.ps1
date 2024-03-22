@@ -20,8 +20,8 @@ Function Get-JCCommand () {
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')]
         [ValidateSet('minute', 'hour', 'day', 'week', 'month')]
         [string]$scheduleRepeatType,
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType''')]
-        [ValidateSet('command', 'name', 'launchType', 'commandType', 'trigger', 'scheduleRepeatType')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType'',''listensTo'',''organization'',''commandRunners'',''schedule'',''shell'',''timeout'',''sudo'',''template'',''scheduleYear'',''timeToLiveSeconds'',''files'',''user'',''systems''')]
+        [ValidateSet('command', 'name', 'launchType', 'commandType', 'trigger', 'scheduleRepeatType', 'listensTo', 'organization', 'commandRunners', 'schedule', 'shell', 'timeout', 'sudo', 'template', 'scheduleYear', 'timeToLiveSeconds', 'files', 'user', 'systems')]
         [String[]]$returnProperties,
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
