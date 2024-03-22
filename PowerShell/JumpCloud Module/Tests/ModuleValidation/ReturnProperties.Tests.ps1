@@ -1,4 +1,4 @@
-Describe -Tag:('ModuleValidation') 'SDK Generation' {
+Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
     It 'Validates that functions with "Return Properties" return up-to-date fields' {
         $validFunction = @('Get-JCSystem', 'Get-JCUser', 'Get-JCCommand')
         $functionHash = @{
