@@ -51,22 +51,22 @@ Try {
         # Remove all groups from an org
         If ($Groups) {
             $AllGroupsToRemove = Get-JCGroup
-            foreach ($system in $allGroupsToRemove) {
-                switch ($AllGroupsToRemove.type) {
+            foreach ($group in $allGroupsToRemove) {
+                write-host "Group Name: $($group.Name) $($group.id) $($group.type)"
+                switch ($group.type) {
                     'system_group' {
-                        write-host $_.Name $_.id
                         try {
-                            Remove-JcSdkSystemGroup -Id $system.id -ErrorAction Ignore -errorVariable groupError
+                            Remove-JcSdkSystemGroup -Id $group.id -ErrorAction Ignore -errorVariable groupError
                         } catch {
                             if ($groupError.ErrorRecord -Match "default macOS ADE device group") {
-                                Set-JCsdkSystemGroup -Id $system.id -Name "MDM-$(Get-Random)"
+                                Set-JCsdkSystemGroup -Id $group.id -Name "MDM-$(Get-Random)"
                             } else {
-                                Set-JCsdkSystemGroup -Id $system.id -Name "unknown-$(Get-Random)"
+                                Set-JCsdkSystemGroup -Id $group.id -Name "unknown-$(Get-Random)"
                             }
                         }
                     }
                     'user_group' {
-                        Remove-JcSdkUserGroup -Id $system.id -ErrorAction Ignore
+                        Remove-JcSdkUserGroup -Id $group.id -ErrorAction Ignore
                     }
                 }
             }
