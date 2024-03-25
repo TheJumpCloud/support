@@ -66,7 +66,7 @@ Try {
                         }
                     }
                     'user_group' {
-                        Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
+                        Remove-JcSdkUserGroup -Id $system.id -ErrorAction Ignore
                     }
                 }
             }
