@@ -50,18 +50,24 @@ Try {
         }
         # Remove all groups from an org
         If ($Groups) {
-            # TODO: if system group is assigned to MDM this will throw an error
-            $null = Get-JCGroup | ForEach-Object {
-                If ($_.Type -eq 'system_group') {
-                    # write-host $_.Name
-                    try {
-                        Remove-JcSdkSystemGroup -Id $_.id -ErrorAction Ignore
-                    } catch {
-                        Set-JCsdkSystemGroup -Id $_.id -Name "MDM-$(Get-Random)"
+            $AllGroupsToRemove = Get-JCGroup
+            foreach ($system in $allGroupsToRemove) {
+                switch ($AllGroupsToRemove.type) {
+                    'system_group' {
+                        write-host $_.Name $_.id
+                        try {
+                            Remove-JcSdkSystemGroup -Id $system.id -ErrorAction Ignore -errorVariable groupError
+                        } catch {
+                            if ($groupError.ErrorRecord -Match "default macOS ADE device group") {
+                                Set-JCsdkSystemGroup -Id $system.id -Name "MDM-$(Get-Random)"
+                            } else {
+                                Set-JCsdkSystemGroup -Id $system.id -Name "unknown-$(Get-Random)"
+                            }
+                        }
                     }
-                } elseif ($_.Type -eq 'user_group') {
-                    # write-host $_.Name
-                    Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
+                    'user_group' {
+                        Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
+                    }
                 }
             }
             Write-Host "[status] Removed groups: $($stopwatch.Elapsed)"
