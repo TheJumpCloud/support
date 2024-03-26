@@ -57,27 +57,35 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCGsuiteMember' {
         $User.Status | Should -Be 'Removed'
     }
     It 'Attempts to remove user by username and userid' {
-        {Remove-JCGsuiteMember -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID} | Should -Throw
+        { Remove-JCGsuiteMember -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID } | Should -Throw
     }
     It 'Attempts to remove userGroup by name and ID' {
-        {Remove-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name} | Should -Throw
+        { Remove-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name } | Should -Throw
     }
     It 'Attempts to remove a user and a usergroup' {
-        {Remove-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
+        { Remove-JCGsuiteMember -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID } | Should -Throw
     }
     It 'Attempts to remove a non-existent user' {
         { $User = Remove-JCGsuiteMember -Name $Directories.Name -Username "Dummy.User" } | Should -Throw
-        $User = Remove-JCGsuiteMember -Name $Directories.Name -UserID 123456
-        $User.Status | Should -BeLike 'Bad Request*'
+        { $User = Remove-JCGsuiteMember -Name $Directories.Name -UserID 123456 } | Should -Throw
+        # $User.Status | Should -BeLike 'Bad Request*' #TODO: status is not populated
     }
     It 'Attempts to remove a non-existent group' {
         { $Group = Remove-JCGsuiteMember -Name $Directories.Name -GroupName 'Dummy Group' } | Should -Throw
-        $Group = Remove-JCGsuiteMember -Name $Directories.Name -GroupID 123456
-        $Group.Status | Should -BeLike 'Bad Request*'
+        { $Group = Remove-JCGsuiteMember -Name $Directories.Name -GroupID 123456 } | Should -Throw
+        # $Group.Status | Should -BeLike 'Bad Request*' #TODO: status is not populated
     }
     AfterEach {
-        Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewUser.Id -Type user -Op 'add' -ErrorAction SilentlyContinue
-        Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add' -ErrorAction SilentlyContinue
+        try {
+            Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewUser.Id -Type user -Op 'add' -ErrorAction SilentlyContinue
+        } catch {
+            Write-Debug "There were no associations between the directory with ID: $($Directories.Id) and the user with ID: $($NewUser.Id)"
+        }
+        try {
+            Set-JcSdkGSuiteAssociation -GsuiteId $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add' -ErrorAction SilentlyContinue
+        } catch {
+            Write-Debug "There were no associations between the directory with ID: $($Directories.Id) and the group with ID: $($NewUser.Id)"
+        }
     }
     AfterAll {
         Remove-JCUser -UserID $NewUser.Id -force

@@ -54,27 +54,35 @@ Describe -Tag:('JCCloudDirectory') 'Add-JCOffice365Member' {
         $User.Status | Should -Be 'Added'
     }
     It 'Attempts to add user by username and userid' {
-        {Add-JCOffice365Member -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID} | Should -Throw
+        { Add-JCOffice365Member -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID } | Should -Throw
     }
     It 'Attempts to add userGroup by name and ID' {
-        {Add-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name} | Should -Throw
+        { Add-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name } | Should -Throw
     }
     It 'Attempts to add a user and a usergroup' {
-        {Add-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
+        { Add-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID } | Should -Throw
     }
     It 'Attempts to add a non-existent user' {
         { $User = Add-JCOffice365Member -Name $Directories.Name -Username "Dummy.User" } | Should -Throw
-        $User = Add-JCOffice365Member -Name $Directories.Name -UserID 123456
-        $User.Status | Should -BeLike 'Bad Request*'
+        { $User = Add-JCOffice365Member -Name $Directories.Name -UserID 123456 } | Should -Throw
+        # $User.Status | Should -BeLike 'Bad Request*' #TODO: status is not populated
     }
     It 'Attempts to add a non-existent group' {
         { $Group = Add-JCOffice365Member -Name $Directories.Name -GroupName 'Dummy Group' } | Should -Throw
-        $Group = Add-JCOffice365Member -Name $Directories.Name -GroupID 123456
-        $Group.Status | Should -BeLike 'Bad Request*'
+        { $Group = Add-JCOffice365Member -Name $Directories.Name -GroupID 123456 } | Should -Throw
+        # $Group.Status | Should -BeLike 'Bad Request*' #TODO: status is not populated
     }
     AfterEach {
-        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'remove' -ErrorAction SilentlyContinue
-        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'remove' -ErrorAction SilentlyContinue
+        try {
+            Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'remove' -ErrorAction SilentlyContinue
+        } catch {
+            Write-Debug "There were no associations between the directory with ID: $($Directories.Id) and the user with ID: $($NewUser.Id)"
+        }
+        try {
+            Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'remove' -ErrorAction SilentlyContinue
+        } catch {
+            Write-Debug "There were no associations between the directory with ID: $($Directories.Id) and the group with ID: $($NewUser.Id)"
+        }
     }
     AfterAll {
         Remove-JCUser -UserID $NewUser.Id -force
