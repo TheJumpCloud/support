@@ -99,6 +99,7 @@ jobs:
               'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
               'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
               'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'powershell-yaml'                       = @{Repository = 'PSGallery'; RequiredVersion = '0.4.7'}
           }
 
           foreach ($RequiredModule in $PSDependencies.Keys) {
