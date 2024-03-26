@@ -8,9 +8,7 @@ function Enable-JumpCloud.Office365.SSO {
     )
 
     begin {
-
-        $Test = Test-MSOnline
-
+        $Test = Test-MSGraph
     }
 
     process {
@@ -21,53 +19,51 @@ function Enable-JumpCloud.Office365.SSO {
             $Certificate = $Metadata.Certificate
             $logoutUrl = "https://console.jumpcloud.com/userconsole/"
 
-
-            $DirectorySynchronizationEnabled = Get-MsolCompanyInformation -ErrorAction SilentlyContinue -ErrorVariable ProcessError | Select-Object DirectorySynchronizationEnabled
+            $DirectorySynchronizationEnabled = Get-MgOrganization -ErrorAction SilentlyContinue -ErrorVariable ProcessError | Select-Object OnPremisesSyncEnabled
 
             if ($ProcessError) {
-                Connect-MsolService
-                $DirectorySynchronizationEnabled = Get-MsolCompanyInformation | Select-Object DirectorySynchronizationEnabled
+                Connect-MgGraph -Scopes "Domain.ReadWrite.All"
+                $DirectorySynchronizationEnabled = Get-MgOrganization | Select-Object OnPremisesSyncEnabled
             }
 
-            $MSDomains = Get-MSOnlineDomains
+            $MSDomains = Get-MGGraphDomains
 
             if ($MSDomains.($Domain) -eq $null) {
                 Write-Warning  "Typo? $Domain is not a valid domain within your Office365 tenant"
-                Write-Host "To see a list of valid domains in your Office 365 run the command 'Get-MsolDomain'" -ForegroundColor Green
+                Write-Host "To see a list of valid domains in your Office 365 run the command 'Get-MgDomain'" -ForegroundColor Green
                 Write-Host "Update your JumpCloud Office 365 SSO connector with the valid domain, download the XML metadata and try again!" -ForegroundColor Green
                 Return
             }
 
             if ( $DirectorySynchronizationEnabled -eq $true) {
-                Write-Warning  "Directory Synchronization is enabled run the command:'Set-MsolDirSyncEnabled -EnableDirSync $false' to disable and try again"
+                Write-Warning  "Directory Synchronization is enabled run the command:'Update-MgOrganization -OrganizationId (Get-MgOrganization).Id -BodyParameter @{onPremisesSyncEnabled = $false}' to disable and try again"
             }
 
             else {
-
                 $SetDomainParams = @{
                     DomainName                      = $Domain
-                    FederationBrandName             = $Domain
-                    Authentication                  = "Federated"
+                    DisplayName                     = $Domain
                     IssuerUri                       = $Domain
-                    LogOffUri                       = $logoutUrl
-                    PassiveLogOnUri                 = $IDPUrl
-                    ActiveLogOnUri                  = $idpUrl
+                    SignOutUri                      = $logoutUrl
+                    PassiveSignInUri                = $IDPUrl
+                    ActiveSignInUri                 = $idpUrl
                     SigningCertificate              = $certificate
                     PreferredAuthenticationProtocol = "SAMLP"
 
                 }
 
-
                 try {
-                    Set-MsolDomainAuthentication @SetDomainParams
+
+                    New-MgDomainFederationConfiguration -DomainId $Domain -BodyParameter $SetDomainParams
+
+                    Update-MgDomain -DomainId $Domain -AuthenticationType Federated
+
                     Write-Host "SSO Configured for domain: $Domain" -ForegroundColor Green
                     Write-Warning "It can take up to 20 minutes for the Office 365 sign in process to update to SSO initiated. You may return sign in errors during this time."
 
                 } catch {
                     Write-Output $_.errorDetails
                 }
-
-
             }
 
         }
