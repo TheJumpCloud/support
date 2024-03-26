@@ -1,4 +1,4 @@
-function Test-MGGraph () {
+function Test-MgGraph () {
     if (Get-Command Connect-MgGraph -eq '$true'-ErrorAction SilentlyContinue) {
         Write-Debug -Message "MSGraph module loaded"
     }

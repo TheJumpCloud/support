@@ -8,7 +8,7 @@ function Enable-JumpCloud.Office365.SSO {
     )
 
     begin {
-        $Test = Test-MSGraph
+        $Test = Test-MgGraph
     }
 
     process {
@@ -26,7 +26,7 @@ function Enable-JumpCloud.Office365.SSO {
                 $DirectorySynchronizationEnabled = Get-MgOrganization | Select-Object OnPremisesSyncEnabled
             }
 
-            $MSDomains = Get-MGGraphDomains
+            $MSDomains = Get-MgGraphDomains
 
             if ($MSDomains.($Domain) -eq $null) {
                 Write-Warning  "Typo? $Domain is not a valid domain within your Office365 tenant"

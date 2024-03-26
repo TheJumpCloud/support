@@ -10,7 +10,7 @@ function Disable-JumpCloud.Office365.SSO {
     )
 
     begin {
-        $Test = Test-MGGraph
+        $Test = Test-MgGraph
 
     }
 

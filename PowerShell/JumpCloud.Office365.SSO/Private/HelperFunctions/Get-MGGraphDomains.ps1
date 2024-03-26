@@ -1,4 +1,4 @@
-function Get-MGGraphDomains () {
+function Get-MgGraphDomains () {
 
     Connect-MgGraph -Scopes "Domain.Read.All"
 
