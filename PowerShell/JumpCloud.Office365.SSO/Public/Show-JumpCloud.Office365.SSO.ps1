@@ -13,7 +13,7 @@ function Show-JumpCloud.Office365.SSO {
 
     begin {
 
-        $Test = Test-MSOnline
+        $Test = Test-MgGraph
 
     }
 
@@ -26,11 +26,11 @@ function Show-JumpCloud.Office365.SSO {
 
             }
 
-            $Results = Get-MsolDomainFederationSettings -DomainName $domain -ErrorAction SilentlyContinue -ErrorVariable ProcessError
+            $Results = Get-MgDomainFederationConfiguration -DomainID $domain -ErrorAction SilentlyContinue -ErrorVariable ProcessError
 
             if ($ProcessError) {
-                Connect-MsolService
-                $Results = Get-MsolDomainFederationSettings -DomainName $domain
+                Connect-MgGraph -Scopes "Domain.Read.All"
+                $Results = Get-MgDomainFederationConfiguration -DomainID $domain
             }
 
 
