@@ -28,7 +28,7 @@ ForEach ($User in $JCUsers) {
 }
 
 # Pull all Office 365 users and add their email and immutableID to a hash table
-$Office365Users = Get-MgUser -All -Property | Select-Object UserPrincipalName, ImmutableID
+$Office365Users = Get-MgUser -All -Property UserPrincipalName, ImmutableID | Select-Object UserPrincipalName, ImmutableID
 
 # Results variable
 $Results = @()
