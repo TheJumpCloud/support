@@ -56,7 +56,7 @@ function Remove-JCOffice365Member () {
                 }
             }
             try {
-                Set-JcSdkOffice365Association -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user' -Id $UserID
+                Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'remove' -Type 'user' -Id $UserID
                 $Status = 'Removed'
             } catch {
                 $Status = $_.Exception.Message
@@ -77,7 +77,7 @@ function Remove-JCOffice365Member () {
                 }
             }
             try {
-                Set-JcSdkOffice365Association -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user_group' -Id $GroupID
+                Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'remove' -Type 'user_group' -Id $GroupID
                 $Status = 'Removed'
             } catch {
                 $Status = $_.Exception.Message

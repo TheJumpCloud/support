@@ -56,7 +56,7 @@ function Add-JCOffice365Member () {
                 }
             }
             try {
-                Set-JcSdkOffice365Association -GsuiteId $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID
+                Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID
                 $Status = 'Added'
             } catch {
                 $Status = $_.Exception.Message
@@ -77,7 +77,7 @@ function Add-JCOffice365Member () {
                 }
             }
             try {
-                Set-JcSdkOffice365Association -GsuiteId $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID
+                Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID
                 $Status = 'Added'
             } catch {
                 $Status = $_.Exception.Message
