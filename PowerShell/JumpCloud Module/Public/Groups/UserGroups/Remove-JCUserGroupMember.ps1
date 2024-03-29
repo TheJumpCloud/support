@@ -76,11 +76,11 @@ The UserID will be the 24 character string populated for the _id field. UserID h
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-            $GroupRemove = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupRemove = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
 
             $FormattedResults = [PSCustomObject]@{
@@ -109,11 +109,11 @@ The UserID will be the 24 character string populated for the _id field. UserID h
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-            $GroupRemove = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupRemove = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
 
             $FormattedResults = [PSCustomObject]@{

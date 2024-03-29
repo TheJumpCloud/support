@@ -55,11 +55,11 @@ function Remove-JCGsuiteMember () {
                     throw "Username: $Username was not found."
                 }
             }
-            Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user' -Id $UserID -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user' -Id $UserID
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
             $FormattedResults = [PSCustomObject]@{
 
@@ -76,12 +76,13 @@ function Remove-JCGsuiteMember () {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
-            Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user_group' -Id $GroupID -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                Set-JcSdkGSuiteAssociation -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user_group' -Id $GroupID
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
+
             $FormattedResults = [PSCustomObject]@{
 
                 'DirectoryName' = $CloudDirectory.Name

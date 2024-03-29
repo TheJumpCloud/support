@@ -55,11 +55,11 @@ function Remove-JCOffice365Member () {
                     throw "Username: $Username was not found."
                 }
             }
-            Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'remove' -Type 'user' -Id $UserID -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                Set-JcSdkOffice365Association -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user' -Id $UserID
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
             $FormattedResults = [PSCustomObject]@{
 
@@ -76,11 +76,11 @@ function Remove-JCOffice365Member () {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
-            Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'remove' -Type 'user_group' -Id $GroupID -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                Set-JcSdkOffice365Association -GsuiteId $CloudDirectory.Id -Op 'remove' -Type 'user_group' -Id $GroupID
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
             $FormattedResults = [PSCustomObject]@{
 
