@@ -7,6 +7,8 @@ tags:
   - settings
   - automation
 ---
+(Update 04/02/2024) Temporary admin access can be granted with the JumpCloud console, plesae see the documentation on [Granting Administraor Rights](https://thejumpcloud.github.io/support/2022/02/10/Grant-Admin-Rights.html) for more formation.
+ 
 The purpose of this script is to grant admin access to a JumpCloud user to a bound system.
 This script prompts the user to enter username, system Id, and minutes of how long the user is going to be an admin/sudo. After granted admin status, the user will need to re-login if on Windows machine to see the admin access change. The user is revoked admin status after x mins. User must re-login if on Windows machine to be demoted to standard user. 
 
