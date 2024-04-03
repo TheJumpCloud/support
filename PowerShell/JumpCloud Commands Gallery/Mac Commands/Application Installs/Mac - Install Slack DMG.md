@@ -191,7 +191,7 @@ Searching headers for download links
 Download link found
 Downloaded Slack-3.3.7.dmg to /tmp/Download-2019-01-23-10-28-49
 DMG File Found: Slack-3.3.7.dmg
-Used hdiutil to mount Slack-3.3.7.dmg 
+Used hdiutil to mount Slack-3.3.7.dmg
 Located DMG Volume: /Volumes/Slack.app
 Located DMG Mount Point: /dev/disk2s1
 Located App: Slack.app
@@ -208,5 +208,5 @@ Deleted /tmp/Download-2019-01-23-10-28-49
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/fhQDd'
+Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Application%20Installs/Mac%20-%20Install%20Slack%20DMG.md'
 ```
