@@ -57,13 +57,13 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCOffice365Member' {
         $User.Status | Should -Be 'Removed'
     }
     It 'Attempts to remove user by username and userid' {
-        {Remove-JCOffice365Member -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID} | Should -Throw
+        { Remove-JCOffice365Member -Name $Directories.Name -Username $NewUser.username -userID $NewUser.ID } | Should -Throw
     }
     It 'Attempts to remove userGroup by name and ID' {
-        {Remove-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name} | Should -Throw
+        { Remove-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -GroupName $NewGroup.Name } | Should -Throw
     }
     It 'Attempts to remove a user and a usergroup' {
-        {Remove-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID} | Should -Throw
+        { Remove-JCOffice365Member -Name $Directories.Name -GroupID $NewGroup.ID -UserID $NewUser.ID } | Should -Throw
     }
     It 'Attempts to remove a non-existent user' {
         { $User = Remove-JCOffice365Member -Name $Directories.Name -Username "Dummy.User" } | Should -Throw
@@ -76,8 +76,16 @@ Describe -Tag:('JCCloudDirectory') 'Remove-JCOffice365Member' {
         $Group.Status | Should -BeLike 'Bad Request*'
     }
     AfterEach {
-        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'add' -ErrorAction SilentlyContinue
-        Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add' -ErrorAction SilentlyContinue
+        try {
+            Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewUser.Id -Type user -Op 'add' -ErrorAction SilentlyContinue
+        } catch {
+            Write-Debug "Office 365 Directory: $($Directories.Id) was not associated with userID: $($NewUser.Id)) "
+        }
+        try {
+            Set-JcSdkOffice365Association -Office365Id $Directories.Id -Id $NewGroup.Id -Type user_group -Op 'add' -ErrorAction SilentlyContinue
+        } catch {
+            Write-Debug "Office 365 Directory: $($Directories.Id) was not associated with userGroupID: $($NewGroup.Id) "
+        }
     }
     AfterAll {
         Remove-JCUser -UserID $NewUser.Id -force

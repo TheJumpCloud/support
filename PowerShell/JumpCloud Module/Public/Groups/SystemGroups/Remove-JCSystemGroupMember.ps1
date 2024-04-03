@@ -70,11 +70,11 @@ The SystemID will be the 24 character string populated for the _id field. System
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-            $GroupRemove = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupRemove = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
 
             $FormattedResults = [PSCustomObject]@{
@@ -110,11 +110,11 @@ The SystemID will be the 24 character string populated for the _id field. System
             Write-Debug $jsonbody
 
 
-            $GroupRemove = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable removeError -ErrorAction SilentlyContinue
-            if ($removeError) {
-                $Status = $removeError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupRemove = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Removed'
+            } catch {
+                $Status = $_.Exception.Message
             }
 
             $FormattedResults = [PSCustomObject]@{

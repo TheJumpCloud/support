@@ -209,6 +209,8 @@ Function Get-JCObject {
                             if ($dirResult.Name -eq $SearchByValueItem) {
                                 # if match on name, just API results to just be the single match
                                 $Result = $dirResult
+                            } elseif ($dirResult.id -eq $SearchByValueItem) {
+                                $Result = $dirResult
                             } else {
                                 $result = $result | Where-Object { $_ -ne $dirResult }
                             }

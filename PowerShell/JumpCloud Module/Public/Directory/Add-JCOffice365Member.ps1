@@ -55,11 +55,11 @@ function Add-JCOffice365Member () {
                     throw "Username: $Username was not found."
                 }
             }
-            Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID -ErrorVariable addError -ErrorAction SilentlyContinue
-            if ($addError) {
-                $Status = $addError.ErrorDetails.Message
-            } else {
+            try {
+                Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user' -Id $UserID
                 $Status = 'Added'
+            } catch {
+                $Status = $_.Exception.Message
             }
             $FormattedResults = [PSCustomObject]@{
 
@@ -76,11 +76,11 @@ function Add-JCOffice365Member () {
                     throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
             }
-            Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID -ErrorVariable addError -ErrorAction SilentlyContinue
-            if ($addError) {
-                $Status = $addError.ErrorDetails.Message
-            } else {
+            try {
+                Set-JcSdkOffice365Association -Office365Id $CloudDirectory.Id -Op 'add' -Type 'user_group' -Id $GroupID
                 $Status = 'Added'
+            } catch {
+                $Status = $_.Exception.Message
             }
             $FormattedResults = [PSCustomObject]@{
 
