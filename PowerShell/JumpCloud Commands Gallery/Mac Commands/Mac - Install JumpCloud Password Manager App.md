@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.3 JCCG
+Mac - Install JumpCloud Password Manager App | v1.4 JCCG
 
 #### commandType
 
@@ -136,6 +136,9 @@ do
             # remove if exists
             rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
         fi
+
+        # Change ownership of the file to the user of this loop iteration
+        chown -v $user "$DMGAppPath"
 
         # Copy the contents of the DMG file to /Users/$user/Applications/
         # Preserves all file attributes and ACLs
