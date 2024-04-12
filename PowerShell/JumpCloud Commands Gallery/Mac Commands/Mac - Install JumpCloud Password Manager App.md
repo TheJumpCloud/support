@@ -137,12 +137,12 @@ do
             rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
         fi
 
-        # Change ownership of the file to the user of this loop iteration
-        chown -v $user "$DMGAppPath"
-
         # Copy the contents of the DMG file to /Users/$user/Applications/
         # Preserves all file attributes and ACLs
         cp -pPR "$DMGAppPath" /Users/$user/Applications/
+
+        # Change ownership of the file to the user of this loop iteration
+        chown -v $user /Users/$user/Applications/JumpCloud\ Password\ Manager.app
 
         if [[ -d /Users/$user/Desktop/JumpCloud\ Password\ Manager.app ]]; then
             # remove alias on desktop if exists
