@@ -43,13 +43,13 @@ function Enable-JumpCloud.Office365.SSO {
                 $SetDomainParams = @{
                     DomainName                      = $Domain
                     DisplayName                     = $Domain
-                    IssuerUri                       = $Domain
+                    IssuerUri                       = "https://$Domain"
                     SignOutUri                      = $logoutUrl
                     PassiveSignInUri                = $IDPUrl
                     ActiveSignInUri                 = $idpUrl
                     SigningCertificate              = $certificate
-                    PreferredAuthenticationProtocol = "SAMLP"
-
+                    PreferredAuthenticationProtocol = "saml"
+                    federatedIdpMfaBehavior         = "acceptIfMfaDoneByFederatedIdp"
                 }
 
                 try {

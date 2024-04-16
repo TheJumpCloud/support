@@ -23,7 +23,7 @@ function Disable-JumpCloud.Office365.SSO {
             }
 
 
-            Update-MgDomain -DomainName $Domain -AuthenticationType Managed -ErrorAction SilentlyContinue -ErrorVariable ProcessError
+            Update-MgDomain -DomainId $Domain -AuthenticationType Managed -ErrorAction SilentlyContinue -ErrorVariable ProcessError
 
             if ($ProcessError) {
                 Connect-MgGraph -Scopes "Domain.ReadWrite.All"
