@@ -29,7 +29,7 @@ $global:JCScriptRoot = "$PSScriptRoot"
 $global:JCRConfig = Get-JCRSettingsFile
 
 # Set expire warning days:
-$global:JCR_WarningDays = (Get-Date).AddDays($JCR_USER_CERT_EXPIRE_WARNING_DAYS
+$global:JCR_WarningDays = (Get-Date).AddDays(-$JCR_USER_CERT_EXPIRE_WARNING_DAYS
 ).Date
 
 # Get global variables or update if necessary
