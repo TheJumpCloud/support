@@ -96,7 +96,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $userCertInfo = Get-CertInfo -UserCerts
             # Determine cut off date for expiring certs
             # Find all certs that will expire between current date and cut off date
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
 
         }
         It 'Certs that are set to expire soon can be updated' {
@@ -115,7 +115,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             Start-GenerateUserCerts -type ExpiringSoon -forceReplaceCerts
             # Update Global Expiring list:
             $userCertInfo = Get-CertInfo -UserCerts
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
             # there should be no more certs left in the expiring cert var
             $Global:expiringCerts | Should -BeNullOrEmpty
             # Get the certs after generation minus the .zip if it exists

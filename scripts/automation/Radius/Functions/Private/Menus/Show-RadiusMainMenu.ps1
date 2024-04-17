@@ -7,7 +7,7 @@ function Show-RadiusMainMenu {
     $userCertInfo = Get-CertInfo -UserCerts
 
     # Find all certs that will expire between current date and cut off date
-    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $JCR_WarningDays
+    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
 
     # Get UserGroup information from Config.ps1
     $radiusUserGroup = Get-JcSdkUserGroup -Id $Global:JCR_USER_GROUP | Select-Object Name
@@ -33,7 +33,7 @@ function Show-RadiusMainMenu {
         Write-Host $(PadCenter -string "Root CA Expiration: $($rootCAInfo.notAfter)`n" -char ' ') -ForegroundColor Green
     }
     if ($Global:expiringCerts) {
-        Write-Host $(PadCenter -string "$($($Global:expiringCerts.subject).Count) user certs will expire in 15 days `n" -char ' ') -ForegroundColor Red
+        Write-Host $(PadCenter -string "$($Global:expiringCerts.Count) user certs will expire in 15 days `n" -char ' ') -ForegroundColor Red
     }
     Write-Host $(PadCenter -string " Details " -char '-')
     # /==== ROOT CA ====
