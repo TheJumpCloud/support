@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.3 JCCG
+Mac - Install JumpCloud Password Manager App | v1.4 JCCG
 
 #### commandType
 
@@ -140,6 +140,9 @@ do
         # Copy the contents of the DMG file to /Users/$user/Applications/
         # Preserves all file attributes and ACLs
         cp -pPR "$DMGAppPath" /Users/$user/Applications/
+
+        # Change ownership of the file to the user of this loop iteration
+        chown -v $user /Users/$user/Applications/JumpCloud\ Password\ Manager.app
 
         if [[ -d /Users/$user/Desktop/JumpCloud\ Password\ Manager.app ]]; then
             # remove alias on desktop if exists
