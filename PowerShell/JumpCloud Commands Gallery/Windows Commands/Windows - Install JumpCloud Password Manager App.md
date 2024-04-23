@@ -68,18 +68,10 @@ $Command = {
     $loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
     $LaunchPasswordManager = $true
     $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
-    . $installerTempLocation
-    if ($LaunchPasswordManager -eq $true) {
-        while (!(Test-Path "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe")) {
-            Start-Sleep 10
-        }
-        try {
-            . "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe"
-
-        } catch {
-            throw $_.Exception.Message
-        }
+    if ($LaunchPasswordManager -eq $false) {
+        $env:QUIT_PWM_AFTER_INITIAL_INSTALL="true"
     }
+    . $installerTempLocation
 }
 
 $Source = @'
