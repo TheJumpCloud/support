@@ -1,7 +1,7 @@
 #### Name
 
 
-Windows - Install JumpCloud Password Manager App | v1.2 JCCG
+Windows - Install JumpCloud Password Manager App | v1.3 JCCG
 
 
 #### commandType
@@ -12,7 +12,7 @@ windows
 
 ```
 
-# Set $LaunchPasswordManager to $false  ON LINE 63 if you do not wish to launch the password manger after installation
+# Set $LaunchPasswordManager to $false  ON LINE 69 if you do not wish to launch the password manger after installation
 
 # Get the current logged on User
 $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
