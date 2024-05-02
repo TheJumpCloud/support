@@ -16,7 +16,12 @@ function Get-JCRGlobalVars {
         }
 
         # get settings file
-        $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -end (Get-Date)
+        if ($IsMacOS){
+            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -end (Get-Date)
+        }
+        if ($ifWindows){
+            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -end (Get-Date)
+        }
         if ($lastUpdateTimespan.TotalHours -gt 24) {
             $update = $true
             $updateAssociation = $true
