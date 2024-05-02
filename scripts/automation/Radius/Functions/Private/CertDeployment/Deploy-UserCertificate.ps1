@@ -253,7 +253,7 @@ fi
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
                         $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                     } catch {
-                        status_commandGenerated = $false
+                        $status_commandGenerated = $false
                         # throw $_
                     }
 
@@ -399,7 +399,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
                         $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                     } catch {
-                        status_commandGenerated = $false
+                        $status_commandGenerated = $false
                         # throw $_
                     }
 
