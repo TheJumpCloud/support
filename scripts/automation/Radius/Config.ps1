@@ -75,9 +75,7 @@ function Get-OpenSSLVersion {
             # If env variable exists, skip check for subsequent runs of ./config.ps1
             if ($env:OPENSSL_MODULES) {
                 $binItems = Get-ChildItem -Path $env:OPENSSL_MODULES
-                if ("legacy.dll" -in $binItems.Name) {
-                    Write-Host "legacy.dll module set through environment variable"
-                } else {
+                if ("legacy.dll" -notin $binItems.Name) {
                     Throw "The required OpenSSL 'legacy.dll' file was not found in the bin path $PathDirectory. This is required to create certificates. `nIf this module file is located elsewhere, you may specify the path to that directory in this powershell session using this command: '`$env:OPENSSL_MODULES = C:/Path/To/Directory' "
                 }
             } else {
