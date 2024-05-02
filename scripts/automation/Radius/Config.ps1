@@ -2,9 +2,11 @@
 $Global:JCR_USER_GROUP = 'your_radius_user_group'
 # USER CERT PASSWORD (this password is sent to the devices via JumpCloud Commands)
 $Global:JCR_USER_CERT_PASS = 'secret1234!'
-# USER CERT Validity Length (days)
-$Global:JCR_USER_CERT_VALIDITY_DAYS = 90
-# Days until cert expire warning length (default: 15)
+# USER CERT Validity Length (days) (default 1 year)
+$Global:JCR_USER_CERT_VALIDITY_DAYS = 365
+# ROOT CERT Validity Length (days) (default 3 years)
+$Global:JCR_ROOT_CERT_VALIDITY_DAYS = 1095
+# Days until cert expire warning length (default: 15 days)
 # The tool will display certs that are set to expire if the expiration date is
 # within this number of days
 $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS = 15

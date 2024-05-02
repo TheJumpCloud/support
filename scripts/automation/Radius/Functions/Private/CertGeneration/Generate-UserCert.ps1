@@ -44,8 +44,8 @@ function Generate-UserCert {
         switch ($certType) {
             'EmailSAN' {
                 # replace extension subjectAltName
-                $extContent = Get-Content -Path `"$ExtensionPath`" -Raw
-                $extContent -replace ("subjectAltName.*", "subjectAltName = email:$($user.email)") | Set-Content -Path `"$ExtensionPath`" -NoNewline -Force
+                $extContent = Get-Content -Path $ExtensionPath -Raw
+                $extContent -replace ("subjectAltName.*", "subjectAltName = email:$($user.email)") | Set-Content -Path $ExtensionPath -NoNewline -Force
                 # Get CSR & Key
                 Write-Host "[status] Get CSR & Key"
                 Invoke-Expression "$JCR_OPENSSL req -newkey rsa:2048 -nodes -keyout `"$userKey`" -subj `"/C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCORGID)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)`" -out `"$userCsr`""

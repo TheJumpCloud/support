@@ -7,7 +7,11 @@ function Show-RadiusMainMenu {
     $userCertInfo = Get-CertInfo -UserCerts
 
     # Find all certs that will expire between current date and cut off date
-    $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+    try {
+        $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+    } catch {
+        Write-Debug "No user certs exist, there are no user certs which will expire soon"
+    }
 
     # Get UserGroup information from Config.ps1
     $radiusUserGroup = Get-JcSdkUserGroup -Id $Global:JCR_USER_GROUP | Select-Object Name
