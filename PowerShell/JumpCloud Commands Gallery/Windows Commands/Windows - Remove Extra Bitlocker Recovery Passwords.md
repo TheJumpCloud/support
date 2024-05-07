@@ -25,7 +25,7 @@ function Remove-NonMatchingBitLockerRecoveryPasswords {
   )
 
   try {
-	  $osVolumeLetter = Get-OsVolumeLetter
+    $osVolumeLetter = Get-OsVolumeLetter
     $bitLockerVolume = Get-BitLockerVolume -MountPoint $osVolumeLetter
 
     if(!$bitLockerVolume) {
@@ -33,10 +33,10 @@ function Remove-NonMatchingBitLockerRecoveryPasswords {
       exit 1
     }
 
-	  # Find key that matches the passed in key.
+    # Find key that matches the passed in key.
     $matchingpswd = $bitLockerVolume.KeyProtector.Where({$_.RecoveryPassword -eq "$RecoveryKey" -and $_.KeyProtectorType -eq "RecoveryPassword"})
 
-	  if(!$matchingpswd) {
+    if(!$matchingpswd) {
       Write-Host "$osVolumeLetter Volume does not have the following password: $RecoveryKey"
       exit 1
     }
