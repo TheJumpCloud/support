@@ -9,21 +9,11 @@ windows
 #### Command
 
 ```powershell
-# Set this variable to the password recovery key to PRESERVE.  All keys other than this key will be deleted.
-$RecoveryKey = 'RECOVERY KEY TO PRESERVE'
-
 function Get-OsVolumeLetter {
   return Get-WmiObject -Class Win32_OperatingSystem -Property SystemDrive | Select-Object -ExpandProperty SystemDrive
 }
 
 function Remove-NonMatchingBitLockerRecoveryPasswords {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true)]
-    [ValidateNotNull()]
-    [string] $RecoveryKey
-  )
-
   try {
     $osVolumeLetter = Get-OsVolumeLetter
     $bitLockerVolume = Get-BitLockerVolume -MountPoint $osVolumeLetter
@@ -33,20 +23,26 @@ function Remove-NonMatchingBitLockerRecoveryPasswords {
       exit 1
     }
 
-    # Find key that matches the passed in key.
-    $matchingpswd = $bitLockerVolume.KeyProtector.Where({$_.RecoveryPassword -eq "$RecoveryKey" -and $_.KeyProtectorType -eq "RecoveryPassword"})
+    $passwords = $bitLockerVolume.KeyProtector.Where({$_.KeyProtectorType -eq "RecoveryPassword"})
 
-    if(!$matchingpswd) {
-      Write-Host "$osVolumeLetter Volume does not have the following password: $RecoveryKey"
+    if(!$passwords) {
+      Write-Host "The System Drive $osVolumeLetter does not have an available Recovery Key."
       exit 1
     }
 
+    $recoveryKey = $passwords[0].RecoveryPassword
+
     # Get all recovery keys that do not match the passed in key.
-    $nonMatchingpswds = $bitLockerVolume.KeyProtector.Where({$_.RecoveryPassword -ne "$RecoveryKey" -and $_.KeyProtectorType -eq "RecoveryPassword"})
+    $nonMatchingpswds = $bitLockerVolume.KeyProtector.Where({$_.RecoveryPassword -ne "$recoveryKey" -and $_.KeyProtectorType -eq "RecoveryPassword"})
 
     foreach($pswd in $nonMatchingpswds) {
-      # Remove all non-matching keys.
-      Remove-BitLockerKeyProtector -MountPoint $osVolumeLetter -KeyProtectorId $pswd.KeyProtectorId -ErrorAction Stop
+      $recoveryPasswords = $bitLockerVolume.KeyProtector.Where({$_.KeyProtectorType -eq "RecoveryPassword"})
+      $numPasswords = [int]$recoveryPasswords.count
+
+      if($numPasswords -gt 1) {
+        # Remove all non-matching keys.
+        Remove-BitLockerKeyProtector -MountPoint $osVolumeLetter -KeyProtectorId $pswd.KeyProtectorId -ErrorAction Stop
+      }
     }
   }
   catch {
@@ -55,14 +51,12 @@ function Remove-NonMatchingBitLockerRecoveryPasswords {
   }
 }
 
-Remove-NonMatchingBitLockerRecoveryPasswords $RecoveryKey
+Remove-NonMatchingBitLockerRecoveryPasswords
 ```
 
 #### Description
 
-WARNING: Incorrect usage of this command can result in unintended Recovery Passwords being removed and the drive potentially unusable.
-
-This command removes extra Bitlocker Recovery Passwords. The $RecoveryKey variable must be set to the recovery password that is to be PRESERVED.
+WARNING: This script attempts to remove extra Bitlocker Recovery passwords. Ideal use of this script would be at a time when there is a low chance of the device rebooting.
 
 #### _Import This Command_
 
