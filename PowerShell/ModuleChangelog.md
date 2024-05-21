@@ -1,3 +1,17 @@
+## 2.10.2
+
+Release Date: May 15, 2024
+
+#### RELEASE NOTES
+
+```
+Removed the unused `systemToken` property from the Get-JCSystem function
+```
+
+#### FEATURES:
+
+Removed the `systemToken` property from the Get-JCSystem function
+
 ## 2.10.1
 
 Release Date: April 2, 2024
