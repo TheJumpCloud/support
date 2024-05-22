@@ -16,6 +16,7 @@ function Enable-JumpCloud.Office365.SSO {
             $Metadata = Get-MetaDataFromXML -XMLFilePath $XMLFilePath
             $IDPUrl = $Metadata.IDPUrl
             $Domain = $Metadata.Domain
+            $EntityID = $Metadata.EntityID
             $Certificate = $Metadata.Certificate
             $logoutUrl = "https://console.jumpcloud.com/userconsole/"
 
@@ -43,7 +44,7 @@ function Enable-JumpCloud.Office365.SSO {
                 $SetDomainParams = @{
                     DomainName                      = $Domain
                     DisplayName                     = $Domain
-                    IssuerUri                       = "https://$Domain"
+                    IssuerUri                       = $EntityID
                     SignOutUri                      = $logoutUrl
                     PassiveSignInUri                = $IDPUrl
                     ActiveSignInUri                 = $idpUrl
