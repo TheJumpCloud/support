@@ -411,9 +411,9 @@ Function New-JCUser () {
         if ($enable_user_portal_multifactor -eq $True) {
             if ($state -eq 'STAGED') {
                 if ($PSBoundParameters['EnrollmentDays']) {
-                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
+                    $exclusionUntil = $PSBoundParameters['EnrollmentDays']
                 } else {
-                    $exclusionUntil = (Get-Date).AddDays(7)
+                    $exclusionUntil = 7
                 }
                 $mfa = @{ }
                 $mfa.Add("exclusion", $true)
