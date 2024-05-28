@@ -419,6 +419,17 @@ Describe -Tag:('JCUser') "New-JCUser MFA with enrollment periods 1.10" {
         $Newuser | Remove-JCUser -ByID -force
 
     }
+    It "Creates a new user with enable_user_portal_multifactor -eq True and a 30 days specified for EnrollmentDays and the user state is STAGED" {
+
+        $EnrollmentDays = 30
+
+        $Newuser = New-RandomUser -Domain "delNewUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays -state "STAGED"
+
+        $Newuser.mfa.exclusion | Should -Be $true
+
+        $Newuser | Remove-JCUser -ByID -force
+
+    }
 
 }
 
