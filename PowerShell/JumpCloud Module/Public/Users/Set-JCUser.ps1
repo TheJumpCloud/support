@@ -1421,28 +1421,16 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             $body.add('attributes', $UpdatedAttributeArrayList)
 
             if ($enable_user_portal_multifactor -eq $True) {
-                if ($state -eq 'STAGED') {
-                    if ($PSBoundParameters['EnrollmentDays']) {
-                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    } else {
-                        $exclusionUntil = (Get-Date).AddDays(7)
-                    }
-                    $mfa = @{ }
-                    $mfa.Add("exclusion", $true)
-                    $mfa.Add("exclusionDays", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfa)
+                if ($PSBoundParameters['EnrollmentDays']) {
+                    $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
                 } else {
-                    if ($PSBoundParameters['EnrollmentDays']) {
-                        $exclusionUntil = (Get-Date).AddDays($PSBoundParameters['EnrollmentDays'])
-                    } else {
-                        $exclusionUntil = (Get-Date).AddDays(7)
-                    }
-
-                    $mfa = @{ }
-                    $mfa.Add("exclusion", $true)
-                    $mfa.Add("exclusionUntil", [string]$exclusionUntil)
-                    $body.Add('mfa', $mfa)
+                    $exclusionUntil = (Get-Date).AddDays(7)
                 }
+
+                $mfa = @{ }
+                $mfa.Add("exclusion", $true)
+                $mfa.Add("exclusionUntil", [string]$exclusionUntil)
+                $body.Add('mfa', $mfa)
             }
 
             if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
