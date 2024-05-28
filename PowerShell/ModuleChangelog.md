@@ -1,3 +1,17 @@
+## 2.10.2
+
+Release Date: May 28, 2024
+
+#### RELEASE NOTES
+
+```
+Fixed a bug when creating a staged user and attempting to enable MFA
+```
+
+#### BUG FIXES:
+
+Fixed a bug when creating a staged user and attempting to enable MFA
+
 ## 2.10.1
 
 Release Date: April 2, 2024
