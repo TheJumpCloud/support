@@ -5,7 +5,7 @@ function Get-CertBySHA {
     param (
         [Parameter()]
         [string]
-        $sha1,
+        $sha1
     )
 
     begin {

@@ -13,7 +13,7 @@ function Update-JCRUsersJson {
         foreach ($user in $Global:JCRRadiusMembers) {
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
-            $InstalledCerts = Get-CertBySHA -sha1 $userArrayObject.certInfo.sha1 -userId $user.userID
+            $InstalledCerts = Get-CertBySHA -sha1 $userArrayObject.certInfo.sha1
 
             if ($userIndex -ge 0) {
                 # $userArrayObject
