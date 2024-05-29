@@ -98,7 +98,13 @@ function Deploy-UserCertificate {
                 'macOS' {
                     # Get the macOS system ids
                     $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'macOS' } | Select-Object systemId
-
+                    # If the certificate is already on the device, no need to process the command
+                    $systemIds = $systemIds | Where-Object { $_.systemId -notin $user.deploymentInfo.SystemId }
+                    # If there are no systemIds to process, skip generating the command:
+                    if ($systemIds.count -eq 0) {
+                        Write-Warning "There are no remaining macOS systems for $($user.username)'s cert to be installed on"
+                        continue
+                    }
                     # Check to see if previous commands exist
                     $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
 
@@ -274,7 +280,13 @@ fi
                 'windows' {
                     # Get the Windows system ids
                     $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'windows' } | Select-Object systemId
-
+                    # If the certificate is already on the device, no need to process the command
+                    $systemIds = $systemIds | Where-Object { $_.systemId -notin $user.deploymentInfo.SystemId }
+                    # If there are no systemIds to process, skip generating the command:
+                    if ($systemIds.count -eq 0) {
+                        Write-Warning "There are no remaining windows systems for $($user.username)'s cert to be installed on"
+                        continue
+                    }
                     # Check to see if previous commands exist
                     $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
 

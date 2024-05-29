@@ -21,7 +21,10 @@ function Set-UserTable {
         $commandAssociationsObject,
         [Parameter()]
         [System.Object]
-        $certInfoObject
+        $certInfoObject,
+        [Parameter()]
+        [System.Object]
+        $deploymentObject
     )
     begin {
         # Get User Array:
@@ -57,6 +60,11 @@ function Set-UserTable {
         } else {
             $certInfo = $userObject.certInfo
         }
+        if ($deploymentObject) {
+            $deploymentInfo = $deploymentObject
+        } else {
+            $deploymentInfo = $userObject.deploymentInfo
+        }
     }
     process {
         # build the userTable object
@@ -67,6 +75,7 @@ function Set-UserTable {
             systemAssociations  = $systemAssociationsInfo
             commandAssociations = $commandAssociationsInfo
             certInfo            = $certInfo
+            deploymentInfo      = $deploymentInfo
         }
         # set the user table to new object
         $userArray[$userIndex] = $userTable

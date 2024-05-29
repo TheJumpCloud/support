@@ -13,6 +13,7 @@ function Update-JCRUsersJson {
         foreach ($user in $Global:JCRRadiusMembers) {
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
+            $InstalledCerts = Get-CertBySHA -sha1 $userArrayObject.certInfo.sha1 -userId $user.userID
 
             if ($userIndex -ge 0) {
                 # $userArrayObject
@@ -33,14 +34,14 @@ function Update-JCRUsersJson {
                 try {
                     if ($currentSystemObject -eq $null) {
                         $difference = $incomingList
-                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList)
+                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList) -deploymentObject $InstalledCerts
                     } else {
                         # write-host "test for differences"
                         if ($currentSystemObject -eq $incomingList) {
                             # write-host "nothing to do"
                         } else {
                             # write-host "writing user to do"
-                            Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList)
+                            Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList) -deploymentObject $InstalledCerts
                         }
                     }
                 } catch {
@@ -52,9 +53,8 @@ function Update-JCRUsersJson {
                 # case for new user
                 New-UserTable -id $user.userID -username $MatchedUser.username -localUsername $matchedUser.systemUsername
             }
-
         }
-        # lastly validate users that should no longer be recorded:
+        # validate users that should no longer be recorded:
         $userArray = Get-UserJsonData
         foreach ($user in $userArray) {
             # If userID from users.json is no longer in RadiusMembers.keys, then:
