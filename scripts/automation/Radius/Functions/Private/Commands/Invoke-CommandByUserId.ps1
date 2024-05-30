@@ -33,11 +33,11 @@ function Invoke-CommandByUserid {
             $macOSArray.add($system.systemId) | Out-Null
         }
         # invoke commands
-        If ($macOS_commandId) {
+        If ($macOS_commandId -And $macOSArray) {
             $macInvokedCommands = Start-JcSdkCommand -Id $macOS_commandId -SystemIds $macOSArray
         }
 
-        if ($windows_commandId) {
+        if ($windows_commandId -And $windowsArray) {
             $windowsInvokedCommands = Start-JcSdkCommand -Id $windows_commandId -SystemIds $windowsArray
         }
     }
