@@ -1,3 +1,24 @@
+## 2.10.2
+
+Release Date: May 30, 2024
+
+#### RELEASE NOTES
+
+```
+Fixed a bug when creating a staged user and attempting to enable MFA
+Removed the unused `systemToken` property from the Get-JCSystem function
+```
+
+#### BUG FIXES:
+
+Fixed a bug when creating a staged user and attempting to enable MFA
+
+
+#### FEATURES:
+
+Removed the `systemToken` property from the Get-JCSystem function
+
+
 ## 2.10.1
 
 Release Date: April 2, 2024
