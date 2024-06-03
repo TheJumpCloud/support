@@ -10,7 +10,10 @@ function Update-JCRUsersJson {
     process {
         # validate that the system association data is correct in users.json:
         # $userArray = Get-UserJsonData
+        $i = 0
         foreach ($user in $Global:JCRRadiusMembers) {
+            $i++
+            Write-Progress -activity "Getting User Certificate Info" -status "$($user.username): $i of $($Global:JCRRadiusMembers.Count)" -percentComplete (($i / $Global:JCRRadiusMembers.Count) * 100)
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
             $InstalledCerts = Get-CertBySHA -sha1 $userArrayObject.certInfo.sha1
@@ -67,6 +70,7 @@ function Update-JCRUsersJson {
         }
     }
     end {
+        Clear-Host
         Set-UserJsonData -userArray $userArray
     }
 }
