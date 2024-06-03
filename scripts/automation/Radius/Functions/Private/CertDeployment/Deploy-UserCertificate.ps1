@@ -224,6 +224,38 @@ if [[ "`$currentUser" ==  "`$userCompare" ]]; then
         echo "Removing Temp Pfx"
         rm "/tmp/$($user.userName)-client-signed.pfx"
     fi
+
+    # update si table
+    # The conf file is JSON and can be parsed using JSON.parse() in a supported language.
+    conf="`$(cat /opt/jc/jcagent.conf)"
+    regex='\"systemKey\":\"([a-zA-Z0-9_]+)\"'
+    if [[ `${conf} =~ `$regex ]] ; then
+    systemKey="`${BASH_REMATCH[1]}"
+    fi
+    # get the certUUID
+    regex='\"certuuid\":\"([a-zA-Z0-9_]+)\"'
+    if [[ `${conf} =~ `$regex ]] ; then
+    certUUID="`${BASH_REMATCH[1]}"
+    fi
+
+    # get the key /cert locations
+    keyLocation="/opt/jc/client.key"
+    certLocation="/opt/jc/client.crt"
+    caCertLocation="/opt/jc/ca.crt"
+
+    # Get json certificate data from osquery and add missing windows certificate columns
+    certJson=`$(/opt/jc/bin/jcosqueryi --json "select *, '' AS sid, '' AS store, '' AS store_id, '' AS store_location, '' AS username from certificates;")
+
+    # post
+    curl --cert `$certLocation --key `$keyLocation --cacert `$caCertLocation \
+    -X POST 'https://agent.jumpcloud.com/systeminsights/snapshots/certificates' \
+    -H "x-system-id: `$systemKey" \
+    -H "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" \
+    -H 'Content-Type: application/json' \
+    --data-raw '{
+        "data": '"`$certJson"'
+    }'
+
 else
     # restore case match type
     `$caseMatchOrigValue
@@ -373,6 +405,39 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
         Write-Host "Cert was installed"
     } else {
         Throw "Cert was not installed"
+    }
+
+    # update si table
+    # define curl path:
+    `$curlPath = "C:\ProgramData\chocolatey\bin\curl.exe"
+    if (Test-Path -Path `$curlPath) {
+
+        # Parse the systemKey from the cong file.
+        `$config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
+        `$regex = 'systemKey\":\"(\w+)\"'
+        `$systemKey = [regex]::Match(`$config, `$regex).Groups[1].Value
+        # get the certUUID
+        `$regex = 'certuuid\":\"(\w+)\"'
+        `$certUUID = [regex]::Match(`$config, `$regex).Groups[1].Value
+
+        # Get the key/ cert location
+        `$keyLocation = "C:\Program Files\JumpCloud\Plugins\Contrib\client.key"
+        `$certLocation = "C:\Program Files\JumpCloud\Plugins\Contrib\client.crt"
+        `$caCertLocation = "C:\Program Files\JumpCloud\Plugins\Contrib\ca.crt"
+
+        # Get json certificate data from osquery
+        `$certs = . "C:\Program Files\JumpCloud\jcosqueryi" --json "select * from certificates"
+        # format the data
+        `$certsText = "{``"data``":`$certs}"
+        # save the data to a temp file
+        `$certJsonFile = "C:\Windows\Temp\jsonFile.txt"
+        `$certsText | Out-File -FilePath `$certJsonFile -Force -Encoding utf8
+        # submit the request
+        C:\ProgramData\chocolatey\bin\curl.exe --cert "`$certLocation" --key "`$keyLocation" --cacert "`$caCertLocation" --header "x-system-id: `$systemKey" --header "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" --header "Content-type:application/json " -d @C:\Windows\Temp\jsonFile.txt --url 'https://agent.jumpcloud.com/systeminsights/snapshots/certificates'
+        # remove the temp file
+        Remove-Item -Path `$certJsonFile
+    } else {
+        Write-Host "Curl might not be installed, system insights will update certificate information on this device within an hour"
     }
 } else {
     if (`$CurrentUser -eq `$null){
