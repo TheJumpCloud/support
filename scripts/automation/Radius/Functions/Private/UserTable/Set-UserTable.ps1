@@ -63,7 +63,7 @@ function Set-UserTable {
         if ($deploymentObject) {
             $deploymentInfo = $deploymentObject
         } else {
-            $deploymentInfo = $userObject.deploymentInfo
+            $deploymentInfo = $null
         }
     }
     process {

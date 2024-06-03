@@ -97,10 +97,7 @@ function Deploy-UserCertificate {
             switch ($user.systemAssociations.osFamily) {
                 'macOS' {
                     # Get the macOS system ids
-                    $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'macOS' } | Select-Object systemId
-                    # If the certificate is already on the device, no need to process the command
-                    $systemIds = $systemIds | Where-Object { $_.systemId -notin $user.deploymentInfo.SystemId }
-                    # If there are no systemIds to process, skip generating the command:
+                    $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
                     if ($systemIds.count -eq 0) {
                         continue
                     }
@@ -278,9 +275,7 @@ fi
                 }
                 'windows' {
                     # Get the Windows system ids
-                    $systemIds = $user.systemAssociations | Where-Object { $_.osFamily -eq 'windows' } | Select-Object systemId
-                    # If the certificate is already on the device, no need to process the command
-                    $systemIds = $systemIds | Where-Object { $_.systemId -notin $user.deploymentInfo.SystemId }
+                    $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "windows")
                     # If there are no systemIds to process, skip generating the command:
                     if ($systemIds.count -eq 0) {
                         continue
@@ -407,7 +402,9 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
 
                         # Find newly created command and add system as target
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
-                        $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
+                        $systemIds | ForEach-Object {
+                            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null
+                        }
                     } catch {
                         $status_commandGenerated = $false
                         # throw $_

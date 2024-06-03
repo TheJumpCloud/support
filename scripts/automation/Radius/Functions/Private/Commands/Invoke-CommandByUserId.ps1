@@ -17,9 +17,9 @@ function Invoke-CommandByUserid {
         # get Windows Command
         $windows_commandId = ($userObject.commandAssociations | Where-Object { $_.commandName -match "Windows" }).commandId
         # get list of macOS systems
-        $macOS_systemIds = $userObject.systemAssociations | Where-Object { $_.osFamily -eq "macOS" }
+        $macOS_systemIds = Get-SystemsThatNeedCertWork -userData $userObject -osType "macOS"
         # get list of Windows systems
-        $windows_systemIds = $userObject.systemAssociations | Where-Object { $_.osFamily -eq "windows" }
+        $windows_systemIds = Get-SystemsThatNeedCertWork -userData $userObject -osType "windows"
     }
 
     process {

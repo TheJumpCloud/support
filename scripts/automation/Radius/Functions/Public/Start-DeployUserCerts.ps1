@@ -19,11 +19,13 @@ function Start-DeployUserCerts {
 
     # Import the users.json file and convert to PSObject
     $userArray = Get-UserJsonData
+    # identify users that need their certs still deployed
+    $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
 
     do {
         switch ($PSCmdlet.ParameterSetName) {
             'gui' {
-                Show-DistributionMenu -CertObjectArray $userArray.certInfo
+                Show-DistributionMenu -CertObjectArray $userArray.certInfo -usersThatNeedCert $usersWithoutLatestCert.count -totalUserCount $userArray.count
                 $confirmation = Read-Host "Please make a selection"
 
             }
@@ -81,7 +83,9 @@ function Start-DeployUserCerts {
                         }
                     }
                 }
-                $usersWithoutLatestCert = $userArray | Where-Object { ( $_.certinfo.deployed -eq $false) -or (-not $_.certinfo.deployed) }
+                if (-Not $usersWithoutLatestCert) {
+                    $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
+                }
                 for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
                     $result = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -forceInvokeCommands $invokeCommands
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $usersWithoutLatestCert.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
