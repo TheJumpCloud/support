@@ -10,9 +10,13 @@ function Update-JCRUsersJson {
     process {
         # validate that the system association data is correct in users.json:
         # $userArray = Get-UserJsonData
+        $i = 0
         foreach ($user in $Global:JCRRadiusMembers) {
+            $i++
+            Write-Progress -activity "Getting User Certificate Info" -status "$($user.username): $i of $($Global:JCRRadiusMembers.Count)" -percentComplete (($i / $Global:JCRRadiusMembers.Count) * 100)
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
+            $InstalledCerts = Get-CertBySHA -sha1 $userArrayObject.certInfo.sha1
 
             if ($userIndex -ge 0) {
                 # $userArrayObject
@@ -33,14 +37,14 @@ function Update-JCRUsersJson {
                 try {
                     if ($currentSystemObject -eq $null) {
                         $difference = $incomingList
-                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList)
+                        Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList) -deploymentObject $InstalledCerts
                     } else {
                         # write-host "test for differences"
                         if ($currentSystemObject -eq $incomingList) {
                             # write-host "nothing to do"
                         } else {
                             # write-host "writing user to do"
-                            Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList)
+                            Set-UserTable -index $userIndex -username $MatchedUser.username -localUsername $MatchedUser.systemUsername -systemAssociationsObject ($incomingList) -deploymentObject $InstalledCerts
                         }
                     }
                 } catch {
@@ -52,9 +56,8 @@ function Update-JCRUsersJson {
                 # case for new user
                 New-UserTable -id $user.userID -username $MatchedUser.username -localUsername $matchedUser.systemUsername
             }
-
         }
-        # lastly validate users that should no longer be recorded:
+        # validate users that should no longer be recorded:
         $userArray = Get-UserJsonData
         foreach ($user in $userArray) {
             # If userID from users.json is no longer in RadiusMembers.keys, then:
@@ -67,6 +70,7 @@ function Update-JCRUsersJson {
         }
     }
     end {
+        Clear-Host
         Set-UserJsonData -userArray $userArray
     }
 }

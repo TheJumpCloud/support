@@ -3,7 +3,13 @@ function Show-DistributionMenu {
     param (
         [Parameter()]
         [System.Object]
-        $certObjectArray
+        $certObjectArray,
+        [Parameter()]
+        [System.Int32]
+        $usersThatNeedCertCount,
+        [Parameter()]
+        [System.Int32]
+        $TotalUserCount
     )
 
     $title = ' JumpCloud Radius Cert Deployment '
@@ -12,11 +18,11 @@ function Show-DistributionMenu {
     Write-Host $(PadCenter -string "Select an option below to deploy user certificates to systems`n" -char ' ') -ForegroundColor Yellow
     # deployment progress of newly generated certs
     if ($certObjectArray) {
-
         Write-Host $(PadCenter -string ' Certificate Information ' -char '-')
         Write-Host "Total # of local user certificates:" $certObjectArray.count
         Write-Host "Total # of already distributed certificates:" ($certObjectArray | Where-Object { $_.deployed -eq $true }).count
         Write-Host "Total # of un-deployed certificates:" ($certObjectArray | Where-Object { ( $_.deployed -eq $false) -or (-not $_.deployed) }).count
+        Write-Host "Users that have all their certificates installed: $([int]$TotalUserCount-[int]$usersThatNeedCertCount) of $TotalUserCount"
 
     }
     # ==== instructions ====

@@ -17,9 +17,9 @@ function Invoke-CommandByUserid {
         # get Windows Command
         $windows_commandId = ($userObject.commandAssociations | Where-Object { $_.commandName -match "Windows" }).commandId
         # get list of macOS systems
-        $macOS_systemIds = $userObject.systemAssociations | Where-Object { $_.osFamily -eq "macOS" }
+        $macOS_systemIds = Get-SystemsThatNeedCertWork -userData $userObject -osType "macOS"
         # get list of Windows systems
-        $windows_systemIds = $userObject.systemAssociations | Where-Object { $_.osFamily -eq "windows" }
+        $windows_systemIds = Get-SystemsThatNeedCertWork -userData $userObject -osType "windows"
     }
 
     process {
@@ -33,11 +33,11 @@ function Invoke-CommandByUserid {
             $macOSArray.add($system.systemId) | Out-Null
         }
         # invoke commands
-        If ($macOS_commandId) {
+        If ($macOS_commandId -And $macOSArray) {
             $macInvokedCommands = Start-JcSdkCommand -Id $macOS_commandId -SystemIds $macOSArray
         }
 
-        if ($windows_commandId) {
+        if ($windows_commandId -And $windowsArray) {
             $windowsInvokedCommands = Start-JcSdkCommand -Id $windows_commandId -SystemIds $windowsArray
         }
     }
