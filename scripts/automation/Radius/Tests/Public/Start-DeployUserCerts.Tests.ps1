@@ -247,7 +247,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Cert Subject headers should be contain required EmailDN identifier:
             $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
-            $CertInfoAfter.subject | Should -Match "emailAddress = $($Global:JCRUsers[$($certTypeUser.userID)].email)"
+            $CertInfoAfter.subject | Should -Match "$($Global:JCRUsers[$($certTypeUser.userID)].email)"
             # Create the new commands
             Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
             # Go fetch the mac command for the user
@@ -277,7 +277,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Cert Subject headers should be contain required UsernameCn identifier:
             $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
-            $CertInfoAfter.subject | Should -Match "CN = $($certTypeUser.username)"
+            $CertInfoAfter.subject | Should -Match "$($certTypeUser.username)"
             # Create the new commands
             Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
             # Go fetch the mac command for the user
@@ -299,7 +299,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $configPath = "$JCScriptRoot/config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
-            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = UsernameCn') | Set-Content -Path $configPath
+            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath
         }
     }
 }

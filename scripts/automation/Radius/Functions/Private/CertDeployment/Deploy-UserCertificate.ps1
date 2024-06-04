@@ -78,7 +78,7 @@ function Deploy-UserCertificate {
                 }
                 'EmailDN' {
                     # Else set cert identifier to email of cert subject
-                    $regex = 'emailAddress = (.*?)$'
+                    $regex = 'emailAddress=(.*?)$'
                     $JCR_SUBJECT_HEADERSMatch = Select-String -InputObject "$($certInfo.Subject)" -Pattern $regex
                     $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
                     # in macOS search user certs by email

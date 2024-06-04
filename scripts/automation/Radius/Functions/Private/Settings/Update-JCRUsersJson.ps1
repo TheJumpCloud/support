@@ -70,7 +70,7 @@ function Update-JCRUsersJson {
         }
     }
     end {
-        Clear-Host
+        # Clear-Host
         Set-UserJsonData -userArray $userArray
     }
 }
