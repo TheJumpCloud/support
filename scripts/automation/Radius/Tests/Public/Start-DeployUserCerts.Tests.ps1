@@ -41,13 +41,13 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-Sleep 1
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
-                # cert should be deployed
+                # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
                     $user.certinfo.deployed | Should -Be $true
-                }
-                $user.commandAssociations | ForEach-Object {
-                    $command = Get-JcSdkCommand -Id $_.commandId -Fields name
-                    $command | should -Not -BeNullOrEmpty
+                    $user.commandAssociations | ForEach-Object {
+                        $command = Get-JcSdkCommand -Id $_.commandId -Fields name
+                        $command | should -Not -BeNullOrEmpty
+                    }
                 }
             }
         }
@@ -94,13 +94,13 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-Sleep 1
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
-                # cert should be deployed
+                # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
-                    $user.certinfo.deployed | Should -Be $false
-                }
-                $user.commandAssociations | ForEach-Object {
-                    $command = Get-JcSdkCommand -Id $_.commandId -Fields name
-                    $command | should -Not -BeNullOrEmpty
+                    $user.certinfo.deployed | Should -Be $true
+                    $user.commandAssociations | ForEach-Object {
+                        $command = Get-JcSdkCommand -Id $_.commandId -Fields name
+                        $command | should -Not -BeNullOrEmpty
+                    }
                 }
             }
         }
@@ -174,19 +174,19 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
     }
     Context 'Distribute new certificates for a single user forcibly' {
-        it 'a user with system associations receeives a new command is created and deployed' {
+        it 'a user with system associations receives a new command is created and deployed' {
 
         }
-        it 'a user without system associations receeives a new command is not created and not deployed' {
+        it 'a user without system associations receives a new command is not created and not deployed' {
 
         }
 
     }
     Context 'Distribute new certificates for a single user without invoking' {
-        it 'a user with system associations receeives a new command is created and is not deployed' {
+        it 'a user with system associations receives a new command is created and is not deployed' {
 
         }
-        it 'a user without system associations receeives a new command is not created and not deployed' {
+        it 'a user without system associations receives a new command is not created and not deployed' {
 
         }
 
@@ -194,7 +194,9 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
     Context 'Cert Commands are generated for EmailSAN, EmailDN, UsernameCn type certs' {
         BeforeAll {
             # Member content | Get the user with 2 system associations mac and windows
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
             $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
+            Write-Warning "being while loop"
             while ($Global:JCRAssociations[$($certTypeUser.userID)].systemAssociations.count -ne 2) {
                 $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
             }

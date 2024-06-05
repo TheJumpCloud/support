@@ -102,8 +102,10 @@ function Get-CertInfo {
                     $username = $certFile.name.split('-')[0]
                     $certHash | Add-Member -Name 'username' -Type NoteProperty -Value $username
                     $certHash | Add-Member -Name 'generated' -Type NoteProperty -Value ($certFile.LastWriteTime.ToString('MM/dd/yyyy HH:mm:ss'))
-                    # Add hash to certObj array
-                    $certObj.add( $certHash) | Out-Null
+                    # Add hash to certObj array if the user is a member of the userGroup
+                    if ($username -in $global:JCRRadiusMembers.username) {
+                        $certObj.add( $certHash) | Out-Null
+                    }
                 }
             }
         }

@@ -12,6 +12,9 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     }
     Context 'Certs forcibly re-generated for all users' {
         It 'Certs re-generated have actually been re-written for all users' {
+            # first generate user certs
+            Start-GenerateUserCerts -type All -forceReplaceCerts
+            # capture the current time and cert times.
             $timeBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             $certsBefore = Get-CertInfo -UserCerts
             # wait one second.
@@ -31,13 +34,13 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
     }
     Context 'Certs generated for newly added users' {
-        beforeall {
+        BeforeAll {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -filter "$($user.username)*"
             # if user cert exists, for random user, remove:
             foreach ($cert in $certs) {
-                remove-item $cert.fullname
+                remove-item $cert.Fullname
             }
 
         }
@@ -75,7 +78,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
 
     }
-    Context 'Certs generated for users whos cert is set to exipre soon' {
+    Context 'Certs generated for users who have certs that are about set to expire soon' {
         BeforeAll {
             # import necessary functions:
             . "$JCScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
@@ -99,7 +102,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
 
         }
-        It 'Certs that are set to expire soon can be updated' {
+        It 'Certs that are set to expire soon can be updated programmatically' {
             # at this point expiring certs should be populated from beforeAll block
             $Global:expiringCerts | Should -not -BeNullOrEmpty
             # reset the validity counter

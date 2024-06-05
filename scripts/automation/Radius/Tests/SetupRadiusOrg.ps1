@@ -17,7 +17,6 @@ Write-Warning "Removing Pester Radius Users with emailDomain: *pesterRadius*"
 $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
 
 # Create users
-
 Write-Warning "Creating New Pester Radius Users"
 # user bound to mac
 $macUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
