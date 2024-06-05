@@ -126,7 +126,7 @@ jobs:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
-          . "./scripts/automation/Radius/Tests/InvokePester.ps1" -ModuleValidation
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
     runs-on: ubuntu-latest
@@ -161,4 +161,4 @@ jobs:
           Connect-JCOnline -JumpCloudApiKey:("$env:PESTER_APIKEY") -force | Out-Null
 
           # Invoke Pester
-          . "./scripts/automation/Radius/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
