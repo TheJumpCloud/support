@@ -10,7 +10,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             }
         }
         # import helper functions:
-        . "$PSScriptRoot/../../../../../PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
+        . "$PSScriptRoot/../HelperFunctions.ps1"
         # Manually update user associations for radius members, cache won't pick them up before:
         foreach ($user in $global:JCRRadiusMembers) {
             Set-JCRAssociationHash -UserID $user.userID

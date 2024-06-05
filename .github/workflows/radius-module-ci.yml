@@ -154,8 +154,3 @@ jobs:
           }
           # Invoke Pester
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
-
-
-
-          /home/runner/work/support/support/scripts/automation/Radius/
-          /home/runner/work/support/support/scripts/automation/Radius/config.ps1

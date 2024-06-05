@@ -8,7 +8,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             'userHash.json'
         )
         # explicitly import the settings file functions for these tests:
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/settings/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
