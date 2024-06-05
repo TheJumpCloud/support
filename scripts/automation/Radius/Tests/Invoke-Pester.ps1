@@ -44,12 +44,12 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
         "$PSScriptRoot/ModuleValidation/"
     )
 } else {
+    $env:JCAPIKEY = $JumpCloudApiKey
+    Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
     Write-Host "Begin Org Setup Before Tests:"
     . "$PSScriptRoot/SetupRadiusOrg.ps1"
 }
 
-$env:JCAPIKEY = $JumpCloudApiKey
-Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
 
 if (-Not $PesterRunPaths) {
     $PesterRunPaths = @(
@@ -60,7 +60,6 @@ if (-Not $PesterRunPaths) {
 Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Functions/Private/*.ps1")
 Write-Host ('[status]Load public functions: ' + "$PSScriptRoot/../Functions/Public/*.ps1")
 Get-ChildItem -Path:("$PSScriptRoot/../Functions/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
-
 
 # Set the test result directory:
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
