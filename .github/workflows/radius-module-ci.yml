@@ -148,5 +148,14 @@ jobs:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
         run: |
+          $items = get-childItem -path "./scripts/automation/Radius/"
+          foreach ($item in $items){
+            write-host "$(item.FullName)"
+          }
           # Invoke Pester
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
+
+
+
+          /home/runner/work/support/support/scripts/automation/Radius/
+          /home/runner/work/support/support/scripts/automation/Radius/config.ps1
