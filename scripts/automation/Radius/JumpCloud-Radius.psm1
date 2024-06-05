@@ -24,7 +24,7 @@ Foreach ($Import in $Public) {
 $global:JCScriptRoot = "$PSScriptRoot"
 
 # import config:
-. "$JCScriptRoot/config.ps1"
+. "$JCScriptRoot/Config.ps1"
 # try to get the settings file, create new one if it does not exist:
 $global:JCRConfig = Get-JCRSettingsFile
 

@@ -203,7 +203,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailSAN certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "EmailSAN"') | Set-Content -Path $configPath
@@ -237,7 +237,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailDN certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "EmailDN"') | Set-Content -Path $configPath
@@ -267,7 +267,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'UsernameCn certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath
@@ -298,7 +298,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         AfterAll {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath

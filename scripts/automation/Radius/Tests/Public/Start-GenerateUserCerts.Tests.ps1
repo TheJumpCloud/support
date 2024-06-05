@@ -84,7 +84,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             . "$JCScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
             . "$JCScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath

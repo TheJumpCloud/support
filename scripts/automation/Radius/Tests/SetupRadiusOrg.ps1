@@ -96,6 +96,7 @@ Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $bothUser.id -Op "add"
 Write-Warning "Updating Config File"
 
 $configPath = Resolve-Path -Path "$PSScriptRoot/../Config.ps1"
+write-warning $configPath
 $configContent = Get-Content -path $configPath
 # Update the userGroupID:
 $configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GROUP = `"$($radiusUserGroup.id)`"") | Set-Content -Path $configPath
