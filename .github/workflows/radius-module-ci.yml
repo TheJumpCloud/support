@@ -141,7 +141,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Radius-Dependancies
       - uses: actions/download-artifact@v3
         with:
           name: jumpcloud-vars
