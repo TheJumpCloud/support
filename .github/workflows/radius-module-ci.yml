@@ -142,9 +142,6 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Radius-Dependancies
-      - uses: actions/download-artifact@v3
-        with:
-          name: jumpcloud-vars
       - name: Test PWSH Module
         shell: pwsh
         env:
