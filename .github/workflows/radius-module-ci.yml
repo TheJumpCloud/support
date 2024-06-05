@@ -142,19 +142,11 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Radius-Dependancies
-      - name: Test PWSH Module
+      - name: Test PWSH Radius Module
         shell: pwsh
         env:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
         run: |
-          Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
-
-          # Import JC Module
-          Import-Module "${{github.workspace}}/scripts/automation/Radius/JumpCloud-Radius.psd1"
-
-          # Authenticate to JC Org
-          Connect-JCOnline -JumpCloudApiKey:("$env:PESTER_APIKEY") -force | Out-Null
-
           # Invoke Pester
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
