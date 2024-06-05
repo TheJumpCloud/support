@@ -2,9 +2,12 @@
 # There are two parameter sets
 Param(
     [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0)][ValidateNotNullOrEmpty()][System.String]$JumpCloudApiKey
-    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$ExcludeTagList
-    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 3)][System.String[]]$IncludeTagList
+    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 1)][System.String[]]$ExcludeTagList
+    , [Parameter(ParameterSetName = 'SingleOrgTests', Mandatory = $false, ValueFromPipelineByPropertyName = $true, Position = 2)][System.String[]]$IncludeTagList
+    , [Parameter(ParameterSetName = 'ModuleValidation', Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 3)][switch]$ModuleValidation
 )
+
+
 
 # Get list of tags and validate that tags have been applied
 $PesterTests = Get-ChildItem -Path:($PSScriptRoot + '/*.Tests.ps1') -Recurse
@@ -35,42 +38,16 @@ If ($PesterRunPaths) {
     Clear-Variable -Name PesterRunPaths
 }
 # Determine the parameter set path
-
-if ($env:CI) {
-    If ($env:job_group) {
-        # split tests by job group:
-        $PesterTestsPaths = Get-ChildItem -Path $PSScriptRoot -Filter *.Tests.ps1 -Recurse | Where-Object size -GT 0 | Sort-Object -Property Name
-        Write-Host "[Status] $($PesterTestsPaths.count) tests found"
-        $CIindex = @()
-        $numItems = $($PesterTestsPaths.count)
-        $numBuckets = 3
-        $itemsPerBucket = [math]::Floor(($numItems / $numBuckets))
-        $remainder = ($numItems % $numBuckets)
-        $extra = 0
-        for ($i = 0; $i -lt $numBuckets; $i++) {
-            <# Action that will repeat until the condition is met #>
-            if ($i -eq ($numBuckets - 1)) {
-                $extra = $remainder
-            }
-            $indexList = ($itemsPerBucket + $extra)
-            # Write-Host "Container $i contains $indexList items:"
-            $CIIndexList = @()
-            $CIIndexList += for ($k = 0; $k -lt $indexList; $k++) {
-                <# Action that will repeat until the condition is met #>
-                $bucketIndex = $i * $itemsPerBucket
-                # write-host "`$tags[$($bucketIndex + $k)] ="$tags[($bucketIndex + $k)]
-                $PesterTestsPaths[$bucketIndex + $k]
-            }
-            # add to ciIndex Array
-            $CIindex += , ($CIIndexList)
-        }
-        $PesterRunPaths = $CIindex[[int]$($env:job_group)]
-        Write-Host "[status] The following $($($CIindex[[int]$($env:job_group)]).count) tests will be run:"
-        $($CIindex[[int]$($env:job_group)]) | ForEach-Object { Write-Host "$_" }
-    }
+if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
+    $IncludeTags = "ModuleValidation"
+    $PesterRunPaths = @(
+        "$PSScriptRoot/ModuleValidation/"
+    )
 } else {
-    # run setup org locally and set variables
+    Write-Host "Begin Org Setup Before Tests:"
+    . "$PSScriptRoot/SetupRadiusOrg.ps1"
 }
+
 $env:JCAPIKEY = $JumpCloudApiKey
 Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
 
@@ -104,8 +81,6 @@ $configuration.Filter.ExcludeTag = $ExcludeTagList
 $configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
 $configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
 
-Write-Host "Begin Org Setup Before Tests:"
-. "$PSScriptRoot/SetupRadiusOrg.ps1"
 
 Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PesterRunPaths') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 # Run Pester tests
