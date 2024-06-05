@@ -150,7 +150,7 @@ jobs:
         run: |
           $items = get-childItem -path "./scripts/automation/Radius/"
           foreach ($item in $items){
-            write-host "$(item.FullName)"
+            write-host "$($item.FullName)"
           }
           # Invoke Pester
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
