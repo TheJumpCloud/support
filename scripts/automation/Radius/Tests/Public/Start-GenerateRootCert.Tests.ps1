@@ -9,7 +9,7 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
                     Remove-Item -Path $item.FullName
                 }
             }
-            Start-GenerateRootCert -certKeyPassword "Test123"
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#"
 
             # both the key and the cert should be generated
             $itemsAfter = Get-ChildItem $JCScriptRoot/Cert
@@ -32,7 +32,7 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             # get existing cert serial:
             $origSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
             # force generate new CA
-            Start-GenerateRootCert -certKeyPassword "newTest1234"
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#"
             # get new SN
             $newSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
