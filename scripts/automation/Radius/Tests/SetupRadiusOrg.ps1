@@ -40,6 +40,9 @@ Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $macUser.id -Op "add"
 Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $windowsUser.id -Op "add"
 Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $bothUser.id -Op "add"
 
+# set a rootKeyPassword
+$env:certKeyPassword = -join ((65..90) + (97..122) | Get-Random -Count 5 | % { [char]$_ })
+
 # update config:
 Write-Warning "Updating Config File"
 
