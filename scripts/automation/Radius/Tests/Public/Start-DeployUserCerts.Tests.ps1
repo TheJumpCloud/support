@@ -16,6 +16,8 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Set-JCRAssociationHash -UserID $user.userID
         }
 
+        Start-GenerateRootCert -certKeyPassword "TestCertificate123!@#"
+
     }
     Context 'Distribute all certificates for all users forcibly' {
         BeforeAll {
