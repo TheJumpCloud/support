@@ -15,7 +15,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         foreach ($user in $global:JCRRadiusMembers) {
             Set-JCRAssociationHash -UserID $user.userID
         }
-
+        Get-JCRGlobalVars -Force -associateManually
         Start-GenerateRootCert -certKeyPassword "TestCertificate123!@#"
 
     }
@@ -37,7 +37,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
                 # cert should not be deployed
-                $user.certinfo.deployed | Should -Be $false
+                $user.certInfo.deployed | Should -Be $false
             }
             start-deployUserCerts -type All -forceInvokeCommands
             Start-Sleep 1
@@ -45,7 +45,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             foreach ($user in $userArray) {
                 # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
-                    $user.certinfo.deployed | Should -Be $true
+                    $user.certInfo.deployed | Should -Be $true
                     $user.commandAssociations | ForEach-Object {
                         $command = Get-JcSdkCommand -Id $_.commandId -Fields name
                         $command | should -Not -BeNullOrEmpty
@@ -64,7 +64,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
 
             start-deployUserCerts -type ByUsername -username $user.username -forceInvokeCommands
-            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj, $index = Get-UserFromTable -userId $user.id
             $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
             $obj.certInfo.deployed | Should -Be $false
             $obj.commandAssociations | should -be $null
@@ -90,7 +90,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
                 # cert should not be deployed
-                $user.certinfo.deployed | Should -Be $false
+                $user.certInfo.deployed | Should -Be $false
             }
             start-deployUserCerts -type All
             Start-Sleep 1
@@ -98,7 +98,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             foreach ($user in $userArray) {
                 # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
-                    $user.certinfo.deployed | Should -Be $true
+                    $user.certInfo.deployed | Should -Be $true
                     $user.commandAssociations | ForEach-Object {
                         $command = Get-JcSdkCommand -Id $_.commandId -Fields name
                         $command | should -Not -BeNullOrEmpty
@@ -140,7 +140,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
             start-deployUserCerts -type ByUsername -username $user.username -forceInvokeCommands
 
-            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj, $index = Get-UserFromTable -userId $user.id
             $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
             $obj.certInfo.deployed | Should -Be $true
             $obj.commandAssociations | should -Not -BeNullOrEmpty
@@ -166,7 +166,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
             start-deployUserCerts -type ByUsername -username $user.username
 
-            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj, $index = Get-UserFromTable -userId $user.id
             $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
             $obj.certInfo.deployed | Should -Be $false
             $obj.commandAssociations | should -Not -BeNullOrEmpty

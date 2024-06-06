@@ -94,7 +94,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
             }
             # run Get-JCRGlobalVars
-            Get-JCRGlobalVars
+            Get-JCRGlobalVars -Force -associateManually
 
             # check the files:
             $filesAfter = Get-ChildItem -Path $dataPath
