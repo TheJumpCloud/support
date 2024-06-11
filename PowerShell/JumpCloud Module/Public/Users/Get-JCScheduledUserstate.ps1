@@ -56,6 +56,7 @@ Function Get-JCScheduledUserstate () {
                         Lastname      = $_.Lastname
                         Email         = $_.email
                         Username      = $_.username
+                        State         = $State
                         ScheduledDate = $localScheduledDate
                     }
                     $resultsArrayList.Add($userResult) | Out-Null
@@ -66,18 +67,22 @@ Function Get-JCScheduledUserstate () {
                 $scheduledUser = Get-JcSdkBulkUserState -Userid $userId
                 # User attribute lookup
                 $user = Get-JcSdkUser -Id $userId | Select-Object firstname, lastname, email, username, id
-                # Convert date to local
-                $localScheduledDate = [datetime]$scheduledUser.ScheduledDate
-                # Create custom return object
-                $userResult = [pscustomobject]@{
-                    id            = $user.Id
-                    Firstname     = $user.Firstname
-                    Lastname      = $user.Lastname
-                    Email         = $user.email
-                    Username      = $user.username
-                    ScheduledDate = $LocalScheduledDate
+
+                $scheduledUser | ForEach-Object {
+                    # Convert date to local
+                    $localScheduledDate = [datetime]$_.ScheduledDate
+                    # Create custom return object
+                    $userResult = [pscustomobject]@{
+                        id            = $user.Id
+                        Firstname     = $user.Firstname
+                        Lastname      = $user.Lastname
+                        Email         = $user.email
+                        Username      = $user.username
+                        State         = $_.State
+                        ScheduledDate = $LocalScheduledDate
+                    }
+                    $resultsArrayList.Add($userResult) | Out-Null
                 }
-                $resultsArrayList.Add($userResult) | Out-Null
             }
         }
     }
