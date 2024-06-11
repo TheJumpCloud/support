@@ -28,6 +28,11 @@ Function Get-JCScheduledUserstate () {
                     $scheduledUsers = Get-JcSdkBulkUserState | Where-Object State -EQ 'ACTIVATED'
                 }
 
+                # If no results are found, return null
+                if (!$scheduledUsers) {
+                    return $null
+                }
+
                 # Create SearchBody to parse users
                 $searchUserBody = @{
                     filter = @{
