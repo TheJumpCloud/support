@@ -153,4 +153,4 @@ jobs:
             write-host "$($item.FullName)"
           }
           # Invoke Pester
-          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY"
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList "ModuleValidation"

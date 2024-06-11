@@ -92,7 +92,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 # cert should not be deployed
                 $user.certInfo.deployed | Should -Be $false
             }
-            start-deployUserCerts -type All
+            start-deployUserCerts -type All -forceInvokeCommands
             Start-Sleep 1
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
