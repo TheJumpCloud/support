@@ -40,6 +40,18 @@ Describe -Tag:('JCScheduledUserstate') 'Get-JCScheduledUserstate' {
         $scheduledUsers.Username | Should -Not -BeNullOrEmpty
         $scheuldedUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
     }
+    It "Gets scheduled user by ID with 2 userstate changes" {
+        $ScheduledSuspension = New-JcSdkBulkUserState -UserIds $NewStateUser3.Id -State 'SUSPENDED' -StartDate (Get-Date -Hour 13 -Minute 0 -Second 0).AddDays(1)
+        $scheduledUsers = Get-JcScheduledSuspension -UserID $NewStateUser1.Id
+        $scheduledUsers.count | Should -Be 2
+
+        $scheduledUsers.id | Should -Not -BeNullOrEmpty
+        $scheuldedUsers.Firstname | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Lastname | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Email | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Username | Should -Not -BeNullOrEmpty
+        $scheuldedUsers.ScheduledDate | Should -Not -BeNullOrEmpty
+    }
     AfterAll {
         Remove-JCUser -UserID $NewStateUser1.Id -ByID -force
         Remove-JCUser -UserID $NewStateUser2.Id -ByID -force
