@@ -13,13 +13,13 @@ concurrency:
   cancel-in-progress: true
 jobs:
   Filter-Branch:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: contains(github.event.pull_request.labels.*.name, 'Radius Module')
     steps:
       - run: echo "Building JumpCloud Radius Module Event 'JumpCloudModule_'"
   Check-PR-Labels:
     needs: ["Filter-Branch"]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     outputs:
       RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
     steps:
@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   Validate-Env-Variables:
     needs: ["Filter-Branch", "Check-PR-Labels"]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - env:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
@@ -62,7 +62,7 @@ jobs:
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
   Setup-Build-Dependancies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +110,7 @@ jobs:
 
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -128,7 +128,7 @@ jobs:
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 75
     strategy:
       fail-fast: false

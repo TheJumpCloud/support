@@ -55,8 +55,14 @@ $configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GRO
 if ($IsMacOS) {
     $brewList = brew list openssl@3
     if (-Not ($brewList)) {
-        throw "OpenSSL v3 is not installed on this system"
+        Write-Warning "OpenSSL v3 is not installed on this system. Attempting to install..."
+        try {
+            brew install openssl@3
+        } catch {
+            Write-Host could not install openssl
+        }
     }
+
     $brewListBinary = $brewList | Where-Object { $_ -match "/bin/openssl" }
     $regmatch = $brewListBinary | Select-String -pattern "\/([0-9].[0-9].[0-9])\/"
     $opensslVersion = $regmatch.matches.groups[1].value
