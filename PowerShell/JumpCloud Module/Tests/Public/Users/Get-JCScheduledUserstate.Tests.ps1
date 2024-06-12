@@ -41,7 +41,7 @@ Describe -Tag:('JCScheduledUserstate') 'Get-JCScheduledUserstate' {
         $scheduledUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
     }
     It "Gets scheduled user by ID with 2 userstate changes" {
-        $NewScheduledSuspension = New-JcSdkBulkUserState -UserIds $NewStateUser3.Id -State 'SUSPENDED' -StartDate (Get-Date -Hour 13 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
+        $NewScheduledSuspension = New-JcSdkBulkUserState -UserIds $NewStateUser3.Id -State 'SUSPENDED' -StartDate (Get-Date -Hour 12 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
         $scheduledUsers = Get-JCScheduledUserstate -UserID $NewStateUser3.Id
         $scheduledUsers.count | Should -Be 2
 
