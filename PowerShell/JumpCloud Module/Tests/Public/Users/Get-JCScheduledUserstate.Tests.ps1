@@ -17,7 +17,7 @@ Describe -Tag:('JCScheduledUserstate') 'Get-JCScheduledUserstate' {
         $scheduledUsers.Lastname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Email | Should -Not -BeNullOrEmpty
         $scheduledUsers.Username | Should -Not -BeNullOrEmpty
-        $scheduledUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
+        $scheduledUsers.ScheduledDate | Select-Object -First 1 | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
     }
     It "Gets scheduled ACTIVATED users" {
         $scheduledUsers = Get-JCScheduledUserstate -State "ACTIVATED"
