@@ -88,7 +88,6 @@ jobs:
 
           $PSDependencies = @{
               'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
-              'PackageManagement'                     = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
               'PSScriptAnalyzer'                      = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
               'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
               'JumpCloud'                             = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
@@ -129,7 +128,7 @@ jobs:
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
     runs-on: macos-latest
-    environment: Configure Test Radius CI
+    environment: Test Radius CI
     timeout-minutes: 75
     strategy:
       fail-fast: false
