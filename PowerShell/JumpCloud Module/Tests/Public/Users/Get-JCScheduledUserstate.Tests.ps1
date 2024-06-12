@@ -5,7 +5,7 @@ Describe -Tag:('JCScheduledUserstate') 'Get-JCScheduledUserstate' {
         $NewStateUser2 = New-RandomUser -domain "delNewUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $NewStateUser3 = New-RandomUser -domain "delNewUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
 
-        $ScheduledSuspension = New-JcSdkBulkUserState -UserIds @($($NewStateUser1.Id), $($NewStateUser2.Id)) -State 'SUSPENDED' -StartDate (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
+        $ScheduledSuspension = New-JcSdkBulkUserState -UserIds @($($NewStateUser1.Id), $($NewStateUser2.Id)) -State 'SUSPENDED' -StartDate (Get-Date -Hour 12 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
         $ScheduledActivation = New-JcSdkBulkUserState -UserIds $NewStateUser3.Id -State 'ACTIVATED' -StartDate (Get-Date -Hour 12 -Minute 0 -Second 0 -Millisecond 0).AddDays(1)
     }
     It "Gets scheduled SUSPENDED users" {
