@@ -55,11 +55,19 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         it 'users without system associations should not have a deployed cert, even if the force option is specified' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            Write-Warning "$($user.username) created with id: $($user.id))"
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
 
+            Write-Warning "Add $($user.username) to radius Group with id: $($Global:JCR_USER_GROUP)"
             Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            $userMembers = Get-jcusergroupmember -byid $Global:JCR_USER_GROUP
+
+            foreach ($member in $userMembers) {
+                Write-Warning "$($member.username) is in the $($member.GroupName) Group"
+            }
 
             # update membership
+            Start-Sleep 1
             Get-JCRGlobalVars -skipAssociation -force
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
 
