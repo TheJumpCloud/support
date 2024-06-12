@@ -13,32 +13,32 @@ Describe -Tag:('JCScheduledUserstate') 'Get-JCScheduledUserstate' {
         $scheduledUsers.count | Should -Be 2
 
         $scheduledUsers.id | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.Firstname | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Firstname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Lastname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Email | Should -Not -BeNullOrEmpty
         $scheduledUsers.Username | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
+        $scheduledUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
     }
     It "Gets scheduled ACTIVATED users" {
         $scheduledUsers = Get-JCScheduledUserstate -State "ACTIVATED"
         $scheduledUsers.count | Should -Be 1
 
         $scheduledUsers.id | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.Firstname | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Firstname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Lastname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Email | Should -Not -BeNullOrEmpty
         $scheduledUsers.Username | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
+        $scheduledUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
     }
     It "Gets scheduled user by ID" {
         $scheduledUsers = Get-JCScheduledUserstate -UserID $NewStateUser1.Id
 
         $scheduledUsers.id | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.Firstname | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Firstname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Lastname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Email | Should -Not -BeNullOrEmpty
         $scheduledUsers.Username | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
+        $scheduledUsers.ScheduledDate | Should -Be (Get-Date -Hour 12 -Minute 0 -Second 0).AddDays(1)
     }
     It "Gets scheduled user by ID with 2 userstate changes" {
         $ScheduledSuspension = New-JcSdkBulkUserState -UserIds $NewStateUser3.Id -State 'SUSPENDED' -StartDate (Get-Date -Hour 13 -Minute 0 -Second 0).AddDays(1)
@@ -46,11 +46,11 @@ Describe -Tag:('JCScheduledUserstate') 'Get-JCScheduledUserstate' {
         $scheduledUsers.count | Should -Be 2
 
         $scheduledUsers.id | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.Firstname | Should -Not -BeNullOrEmpty
+        $scheduledUsers.Firstname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Lastname | Should -Not -BeNullOrEmpty
         $scheduledUsers.Email | Should -Not -BeNullOrEmpty
         $scheduledUsers.Username | Should -Not -BeNullOrEmpty
-        $scheuldedUsers.ScheduledDate | Should -Not -BeNullOrEmpty
+        $scheduledUsers.ScheduledDate | Should -Not -BeNullOrEmpty
     }
     AfterAll {
         Remove-JCUser -UserID $NewStateUser1.Id -ByID -force
