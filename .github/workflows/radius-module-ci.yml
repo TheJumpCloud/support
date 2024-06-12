@@ -13,13 +13,13 @@ concurrency:
   cancel-in-progress: true
 jobs:
   Filter-Branch:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     if: contains(github.event.pull_request.labels.*.name, 'Radius Module')
     steps:
       - run: echo "Building JumpCloud Radius Module Event 'JumpCloudModule_'"
   Check-PR-Labels:
     needs: ["Filter-Branch"]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     outputs:
       RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
     steps:
@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   Validate-Env-Variables:
     needs: ["Filter-Branch", "Check-PR-Labels"]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - env:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
