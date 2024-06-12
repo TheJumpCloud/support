@@ -622,11 +622,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCGsuiteMember</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Adds a user or usergroup to a GSuite instance</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Add-JCGsuiteMember function allows you to add users or UserGroups to a GSuite Cloud Directory instance in your organization</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -858,9 +858,16 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>Add-JCGsuiteMember -Name 'JumpCloud Gsuite' -Username 'john.doe'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Adds the user john.doe to the JumpCloud GSuite CloudDirectory instance</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Add-JCGsuiteMember -Name 'JumpCloud Gsuite' -GroupName 'Sales Users'</dev:code>
+        <dev:remarks>
+          <maml:para>Adds the Sales Users UserGroup to the JumpCloud GSuite CloudDirectory instance</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -877,11 +884,11 @@
       <command:verb>Add</command:verb>
       <command:noun>JCOffice365Member</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Adds a user or usergroup to an Office365 instance</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Add-JCOffice365Member function allows you to add users or UserGroups to a GSuite Cloud Directory instance in your organization</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1113,9 +1120,16 @@
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>Add-JCOffice365Member -Name 'JumpCloud Office365' -Username 'john.doe'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Adds the user john.doe to the JumpCloud Office365 CloudDirectory instance</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Add-JCOffice365Member -Name 'JumpCloud Office365' -GroupName 'Sales Users'</dev:code>
+        <dev:remarks>
+          <maml:para>Adds the Sales Users UserGroup to the JumpCloud Office365 CloudDirectory instance</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -4247,6 +4261,19 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">commandType</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">trigger</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">scheduleRepeatType</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">listensTo</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">organization</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">commandRunners</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">schedule</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">shell</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">timeout</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sudo</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">template</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">scheduleYear</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">timeToLiveSeconds</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">files</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">user</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">systems</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -4916,6 +4943,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Limit</maml:name>
+          <maml:description>
+            <maml:para>Max number of rows to return</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int64</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>0</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Q</maml:name>
           <maml:description>
             <maml:para>optional string for specifying a full text query</maml:para>
@@ -5071,6 +5110,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Limit</maml:name>
+        <maml:description>
+          <maml:para>Max number of rows to return</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int64</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int64</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>0</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Q</maml:name>
@@ -7012,6 +7063,121 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-JCScheduledUserstate</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>JCScheduledUserstate</command:noun>
+      <maml:description>
+        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>{{ Fill in the Description }}</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-JCScheduledUserstate</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>State</maml:name>
+          <maml:description>
+            <maml:para>The scheduled state you'd like to query (SUSPENDED or ACTIVATED)</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">SUSPENDED</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ACTIVATED</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCScheduledUserstate</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
+          <maml:name>UserId</maml:name>
+          <maml:description>
+            <maml:para>The _id of the User which you want to lookup. UserID has an Alias of _id.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>State</maml:name>
+        <maml:description>
+          <maml:para>The scheduled state you'd like to query (SUSPENDED or ACTIVATED)</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
+        <maml:name>UserId</maml:name>
+        <maml:description>
+          <maml:para>The _id of the User which you want to lookup. UserID has an Alias of _id.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para></maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:remarks>
+          <maml:para>{{ Add example description here }}</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/Get-JcSdkEventCount</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-JCSystem</command:name>
       <command:verb>Get</command:verb>
       <command:noun>JCSystem</command:noun>
@@ -7275,11 +7441,22 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">sshdParams</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">systemInsights</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">systemTimezone</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">systemToken</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">templateName</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">userMetrics</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">usernameHashes</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">version</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">hwVendor</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">secureLogin</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">displayManager</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">amazonInstanceID</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">archFamily</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">builtInCommands</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">description</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">osVersionDetail</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">policyStats</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">desktopCapable</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">sshRootEnabled</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">isPolicyBound</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -8832,6 +9009,13 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">mfa</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">recoveryEmail</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">systemUsername</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">relationships</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">public_key</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">external_password_expiration_date</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">disableDeviceMaxLoginAttempts</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">password</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">state</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">restrictedFields</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -13684,11 +13868,11 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>Remove</command:verb>
       <command:noun>JCGsuiteMember</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Removes a user or usergroup from a GSuite instance</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Remove-JCGsuiteMember function allows you to remove users or UserGroups from a GSuite Cloud Directory instance in your organization</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -13920,9 +14104,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>Remove-JCGsuiteMember -Name 'JumpCloud Gsuite' -Username 'john.doe'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Removes the user john.doe from the JumpCloud GSuite CloudDirectory instance</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Remove-JCGsuiteMember -Name 'JumpCloud Gsuite' -GroupName 'Sales Users'</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the Sales Users UserGroup from the JumpCloud GSuite CloudDirectory instance</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -13939,11 +14130,11 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>Remove</command:verb>
       <command:noun>JCOffice365Member</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Removes a user or usergroup from an Office365 instance</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Remove-JCOffice365Member function allows you to remove users or UserGroups from a GSuite Cloud Directory instance in your organization</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -14175,9 +14366,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>Remove-JCOffice365Member -Name 'JumpCloud Office365' -Username 'john.doe'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Removes the user john.doe from the JumpCloud Office365 CloudDirectory instance</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Remove-JCOffice365Member -Name 'JumpCloud Office365' -GroupName 'Sales Users'</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the Sales Users UserGroup from the JumpCloud Office365 CloudDirectory instance</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

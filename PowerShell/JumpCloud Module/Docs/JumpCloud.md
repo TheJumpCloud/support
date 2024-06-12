@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.10.0
+Help Version: 2.11.0
 Locale: en-US
 ---
 
@@ -18,10 +18,10 @@ Create an association between two object within the JumpCloud console.
 Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command
 
 ### [Add-JCGsuiteMember](Add-JCGsuiteMember.md)
-Adds users or usergroups to a GSuite Cloud Directory Instance
+Adds a user or usergroup to a GSuite instance
 
 ### [Add-JCOffice365Member](Add-JCOffice365Member.md)
-Adds users or usergroups to an Office365 Cloud Directory Instance
+Adds a user or usergroup to an Office365 instance
 
 ### [Add-JCRadiusReplyAttribute](Add-JCRadiusReplyAttribute.md)
 Adds Radius reply attributes to a JumpCloud user group.
@@ -91,6 +91,9 @@ Returns the Radius reply attributes associated with a JumpCloud user group.
 
 ### [Get-JCRadiusServer](Get-JCRadiusServer.md)
 Return JumpCloud radius server information.
+
+### [Get-JCScheduledUserstate](Get-JCScheduledUserstate.md)
+Returns scheduled userstate changes by state or returns a user's scheduled userstate changes
 
 ### [Get-JCSystem](Get-JCSystem.md)
 Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.
@@ -173,10 +176,10 @@ Removes a JumpCloud Command Result
 Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command
 
 ### [Remove-JCGsuiteMember](Remove-JCGsuiteMember.md)
-Removes users or usergroups from a GSuite Cloud Directory Instance
+Removes a user or usergroup from a GSuite instance
 
 ### [Remove-JCOffice365Member](Remove-JCOffice365Member.md)
-Removes users or usergroups from an Office365 Cloud Directory Instance
+Removes a user or usergroup from an Office365 instance
 
 ### [Remove-JCPolicy](Remove-JCPolicy.md)
 Removes a JumpCloud Policy
