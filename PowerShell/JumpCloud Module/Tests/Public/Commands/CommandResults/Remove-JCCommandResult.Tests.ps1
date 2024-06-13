@@ -11,7 +11,7 @@ Describe -Tag:('JCCommandResult') 'Remove-JCCommandResult 1.0' {
         # Invoke Command to generate result
         $SingleTrigger = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Select-Object trigger
         $SingleResult = Invoke-JCCommand -trigger $SingleTrigger.trigger
-
+        Start-Sleep -Seconds 5
         $SingleCommandResult = Get-JCCommandResult | Select-Object -Last 1
         $DeletedResult = Remove-JCCommandResult -CommandResultID $SingleCommandResult._id -force
         $DeletedResult._id.count | Should -Be 1
@@ -21,7 +21,7 @@ Describe -Tag:('JCCommandResult') 'Remove-JCCommandResult 1.0' {
         # Invoke Command to generate result
         $SingleTrigger = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Select-Object trigger
         $SingleResult = Invoke-JCCommand -trigger $SingleTrigger.trigger
-
+        Start-Sleep -Seconds 5
         $DeletedResult = Get-JCCommandResult | Select-Object -Last 1 | Remove-JCCommandResult -force
         $DeletedResult._id.count | Should -Be 1
 
@@ -33,6 +33,7 @@ Describe -Tag:('JCCommandResult') 'Remove-JCCommandResult 1.0' {
             $SingleTrigger = Get-JCCommand | Where-Object trigger -NotLike '' | Select-Object -Last 1 | Select-Object trigger
             $SingleResult = Invoke-JCCommand -trigger $SingleTrigger.trigger
         }
+        Start-Sleep -Seconds 5
         $DeletedResult = Get-JCCommandResult | Select-Object -Last 2 | Remove-JCCommandResult -force
         $DeletedResult._id.count | Should -Be 2
 
