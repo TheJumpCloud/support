@@ -1,3 +1,18 @@
+## 2.11.0
+
+Release Date: June 13, 2024
+
+#### RELEASE NOTES
+
+```
+Introducing a new function Get-JcScheduledUserstate - This will allow for the lookup of upcoming user suspensions/activations
+```
+
+#### FEATURES:
+
+New Function: `Get-JcScheduledUserState` - Allows for the lookup of scheduled userstate changes. This will list upcoming suspensions or activations as well as being able to search for a particular user's upcoming state changes by their UserID
+
+
 ## 2.10.2
 
 Release Date: May 30, 2024

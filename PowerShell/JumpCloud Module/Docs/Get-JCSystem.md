@@ -356,7 +356,7 @@ Valid properties that can be returned are: 'created', 'active', 'agentVersion', 
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: acknowledged, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, azureAdJoined, connectionHistory, created, displayName, domainInfo, fde, fileSystem, hasServiceAccount, hostname, lastContact, mdm, modifySSHDConfig, networkInterfaces, organization, os, osFamily, provisionMetadata, remoteIP, serialNumber, serviceAccountState, sshdParams, systemInsights, systemTimezone, systemToken, templateName, userMetrics, usernameHashes, version
+Accepted values: acknowledged, active, agentVersion, allowMultiFactorAuthentication, allowPublicKeyAuthentication, allowSshPasswordAuthentication, allowSshRootLogin, arch, azureAdJoined, connectionHistory, created, displayName, domainInfo, fde, fileSystem, hasServiceAccount, hostname, lastContact, mdm, modifySSHDConfig, networkInterfaces, organization, os, osFamily, provisionMetadata, remoteIP, serialNumber, serviceAccountState, sshdParams, systemInsights, systemTimezone, templateName, userMetrics, usernameHashes, version, hwVendor, secureLogin, displayManager, amazonInstanceID, archFamily, builtInCommands, description, osVersionDetail, policyStats, desktopCapable, sshRootEnabled, isPolicyBound
 
 Required: False
 Position: Named
