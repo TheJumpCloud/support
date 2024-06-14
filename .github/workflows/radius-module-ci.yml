@@ -128,7 +128,7 @@ jobs:
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
     runs-on: macos-latest
-    environment: Test Radius CI
+    # environment: Test Radius CI
     timeout-minutes: 75
     strategy:
       fail-fast: false
@@ -145,8 +145,8 @@ jobs:
       - name: Test PWSH Radius Module
         shell: pwsh
         env:
-          PESTER_APIKEY: ${{ secrets.RADIUSAPIKEY }}
-          PESTER_ORGID: ${{ secrets.RADIUSORGID }}
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
         run: |
           $items = get-childItem -path "./scripts/automation/Radius/"
           foreach ($item in $items){
