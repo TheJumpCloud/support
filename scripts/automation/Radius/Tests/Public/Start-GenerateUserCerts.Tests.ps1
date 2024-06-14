@@ -36,22 +36,19 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     }
     Context 'Certs generated for newly added users' {
         BeforeAll {
-            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
-            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -filter "$($user.username)*"
-            # if user cert exists, for random user, remove:
-            foreach ($cert in $certs) {
-                remove-item $cert.Fullname
-            }
 
         }
         It 'When a new user is added to the radius group, the tool will generate a new cert' {
+            # create a new user
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            # add a user to the radius Group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
-            # add the new user to the radius group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            # wait one moment
+            Start-Sleep 2
             # update the cache
-            Get-JCRGlobalVars -force -skipAssociation
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
             # wait just one moment before testing membership since we are writing a file
             Start-Sleep 1
             # the new user should be in the membership list:
@@ -89,6 +86,9 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath
+
+            # update cache
+            Get-JCRGlobalVars -force -skipAssociation
 
             # get user from membership list
             $RandomUsername = $global:JCRRadiusMembers.username | Get-Random -count 1
