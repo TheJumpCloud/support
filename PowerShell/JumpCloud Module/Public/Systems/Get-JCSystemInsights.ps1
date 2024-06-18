@@ -115,10 +115,10 @@ Function Get-JCSystemInsights {
                     $_ | Select-Object -Property *, @{ Name = 'PhysicalMemoryGB'; Expression = { [math]::round($_.PhysicalMemory / 1GB, 3) } }
                 }
             }
-            mounts {
+            mount {
                 $newResults = @()
                 $newResults += $Results | ForEach-Object {
-                    $_ | Select-Object -Property *, @{ Name = 'BlocksAvailableGB'; Expression = { $BlocksAvailableSize = ([long]$_.BlocksAvailable * [long]$_.BlocksSize); [math]::round($BlocksAvailableSize / 1GB, 3) } }, @{ Name = 'BlocksFreeGB'; Expression = { $BlocksFreeSize = [long]$_.BlocksFree * [long]$_.BlocksSize; [math]::round($BlocksFreeSize / 1GB, 3) } }
+                    $_ | Select-Object -Property *, @{ Name = 'BlocksAvailableGB'; Expression = { $BlocksAvailableBytes = ([int64]$_.BlocksAvailable * [int64]$_.BlocksSize); [math]::round($BlocksAvailableBytes / ([Math]::Pow(1000, 3)), 3) } }, @{ Name = 'BlocksGB'; Expression = { $BlocksBytes = [int64]$_.Blocks * [int64]$_.BlocksSize; [math]::round($BlocksBytes / ([Math]::Pow(1000, 3)), 3) } }
                 }
             }
             logicalDrive {
