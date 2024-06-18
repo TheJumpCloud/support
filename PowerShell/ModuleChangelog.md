@@ -1,3 +1,20 @@
+## 2.12.0
+
+Release Date: June 18, 2024
+
+#### RELEASE NOTES
+
+```
+Added new calculated fields for Get-JCSystemInsights Tables LogicalDrives, Mounts, and SystemInfo to include human readable sizes in GB for the following fields: PhysicalMemory, blocksFree, blocksAvailable, freeSpace, and size
+```
+
+#### IMPROVEMENTS:
+
+* Added calculated fields for the `Get-JCSystemInsights` following tables:
+    * LogicalDrives - freeSpaceGB, sizeGB
+    * Mounts - blocksFreeGB, blocksAvailableGB
+    * systemInfo - physicalMemoryGB
+
 ## 2.11.0
 
 Release Date: June 13, 2024

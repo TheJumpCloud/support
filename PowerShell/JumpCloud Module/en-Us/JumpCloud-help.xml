@@ -7067,11 +7067,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCScheduledUserstate</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Returns scheduled userstate changes by state or returns a user's scheduled userstate changes</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCScheduledUserstate function allows for admins to view upcoming scheduled user suspensions or activations. You can also look up an individual user's upcoming state changes by their userID</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -7163,9 +7163,23 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>Get-JCScheduledUserstate -State "SUSPENDED"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns all scheduled SUSPENDED userstate changes</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Get-JCScheduledUserstate -State "ACTIVATED"</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all scheduled ACTIVATED userstate changes</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>Get-JCScheduledUserstate -UserID "USERID"</dev:code>
+        <dev:remarks>
+          <maml:para>Returns all scheduled userstate changes for a given userID</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
