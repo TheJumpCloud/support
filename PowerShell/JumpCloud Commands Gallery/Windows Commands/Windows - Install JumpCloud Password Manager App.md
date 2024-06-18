@@ -1,7 +1,7 @@
 #### Name
 
 
-Windows - Install JumpCloud Password Manager App | v1.2 JCCG
+Windows - Install JumpCloud Password Manager App | v1.3 JCCG
 
 
 #### commandType
@@ -12,7 +12,7 @@ windows
 
 ```
 
-# Set $LaunchPasswordManager to $false  ON LINE 63 if you do not wish to launch the password manger after installation
+# Set $LaunchPasswordManager to $false  ON LINE 69 if you do not wish to launch the password manger after installation
 
 # Get the current logged on User
 $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
@@ -68,18 +68,10 @@ $Command = {
     $loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
     $LaunchPasswordManager = $true
     $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
-    . $installerTempLocation
-    if ($LaunchPasswordManager -eq $true) {
-        while (!(Test-Path "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe")) {
-            Start-Sleep 10
-        }
-        try {
-            . "$loggedOnUserProfileImagePath\AppData\Local\jcpwm\JumpCloud Password Manager.exe"
-
-        } catch {
-            throw $_.Exception.Message
-        }
+    if ($LaunchPasswordManager -eq $false) {
+        $env:QUIT_PWM_AFTER_INITIAL_INSTALL="true"
     }
+    . $installerTempLocation
 }
 
 $Source = @'
