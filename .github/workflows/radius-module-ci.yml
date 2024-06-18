@@ -1,0 +1,156 @@
+name: Radius Module CI
+
+on:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - "master"
+    paths:
+      - "scripts/automation/Radius/**"
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  Filter-Branch:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'Radius Module')
+    steps:
+      - run: echo "Building JumpCloud Radius Module Event 'JumpCloudModule_'"
+  Check-PR-Labels:
+    needs: ["Filter-Branch"]
+    runs-on: ubuntu-latest
+    outputs:
+      RELEASE_TYPE: ${{ steps.validate.outputs.RELEASE_TYPE }}
+    steps:
+      - name: Validate-PR-Version-Labels
+        id: validate
+        shell: pwsh
+        run: |
+          $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
+          if ("PowerShell Radius Module" -in $PR_LABEL_LIST) {
+              write-host "Starting Build for PowerShell Radius Module Release"
+          }
+          # validate type from label list:
+          $types = @('major', 'minor', 'patch', 'manual')
+          $typeCount = 0
+          foreach ($item in $PR_LABEL_LIST) {
+              if ($item -in $types) {
+                  write-host "$item"
+                  $typeCount += 1
+                  $RELEASE_TYPE = $item
+              }
+          }
+
+          if ($typeCount -eq 1) {
+              echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_OUTPUT
+          } else {
+              throw "Multiple or invalid release types were found on PR"
+              exit 1
+          }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  Validate-Env-Variables:
+    needs: ["Filter-Branch", "Check-PR-Labels"]
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
+        shell: pwsh
+        run: |
+          # validate release type variables
+          $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
+  Setup-Build-Dependancies:
+    needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PowerShell Module Cache
+        id: cacher
+        uses: actions/cache@v4
+        with:
+          path: "/Users/runner/.local/share/powershell/Modules/"
+          key: PS-Radius-Dependancies
+      - name: Install dependencies
+        if: steps.cacher.outputs.cache-hit != 'true'
+        shell: pwsh
+        env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+
+          If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
+              Write-Host ('[status]Installing package provider NuGet');
+              Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
+          }
+
+          $PSDependencies = @{
+              'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
+              'PSScriptAnalyzer'                      = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
+              'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
+              'JumpCloud'                             = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+          }
+
+          foreach ($RequiredModule in $PSDependencies.Keys) {
+              If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
+                  Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
+                  if ($($PSDependencies[$RequiredModule].RequiredVersion) -eq "latest"){
+                    Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -AllowPrerelease -Force
+                  } else {
+                    Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
+                  }
+              }
+          }
+
+  Validate-Module:
+    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+      - uses: actions/cache@v4
+        with:
+          path: "/Users/runner/.local/share/powershell/Modules/"
+          key: PS-Radius-Dependancies
+      - env:
+          RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
+        shell: pwsh
+        run: |
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
+  Test-Module:
+    needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
+    runs-on: macos-latest
+    # environment: Test Radius CI
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+    name: Run Pester Tests and Upload Results
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+      - uses: actions/cache@v4
+        with:
+          path: "/Users/runner/.local/share/powershell/Modules/"
+          key: PS-Radius-Dependancies
+      - name: Test PWSH Radius Module
+        shell: pwsh
+        env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+        run: |
+          $items = get-childItem -path "./scripts/automation/Radius/"
+          foreach ($item in $items){
+            write-host "$($item.FullName)"
+          }
+          # Invoke Pester
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList "ModuleValidation"

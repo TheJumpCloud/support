@@ -9,9 +9,13 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
                 Write-Error -Message "Failed to import function $($Import.FullName): $_"
             }
         }
+        Start-GenerateRootCert -certKeyPassword "testCertificate123!@#"
     }
     Context 'Certs forcibly re-generated for all users' {
         It 'Certs re-generated have actually been re-written for all users' {
+            # first generate user certs
+            Start-GenerateUserCerts -type All -forceReplaceCerts
+            # capture the current time and cert times.
             $timeBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             $certsBefore = Get-CertInfo -UserCerts
             # wait one second.
@@ -31,23 +35,20 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
     }
     Context 'Certs generated for newly added users' {
-        beforeall {
-            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
-            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -filter "$($user.username)*"
-            # if user cert exists, for random user, remove:
-            foreach ($cert in $certs) {
-                remove-item $cert.fullname
-            }
+        BeforeAll {
 
         }
         It 'When a new user is added to the radius group, the tool will generate a new cert' {
+            # create a new user
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            # add a user to the radius Group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
-            # add the new user to the radius group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            # wait one moment
+            Start-Sleep 2
             # update the cache
-            Get-JCRGlobalVars -force -skipAssociation
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
             # wait just one moment before testing membership since we are writing a file
             Start-Sleep 1
             # the new user should be in the membership list:
@@ -75,16 +76,19 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
 
     }
-    Context 'Certs generated for users whos cert is set to exipre soon' {
+    Context 'Certs generated for users who have certs that are about set to expire soon' {
         BeforeAll {
             # import necessary functions:
             . "$JCScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
             . "$JCScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath
+
+            # update cache
+            Get-JCRGlobalVars -force -skipAssociation
 
             # get user from membership list
             $RandomUsername = $global:JCRRadiusMembers.username | Get-Random -count 1
@@ -99,7 +103,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
 
         }
-        It 'Certs that are set to expire soon can be updated' {
+        It 'Certs that are set to expire soon can be updated programmatically' {
             # at this point expiring certs should be populated from beforeAll block
             $Global:expiringCerts | Should -not -BeNullOrEmpty
             # reset the validity counter

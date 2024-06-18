@@ -1,5 +1,5 @@
 # import helper functions:
-. "$PSScriptRoot/../../../../PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
+. "$PSScriptRoot/HelperFunctions.ps1"
 # beforeAll, remove PesterRadiusGroup + users
 Write-Warning "Removing Pester Radius User Groups with name: PesterRadiusGroup*"
 $pesterRadiusGroups = Get-JcSdkUserGroup -filter "name:search:PesterRadiusGroup"
@@ -17,7 +17,6 @@ Write-Warning "Removing Pester Radius Users with emailDomain: *pesterRadius*"
 $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
 
 # Create users
-
 Write-Warning "Creating New Pester Radius Users"
 # user bound to mac
 $macUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
@@ -41,10 +40,14 @@ Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $macUser.id -Op "add"
 Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $windowsUser.id -Op "add"
 Set-JcSdkUserGroupMember -GroupId $radiusUserGroup.Id -Id $bothUser.id -Op "add"
 
+# set a rootKeyPassword
+$env:certKeyPassword = "testCertificate123!@#"
+
 # update config:
 Write-Warning "Updating Config File"
 
-$configPath = "$PSScriptRoot/../config.ps1"
+$configPath = Resolve-Path -Path "$PSScriptRoot/../Config.ps1"
+write-warning $configPath
 $configContent = Get-Content -path $configPath
 # Update the userGroupID:
 $configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GROUP = `"$($radiusUserGroup.id)`"") | Set-Content -Path $configPath
@@ -52,8 +55,14 @@ $configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GRO
 if ($IsMacOS) {
     $brewList = brew list openssl@3
     if (-Not ($brewList)) {
-        throw "OpenSSL v3 is not installed on this system"
+        Write-Warning "OpenSSL v3 is not installed on this system. Attempting to install..."
+        try {
+            brew install openssl@3
+        } catch {
+            Write-Host could not install openssl
+        }
     }
+
     $brewListBinary = $brewList | Where-Object { $_ -match "/bin/openssl" }
     $regmatch = $brewListBinary | Select-String -pattern "\/([0-9].[0-9].[0-9])\/"
     $opensslVersion = $regmatch.matches.groups[1].value

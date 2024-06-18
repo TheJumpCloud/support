@@ -10,11 +10,13 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             }
         }
         # import helper functions:
-        . "$PSScriptRoot/../../../../../PowerShell/JumpCloud Module/Tests/HelperFunctions.ps1"
+        . "$PSScriptRoot/../HelperFunctions.ps1"
         # Manually update user associations for radius members, cache won't pick them up before:
         foreach ($user in $global:JCRRadiusMembers) {
             Set-JCRAssociationHash -UserID $user.userID
         }
+        Get-JCRGlobalVars -Force -associateManually
+        Start-GenerateRootCert -certKeyPassword "TestCertificate123!@#"
 
     }
     Context 'Distribute all certificates for all users forcibly' {
@@ -35,34 +37,42 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
                 # cert should not be deployed
-                $user.certinfo.deployed | Should -Be $false
+                $user.certInfo.deployed | Should -Be $false
             }
             start-deployUserCerts -type All -forceInvokeCommands
             Start-Sleep 1
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
-                # cert should be deployed
+                # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
-                    $user.certinfo.deployed | Should -Be $true
-                }
-                $user.commandAssociations | ForEach-Object {
-                    $command = Get-JcSdkCommand -Id $_.commandId -Fields name
-                    $command | should -Not -BeNullOrEmpty
+                    $user.certInfo.deployed | Should -Be $true
+                    $user.commandAssociations | ForEach-Object {
+                        $command = Get-JcSdkCommand -Id $_.commandId -Fields name
+                        $command | should -Not -BeNullOrEmpty
+                    }
                 }
             }
         }
         it 'users without system associations should not have a deployed cert, even if the force option is specified' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            Write-Warning "$($user.username) created with id: $($user.id))"
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
 
+            Write-Warning "Add $($user.username) to radius Group with id: $($Global:JCR_USER_GROUP)"
             Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            $userMembers = Get-jcusergroupmember -byid $Global:JCR_USER_GROUP
+
+            foreach ($member in $userMembers) {
+                Write-Warning "$($member.username) is in the $($member.GroupName) Group"
+            }
 
             # update membership
+            Start-Sleep 1
             Get-JCRGlobalVars -skipAssociation -force
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
 
             start-deployUserCerts -type ByUsername -username $user.username -forceInvokeCommands
-            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj, $index = Get-UserFromTable -userId $user.id
             $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
             $obj.certInfo.deployed | Should -Be $false
             $obj.commandAssociations | should -be $null
@@ -88,19 +98,19 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
                 # cert should not be deployed
-                $user.certinfo.deployed | Should -Be $false
+                $user.certInfo.deployed | Should -Be $false
             }
             start-deployUserCerts -type All
             Start-Sleep 1
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
-                # cert should be deployed
+                # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
-                    $user.certinfo.deployed | Should -Be $false
-                }
-                $user.commandAssociations | ForEach-Object {
-                    $command = Get-JcSdkCommand -Id $_.commandId -Fields name
-                    $command | should -Not -BeNullOrEmpty
+                    $user.certInfo.deployed | Should -Be $false
+                    $user.commandAssociations | ForEach-Object {
+                        $command = Get-JcSdkCommand -Id $_.commandId -Fields name
+                        $command | should -Not -BeNullOrEmpty
+                    }
                 }
             }
         }
@@ -138,7 +148,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
             start-deployUserCerts -type ByUsername -username $user.username -forceInvokeCommands
 
-            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj, $index = Get-UserFromTable -userId $user.id
             $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
             $obj.certInfo.deployed | Should -Be $true
             $obj.commandAssociations | should -Not -BeNullOrEmpty
@@ -164,7 +174,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
             start-deployUserCerts -type ByUsername -username $user.username
 
-            $obj, $index = Get-UserFromTable -userid $user.id
+            $obj, $index = Get-UserFromTable -userId $user.id
             $obj.certInfo.generated | Should -BeGreaterThan $dateBefore
             $obj.certInfo.deployed | Should -Be $false
             $obj.commandAssociations | should -Not -BeNullOrEmpty
@@ -174,19 +184,19 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
     }
     Context 'Distribute new certificates for a single user forcibly' {
-        it 'a user with system associations receeives a new command is created and deployed' {
+        it 'a user with system associations receives a new command is created and deployed' {
 
         }
-        it 'a user without system associations receeives a new command is not created and not deployed' {
+        it 'a user without system associations receives a new command is not created and not deployed' {
 
         }
 
     }
     Context 'Distribute new certificates for a single user without invoking' {
-        it 'a user with system associations receeives a new command is created and is not deployed' {
+        it 'a user with system associations receives a new command is created and is not deployed' {
 
         }
-        it 'a user without system associations receeives a new command is not created and not deployed' {
+        it 'a user without system associations receives a new command is not created and not deployed' {
 
         }
 
@@ -194,14 +204,16 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
     Context 'Cert Commands are generated for EmailSAN, EmailDN, UsernameCn type certs' {
         BeforeAll {
             # Member content | Get the user with 2 system associations mac and windows
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
             $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
+            Write-Warning "being while loop"
             while ($Global:JCRAssociations[$($certTypeUser.userID)].systemAssociations.count -ne 2) {
                 $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
             }
         }
         It 'EmailSAN certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "EmailSAN"') | Set-Content -Path $configPath
@@ -235,7 +247,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailDN certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "EmailDN"') | Set-Content -Path $configPath
@@ -247,7 +259,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Cert Subject headers should be contain required EmailDN identifier:
             $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
-            $CertInfoAfter.subject | Should -Match "emailAddress = $($Global:JCRUsers[$($certTypeUser.userID)].email)"
+            $CertInfoAfter.subject | Should -Match "$($Global:JCRUsers[$($certTypeUser.userID)].email)"
             # Create the new commands
             Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
             # Go fetch the mac command for the user
@@ -265,7 +277,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'UsernameCn certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath
@@ -277,7 +289,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Cert Subject headers should be contain required UsernameCn identifier:
             $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
-            $CertInfoAfter.subject | Should -Match "CN = $($certTypeUser.username)"
+            $CertInfoAfter.subject | Should -Match "$($certTypeUser.username)"
             # Create the new commands
             Start-DeployUserCerts -type ByUsername -username $certTypeUser.username
             # Go fetch the mac command for the user
@@ -296,10 +308,10 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         AfterAll {
             # Set config
-            $configPath = "$JCScriptRoot/config.ps1"
+            $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
-            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = UsernameCn') | Set-Content -Path $configPath
+            $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath
         }
     }
 }

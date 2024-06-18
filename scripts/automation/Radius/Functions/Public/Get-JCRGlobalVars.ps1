@@ -6,7 +6,10 @@ function Get-JCRGlobalVars {
         $force,
         [Parameter(HelpMessage = "Skips the user to system association cache, which may take a long time on larger organizations")]
         [switch]
-        $skipAssociation
+        $skipAssociation,
+        [Parameter(HelpMessage = "Updates the system to user association cache manually using the graph api")]
+        [switch]
+        $associateManually
     )
     begin {
         # ensure the data directory exists to cache the json files:
@@ -15,11 +18,15 @@ function Get-JCRGlobalVars {
             New-Item -ItemType Directory -Path "$JCScriptRoot/data"
         }
 
+        if (-Not $global:JCRConfig) {
+            $global:JCRConfig = Get-JCRSettingsFile
+        }
+
         # get settings file
-        if ($IsMacOS){
+        if ($IsMacOS) {
             $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -end (Get-Date)
         }
-        if ($ifWindows){
+        if ($ifWindows) {
             $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -end (Get-Date)
         }
         if ($lastUpdateTimespan.TotalHours -gt 24) {
@@ -37,6 +44,16 @@ function Get-JCRGlobalVars {
                 }
                 $false {
                     $updateAssociation = $true
+                }
+            }
+            switch ($associateManually) {
+                $true {
+                    $updateAssociation = $false
+                    $setAssociations = $true
+                }
+                $false {
+                    $updateAssociation = $false
+                    $setAssociations = $false
                 }
             }
         }
@@ -148,6 +165,33 @@ function Get-JCRGlobalVars {
                 } else {
                     $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
 
+                }
+                if ($setAssociations) {
+                    # create the hashtable:
+                    $userAssociationList = New-Object System.Collections.Hashtable
+                    foreach ($user in $radiusMemberList) {
+                        $userSystemMembership = Get-JcSdkUserTraverseSystem -UserId $user.userID
+                        if ($userSystemMembership) {
+                            $userAssociationList.add(
+                                $user.userID, @{
+                                    'systemAssociations' = @($userSystemMembership | Select-Object -Property @{Name = 'systemId'; Expression = { $_.id } }, @{Name = 'hostname'; Expression = { $systems[$_.id].hostname } }, @{Name = 'osFamily'; Expression = {
+                                                $osFamilyValue = $systems[$_.id].osFamily
+                                                if ($osFamilyValue -eq 'darwin') {
+                                                    "macOS"
+                                                } elseif ($osFamilyValue -eq 'Windows') {
+                                                    "Windows"
+                                                } else {
+                                                    $osFamilyValue
+                                                }
+                                            }
+                                        });
+                                    'userData'           = @($user | Select-Object -Property @{Name = 'email'; Expression = { $users[$user.userID].email } }, @{Name = 'username'; Expression = { $users[$user.userID].username } })
+                                }) | Out-Null
+                        }
+
+                    }
+                    # write out the association hash
+                    $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
                 }
                 # finally write out the data to file:
                 $users | ConvertTo-Json -Depth 100 -Compress |  Out-File "$JCScriptRoot/data/userHash.json"

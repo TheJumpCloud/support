@@ -3,7 +3,7 @@ Write-Verbose 'Verifying JCAPI Key'
 if ($JCAPIKEY.length -ne 40) {
     Connect-JCOnline -force
 }
-. "$psscriptroot/config.ps1"
+. "$psscriptroot/Config.ps1"
 
 ################################################################################
 # Do not modify below

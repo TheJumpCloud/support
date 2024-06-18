@@ -8,7 +8,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             'userHash.json'
         )
         # explicitly import the settings file functions for these tests:
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/settings/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -94,7 +94,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
             }
             # run Get-JCRGlobalVars
-            Get-JCRGlobalVars
+            Get-JCRGlobalVars -Force -associateManually
 
             # check the files:
             $filesAfter = Get-ChildItem -Path $dataPath
@@ -108,20 +108,21 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 $beforeWriteTime | should -Not -Be $afterWriteTime
             }
         }
-        It "Data should be re-written when the -Force parameter is used; regardless of setings write date" {
+        It "Data should be re-written when the -Force parameter is used; regardless of settings write date" {
             # check the files before
             $filesBefore = Get-ChildItem -Path $dataPath
             # run Get-JCRGlobalVars with force param
-            Get-JCRGlobalVars -Force
+            Start-Sleep -Seconds 2
+            Get-JCRGlobalVars -Force -associateManually
 
             # check the files after:
             $filesAfter = Get-ChildItem -Path $dataPath
             # test each file write date
             foreach ($file in $requiredFiles) {
-                # write-host "validating write times for $file"
+                write-host "validating write times for $file"
                 $beforeWriteTime = (($filesBefore | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
                 $afterWriteTime = (($filesAfter | Where-Object { $_.Name -eq $file })).LastWriteTime.Ticks
-                # Write-Host "before: $beforeWriteTime should not be after: $afterWriteTime"
+                Write-Host "before: $beforeWriteTime should not be after: $afterWriteTime"
                 # The file write time before running Get-JCRGlobalVars should not be the same after running the function
                 $beforeWriteTime | should -Not -Be $afterWriteTime
             }

@@ -11,7 +11,7 @@ OU = MyDivision
 CN = www.company.com
 
 [v3_req]
-authorityKeyIdentifier = keyid:issuer
+authorityKeyIdentifier = keyid:always,issuer:always
 keyUsage = digitalSignature
 extendedKeyUsage = clientAuth
 #For Client cert with email in the subject alternative name
