@@ -107,8 +107,33 @@ Function Get-JCSystemInsights {
         } Else {
             Invoke-Expression -Command:($CommandTemplate -f $Table)
         }
+
+        switch ($Table) {
+            SystemInfo {
+                $newResults = @()
+                $newResults += $Results | ForEach-Object {
+                    $_ | Select-Object -Property *, @{ Name = 'PhysicalMemoryGB'; Expression = { [math]::round($_.PhysicalMemory / 1GB, 3) } }
+                }
+            }
+            mounts {
+                $newResults = @()
+                $newResults += $Results | ForEach-Object {
+                    $_ | Select-Object -Property *, @{ Name = 'BlocksAvailableGB'; Expression = { $BlocksAvailableSize = ([long]$_.BlocksAvailable * [long]$_.BlocksSize); [math]::round($BlocksAvailableSize / 1GB, 3) } }, @{ Name = 'BlocksFreeGB'; Expression = { $BlocksFreeSize = [long]$_.BlocksFree * [long]$_.BlocksSize; [math]::round($BlocksFreeSize / 1GB, 3) } }
+                }
+            }
+            logicalDrive {
+                $newResults = @()
+                $newResults += $Results | ForEach-Object {
+                    $_ | Select-Object -Property *, @{ Name = 'SizeGB'; Expression = { [math]::round($_.Size / 1GB, 3) } }, @{ Name = 'FreeSpaceGB'; Expression = { [math]::round($_.FreeSpace / 1GB, 3) } }
+                }
+            }
+        }
     }
     End {
-        Return $Results
+        if ($newResults) {
+            Return $newResults
+        } else {
+            Return $Results
+        }
     }
 }
