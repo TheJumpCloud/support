@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Set JumpCloud Password Manager's Release Channel | v1.0 JCCG
+Mac - Set JumpCloud Password Manager Release Channel | v1.0 JCCG
 
 #### commandType
 
