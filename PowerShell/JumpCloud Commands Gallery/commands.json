@@ -63,6 +63,13 @@
     "description": "This command will set the JumpCloud Agent Log Level to Default logging level."
   },
   {
+    "name": "Linux - Set JumpCloud Password Manager's Release Channel | v1.0 JCCG",
+    "type": "linux",
+    "command": "#!/bin/bash\n# Set $RELEASE_CHANNEL to beta OR dogfood OR public depending on your desired releaseChannel\nRELEASE_CHANNEL=\"public\"\n# Set $TARGET_ENVIRONMENT to production OR staging OR local to target user's environment\nTARGET_ENVIRONMENT=\"production\"\n#------- Do not modify below this line ------\nAPP_NAME=\"JumpCloud Password Manager\"\n# Function to set application's name based on environment\ndetect_env() {\n  case \"$TARGET_ENVIRONMENT\" in\n    \"production\") APP_NAME=\"JumpCloud Password Manager\" ;;\n    \"staging\") APP_NAME=\"JC Password Manager Staging\" ;;\n    \"local\") APP_NAME=\"JC Password Manager Local\" ;;\n    *) APP_NAME=\"JumpCloud Password Manager\" ;;\n  esac\n}\n# Function to update or create file with content\nupdate_file() {\n  FILE_PATH=\"$HOME/.config/$APP_NAME/data/daemon/releaseChannel.txt\"\n  mkdir -p \"$(dirname \"$FILE_PATH\")\"\n  echo -n \"$RELEASE_CHANNEL\" > \"$FILE_PATH\"\n}\nmain() {\n  detect_env\n  update_file\n}\nmain",
+    "link": "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Linux%20Commands/Linux%20-%20Set%20ReleaseChannel%20In%20JumpCloud%20Password%20Manager.md",
+    "description": "This command will set the desired release channel for JumpCloud's Password Manager in application's directory. The relesase channel options are beta, dogfood and public."
+  },
+  {
     "name": "Linux - Snap - Install Microsoft VS Code | v1.0 JCCG",
     "type": "linux",
     "command": "snap install code --classic",
