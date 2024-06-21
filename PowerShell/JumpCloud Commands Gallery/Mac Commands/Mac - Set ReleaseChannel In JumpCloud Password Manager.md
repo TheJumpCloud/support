@@ -56,3 +56,6 @@ This command will set the desired release channel for JumpCloud's Password Manag
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
+```
+Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/NB-11852-desktop-app-dogfood/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Set%20ReleaseChannel%20In%20JumpCloud%20Password%20Manager.md"
+```
