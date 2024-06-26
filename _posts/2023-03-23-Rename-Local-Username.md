@@ -15,6 +15,8 @@ In the macOS operating system workflow, users are logged out to the desktop, the
 
 In the Windows operating system workflow, users are simply renamed with the [rename-localUser cmdlet](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.localaccounts/rename-localuser?view=powershell-5.1). Their login username is refreshed after a successful login/ restart.
 
+MacOS Rename Script Updated June 26 2024 to restart the device after rename and properly determine if the CSV contains the system record.
+
 ### Basic Usage
 
 - The PowerShell Module is required to run this script
@@ -111,7 +113,7 @@ $newData | Export-Csv ./MigrateUsers.CSV
 
 ```
 
-The resulting `MigrateUsers.CSV` from this script should be uploaded to a publicly accessible location.
+The resulting `MigrateUsers.CSV` should be uploaded directly to a JumpCloud Command.
 
 ## Add the scripts to JumpCloud
 
@@ -122,8 +124,6 @@ Replace the variables in the commands:
 Windows Powershell
 
 ```powershell
-# Url where system/user CSV is stored:
-$url = "https://path/to/example.csv"
 # Your JumpCloud Administrator API Key; required to bind user
 $jumpcloudAPIKey = 'yourJumpCloudAPIKey'
 ### Bind user as admin or standard user ###
@@ -135,8 +135,6 @@ $admin = $true
 macOS
 
 ```bash
-# Url where system/user CSV is stored:
-url="https://path/to/example.csv"
 # Your JumpCloud Administrator API Key; required to bind user
 jumpcloudAPIKey='yourJumpCloudAPIKey'
 ### Bind user as admin or standard user ###
@@ -156,8 +154,6 @@ Windows Powershell
 # Update Variables Below
 ################################################################################
 
-# Url where system/user CSV is stored:
-$url = "https://path/to/example.csv"
 # Your JumpCloud Administrator API Key; required to bind user
 $jumpcloudAPIKey = 'yourAPIKey'
 ### Bind user as admin or standard user ###
@@ -181,10 +177,8 @@ if ([string]::IsNullOrEmpty($systemKey)) {
 ################################################################################
 # Download CSV
 ################################################################################
-$tempPath = "C:\Windows\Temp\users.csv"
+$tempPath = "C:\Windows\Temp\MigrateUsers.csv"
 # Download the Font to a Temp Location in C:
-Invoke-WebRequest -Uri $url -OutFile $tempPath
-
 $CSV = Get-Content -Path $tempPath | ConvertFrom-Csv
 foreach ($line in $CSV) {
     <# $line is the current item #>
@@ -331,13 +325,12 @@ fi
 # Download CSV
 ################################################################################
 # Set temp location for user CSV
-csv="/tmp/users.csv"
-# Download the url of the users list to the temp location
-curl -s -o "$csv" "$url"
+csv="/tmp/MigrateUsers.csv"
 # Read out lines in CSV, if match between CSV && SystemID, populate vars
 while IFS="," read -r CSV_systemID CSV_UserToRename CSV_JumpCloudUser
 do
-    if [[ $CSV_systemID == "$systemID" ]];then
+    sysId=$(echo $CSV_systemID | tr -d '"')
+    if [[ $sysId == "$systemID" ]];then
         echo "SystemID: $CSV_systemID"
         echo "UserToRename: $CSV_UserToRename"
         # strip whitespace if exists
@@ -560,8 +553,39 @@ done
 # Links old home directory to new. Fixes dock mapping issue
 ln -s "/Users/${jumpcloudUsername}" "${user_home_location}"
 
-# restart login window
-killall loginwindow
+# create the plist file:
+echo '#!/bin/bash
+/sbin/shutdown -r +1
+' > /tmp/reboot.sh
+# make the script executable
+chmod +x /tmp/reboot.sh
+# create the plist file:
+echo '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.jumpcloud.prestage</string>
+	<key>Program</key>
+    <string>/tmp/reboot.sh</string>
+	<key>RunAtLoad</key>
+	<true/>
+    <key>StandardOutPath</key>
+    <string>/var/tmp/com.apple.restart.stdout</string>
+    <key>StandardErrorPath</key>
+    <string>/var/tmp/com.apple.restart.stderr</string>
+</dict>
+</plist>' > /Library/LaunchDaemons/com.rebootnow.plist
+
+# change ownership
+chown root:wheel "/Library/LaunchDaemons/com.rebootnow.plist"
+chmod 644 "/Library/LaunchDaemons/com.rebootnow.plist"
+
+launchctl load -w /Library/LaunchDaemons/com.rebootnow.plist
+
+sleep 2
+# remove the LaunchDaemons so that they do not kick off after the restart
+rm /Library/LaunchDaemons/com.rebootnow.plist
 ## End Script ##
 exit 0
 ```
