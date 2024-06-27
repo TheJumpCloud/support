@@ -9,34 +9,17 @@ windows
 #### Command
 
 ```
-# Set $RELEASE_CHANNEL to "beta", "dogfood", or "public" depending on your desired releaseChannel
+# Set $RELEASE_CHANNEL to beta OR dogfood OR public depending on your desired release channel
 $RELEASE_CHANNEL = "public"
-# Set $TARGET_ENVIRONMENT to "production", "staging", or "local" to target user's environment
-$TARGET_ENVIRONMENT = "production"
+
 #------- Do not modify below this line ------
-$APP_NAME = "JumpCloud Password Manager"
-# Function to set application's name
-function Detect-Env {
-    switch ($TARGET_ENVIRONMENT) {
-        "production" { $global:APP_NAME = "JumpCloud Password Manager" }
-        "staging"    { $global:APP_NAME = "JC Password Manager Staging" }
-        "local"      { $global:APP_NAME = "JC Password Manager Local" }
-        default     { $global:APP_NAME = "JumpCloud Password Manager" }
-    }
+
+$FILE_PATH = "$env:APPDATA\JumpCloud Password Manager\data\daemon\releaseChannel.txt"
+$directory = Split-Path $FILE_PATH
+if (-not (Test-Path $directory)) {
+    New-Item -ItemType Directory -Path $directory -Force
 }
-# Function to update or create file content
-function Update-File {
-    $HOME = [System.Environment]::GetFolderPath('UserProfile')
-    $FILE_PATH = "$HOME\AppData\Roaming\$global:APP_NAME\data\daemon\releaseChannel.txt"
-    $dir = Split-Path $FILE_PATH
-    New-Item -ItemType Directory -Force -Path $dir | Out-Null
-    Set-Content -Path $FILE_PATH -Value $RELEASE_CHANNEL -NoNewline
-}
-function Main {
-    Detect-Env
-    Update-File
-}
-Main
+Set-Content -Path $FILE_PATH -Value $RELEASE_CHANNEL -NoNewline
 ```
 
 #### Description
