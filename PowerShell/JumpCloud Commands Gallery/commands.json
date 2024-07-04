@@ -65,7 +65,7 @@
   {
     "name": "Linux - Set JumpCloud Password Manager's Release Channel | v1.0 JCCG",
     "type": "linux",
-    "command": "#!/bin/bash\n\n# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 4 depending on your desired release channel\nRELEASE_CHANNEL=\"public\"\n\n#------- Do not modify below this line ------\n\nFILE_PATH=\"$HOME/.config/JumpCloud Password Manager/data/daemon/releaseChannel.txt\"\nmkdir -p \"$(dirname \"$FILE_PATH\")\"\necho -n \"$RELEASE_CHANNEL\" > \"$FILE_PATH\"",
+    "command": "#!/bin/bash\n\n# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 4 depending on your desired release channel\n\nRELEASE_CHANNEL=\"public\"\n\n#------- Do not modify below this line ------\n\nfor user in $(awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd); do\n    if [[ -d /home/$user ]]; then\n        BASE_PATH=\"/home/$user/.config/JumpCloud Password Manager\"\n\n        FILE_PATH=\"$BASE_PATH/data/daemon/releaseChannel.txt\"\n\n        mkdir -p \"$(dirname \"$FILE_PATH\")\"\n\n        echo -n \"$RELEASE_CHANNEL\" >\"$FILE_PATH\"\n\n        sudo chown -R $user:$user \"$BASE_PATH\"\n    fi\ndone",
     "link": "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Linux%20Commands/Linux%20-%20Set%20ReleaseChannel%20In%20JumpCloud%20Password%20Manager.md",
     "description": "This command will set the desired release channel for JumpCloud's Password Manager in application's directory. The relesase channel options are beta, dogfood and public."
   },
