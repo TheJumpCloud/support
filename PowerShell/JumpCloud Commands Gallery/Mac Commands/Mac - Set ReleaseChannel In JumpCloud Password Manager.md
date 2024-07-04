@@ -11,14 +11,24 @@ mac
 ```
 #!/bin/bash
 
-# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 4 depending on your desired release channel
+# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 15 depending on your desired release channel
 RELEASE_CHANNEL="public"
 
 #------- Do not modify below this line ------
 
-FILE_PATH="$HOME/Library/Application Support/JumpCloud Password Manager/data/daemon/releaseChannel.txt"
-mkdir -p "$(dirname "$FILE_PATH")"
-echo -n "$RELEASE_CHANNEL" > "$FILE_PATH"
+for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_'); do
+    if [[ -d /Users/$user ]]; then
+        BASE_PATH="/Users/$user/Library/Application Support/JumpCloud Password Manager"
+
+        FILE_PATH="$BASE_PATH/data/daemon/releaseChannel.txt"
+
+        mkdir -p "$(dirname "$FILE_PATH")"
+
+        echo -n "$RELEASE_CHANNEL" >"$FILE_PATH"
+
+        sudo chown -R $user "$BASE_PATH"
+    fi
+done
 ```
 
 #### Description

@@ -233,7 +233,7 @@
   {
     "name": "Mac - Set JumpCloud Password Manager Release Channel | v1.0 JCCG",
     "type": "mac",
-    "command": "#!/bin/bash\n\n# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 4 depending on your desired release channel\nRELEASE_CHANNEL=\"public\"\n\n#------- Do not modify below this line ------\n\nFILE_PATH=\"$HOME/Library/Application Support/JumpCloud Password Manager/data/daemon/releaseChannel.txt\"\nmkdir -p \"$(dirname \"$FILE_PATH\")\"\necho -n \"$RELEASE_CHANNEL\" > \"$FILE_PATH\"",
+    "command": "#!/bin/bash\n\n# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 15 depending on your desired release channel\nRELEASE_CHANNEL=\"public\"\n\n#------- Do not modify below this line ------\n\nfor user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_'); do\n    if [[ -d /Users/$user ]]; then\n        BASE_PATH=\"/Users/$user/Library/Application Support/JumpCloud Password Manager\"\n\n        FILE_PATH=\"$BASE_PATH/data/daemon/releaseChannel.txt\"\n\n        mkdir -p \"$(dirname \"$FILE_PATH\")\"\n\n        echo -n \"$RELEASE_CHANNEL\" >\"$FILE_PATH\"\n\n        sudo chown -R $user \"$BASE_PATH\"\n    fi\ndone",
     "link": "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Mac%20-%20Set%20ReleaseChannel%20In%20JumpCloud%20Password%20Manager.md",
     "description": "This command will set the desired release channel for JumpCloud's Password Manager in application's directory. The relesase channel options are beta, dogfood and public."
   },
