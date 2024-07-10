@@ -23,4 +23,28 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
             }
         }
     }
+
+    Context ('Validating that HelpFiles are up to date') {
+        It 'Check to see if there is a git diff for HelpFiles' {
+            # run the Build-HelpFiles function to generate new docs:
+            . "$PSScriptRoot/../../../Deploy/Build-HelpFiles.ps1" -ModuleName "JumpCloud" -ModulePath "$PSScriptRoot/../../../JumpCloud Module"
+            # validate that there's no changes to git diff
+
+            $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
+            $ModuleRootFullName = $ModuleRoot.FullName
+            $HelpFilePopulation = Get-ChildItem -Path:($ModuleRootFullName + '/Docs/*.md') -Recurse
+
+            $HelpFilePopulation | ForEach-Object {
+                # File should exist
+                Test-Path -Path $_.FullName | Should -Be $true
+
+                # Git Diff for the file should not exist
+                $diff = git diff -- $_.FullName
+                if ($diff) {
+                    Write-Warning "Diff found in the file $($_.FullName) when we expected none to exist; Please run Build-HelpFiles and commit the results"
+                }
+                $diff | Should -BeNullOrEmpty
+            }
+        }
+    }
 }
