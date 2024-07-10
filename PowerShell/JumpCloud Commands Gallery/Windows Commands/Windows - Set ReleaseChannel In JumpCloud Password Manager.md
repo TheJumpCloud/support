@@ -9,17 +9,33 @@ windows
 #### Command
 
 ```
-# Set $RELEASE_CHANNEL to beta OR dogfood OR public depending on your desired release channel
-$RELEASE_CHANNEL = "public"
-
+# Set $releaseChannel to beta OR dogfood OR public depending on your desired release channel
+$releaseChannel = "public"
 #------- Do not modify below this line ------
 
-$FILE_PATH = "$env:APPDATA\JumpCloud Password Manager\data\daemon\releaseChannel.txt"
-$directory = Split-Path $FILE_PATH
+$allowed_values = @("beta", "dogfood", "public")
+
+if (-not ($allowed_values -ccontains $releaseChannel)) {
+    Write-Host "Error: Variable `$releaseChannel must be either 'beta', 'dogfood', or 'public'."
+    exit 1
+}
+
+# Get the current user's SID (Security Identifier)
+$loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
+$loggedUser = $loggedUser -replace '.*\\'
+
+# Construct the Registry path using the user's SID
+$userSID = (New-Object System.Security.Principal.NTAccount($loggedUser)).Translate([System.Security.Principal.SecurityIdentifier]).Value
+$registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$userSID"
+$loggedOnUserProfileImagePath = Get-ItemPropertyValue -Path $registryPath -Name 'ProfileImagePath'
+$filePath = "$loggedOnUserProfileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\releaseChannel.txt"
+
+$directory = Split-Path $filePath
 if (-not (Test-Path $directory)) {
     New-Item -ItemType Directory -Path $directory -Force
 }
-Set-Content -Path $FILE_PATH -Value $RELEASE_CHANNEL -NoNewline
+
+Set-Content -Path $filePath -Value $releaseChannel -NoNewline
 ```
 
 #### Description

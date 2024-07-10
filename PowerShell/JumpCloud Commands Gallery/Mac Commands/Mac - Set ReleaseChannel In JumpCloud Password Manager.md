@@ -11,22 +11,29 @@ mac
 ```
 #!/bin/bash
 
-# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 15 depending on your desired release channel
-RELEASE_CHANNEL="public"
+# Set releaseChannel to beta OR dogfood OR public depending on your desired release channel
+releaseChannel="dogfood"
 
 #------- Do not modify below this line ------
 
+allowed_values=("beta" "dogfood" "public")
+
+if [[ ! " ${allowed_values[@]} " =~ " $releaseChannel " ]]; then
+    echo "Error: Variable \$releaseChannel must be either 'beta', 'dogfood', or 'public'."
+    exit 1
+fi
+
 for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_'); do
     if [[ -d /Users/$user ]]; then
-        BASE_PATH="/Users/$user/Library/Application Support/JumpCloud Password Manager"
+        basePath="/Users/$user/Library/Application Support/JumpCloud Password Manager"
 
-        FILE_PATH="$BASE_PATH/data/daemon/releaseChannel.txt"
+        filePath="$basePath/data/daemon/releaseChannel.txt"
 
-        mkdir -p "$(dirname "$FILE_PATH")"
+        mkdir -p "$(dirname "$filePath")"
 
-        echo -n "$RELEASE_CHANNEL" >"$FILE_PATH"
+        echo -n "$releaseChannel" >"$filePath"
 
-        sudo chown -R $user "$BASE_PATH"
+        sudo chown -R $user "$basePath"
     fi
 done
 ```

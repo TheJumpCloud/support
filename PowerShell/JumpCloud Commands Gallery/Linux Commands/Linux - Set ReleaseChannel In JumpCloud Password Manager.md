@@ -11,23 +11,29 @@ linux
 ```
 #!/bin/bash
 
-# Set $RELEASE_CHANNEL to beta OR dogfood OR public ON LINE 4 depending on your desired release channel
-
-RELEASE_CHANNEL="public"
+# Set $releaseChannel to beta OR dogfood OR public depending on your desired release channel
+releaseChannel="public"
 
 #------- Do not modify below this line ------
 
+allowed_values=("beta" "dogfood" "public")
+
+if [[ ! " ${allowed_values[@]} " =~ " $releaseChannel " ]]; then
+    echo "Error: Variable \$releaseChannel must be either 'beta', 'dogfood', or 'public'."
+    exit 1
+fi
+
 for user in $(awk -F'[/:]' '{if ($3 >= 1000 && $3 != 65534) print $1}' /etc/passwd); do
     if [[ -d /home/$user ]]; then
-        BASE_PATH="/home/$user/.config/JumpCloud Password Manager"
+        basePath="/home/$user/.config/JumpCloud Password Manager"
 
-        FILE_PATH="$BASE_PATH/data/daemon/releaseChannel.txt"
+        filePath="$basePath/data/daemon/releaseChannel.txt"
 
-        mkdir -p "$(dirname "$FILE_PATH")"
+        mkdir -p "$(dirname "$filePath")"
 
-        echo -n "$RELEASE_CHANNEL" >"$FILE_PATH"
+        echo -n "$releaseChannel" >"$filePath"
 
-        sudo chown -R $user:$user "$BASE_PATH"
+        sudo chown -R $user:$user "$basePath"
     fi
 done
 ```
