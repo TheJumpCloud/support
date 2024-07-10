@@ -1,6 +1,20 @@
+## 2.12.1
+
+Release Date: July 10, 2024
+
+#### RELEASE NOTES
+
+```
+Patch release to include new Pester Tests. No functional changes have been made
+```
+
+#### IMPROVEMENTS:
+
+Included Pester Test to check for updating documentation
+
 ## 2.12.0
 
-Release Date: June 18, 2024
+Release Date: July 10, 2024
 
 #### RELEASE NOTES
 
