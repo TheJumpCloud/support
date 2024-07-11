@@ -12,7 +12,7 @@ mac
 #!/bin/bash
 
 # Set releaseChannel to beta OR dogfood OR public depending on your desired release channel
-releaseChannel="dogfood"
+releaseChannel="public"
 
 #------- Do not modify below this line ------
 
