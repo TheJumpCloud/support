@@ -15,13 +15,15 @@ Updates an existing Cloud Directory instance within a JumpCloud tenant
 ### ByName
 ```
 Set-JCCloudDirectory [-Name <String>] [-NewName <String>] [-GroupsEnabled <Boolean>]
- [-UserLockoutAction <String>] [-UserPasswordExpirationAction <String>] [<CommonParameters>]
+ [-UserLockoutAction <String>] [-UserPasswordExpirationAction <String>]
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
 Set-JCCloudDirectory [-ID <String>] [-NewName <String>] [-GroupsEnabled <Boolean>]
- [-UserLockoutAction <String>] [-UserPasswordExpirationAction <String>] [<CommonParameters>]
+ [-UserLockoutAction <String>] [-UserPasswordExpirationAction <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

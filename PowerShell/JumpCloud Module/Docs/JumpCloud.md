@@ -3,7 +3,7 @@ Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
 Help Version: 2.12.1
-Locale: en-US
+Locale: en-Us
 ---
 
 # JumpCloud Module

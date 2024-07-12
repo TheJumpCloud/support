@@ -14,12 +14,14 @@ Updates the permissions of a JumpCloud user on a JumpCloud system
 
 ### ByName (Default)
 ```
-Set-JCSystemUser [-Username] <String> -SystemID <String> -Administrator <Boolean> [<CommonParameters>]
+Set-JCSystemUser [-Username] <String> -SystemID <String> -Administrator <Boolean>
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Set-JCSystemUser -UserID <String> -SystemID <String> -Administrator <Boolean> [<CommonParameters>]
+Set-JCSystemUser -UserID <String> -SystemID <String> -Administrator <Boolean>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

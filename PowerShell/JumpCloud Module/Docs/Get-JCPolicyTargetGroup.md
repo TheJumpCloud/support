@@ -19,7 +19,8 @@ Get-JCPolicyTargetGroup [-PolicyID] <String> [<CommonParameters>]
 
 ### ByName
 ```
-Get-JCPolicyTargetGroup [-ByName] [-PolicyName] <String> [<CommonParameters>]
+Get-JCPolicyTargetGroup [-ByName] [-PolicyName] <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

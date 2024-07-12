@@ -14,12 +14,14 @@ Adds a JumpCloud user to a JumpCloud User Group.
 
 ### ByName (Default)
 ```
-Add-JCUserGroupMember [-GroupName] <String> [-Username] <String> [<CommonParameters>]
+Add-JCUserGroupMember [-GroupName] <String> [-Username] <String>
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Add-JCUserGroupMember [[-GroupName] <String>] [-ByID] [-GroupID <String>] -UserID <String> [<CommonParameters>]
+Add-JCUserGroupMember [[-GroupName] <String>] [-ByID] [-GroupID <String>] -UserID <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

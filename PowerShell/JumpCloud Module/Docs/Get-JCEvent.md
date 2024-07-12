@@ -16,8 +16,8 @@ Query the API for Directory Insights events
 ```
 Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
  [-Limit <Int64>] [-Q <String>] [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>]
- [-SearchTermNot <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+ [-SearchTermNot <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -334,4 +334,3 @@ Known services: systems,radius,sso,directory,ldap,all
 ## RELATED LINKS
 
 [https://github.com/TheJumpCloud/support/wiki/Get-JCEvent](https://github.com/TheJumpCloud/support/wiki/Get-JCEvent)
-

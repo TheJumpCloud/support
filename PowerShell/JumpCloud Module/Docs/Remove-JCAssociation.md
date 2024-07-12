@@ -14,14 +14,14 @@ Remove an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>]
- [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Id] <String[]>
+ [[-TargetType] <String[]>] [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Remove-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetType] <String[]>]
- [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
+Remove-JCAssociation [-Type] <String> [-Force] [-Name] <String[]>
+ [[-TargetType] <String[]>] [[-TargetId] <String>] [[-TargetName] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

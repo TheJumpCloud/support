@@ -14,17 +14,20 @@ Disables a JumpCloud User account on a JumpCloud System.
 
 ### ByName (Default)
 ```
-Remove-JCSystemUser [-Username] <String> -SystemID <String> [<CommonParameters>]
+Remove-JCSystemUser [-Username] <String> -SystemID <String>
+ [<CommonParameters>]
 ```
 
 ### Force
 ```
-Remove-JCSystemUser [-Username] <String> -SystemID <String> [-force] [<CommonParameters>]
+Remove-JCSystemUser [-Username] <String> -SystemID <String> [-force]
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Remove-JCSystemUser -SystemID <String> -UserID <String> [<CommonParameters>]
+Remove-JCSystemUser -SystemID <String> -UserID <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

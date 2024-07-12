@@ -14,7 +14,8 @@ Backup your JumpCloud organization to local json files
 
 ### All (Default)
 ```
-Backup-JCOrganization -Path <String> [-All] [-Format <String>] [-PassThru] [<CommonParameters>]
+Backup-JCOrganization -Path <String> [-All] [-Format <String>] [-PassThru]
+ [<CommonParameters>]
 ```
 
 ### Type

@@ -14,14 +14,16 @@ Create an association between two object within the JumpCloud console.
 
 ### ById (Default)
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetType] <String[]>] [[-TargetId] <String>]
- [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Id] <String[]>
+ [[-TargetType] <String[]>] [[-TargetId] <String>] [[-TargetName] <String>] [[-Attributes] <PSObject>]
+ [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Add-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetType] <String[]>]
- [[-TargetId] <String>] [[-TargetName] <String>] [[-Attributes] <PSObject>] [<CommonParameters>]
+Add-JCAssociation [-Type] <String> [-Force] [-Name] <String[]>
+ [[-TargetType] <String[]>] [[-TargetId] <String>] [[-TargetName] <String>] [[-Attributes] <PSObject>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
