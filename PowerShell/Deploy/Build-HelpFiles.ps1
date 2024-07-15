@@ -27,6 +27,7 @@ function Remove-CommonParameterFromMarkdown {
     $ErrorActionPreference = 'Stop'
     $Docs = Get-ChildItem -Path $Path -Recurse
     foreach ($p in $Docs) {
+        Write-Host "[status]Removing ProgressAction from $p"
         $content = (Get-Content -Path $p -Raw).TrimEnd()
         $updateFile = $false
         foreach ($param in $ParameterName) {
