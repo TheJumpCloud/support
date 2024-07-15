@@ -26,8 +26,11 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
 
     Context ('Validating that HelpFiles are up to date') {
         It 'Check to see if there is a git diff for HelpFiles' {
+            $BuildHelpFilesLocation = "$PSScriptRoot/../../../Deploy/Build-HelpFiles.ps1"
+            $ModulePathLocation = "$PSScriptRoot/../../../JumpCloud Module"
             # run the Build-HelpFiles function to generate new docs:
-            . "$PSScriptRoot/../../../Deploy/Build-HelpFiles.ps1" -ModuleName "JumpCloud" -ModulePath "$PSScriptRoot/../../../JumpCloud Module"
+            Start-Job -Name BuildHelpFiles -ScriptBlock { . $using:BuildHelpFilesLocation -ModuleName "JumpCloud" -ModulePath $using:ModulePathLocation }
+            Wait-Job -Name  BuildHelpFiles
             # validate that there's no changes to git diff
 
             $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
