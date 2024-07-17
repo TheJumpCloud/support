@@ -13,7 +13,8 @@ Triggers a JumpCloud Command Deployment using the CommandID and a filled out dep
 ## SYNTAX
 
 ```
-Invoke-JCDeployment [-CommandID] <String> -CSVFilePath <String> [<CommonParameters>]
+Invoke-JCDeployment [-CommandID] <String> -CSVFilePath <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

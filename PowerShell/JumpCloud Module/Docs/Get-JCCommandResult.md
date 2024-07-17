@@ -24,7 +24,8 @@ Get-JCCommandResult [-CommandResultID] <String> [<CommonParameters>]
 
 ### ByCommandID
 ```
-Get-JCCommandResult [-CommandID <String>] [-ByCommandID] [<CommonParameters>]
+Get-JCCommandResult [-CommandID <String>] [-ByCommandID]
+ [<CommonParameters>]
 ```
 
 ### Detailed

@@ -20,7 +20,8 @@ Update-JCMSPFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Update-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>] [<CommonParameters>]
+Update-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

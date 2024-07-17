@@ -25,12 +25,14 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
  [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
  [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>] [-state <String>]
- [-recoveryEmail <String>] -dateFilter <String> -date <DateTime> [<CommonParameters>]
+ [-recoveryEmail <String>] -dateFilter <String> -date <DateTime>
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParameters>]
+Get-JCUser -userid <String> -dateFilter <String> -date <DateTime>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

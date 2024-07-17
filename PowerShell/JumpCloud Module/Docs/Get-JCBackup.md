@@ -13,7 +13,8 @@ Backs up JumpCloud directory information to CSV
 ## SYNTAX
 
 ```
-Get-JCBackup [-All] [-Users] [-SystemUsers] [-Systems] [-UserGroups] [-SystemGroups] [<CommonParameters>]
+Get-JCBackup [-All] [-Users] [-SystemUsers] [-Systems] [-UserGroups] [-SystemGroups]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -14,7 +14,8 @@ Using this function you can easily gather heightened levels of information from 
 ## SYNTAX
 
 ```
-Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [-Filter <String[]>] [<CommonParameters>]
+Get-JCSystemInsights -Table <String> [-SystemId <String[]>] [-Filter <String[]>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -109,4 +110,3 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## RELATED LINKS
 
 [Online Version:](https://github.com/TheJumpCloud/support/wiki/Get-JCSystemInsights)
-
