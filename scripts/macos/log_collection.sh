@@ -93,7 +93,6 @@ log show --last ${days}d --debug --info --style compact --predicate 'senderImage
 echo "Gathering profiles & OS Patch Management settings"
 profiles show -o stdout > $baseDir/installedProfiles.txt
 
-# from James W.
 softwareupdate --list > $basedir/systemInfo/SoftwareUpdateList.txt 2>$1
 
 defaults read /Library/Preferences/com.apple.SoftwareUpdate > $baseDir/com.apple.SoftwareUpdate.plist 2>&1
