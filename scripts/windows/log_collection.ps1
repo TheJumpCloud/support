@@ -1,6 +1,6 @@
 ##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
-$automate = $false   
+$automate = $false
 
 ################################################################
 
@@ -86,7 +86,7 @@ function Gather-Logs {
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\jcadimportagent.config.json",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\JumpCloud_AD_Sync.log",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\config.json"
-        
+
             )
             "Policies"            = @(
                 "C:\windows\temp\jcagent.log"
@@ -109,9 +109,8 @@ function Gather-Logs {
 
         if ($PSCmdlet.ParameterSetName -eq 'SearchFilter') {
             $selectedSections = $selections
-        }
-        elseif ($PSCmdlet.ParameterSetName -eq 'All Logs') {
-            
+        } elseif ($PSCmdlet.ParameterSetName -eq 'All Logs') {
+            # "Active Directory Logs" are not returned with "All Logs"
             $selectedSections = @("Agent Logs",
                 "Remote Assist logs",
                 "Password Manager Logs",
@@ -119,12 +118,11 @@ function Gather-Logs {
                 "Bitlocker",
                 "Software Management: Chocolatey",
                 "Software Management: Windows Store",
-                "Policies",
-                "Active Directory Logs")
+                "Policies")
         }
     }
 
-            
+
     process {
 
         foreach ($logType in $selectedSections) {
@@ -145,7 +143,7 @@ function Gather-Logs {
                             $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
                             $profileImagePath = $profilePath.ProfileImagePath
                         }
-                        
+
                         if (Test-Path -Path "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log") {
                             $passwordManagerLogPath = "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log"
                             $files += $passwordManagerLogPath
@@ -175,7 +173,7 @@ function Gather-Logs {
                 }
                 "Policies" {
                     $files += $fileList["Policies"]
-    
+
                     # Generate RSOP Output
                     $rsopOutputPath = Join-Path $tempDir "RSOP.html"
                     $rsopCmd = "gpresult /H $rsopOutputPath"
@@ -187,53 +185,48 @@ function Gather-Logs {
                     # test for import agent files
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\JumpCloud\AD Integration Import Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKLM:\SOFTWARE\JumpCloud\AD Integration Import Agent" "$tempDir\AD_Integration_Import_Agent.reg" -ErrorAction SilentlyContinue
-                    }
-                    else {
+                    } else {
                         Write-Warning "No AD Import Agent Logs exist"
                     }
                     # test for sync agent files
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKLM:\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\AD_Integration_Sync_Agent.reg" -ErrorAction SilentlyContinue
-                    }
-                    else {
+                    } else {
                         Write-Warning "No AD Sync Agent Logs exist"
                     }
                     # Output DistinguishedName to a Text File
                     if (Get-Module -Name ActiveDirectory) {
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
-                    }
-                    else {
+                    } else {
                         Write-Warning "The Active Directory PowerShell Module was not installed"
                     }
                 }
             }
         }
-    
+
         # Check if the Zip File Already Exists and Remove it if it Does
         $zipFilePath = "C:\Windows\Temp\Jumpcloud_Agent_Logs.zip"
         if (Test-Path $zipFilePath) {
             Remove-Item $zipFilePath
         }
-    
+
         # Copy the Files to the Temporary Directory if They Exist
         foreach ($file in $files) {
             if (Test-Path $file) {
                 if ($file -match "logs-live") {
-                    
+
                     $pwmFile = $file | Select-String -Pattern "C:\\Users\\([\s\S]+)\\AppData"
                     $pwnFileUsername = $pwmFile.matches.groups[1].value
                     Copy-Item -Path $file -Destination "$tempDir/$pwnFileUsername-logs-live.txt" -ErrorAction SilentlyContinue
-                }
-                else {
+                } else {
                     Copy-Item -Path $file -Destination $tempDir -ErrorAction SilentlyContinue
                 }
-            }
-            else {
+            } else {
                 $nonExistentFiles += $file
             }
         }
-    
+
         # Export Event Logs to Temporary Directory
         foreach ($log in $eventLogs) {
             $evtFile = Join-Path $tempDir "$($log -replace '/', '-').evtx"
@@ -242,8 +235,7 @@ function Gather-Logs {
             }
             try {
                 wevtutil epl $log $evtFile
-            }
-            catch {
+            } catch {
                 Write-Host "Skipping $log event log: $_"
             }
         }
@@ -253,7 +245,7 @@ function Gather-Logs {
         # Create a Log File of All Copied Files
         $logFilePath = Join-Path (Get-Location) "CopiedFiles.log"
         $files | Out-File -FilePath $logFilePath -ErrorAction SilentlyContinue
-    
+
         # Create the Zip File
         $hostname = $env:COMPUTERNAME
         $selectedSectionsString = $selectedSections -join "_"
@@ -263,13 +255,13 @@ function Gather-Logs {
             Remove-Item -Path $zipFilePath -Recurse -Force
         }
         Compress-Archive -Path $tempDir\* -DestinationPath $zipFilePath -Force
-    
+
         Write-Host "Logs have been gathered and compressed into $zipFilePath"
-    
+
         # Open the Folder Containing the Zip File
         #explorer.exe /select, $zipFilePath
         Start-Process "explorer.exe" -ArgumentList "/select,`"$zipFilepath`""
-    
+
         # Cleanup Temporary Directory
         Remove-Item -Path $tempDir -Recurse -Force
     }
@@ -280,8 +272,7 @@ function Gather-Logs {
 # if automate is selected, do not prompt, set all logs
 if ($automate) {
     Gather-Logs -All
-}
-else {
+} else {
 
     # Prompt the User to Select the Sections to Gather Logs From
     $sections = @(
@@ -296,20 +287,19 @@ else {
         "Policies",
         "Active Directory Logs"
     )
-    
+
     $selectionPrompt = "Please select the sections to gather logs from:`n"
     for ($i = 0; $i -lt $sections.Count; $i++) {
         $selectionPrompt += "$($i + 1). $($sections[$i])`n"
     }
     $selectionPrompt += "Enter your selection (e.g., 1, 3, 5-7)"
-    
+
     $input = Read-Host -Prompt $selectionPrompt
     $selectedIndexes = $input -split ",|-" | ForEach-Object { $_.Trim() } | Where-Object { $_ -match "^\d+$" } | ForEach-Object { [int]$_ - 1 }
-    
+
     if ($selectedIndexes -contains 0) {
         Gather-Logs -All
-    }
-    else {
+    } else {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
