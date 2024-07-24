@@ -9,7 +9,10 @@ function Get-JCRGlobalVars {
         $skipAssociation,
         [Parameter(HelpMessage = "Updates the system to user association cache manually using the graph api")]
         [switch]
-        $associateManually
+        $associateManually,
+        [Parameter(HelpMessage = "Updates just a single user's associations manually using the graph api")]
+        [System.String]
+        $associationUsername
     )
     begin {
         # ensure the data directory exists to cache the json files:
@@ -189,6 +192,34 @@ function Get-JCRGlobalVars {
                                 }) | Out-Null
                         }
 
+                    }
+                    # write out the association hash
+                    $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
+                }
+                if ($associationUsername) {
+                    $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
+                    $matchedUser = $radiusMemberList | Where-Object { $_.username -eq $associationUsername }
+                    if (-Not $matchedUser) {
+                        Write-Warning "user not found"
+                    } else {
+                        $userSystemMembership = Get-JcSdkUserTraverseSystem -UserId $matchedUser.userID
+                        if ($userSystemMembership) {
+                            # check if the user exists
+                            if ($userAssociationList[$matchedUser.userID]) {
+                                $userAssociationList[$matchedUser.userID].'systemAssociations' = @($userSystemMembership | Select-Object -Property @{Name = 'systemId'; Expression = { $_.id } }, @{Name = 'hostname'; Expression = { $systems[$_.id].hostname } }, @{Name = 'osFamily'; Expression = {
+                                            $osFamilyValue = $systems[$_.id].osFamily
+                                            if ($osFamilyValue -eq 'darwin') {
+                                                "macOS"
+                                            } elseif ($osFamilyValue -eq 'Windows') {
+                                                "Windows"
+                                            } else {
+                                                $osFamilyValue
+                                            }
+                                        }
+                                    });
+                            }
+                        }
+                        #
                     }
                     # write out the association hash
                     $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"

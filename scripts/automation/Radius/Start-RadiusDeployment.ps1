@@ -31,6 +31,11 @@ do {
             Start-MonitorCertDeployment
         } '5' {
             Get-JCRGlobalVars -force
+        } '8' {
+            Get-JCRGlobalVars -force -associateManually
+        } '9' {
+            $theUser = Read-Host "Enter the username of the user to manually update their association data"
+            Get-JCRGlobalVars -force -associationUsername $theUser
         }
     }
     Pause
