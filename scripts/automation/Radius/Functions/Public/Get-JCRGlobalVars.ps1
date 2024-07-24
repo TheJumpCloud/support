@@ -52,7 +52,7 @@ function Get-JCRGlobalVars {
                     $setAssociations = $true
                 }
                 $false {
-                    $updateAssociation = $false
+                    $updateAssociation = $true
                     $setAssociations = $false
                 }
             }
