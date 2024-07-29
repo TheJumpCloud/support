@@ -1,9 +1,71 @@
 {
-  "spellright.language": ["en"],
-  "spellright.documentTypes": ["markdown", "latex", "plaintext"],
-  "editor.formatOnSave": true,
-  "powershell.codeFormatting.preset": "OTBS",
-  "powershell.scriptAnalysis.enable": true,
-  "files.trimTrailingWhitespace": true,
-  "powershell.scriptAnalysis.settingsPath": "PowerShell/JumpCloud Module/Tests/ModuleValidation/PSScriptAnalyzerSettings.psd1"
+    "cSpell.language": "en",
+    "cSpell.enabled": true,
+    "cSpell.enableFiletypes": [
+    "latex",
+    "markdown",
+    "plaintext",
+    "powershell"
+    ],
+    // todo highlight settings:
+    "todohighlight.isEnable": true,
+    "todohighlight.isCaseSensitive": true,
+    "todohighlight.maxFilesForSearch": 5120,
+    "todohighlight.toggleURI": false,
+    "todohighlight.enableDiagnostics":true,
+    "todohighlight.keywords": [
+        "FIXME:", // without further details, this will use the defaultStyle
+        "REVIEW:", // as will this
+        // for additional information on highlights: https://github.com/jgclark/vscode-todo-highlight
+        {
+            "text": "INFO:", // without a defined regex pattern this is the string that will be matched
+            "diagnosticSeverity": "information",
+            "color": "white",
+            "backgroundColor": "#57C49F", // INFO: setting the last parameter to zero (alpha channel) disables the background colour
+            "isWholeLine": false
+        },
+        {
+            "text": "TODO(string):", // with a regex pattern defined, this setting isn't used, but is useful as a name for this section
+            "regex": {
+                "pattern": "(?<=^|\"|\\s)TODO(\\(\\w+\\))?:" // this allows for TODO: or TODO(Bob): etc.
+            },
+            "diagnosticSeverity": "warning",
+            "color": "white",
+            "backgroundColor": "#1E8194"
+        },
+        {
+            "text": "APIKEY:", // with a regex pattern defined, this setting isn't used, but is useful as a name for this section
+            "color": "white",
+            "backgroundColor": "#E06161",
+            "regex": {
+                "pattern": "jca_.{36}"
+            },
+            "isWholeLine": false,
+            "diagnosticSeverity": "error"
+        }
+
+    ],
+    "todohighlight.include": [
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.html",
+        "**/*.css",
+        "**/*.scss",
+        "**/*.php",
+        "**/*.rb",
+        "**/*.txt",
+        "**/*.mdown",
+        "**/*.md",
+        "**/*.ps1"
+    ],
+    // file formatting & saving:
+    "prettier.enable": true,
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    // powershell settings
+    "powershell.codeFormatting.preset": "OTBS",
+    "powershell.scriptAnalysis.enable": true,
+    "powershell.scriptAnalysis.settingsPath": "PowerShell/JumpCloud Module/Tests/ModuleValidation/PSScriptAnalyzerSettings.psd1",
 }
