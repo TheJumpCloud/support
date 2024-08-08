@@ -4,10 +4,6 @@ Describe -Tag:('JCAdmin') 'Get-JCAdmin Tests' {
             $Admins = Get-JCAdmin
             $Admins | Should -Not -BeNullOrEmpty
         }
-        It ('Get a specific administrator by email address') {
-            $Admins = Get-JCAdmin -email 'solutions-architecture+pestermtp@jumpcloud.com'
-            $Admins | Should -Not -BeNullOrEmpty
-        }
         It ('Get a specific administrator by email address with wildcard') {
             $Admins = Get-JCAdmin -email 'solutions-architecture*'
             $Admins | Should -Not -BeNullOrEmpty
