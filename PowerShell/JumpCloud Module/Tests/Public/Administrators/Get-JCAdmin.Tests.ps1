@@ -21,7 +21,7 @@ Describe -Tag:('JCAdmin') 'Get-JCAdmin Tests' {
             $Admins | Should -Not -BeNullOrEmpty
         }
         It ('Get administrators by email, enableMultifactor, totpEnrolled, roleName') {
-            $Admins = Get-JCAdmin -email 'solutions-architecture*' -enableMultifactor $false -totpEnrolled $true -roleName 'Administrator With Billing'
+            $Admins = Get-JCAdmin -email 'solutions-architecture*' -enableMultifactor $false -totpEnrolled $true -roleName 'Administrator'
             $Admins | Should -Not -BeNullOrEmpty
         }
     }
