@@ -16,12 +16,14 @@ Query the API for a count of matching events
 ```
 Get-JCEventCount -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
  [-Q <String>] [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermNot <Hashtable>]
- [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ### Get
 ```
-Get-JCEventCount -Body <IEventQuery> [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-JCEventCount -Body <IEventQuery> [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -291,4 +293,3 @@ If any term matches, the event will be returned by the service.
 ## RELATED LINKS
 
 [https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount](https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/jumpcloud.sdk.directoryinsights/get-jcsdkeventcount)
-

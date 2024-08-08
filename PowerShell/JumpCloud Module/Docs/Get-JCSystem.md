@@ -25,7 +25,8 @@ Get-JCSystem [[-hostname] <String>] [-displayName <String>] [-description <Strin
 
 ### ByID
 ```
-Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String> -date <DateTime> [<CommonParameters>]
+Get-JCSystem -SystemID <String> [-SystemFDEKey] -dateFilter <String>
+ -date <DateTime> [<CommonParameters>]
 ```
 
 ## DESCRIPTION

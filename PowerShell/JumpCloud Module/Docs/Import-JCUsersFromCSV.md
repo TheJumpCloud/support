@@ -19,7 +19,8 @@ Import-JCUsersFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Import-JCUsersFromCSV [-CSVFilePath] <String> [-force] [<CommonParameters>]
+Import-JCUsersFromCSV [-CSVFilePath] <String> [-force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

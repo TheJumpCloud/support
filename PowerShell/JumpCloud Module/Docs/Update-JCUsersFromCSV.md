@@ -19,7 +19,8 @@ Update-JCUsersFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Update-JCUsersFromCSV [-CSVFilePath] <String> [-force] [<CommonParameters>]
+Update-JCUsersFromCSV [-CSVFilePath] <String> [-force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

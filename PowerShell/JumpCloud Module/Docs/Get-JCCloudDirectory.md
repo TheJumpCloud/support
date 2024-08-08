@@ -19,7 +19,8 @@ Get-JCCloudDirectory [-Type <String>] [<CommonParameters>]
 
 ### ByName
 ```
-Get-JCCloudDirectory [-Type <String>] [-Name <String>] [<CommonParameters>]
+Get-JCCloudDirectory [-Type <String>] [-Name <String>]
+ [<CommonParameters>]
 ```
 
 ### ByID
