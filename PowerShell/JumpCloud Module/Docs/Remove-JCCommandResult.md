@@ -19,7 +19,8 @@ Remove-JCCommandResult [-CommandResultID] <String> [<CommonParameters>]
 
 ### force
 ```
-Remove-JCCommandResult [-CommandResultID] <String> [-force] [<CommonParameters>]
+Remove-JCCommandResult [-CommandResultID] <String> [-force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -20,7 +20,8 @@ Import-JCMSPFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Import-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>] [<CommonParameters>]
+Import-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

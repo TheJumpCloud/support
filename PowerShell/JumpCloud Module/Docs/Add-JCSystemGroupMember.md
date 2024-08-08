@@ -14,7 +14,8 @@ Adds a JumpCloud System to a JumpCloud System Group
 
 ### ByName (Default)
 ```
-Add-JCSystemGroupMember [-GroupName] <String> -SystemID <String> [<CommonParameters>]
+Add-JCSystemGroupMember [-GroupName] <String> -SystemID <String>
+ [<CommonParameters>]
 ```
 
 ### ByID

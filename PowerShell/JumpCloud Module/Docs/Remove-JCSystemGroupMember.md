@@ -14,7 +14,8 @@ Removes a JumpCloud System from a JumpCloud System Group
 
 ### ByName (Default)
 ```
-Remove-JCSystemGroupMember [-GroupName] <String> -SystemID <String> [<CommonParameters>]
+Remove-JCSystemGroupMember [-GroupName] <String> -SystemID <String>
+ [<CommonParameters>]
 ```
 
 ### ByID

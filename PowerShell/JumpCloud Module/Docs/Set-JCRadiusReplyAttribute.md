@@ -14,8 +14,8 @@ Updates or adds Radius reply attributes to a JumpCloud user group.
 
 ```
 Set-JCRadiusReplyAttribute [-GroupName] <String> [-VLAN <String>] [-NumberOfAttributes <Int32>]
- -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String>
- [-VLANTag <String>] [<CommonParameters>]
+ -Attribute1_name <String> -Attribute1_value <String>
+ -Attribute2_name <String> -Attribute2_value <String> [-VLANTag <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

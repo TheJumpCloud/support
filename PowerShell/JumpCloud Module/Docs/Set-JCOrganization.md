@@ -13,7 +13,8 @@ Allows a multi tenant admin to update their connection to a specific JumpCloud o
 ## SYNTAX
 
 ```
-Set-JCOrganization [[-JumpCloudApiKey] <String>] [[-JumpCloudOrgId] <String>] [<CommonParameters>]
+Set-JCOrganization [[-JumpCloudApiKey] <String>] [[-JumpCloudOrgId] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

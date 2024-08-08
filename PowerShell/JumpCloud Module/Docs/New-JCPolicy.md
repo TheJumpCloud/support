@@ -19,12 +19,14 @@ At a minimum to display the dynamic set of parameters per template, the `Templat
 
 ### ByID (Default)
 ```
-New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
+New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>]
+ [<CommonParameters>]
 ```
 
 ### ByName
 ```
-New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
+New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

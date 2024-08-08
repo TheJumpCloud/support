@@ -14,12 +14,14 @@ Associates a JumpCloud User account with a local account on a JumpCloud managed 
 
 ### ByName (Default)
 ```
-Add-JCSystemUser [-Username] <String> -SystemID <String> [-Administrator <Boolean>] [<CommonParameters>]
+Add-JCSystemUser [-Username] <String> -SystemID <String> [-Administrator <Boolean>]
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Add-JCSystemUser -UserID <String> -SystemID <String> [-Administrator <Boolean>] [<CommonParameters>]
+Add-JCSystemUser -UserID <String> -SystemID <String> [-Administrator <Boolean>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

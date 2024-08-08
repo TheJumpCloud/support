@@ -19,12 +19,14 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 
 ### ByID (Default)
 ```
-Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
+Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>]
+ [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [<CommonParameters>]
+Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

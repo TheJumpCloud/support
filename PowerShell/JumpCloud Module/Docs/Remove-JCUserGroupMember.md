@@ -14,7 +14,8 @@ Removes a JumpCloud User from a JumpCloud User Group
 
 ### ByName (Default)
 ```
-Remove-JCUserGroupMember [-GroupName] <String> [-Username] <String> [<CommonParameters>]
+Remove-JCUserGroupMember [-GroupName] <String> [-Username] <String>
+ [<CommonParameters>]
 ```
 
 ### ByID

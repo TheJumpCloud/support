@@ -14,17 +14,20 @@ Associates a JumpCloud system or a JumpCloud system group with a JumpCloud comma
 
 ### SystemID (Default)
 ```
-Add-JCCommandTarget [-CommandID] <String> [-SystemID] <Object> [<CommonParameters>]
+Add-JCCommandTarget [-CommandID] <String> [-SystemID] <Object>
+ [<CommonParameters>]
 ```
 
 ### GroupID
 ```
-Add-JCCommandTarget [-CommandID] <String> [-GroupID] <Object> [<CommonParameters>]
+Add-JCCommandTarget [-CommandID] <String> [-GroupID] <Object>
+ [<CommonParameters>]
 ```
 
 ### GroupName
 ```
-Add-JCCommandTarget [-CommandID] <String> [-GroupName] <Object> [<CommonParameters>]
+Add-JCCommandTarget [-CommandID] <String> [-GroupName] <Object>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION

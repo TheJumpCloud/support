@@ -15,7 +15,8 @@ Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud C
 ### SearchFilter (Default)
 ```
 Get-JCCommand [-command <String>] [-name <String>] [-commandType <String>] [-launchType <String>]
- [-trigger <String>] [-scheduleRepeatType <String>] [-returnProperties <String[]>] [<CommonParameters>]
+ [-trigger <String>] [-scheduleRepeatType <String>] [-returnProperties <String[]>]
+ [<CommonParameters>]
 ```
 
 ### ByID

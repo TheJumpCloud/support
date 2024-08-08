@@ -1,5 +1,6 @@
 Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
     It 'Validates that functions with "Return Properties" return up-to-date fields' {
+        Import-Module powershell-yaml -force
         $validFunction = @('Get-JCSystem', 'Get-JCUser', 'Get-JCCommand')
         $functionHash = @{
             'Get-JCSystem'  = @{

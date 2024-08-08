@@ -2,8 +2,8 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.12.0
-Locale: en-US
+Help Version: 2.13.0
+Locale: en-Us
 ---
 
 # JumpCloud Module
@@ -43,6 +43,9 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ### [Copy-JCAssociation](Copy-JCAssociation.md)
 Copy the associations from one object to another.
+
+### [Get-JCAdmin](Get-JCAdmin.md)
+Gets JumpCloud administrators in your organization
 
 ### [Get-JCAssociation](Get-JCAssociation.md)
 The function Get-JCAssociation can be used to query an object's associations and then provide information about how objects are associated with one another.
