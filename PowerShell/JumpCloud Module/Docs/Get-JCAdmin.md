@@ -116,7 +116,7 @@ A search filter to search for admins based on their organization (Only for MTP/M
 ```yaml
 Type: System.String
 Parameter Sets: (All)
-Aliases:
+Aliases: organizationID
 
 Required: False
 Position: 4
@@ -132,6 +132,7 @@ A search filter to search for admins based on their role
 Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: Administrator With Billing, Administrator, Manager, Command Runner With Billing, Command Runner, Help Desk, Billing Only, Read Only
 
 Required: False
 Position: 3

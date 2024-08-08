@@ -3121,6 +3121,16 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>A search filter to search for admins based on their role</maml:para>
           </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Administrator With Billing</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Administrator</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Manager</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Command Runner With Billing</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Command Runner</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Help Desk</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Billing Only</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Read Only</command:parameterValue>
+          </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
@@ -3128,7 +3138,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="organizationID">
           <maml:name>organization</maml:name>
           <maml:description>
             <maml:para>A search filter to search for admins based on their organization (Only for MTP/MSP tenants)</maml:para>
@@ -3168,7 +3178,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="4" aliases="organizationID">
         <maml:name>organization</maml:name>
         <maml:description>
           <maml:para>A search filter to search for admins based on their organization (Only for MTP/MSP tenants)</maml:para>
