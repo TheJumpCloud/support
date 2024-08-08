@@ -1,6 +1,22 @@
+## 2.13.0
+
+Release Date: August 08, 2024
+
+#### RELEASE NOTES
+
+```
+New admin function, Get-JCAdmin - returns admins in your organization(s)
+```
+
+#### FEATURES:
+
+* Get-JCAdmin - Returns administrators in your organization
+    * MSP/MTP tenants can query multiple organizations or individual organizations
+
+
 ## 2.12.1
 
-Release Date: July 15, 2024
+Release Date: August 08, 2024
 
 #### RELEASE NOTES
 
