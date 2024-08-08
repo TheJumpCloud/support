@@ -7,8 +7,10 @@ function Get-JCAdmin {
         [Parameter(ValueFromPipelineByPropertyName, Position = 2, HelpMessage = 'A search filter to search for admins with totp enabled/disabled.')]
         [Boolean]$totpEnrolled,
         [Parameter(ValueFromPipelineByPropertyName, Position = 3, HelpMessage = 'A search filter to search for admins based on their role')]
+        [ValidateSet('Administrator With Billing', 'Administrator', 'Manager', 'Command Runner With Billing', 'Command Runner', 'Help Desk', 'Billing Only', 'Read Only')]
         [String]$roleName,
         [Parameter(ValueFromPipelineByPropertyName, Position = 4, HelpMessage = 'A search filter to search for admins based on their organization (Only for MTP/MSP tenants)')]
+        [Alias("organizationID")]
         [String]$organization
     )
     begin {
@@ -77,8 +79,13 @@ function Get-JCAdmin {
                 continue
             }
             if ($param.value -is [String]) {
-                $filterScriptArray += "`$_.$($param.key) -like '$($param.value)'"
-                continue
+                if ($param.Key -eq 'organizationID') {
+                    $filterScriptArray += "`$_.organization -like '$($param.value)'"
+                    continue
+                } else {
+                    $filterScriptArray += "`$_.$($param.key) -like '$($param.value)'"
+                    continue
+                }
             }
         }
         $filterScriptString = $filterScriptArray -join " -and "
