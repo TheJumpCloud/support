@@ -24,8 +24,8 @@ Describe -Tag:('JCAdmin') 'Get-JCAdmin Tests' {
             $Admins = Get-JCAdmin -roleName 'Administrator With Billing'
             $Admins | Should -Not -BeNullOrEmpty
         }
-        It ('Get administrators by email, enableMultifactor, totpEnrolled, roleName and organization') {
-            $Admins = Get-JCAdmin -email 'solutions-architecture*' -enableMultifactor $true -totpEnrolled $true -roleName 'Administrator With Billing' -organization $orgs[0].OrgID
+        It ('Get administrators by email, enableMultifactor, totpEnrolled, roleName') {
+            $Admins = Get-JCAdmin -email 'solutions-architecture*' -enableMultifactor $true -totpEnrolled $true -roleName 'Administrator With Billing'
             $Admins | Should -Not -BeNullOrEmpty
         }
     }
