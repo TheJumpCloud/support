@@ -101,6 +101,7 @@ sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com
 ## gather relevent system logs for software installs
 echo "Gathering software installation logs"
 log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDir/systemLogs/appstored.log
+cp /var/log/install.log* $baseDir/systemLogs/
 
 ## list secure tokens and filesystem information
 echo "Gathering filesystem and secure token information"
