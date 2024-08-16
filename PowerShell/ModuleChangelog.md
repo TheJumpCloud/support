@@ -1,3 +1,12 @@
+## 2.13.1
+
+Release Date: August 16, 2024
+
+#### RELEASE NOTES
+
+```
+Renamed -RemoveAtrribute to -RemoveCustomAttribute
+```
 ## 2.13.0
 
 Release Date: August 8, 2024

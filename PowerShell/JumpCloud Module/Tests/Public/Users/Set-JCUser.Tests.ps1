@@ -376,7 +376,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
     }
     It "Removes a custom attribute from a User" {
         $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
-        $UpdatedUser = Set-JCUser $NewUser.username -RemoveAttribute 'Department'
+        $UpdatedUser = Set-JCUser $NewUser.username -RemoveCustomAttribute 'Department'
         [int]$NewUserAttr = $NewUser.attributes.name.count
         [int]$UpdatedUserAttr = $UpdatedUser.attributes.name.count
         $UpdatedUserAttr++
@@ -1235,7 +1235,7 @@ Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
         $NewUser.phoneNumbers | Where-Object type -EQ work_mobile | Select-Object -ExpandProperty number | Should -Be "work_mobile_number"
         $NewUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "work_fax_number"
         $UpdatedUser = Set-JCUser -Username $NewUser.username -NumberOfCustomAttributes 1 -Attribute1_name 'attr1' -Attribute1_value 'one'
-        $UpdatedUser = Set-JCUser -Username $NewUser.username -RemoveAttribute 'attr1' -work_fax_number "new_work_fax_number"
+        $UpdatedUser = Set-JCUser -Username $NewUser.username -RemoveCustomAttribute 'attr1' -work_fax_number "new_work_fax_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ mobile | Select-Object -ExpandProperty number | Should -Be "mobile_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ home | Select-Object -ExpandProperty number | Should -Be "home_number"
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work | Select-Object -ExpandProperty number | Should -Be "work_number"
@@ -1301,13 +1301,13 @@ Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
-    It "Updates an existing user with enable_user_portal_multifactor -eq True with removeAttributes" {
+    It "Updates an existing user with enable_user_portal_multifactor -eq True with RemoveCustomAttributes" {
         $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" -Attributes | New-JCUser -NumberOfCustomAttributes 2
-        $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -RemoveAttribute 'Department', 'Lang'
+        $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -RemoveCustomAttribute 'Department', 'Lang'
         $Newuser.mfa.exclusion | Should -Be $true
         $Newuser | Remove-JCUser -ByID -force
     }
-    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays with removeAttributes" {
+    It "Updates an existing user with enable_user_portal_multifactor -eq True and a 7 days specified for EnrollmentDays with RemoveCustomAttributes" {
         $CreateUser = New-RandomUser -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -enable_user_portal_multifactor $true
         $EnrollmentDays = 7
         $NewUser = $CreateUser | Set-JCUser -enable_user_portal_multifactor $true -EnrollmentDays $EnrollmentDays
