@@ -8,10 +8,12 @@ Function Set-JCUser () {
             ValueFromPipelineByPropertyName = $true,
             ParameterSetName = 'Username',
             Position = 0, HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
+
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $true,
-            ParameterSetName = 'RemoveCustomAttribute',
-            Position = 0, HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
+            Position = 0,
+            ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The Custom Attribute of the JumpCloud user you wish to modify')]
+
         [string]$Username,
 
         [Parameter(Mandatory,
@@ -1068,11 +1070,9 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
                 }
 
-                if ($RemoveCustomAttribute) {
-                    Write-Debug "Removing $($RemoveCustomAttribute) attributes"
-                    foreach ($Remove in $RemoveCustomAttribute) {
-                        #Remove each attribute
-                        Write-Debug "Removing $($Remove)"
+                foreach ($Remove in $RemoveCustomAttribute) {
+                    if ($CurrentAttributesHash.ContainsKey($Remove)) {
+                        Write-Debug "$Remove is getting removed from custom attributes"
                         $CurrentAttributesHash.Remove($Remove)
                     }
                 }
