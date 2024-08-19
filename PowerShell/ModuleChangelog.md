@@ -1,12 +1,13 @@
 ## 2.13.1
 
-Release Date: August 16, 2024
+Release Date: August 19, 2024
 
 #### RELEASE NOTES
 
 ```
 Renamed -RemoveAtrribute to -RemoveCustomAttribute
 ```
+
 ## 2.13.0
 
 Release Date: August 8, 2024
@@ -19,9 +20,8 @@ New admin function, Get-JCAdmin - returns admins in your organization(s)
 
 #### FEATURES:
 
-* Get-JCAdmin - Returns administrators in your organization
-    * MSP/MTP tenants can query multiple organizations or individual organizations
-
+- Get-JCAdmin - Returns administrators in your organization
+  - MSP/MTP tenants can query multiple organizations or individual organizations
 
 ## 2.12.1
 
@@ -49,10 +49,10 @@ Added new calculated fields for Get-JCSystemInsights Tables LogicalDrives, Mount
 
 #### IMPROVEMENTS:
 
-* Added calculated fields for the `Get-JCSystemInsights` following tables:
-    * LogicalDrives - freeSpaceGB, sizeGB
-    * Mounts - blocksGB, blocksAvailableGB
-    * systemInfo - physicalMemoryGB
+- Added calculated fields for the `Get-JCSystemInsights` following tables:
+  - LogicalDrives - freeSpaceGB, sizeGB
+  - Mounts - blocksGB, blocksAvailableGB
+  - systemInfo - physicalMemoryGB
 
 ## 2.11.0
 
@@ -67,7 +67,6 @@ Introducing a new function Get-JcScheduledUserstate - This will allow for the lo
 #### FEATURES:
 
 New Function: `Get-JcScheduledUserState` - Allows for the lookup of scheduled userstate changes. This will list upcoming suspensions or activations as well as being able to search for a particular user's upcoming state changes by their UserID
-
 
 ## 2.10.2
 
@@ -84,11 +83,9 @@ Removed the unused `systemToken` property from the Get-JCSystem function
 
 Fixed a bug when creating a staged user and attempting to enable MFA
 
-
 #### FEATURES:
 
 Removed the `systemToken` property from the Get-JCSystem function
-
 
 ## 2.10.1
 

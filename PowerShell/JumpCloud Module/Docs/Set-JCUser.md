@@ -38,18 +38,18 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-password <String>] [-password_never_expires <Boolean>] [-allow_public_key <Boolean>] [-sudo <Boolean>]
  [-enable_managed_uid <Boolean>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-account_locked <Boolean>]
  [-passwordless_sudo <Boolean>] [-externally_managed <Boolean>] [-ldap_binding_user <Boolean>]
- [-enable_user_portal_multifactor <Boolean>] [-NumberOfCustomAttributes <Int32>] [-RemoveCustomAttribute <String[]>]
- [-middlename <String>] [-displayname <String>] [-jobTitle <String>] [-employeeIdentifier <String>]
- [-department <String>] [-costCenter <String>] [-company <String>] [-employeeType <String>]
- [-description <String>] [-location <String>] [-work_streetAddress <String>] [-work_poBox <String>]
- [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>] [-work_country <String>]
- [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
- [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
- [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-recoveryEmail <String>]
- [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String>
- -Attribute2_value <String> [<CommonParameters>]
+ [-enable_user_portal_multifactor <Boolean>] [-NumberOfCustomAttributes <Int32>]
+ [-RemoveCustomAttribute <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
+ [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
+ [-employeeType <String>] [-description <String>] [-location <String>] [-work_streetAddress <String>]
+ [-work_poBox <String>] [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>]
+ [-work_country <String>] [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>]
+ [-home_region <String>] [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>]
+ [-home_number <String>] [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>]
+ [-external_dn <String>] [-external_source_type <String>] [-state <String>] [-manager <String>]
+ [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>]
+ [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ### ByID
