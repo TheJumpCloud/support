@@ -388,6 +388,20 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
         $match | Should -Be $true
         Remove-JCUser -UserID $NewUser._id -ByID -Force
     }
+    It "Removes a custom attribute from a User using the Alias 'RemoveAttribute'" {
+        $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
+        $UpdatedUser = Set-JCUser $NewUser.username -RemoveAttribute 'Department'
+        [int]$NewUserAttr = $NewUser.attributes.name.count
+        [int]$UpdatedUserAttr = $UpdatedUser.attributes.name.count
+        $UpdatedUserAttr++
+        $match = if ($NewUserAttr -eq $UpdatedUserAttr) {
+            $true
+        } else {
+            $false
+        }
+        $match | Should -Be $true
+        Remove-JCUser -UserID $NewUser._id -ByID -Force
+    }
 }
 Describe -Tag:('JCUser') 'Set-JCUser 1.3.0' {
     # Linux UID, GUID
