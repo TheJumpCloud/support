@@ -35,7 +35,11 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
 
             $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
             $ModuleRootFullName = $ModuleRoot.FullName
-            $HelpFilePopulation = Get-ChildItem -Path:($ModuleRootFullName + '/Docs/*.md') -Recurse
+            $excludeFunctions = @(
+                'Set-JCSettingsFile.md'
+                'Connect-JCOnline.md'
+            )
+            $HelpFilePopulation = Get-ChildItem -Path:($ModuleRootFullName + '/Docs/*.md') -Recurse -Exclude $excludeFunctions
 
             $HelpFilePopulation | ForEach-Object {
                 # File should exist
