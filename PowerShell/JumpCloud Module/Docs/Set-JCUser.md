@@ -799,7 +799,7 @@ See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 
 ```yaml
 Type: System.String[]
 Parameter Sets: RemoveCustomAttribute
-Aliases:
+Aliases: RemoveAttribute
 
 Required: False
 Position: Named

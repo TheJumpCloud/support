@@ -2441,7 +2441,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:description>
             <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -2520,7 +2520,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:description>
           <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -20104,7 +20104,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="RemoveAttribute">
           <maml:name>RemoveCustomAttribute</maml:name>
           <maml:description>
             <maml:para>The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 5</maml:para>
@@ -21476,7 +21476,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="RemoveAttribute">
         <maml:name>RemoveCustomAttribute</maml:name>
         <maml:description>
           <maml:para>The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 5</maml:para>
