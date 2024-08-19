@@ -13,7 +13,6 @@ Function Set-JCUser () {
             ValueFromPipelineByPropertyName = $true,
             Position = 0,
             ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The Custom Attribute of the JumpCloud user you wish to modify')]
-
         [string]$Username,
 
         [Parameter(Mandatory,
@@ -96,6 +95,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 5')]
         [string[]]
+        [Alias('RemoveAttribute')]
         $RemoveCustomAttribute,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveCustomAttribute'' Parameter')]
