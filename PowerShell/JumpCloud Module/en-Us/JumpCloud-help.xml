@@ -21763,7 +21763,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <maml:title>-------------------------- Example 5 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveCustomAttribute ATTRIBUTENAME</dev:code>
         <dev:remarks>
-          <maml:para>This example removes the Custom Attribute with the name 'Department' from all JumpCloud Users in the JumpCloud User Group 'Sales'</maml:para>
+          <maml:para>This example removes the Custom Attribute with the name 'ATTRIBUTENAME' from all JumpCloud Users in the JumpCloud User Group 'Sales'</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
