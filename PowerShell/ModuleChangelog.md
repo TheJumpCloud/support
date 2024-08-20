@@ -1,3 +1,21 @@
+## 2.13.1
+
+
+Release Date: August 20, 2024
+
+#### RELEASE NOTES
+
+```
+TEST - DO NOT MERGE
+```
+
+#### FEATURES:
+
+* Get-JCAdmin - Returns administrators in your organization
+    * MSP/MTP tenants can query multiple organizations or individual organizations
+
+
+
 ## 2.13.0
 
 Release Date: August 8, 2024
