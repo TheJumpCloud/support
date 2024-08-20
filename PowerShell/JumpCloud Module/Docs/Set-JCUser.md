@@ -110,7 +110,7 @@ This example either updates or adds the Custom Attribute 'name = Department, val
 PS C:\> Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveCustomAttribute ATTRIBUTENAME
 ```
 
-This example removes the Custom Attribute with the name 'Department' from all JumpCloud Users in the JumpCloud User Group 'Sales'
+This example removes the Custom Attribute with the name 'ATTRIBUTENAME' from all JumpCloud Users in the JumpCloud User Group 'Sales'
 
 ### Example 6
 ```powershell
