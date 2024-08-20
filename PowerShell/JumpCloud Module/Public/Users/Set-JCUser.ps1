@@ -12,8 +12,7 @@ Function Set-JCUser () {
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $true,
             Position = 0,
-            ParameterSetName = 'RemoveAttribute', HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
-
+            ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The Custom Attribute of the JumpCloud user you wish to modify')]
         [string]$Username,
 
         [Parameter(Mandatory,
@@ -94,11 +93,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [int]
         $NumberOfCustomAttributes,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 5')]
         [string[]]
-        $RemoveAttribute,
+        [Alias('RemoveAttribute')]
+        $RemoveCustomAttribute,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveCustomAttribute'' Parameter')]
         [switch]
         $ByID,
 
@@ -935,7 +935,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'RemoveAttribute') {
+        elseif ($PSCmdlet.ParameterSetName -eq 'RemoveCustomAttribute') {
             if ($UserHash.Values.username -contains ($Username)) {
                 $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
@@ -955,7 +955,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         continue
                     }
 
-                    if ($param.key -eq 'RemoveAttribute') {
+                    if ($param.key -eq 'RemoveCustomAttribute') {
                         continue
                     }
 
@@ -1070,14 +1070,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
                 }
 
-                foreach ($Remove in $RemoveAttribute) {
+                foreach ($Remove in $RemoveCustomAttribute) {
                     if ($CurrentAttributesHash.ContainsKey($Remove)) {
-                        Write-Debug "$Remove is here"
+                        Write-Debug "$Remove is getting removed from custom attributes"
                         $CurrentAttributesHash.Remove($Remove)
                     }
                 }
-
-
 
                 $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
 
