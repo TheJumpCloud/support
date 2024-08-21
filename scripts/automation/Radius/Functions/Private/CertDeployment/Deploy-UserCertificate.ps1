@@ -65,6 +65,29 @@ function Deploy-UserCertificate {
             $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
             # get certInfo for commands:
             $certInfo = Get-CertInfo -UserCerts -username $user.username
+
+            # validate the certIfo required for installing commands:
+            If (-Not $certInfo) {
+                Write-host "$($user.username) did not have a certificate generated"
+                $status_commandGenerated = $false
+                $result_deployed = $false
+                continue
+            } else {
+                # explicitly validate that the serial number
+                if (-Not $certInfo.subject) {
+                    Write-host "$($user.username) has a certificate file but no subject was found"
+                    $status_commandGenerated = $false
+                    $result_deployed = $false
+                    continue
+                }
+                if (-Not $certInfo.serial) {
+                    Write-host "$($user.username) has a certificate file but no serial number was found"
+                    $status_commandGenerated = $false
+                    $result_deployed = $false
+                    continue
+                }
+            }
+
             # determine certType
             switch ($JCR_CERT_TYPE) {
                 'EmailSAN' {
