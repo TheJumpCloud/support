@@ -11,11 +11,14 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-datestamp=$(date "+%Y%m%d")
-hostDir="/Users/Shared/"
-baseDir="${hostDir}JumpCloudLogCollect"
-localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
-version=1.0
+version=1.1
+
+## verify script is running as root.
+if [ $(/usr/bin/id -u) -ne 0 ]
+then
+    echo "This script must be run as root."
+    exit
+fi
 
 ### Get Consent to collect information
 
@@ -23,9 +26,9 @@ if [[ ! $automate =~ "true" ]]
 then
     read -p "This log collection script gathers:
 - All JumpCloud agent, service, and installation logs
-- JumpCloud logging recorded in the macOS system logs for the past 4 days
+- JumpCloud logging recorded in the macOS system logs for the past ${days} days
 - Currently installed configuration profiles
-- MDM triggered software installations for the past 4 days (Appstore, VPP and Custom Software)
+- MDM triggered software installations for the past ${days} days (Appstore, VPP and Custom Software)
 - Filevault and secure token information (no passwords or secrets are collected)
 - Usernames of JumpCloud managed users
 If you agree to this, enter 'Y', or any other key to cancel." -n 1 -r
@@ -37,11 +40,18 @@ If you agree to this, enter 'Y', or any other key to cancel." -n 1 -r
     fi
 fi
 
-## verify script is running as root.
-if [ $(/usr/bin/id -u) -ne 0 ]
-then
-    echo "This script must be run as root."
-    exit
+datestamp=$(date "+%Y%m%d")
+hostDir="/private/var/tmp/"
+baseDir="${hostDir}JumpCloudLogCollect"
+sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
+
+## Change directory to save log archive depending on active user state
+
+if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
+    localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
+    archiveTargetDir="/Users/${localuser}/Documents/"
+else
+    archiveTargetDir="/private/var/tmp/"
 fi
 
 ## verify system is enrolled in JumpCloud
@@ -93,10 +103,14 @@ log show --last ${days}d --debug --info --style compact --predicate 'senderImage
 echo "Gathering profiles & OS Patch Management settings"
 profiles show -o stdout > $baseDir/installedProfiles.txt
 
-softwareupdate --list > $basedir/systemInfo/SoftwareUpdateList.txt 2>$1
+softwareupdate --list > $baseDir/systemInfo/SoftwareUpdateList.txt 2>&1
 
 defaults read /Library/Preferences/com.apple.SoftwareUpdate > $baseDir/com.apple.SoftwareUpdate.plist 2>&1
-sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com.github.macadmins.Nudge.plist 2>&1
+
+## Only run if a user is actually logged in
+if [[ $localuser ]]; then
+    sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com.github.macadmins.Nudge.plist 2>&1
+fi
 
 ## gather relevent system logs for software installs
 echo "Gathering software installation logs"
@@ -132,10 +146,16 @@ chmod -R 777 $baseDir
 
 ## compress everything
 echo "Compressing logs"
-tar -czvf "${hostDir}JumpCloudLogArchive-v${version}-$datestamp.tar.gz" -C $baseDir .
-chmod 777 ${hostDir}JumpCloudLogArchive-v${version}-$datestamp.tar.gz
+tar -czf "${archiveTargetDir}jc-logArchive-${sysId}-$datestamp.tar.gz" -C $baseDir .
+chmod 777 ${archiveTargetDir}jc-logArchive-${sysId}-$datestamp.tar.gz
 
 echo "cleaning up."
 rm -R $baseDir
 
-sudo -u $localuser open $hostDir
+if [[ $localuser ]]; then
+    sudo -u $localuser open $archiveTargetDir
+    echo "Log archive has been saved to the current user's Documents folder."
+else
+    echo "Please log in locally on the device and open /var/tmp to locate the log archive.
+You may run the command `open /var/tmp` in the macOS Terminal to do this."
+fi
