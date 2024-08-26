@@ -6,6 +6,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             'radiusMembers.json',
             'systemHash.json',
             'userHash.json'
+            'certHash.json'
         )
         # explicitly import the settings file functions for these tests:
         $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
@@ -155,5 +156,43 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 }
             }
         }
+    }
+    Context "Tests that users.json is updated correctly if a cert is found on a user's computer" {
+        It "Validates that the deployment info for some user is updated when a cert is installed on all the user's devices" {
+            $userArray = Get-UserJsonData
+            # get the cert sha of one user with system associations:
+            $userFromList = $userArray | Where-Object { $_.systemAssociations -ne $Null } | select -first 1
+            # force an update of that user's cert
+            Start-GenerateUserCerts -type ByUsername -username $($userFromList.username) -forceReplaceCerts
+            # Update-JCRUsersJson
+            # Get the user array again
+            $userArray = Get-UserJsonData
+            $userFromList = $userArray | Where-Object { $_.userId -eq $userFromList.userID }
+            # create a cert hash object
+            $certHash = @{
+                $($userFromList.certInfo.sha1) = New-Object System.Collections.ArrayList
+            }
+            foreach ($systemAssociation in $userFromList.systemAssociations) {
+                $certHash[$userFromList.certInfo.sha1].Add(
+                    [PSCustomObject]@{
+                        systemId = $systemAssociation.systemId
+                        path     = "nullNotNeededForTesting"
+                    }
+                )
+            }
+            # write the mocked certHash to the data file:
+            $certHash | ConvertTo-Json |  Out-File "$JCScriptRoot/data/certHash.json"
+            $Global:JCRCertHash = Get-Content -path "$JCScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
+            # update the users json file
+            Update-JCRUsersJson
+            $userArray = Get-UserJsonData
+            $after = $userArray | Where-Object { $_.userId -eq $userFromList.userID }
+            # The users.json file should be updated to show that the user has an installed certificate
+            foreach ($systemId in $userFromList.systemAssociations.systemId) {
+                $systemId | Should -BeIn $after.deploymentInfo.systemId
+            }
+
+        }
+
     }
 }
