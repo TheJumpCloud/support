@@ -7,7 +7,7 @@ function Get-CertInfo {
         [Parameter(HelpMessage = 'When specified this function will return all user certificate information for user certs located in /UserCerts', ParameterSetName = 'User', Mandatory = $true)]
         [switch]
         $UserCerts,
-        [Parameter(HelpMessage = 'When specified this function will return a single users certificate infomration for a cert located in /UserCerts', ParameterSetName = 'User', Mandatory = $false)]
+        [Parameter(HelpMessage = 'When specified this function will return a single users certificate information for a cert located in /UserCerts', ParameterSetName = 'User', Mandatory = $false)]
         [system.string]
         $username
     )
@@ -50,7 +50,7 @@ function Get-CertInfo {
                 }
 
                 # Create hashtable to contain cert info
-                # TODO: pscustomobject insted of hash
+                # TODO: pscustomobject instead of hash
                 $certHash = @{}
                 # Use openssl to gather serial, subject, issuer, and enddate information
                 $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in `"$($foundCerts.Path)`" -enddate -serial -subject -issuer -noout"
