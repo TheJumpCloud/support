@@ -130,7 +130,7 @@ function Deploy-UserCertificate {
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
 
                         if ($Command.Count -ge 1) {
-                            $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):MacOSX command already exists, skipping..."
+                            # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):MacOSX command already exists, skipping..."
                             $status_commandGenerated = $false
                             continue
                         }
@@ -326,7 +326,7 @@ fi
 
                         $user.commandAssociations += $CommandTable
 
-                        Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Mac OS X"
+                        # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Mac OS X"
                         $status_commandGenerated = $true
 
                     }
@@ -341,7 +341,7 @@ fi
                         $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
 
                         if ($Command.Count -ge 1) {
-                            $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
+                            # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
                             $status_commandGenerated = $false
                             continue
                         }
@@ -509,7 +509,7 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
                         }
 
                         $user.commandAssociations += $CommandTable
-                        Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
+                        # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
                         $status_commandGenerated = $true
 
                     }
