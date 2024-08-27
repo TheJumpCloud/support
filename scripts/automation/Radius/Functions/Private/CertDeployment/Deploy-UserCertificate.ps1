@@ -117,27 +117,29 @@ function Deploy-UserCertificate {
             # Create the zip
             Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
             # Find OS of System
-            switch ($user.systemAssociations.osFamily) {
-                'macOS' {
-                    # Get the macOS system ids
-                    $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
-                    if ($systemIds.count -eq 0) {
-                        continue
-                    }
-                    # Check to see if previous commands exist
-                    $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
+            $systemTypes = $user.systemAssociations.osFamily | sort | Get-Unique
+            foreach ($systemType in $systemTypes) {
+                switch ($systemType) {
+                    'macOS' {
+                        # Get the macOS system ids
+                        $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
+                        if ($systemIds.count -eq 0) {
+                            continue
+                        }
+                        # Check to see if previous commands exist
+                        $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
 
-                    if ($Command.Count -ge 1) {
-                        # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):MacOSX command already exists, skipping..."
-                        $status_commandGenerated = $false
-                        continue
-                    }
+                        if ($Command.Count -ge 1) {
+                            # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):MacOSX command already exists, skipping..."
+                            $status_commandGenerated = $false
+                            continue
+                        }
 
-                    # Create new Command and upload the signed pfx
-                    try {
-                        $CommandBody = @{
-                            Name              = "RadiusCert-Install:$($user.userName):MacOSX"
-                            Command           = @"
+                        # Create new Command and upload the signed pfx
+                        try {
+                            $CommandBody = @{
+                                Name              = "RadiusCert-Install:$($user.userName):MacOSX"
+                                Command           = @"
 unzip -o /tmp/$($user.userName)-client-signed.zip -d /tmp
 chmod 755 /tmp/$($user.userName)-client-signed.pfx
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
@@ -296,59 +298,59 @@ else
 fi
 
 "@
-                            launchType        = "trigger"
-                            User              = "000000000000000000000000"
-                            trigger           = "RadiusCertInstall"
-                            commandType       = "mac"
-                            timeout           = 600
-                            TimeToLiveSeconds = 864000
-                            files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($user.userName)-client-signed.zip" -FileDestination "/tmp/$($user.userName)-client-signed.zip")
+                                launchType        = "trigger"
+                                User              = "000000000000000000000000"
+                                trigger           = "RadiusCertInstall"
+                                commandType       = "mac"
+                                timeout           = 600
+                                TimeToLiveSeconds = 864000
+                                files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($user.userName)-client-signed.zip" -FileDestination "/tmp/$($user.userName)-client-signed.zip")
+                            }
+                            $NewCommand = New-JcSdkCommand @CommandBody
+
+                            # Find newly created command and add system as target
+                            $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
+                            $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
+                        } catch {
+                            $status_commandGenerated = $false
+                            # throw $_
                         }
-                        $NewCommand = New-JcSdkCommand @CommandBody
 
-                        # Find newly created command and add system as target
-                        $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):MacOSX"
-                        $systemIds | ForEach-Object { Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
-                    } catch {
-                        $status_commandGenerated = $false
-                        # throw $_
+                        $CommandTable = [PSCustomObject]@{
+                            commandId            = $command._id
+                            commandName          = $command.name
+                            commandPreviouslyRun = $false
+                            commandQueued        = $false
+                            systems              = $systemIds
+                        }
+
+                        $user.commandAssociations += $CommandTable
+
+                        # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Mac OS X"
+                        $status_commandGenerated = $true
+
                     }
+                    'windows' {
+                        # Get the Windows system ids
+                        $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "windows")
+                        # If there are no systemIds to process, skip generating the command:
+                        if ($systemIds.count -eq 0) {
+                            continue
+                        }
+                        # Check to see if previous commands exist
+                        $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
 
-                    $CommandTable = [PSCustomObject]@{
-                        commandId            = $command._id
-                        commandName          = $command.name
-                        commandPreviouslyRun = $false
-                        commandQueued        = $false
-                        systems              = $systemIds
-                    }
+                        if ($Command.Count -ge 1) {
+                            # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
+                            $status_commandGenerated = $false
+                            continue
+                        }
 
-                    $user.commandAssociations += $CommandTable
-
-                    # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Mac OS X"
-                    $status_commandGenerated = $true
-
-                }
-                'windows' {
-                    # Get the Windows system ids
-                    $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "windows")
-                    # If there are no systemIds to process, skip generating the command:
-                    if ($systemIds.count -eq 0) {
-                        continue
-                    }
-                    # Check to see if previous commands exist
-                    $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
-
-                    if ($Command.Count -ge 1) {
-                        # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
-                        $status_commandGenerated = $false
-                        continue
-                    }
-
-                    # Create new Command and upload the signed pfx
-                    try {
-                        $CommandBody = @{
-                            Name              = "RadiusCert-Install:$($user.userName):Windows"
-                            Command           = @"
+                        # Create new Command and upload the signed pfx
+                        try {
+                            $CommandBody = @{
+                                Name              = "RadiusCert-Install:$($user.userName):Windows"
+                                Command           = @"
 `$ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 `$PkgProvider = Get-PackageProvider
@@ -478,43 +480,44 @@ if (`$CurrentUser -eq "$($user.localUsername)") {
     exit 4
 }
 "@
-                            launchType        = "trigger"
-                            trigger           = "RadiusCertInstall"
-                            commandType       = "windows"
-                            shell             = "powershell"
-                            timeout           = 600
-                            TimeToLiveSeconds = 864000
-                            files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($user.userName)-client-signed.zip" -FileDestination "C:\Windows\Temp\$($user.userName)-client-signed.zip")
-                        }
-                        $NewCommand = New-JcSdkCommand @CommandBody
+                                launchType        = "trigger"
+                                trigger           = "RadiusCertInstall"
+                                commandType       = "windows"
+                                shell             = "powershell"
+                                timeout           = 600
+                                TimeToLiveSeconds = 864000
+                                files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($user.userName)-client-signed.zip" -FileDestination "C:\Windows\Temp\$($user.userName)-client-signed.zip")
+                            }
+                            $NewCommand = New-JcSdkCommand @CommandBody
 
-                        # Find newly created command and add system as target
-                        $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
-                        $systemIds | ForEach-Object {
-                            Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null
+                            # Find newly created command and add system as target
+                            $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
+                            $systemIds | ForEach-Object {
+                                Set-JcSdkCommandAssociation -CommandId:("$($Command._id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null
+                            }
+                        } catch {
+                            $status_commandGenerated = $false
+                            # throw $_
                         }
-                    } catch {
+
+                        $CommandTable = [PSCustomObject]@{
+                            commandId            = $command._id
+                            commandName          = $command.name
+                            commandPreviouslyRun = $false
+                            commandQueued        = $false
+                            systems              = $systemIds
+                        }
+
+                        $user.commandAssociations += $CommandTable
+                        # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
+                        $status_commandGenerated = $true
+
+                    }
+                    $null {
+                        Write-host "$($user.username) is not associated with any systems, skipping command generation"
                         $status_commandGenerated = $false
-                        # throw $_
+                        $result_deployed = $false
                     }
-
-                    $CommandTable = [PSCustomObject]@{
-                        commandId            = $command._id
-                        commandName          = $command.name
-                        commandPreviouslyRun = $false
-                        commandQueued        = $false
-                        systems              = $systemIds
-                    }
-
-                    $user.commandAssociations += $CommandTable
-                    # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
-                    $status_commandGenerated = $true
-
-                }
-                $null {
-                    Write-host "$($user.username) is not associated with any systems, skipping command generation"
-                    $status_commandGenerated = $false
-                    $result_deployed = $false
                 }
             }
             # Update the user table with the information from the generated commands:

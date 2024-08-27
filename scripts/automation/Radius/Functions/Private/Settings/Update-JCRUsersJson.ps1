@@ -16,7 +16,13 @@ function Update-JCRUsersJson {
             Write-Progress -activity "Getting User Certificate Info" -status "$($user.username): $i of $($Global:JCRRadiusMembers.Count)" -percentComplete (($i / $Global:JCRRadiusMembers.Count) * 100)
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
-            $InstalledCerts = Get-CertBySHA -sha1 $userArrayObject.certInfo.sha1
+            try {
+                $InstalledCerts = $Global:JCRCertHash["$($userArrayObject.certInfo.sha1)"]
+
+            } catch {
+
+                $InstalledCerts = $null
+            }
 
             if ($userIndex -ge 0) {
                 # $userArrayObject

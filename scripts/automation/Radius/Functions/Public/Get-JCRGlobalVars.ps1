@@ -62,7 +62,7 @@ function Get-JCRGlobalVars {
         }
 
         # also validate that the data files are non-null, if they are, force update]
-        $requiredHashFiles = @('radiusMembers.json', 'systemHash.json', 'userHash.json')
+        $requiredHashFiles = @('radiusMembers.json', 'systemHash.json', 'userHash.json', 'certHash.json')
         foreach ($file in $requiredHashFiles) {
             if (Test-Path -Path "$JCScriptRoot/data/$file") {
                 $fileContents = Get-Content "$JCScriptRoot/data/$file"
@@ -224,10 +224,14 @@ function Get-JCRGlobalVars {
                     # write out the association hash
                     $userAssociationList | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/associationHash.json"
                 }
+                # update certHash in parallel:
+                $certHash = Get-CertHash
+
                 # finally write out the data to file:
                 $users | ConvertTo-Json -Depth 100 -Compress |  Out-File "$JCScriptRoot/data/userHash.json"
                 $systems | ConvertTo-Json -Depth 10 |  Out-File "$JCScriptRoot/data/systemHash.json"
                 $radiusMemberList | ConvertTo-Json |  Out-File "$JCScriptRoot/data/radiusMembers.json"
+                $certHash | ConvertTo-Json |  Out-File "$JCScriptRoot/data/certHash.json"
             }
             $false {
                 # write-host "It's been $($lastUpdateTimespan.hours) hours since we last pulled user, system and association data, no need to update"
@@ -243,6 +247,7 @@ function Get-JCRGlobalVars {
                 $Global:JCRSystems = $systems
                 $Global:JCRAssociations = $userAssociationList
                 $Global:JCRRadiusMembers = $radiusMemberList
+                $Global:JCRCertHash = $certHash
                 # update the settings date
                 Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
                 # update users.json
@@ -254,6 +259,7 @@ function Get-JCRGlobalVars {
                 $Global:JCRSystems = Get-Content -path "$JCScriptRoot/data/systemHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRAssociations = Get-Content -path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -AsHashtable
                 $Global:JCRRadiusMembers = Get-Content -path "$JCScriptRoot/data/radiusMembers.json" | ConvertFrom-Json -AsHashtable
+                $Global:JCRCertHash = Get-Content -path "$JCScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
                 # update users.json
                 Update-JCRUsersJson
             }
