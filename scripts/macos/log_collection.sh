@@ -157,5 +157,5 @@ if [[ $localuser ]]; then
     echo "Log archive has been saved to the current user's Documents folder."
 else
     echo "Please log in locally on the device and open /var/tmp to locate the log archive.
-You may run the command `open /var/tmp` in the macOS Terminal to do this."
+You may run the command 'open /var/tmp' in the macOS Terminal to do this."
 fi
