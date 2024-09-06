@@ -118,7 +118,7 @@ jobs:
           "Private" | should -bein $moduleRootDirectories.name
           "Public" | should -bein $moduleRootDirectories.name
       - name: Upload Nupkg
-        uses: actions/upload-artifact@v3
+        uses: TheJumpCloud/common-github-actions/upload-secure-artifact@v2
         with:
           name: jumpcloud-module-nupkg
           path: /home/runner/work/support/support/JumpCloud.*.nupkg
@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download nupkg artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jumpcloud-module-nupkg
       - name: Publish
