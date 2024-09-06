@@ -12,7 +12,7 @@
 RootModule = 'JumpCloud.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.13.1'
+ModuleVersion = '2.13.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -51,8 +51,8 @@ PowerShellVersion = '4.0'
 # ProcessorArchitecture = ''
 
 # Modules that must be imported into the global environment prior to importing this module
-RequiredModules = @('JumpCloud.SDK.DirectoryInsights', 
-               'JumpCloud.SDK.V1', 
+RequiredModules = @('JumpCloud.SDK.DirectoryInsights',
+               'JumpCloud.SDK.V1',
                'JumpCloud.SDK.V2')
 
 # Assemblies that must be loaded prior to importing this module
@@ -71,35 +71,35 @@ RequiredModules = @('JumpCloud.SDK.DirectoryInsights',
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget', 'Add-JCGsuiteMember', 
-               'Add-JCOffice365Member', 'Add-JCRadiusReplyAttribute', 
-               'Add-JCSystemGroupMember', 'Add-JCSystemUser', 
-               'Add-JCUserGroupMember', 'Backup-JCOrganization', 'Connect-JCOnline', 
-               'Copy-JCAssociation', 'Get-JCAdmin', 'Get-JCAssociation', 
-               'Get-JCBackup', 'Get-JCCloudDirectory', 'Get-JCCommand', 
-               'Get-JCCommandResult', 'Get-JCCommandTarget', 'Get-JCEvent', 
-               'Get-JCEventCount', 'Get-JCGroup', 'Get-JCOrganization', 'Get-JCPolicy', 
-               'Get-JCPolicyResult', 'Get-JCPolicyTargetGroup', 
-               'Get-JCPolicyTargetSystem', 'Get-JCRadiusReplyAttribute', 
-               'Get-JCRadiusServer', 'Get-JCScheduledUserstate', 'Get-JCSystem', 
-               'Get-JCSystemApp', 'Get-JCSystemGroupMember', 'Get-JCSystemInsights', 
-               'Get-JCSystemUser', 'Get-JCUser', 'Get-JCUserGroupMember', 
-               'Import-JCCommand', 'Import-JCMSPFromCSV', 'Import-JCUsersFromCSV', 
-               'Invoke-JCCommand', 'Invoke-JCDeployment', 'New-JCCommand', 
-               'New-JCDeploymentTemplate', 'New-JCImportTemplate', 
-               'New-JCMSPImportTemplate', 'New-JCPolicy', 'New-JCRadiusServer', 
-               'New-JCSystemGroup', 'New-JCUser', 'New-JCUserGroup', 
-               'Remove-JCAssociation', 'Remove-JCCommand', 'Remove-JCCommandResult', 
-               'Remove-JCCommandTarget', 'Remove-JCGsuiteMember', 
-               'Remove-JCOffice365Member', 'Remove-JCPolicy', 
-               'Remove-JCRadiusReplyAttribute', 'Remove-JCRadiusServer', 
-               'Remove-JCSystem', 'Remove-JCSystemGroup', 
-               'Remove-JCSystemGroupMember', 'Remove-JCSystemUser', 'Remove-JCUser', 
-               'Remove-JCUserGroup', 'Remove-JCUserGroupMember', 
-               'Send-JCPasswordReset', 'Set-JCCloudDirectory', 'Set-JCCommand', 
-               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCRadiusReplyAttribute', 
-               'Set-JCRadiusServer', 'Set-JCSettingsFile', 'Set-JCSystem', 
-               'Set-JCSystemUser', 'Set-JCUser', 'Set-JCUserGroupLDAP', 
+FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget', 'Add-JCGsuiteMember',
+               'Add-JCOffice365Member', 'Add-JCRadiusReplyAttribute',
+               'Add-JCSystemGroupMember', 'Add-JCSystemUser',
+               'Add-JCUserGroupMember', 'Backup-JCOrganization', 'Connect-JCOnline',
+               'Copy-JCAssociation', 'Get-JCAdmin', 'Get-JCAssociation',
+               'Get-JCBackup', 'Get-JCCloudDirectory', 'Get-JCCommand',
+               'Get-JCCommandResult', 'Get-JCCommandTarget', 'Get-JCEvent',
+               'Get-JCEventCount', 'Get-JCGroup', 'Get-JCOrganization', 'Get-JCPolicy',
+               'Get-JCPolicyResult', 'Get-JCPolicyTargetGroup',
+               'Get-JCPolicyTargetSystem', 'Get-JCRadiusReplyAttribute',
+               'Get-JCRadiusServer', 'Get-JCScheduledUserstate', 'Get-JCSystem',
+               'Get-JCSystemApp', 'Get-JCSystemGroupMember', 'Get-JCSystemInsights',
+               'Get-JCSystemUser', 'Get-JCUser', 'Get-JCUserGroupMember',
+               'Import-JCCommand', 'Import-JCMSPFromCSV', 'Import-JCUsersFromCSV',
+               'Invoke-JCCommand', 'Invoke-JCDeployment', 'New-JCCommand',
+               'New-JCDeploymentTemplate', 'New-JCImportTemplate',
+               'New-JCMSPImportTemplate', 'New-JCPolicy', 'New-JCRadiusServer',
+               'New-JCSystemGroup', 'New-JCUser', 'New-JCUserGroup',
+               'Remove-JCAssociation', 'Remove-JCCommand', 'Remove-JCCommandResult',
+               'Remove-JCCommandTarget', 'Remove-JCGsuiteMember',
+               'Remove-JCOffice365Member', 'Remove-JCPolicy',
+               'Remove-JCRadiusReplyAttribute', 'Remove-JCRadiusServer',
+               'Remove-JCSystem', 'Remove-JCSystemGroup',
+               'Remove-JCSystemGroupMember', 'Remove-JCSystemUser', 'Remove-JCUser',
+               'Remove-JCUserGroup', 'Remove-JCUserGroupMember',
+               'Send-JCPasswordReset', 'Set-JCCloudDirectory', 'Set-JCCommand',
+               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCRadiusReplyAttribute',
+               'Set-JCRadiusServer', 'Set-JCSettingsFile', 'Set-JCSystem',
+               'Set-JCSystemUser', 'Set-JCUser', 'Set-JCUserGroupLDAP',
                'Update-JCModule', 'Update-JCMSPFromCSV', 'Update-JCUsersFromCSV'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

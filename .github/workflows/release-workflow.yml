@@ -1,18 +1,10 @@
 name: Release and Publish PSModule
 on:
   pull_request:
-    types:
-      - closed
-    paths:
-      - "PowerShell/Deploy/**"
-      - "PowerShell/JumpCloud Module/**"
-      - "PowerShell/ModuleChangelog.md"
-    branches:
-      - master
 
 jobs:
   Check-If-Merged:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Check if Merged
@@ -20,7 +12,7 @@ jobs:
 
   Filter-Branch:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
+    # if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
     steps:
       - run: echo "Building JumpCloud Module Event 'JumpCloudModule_'"
 
@@ -132,22 +124,22 @@ jobs:
       - name: Manual Approval for Release
         run: echo "Awaiting approval from required reviewers before continuing"
 
-  Draft-GH-Release:
-    needs: [Manual-Approval-Release]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Draft Release
-        run: |
-          VERSION=$(grep -Po '(\d+\.\d+\.\d+)' ${{ github.workspace }}/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
-          TITLE="JumpCloud PowerShell Module v$VERSION"
-          CHANGELOG=$(cat ${{ github.workspace }}/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
-          TAG="v$VERSION"
-          BODY="$TITLE $CHANGELOG"
+  # Draft-GH-Release:
+  #   needs: [Manual-Approval-Release]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Build Draft Release
+  #       run: |
+  #         VERSION=$(grep -Po '(\d+\.\d+\.\d+)' ${{ github.workspace }}/PowerShell/JumpCloud\ Module/JumpCloud.psd1)
+  #         TITLE="JumpCloud PowerShell Module v$VERSION"
+  #         CHANGELOG=$(cat ${{ github.workspace }}/PowerShell/ModuleChangelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
+  #         TAG="v$VERSION"
+  #         BODY="$TITLE $CHANGELOG"
 
-          (gh release view $TAG && echo "Release exists for $TAG") || gh release create $TAG --title "$TITLE" --notes "$BODY" --draft
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         (gh release view $TAG && echo "Release exists for $TAG") || gh release create $TAG --title "$TITLE" --notes "$BODY" --draft
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Deploy-Nupkg:
     needs: [Manual-Approval-Release, Build-Nuspec-Nupkg]
@@ -157,20 +149,20 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: jumpcloud-module-nupkg
-      - name: Publish
-        shell: pwsh
-        run: |
-          # add nuget source for PSGallery:
-          dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
-          # get nupkg artifact:
-          $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-          # test
-          $nupkgPath | Should -Exist
-          Write-Host "Nupkg Artifact Restored: $nupkgPath"
-          # nuget push from here:
-          dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NuGetApiKey
-        env:
-          NuGetApiKey: ${{ secrets.NUGETAPIKEY }}
+      # - name: Publish
+      #   shell: pwsh
+      #   run: |
+      #     # add nuget source for PSGallery:
+      #     dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
+      #     # get nupkg artifact:
+      #     $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+      #     # test
+      #     $nupkgPath | Should -Exist
+      #     Write-Host "Nupkg Artifact Restored: $nupkgPath"
+      #     # nuget push from here:
+      #     dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NuGetApiKey
+      #   env:
+      #     NuGetApiKey: ${{ secrets.NUGETAPIKEY }}
 
   Cleanup-Cache:
     needs: Deploy-Nupkg
