@@ -7,12 +7,15 @@ function Get-JCSystemKB () {
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter'
         )]
+        [Alias("system_id", "id", "_id")]
         [ValidateNotNullorEmpty()]
         [string[]]$SystemID,
         [Parameter(
             Mandatory = $false ,
             ParameterSetName = 'SearchFilter',
             HelpMessage = 'The KB(s) you wish to search for. Accepts comma separated strings. Ex: KB5006670, KB5005699, KB5000736, ...')]
+
+        [Alias("hotfix_id")]
         [string[]]$KB
     )
     begin {
