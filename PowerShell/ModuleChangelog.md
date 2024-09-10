@@ -1,6 +1,21 @@
+## 2.14.0
+
+Release Date: September 09, 2024
+
+#### RELEASE NOTES
+
+```
+Introduces the `Get-JCSystemKB` Function - This function will allow you to search for applied hotfixes/KBs on your Windows devices across your organization
+```
+
+#### FEATURES:
+
+- Get-JCSystemKB - Returns applied hotfixes/KBs on Windows devices in your organization
+
+
 ## 2.13.1
 
-Release Date: August 20, 2024
+Release Date: September 09, 2024
 
 #### RELEASE NOTES
 
