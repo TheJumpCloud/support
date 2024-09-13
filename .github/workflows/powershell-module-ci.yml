@@ -111,6 +111,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
@@ -129,6 +130,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
@@ -165,6 +167,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
@@ -208,6 +211,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
