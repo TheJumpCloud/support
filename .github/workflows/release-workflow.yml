@@ -110,7 +110,7 @@ jobs:
           "Private" | should -bein $moduleRootDirectories.name
           "Public" | should -bein $moduleRootDirectories.name
       - name: Upload Nupkg
-        uses: TheJumpCloud/common-github-actions/upload-secure-artifact@v2
+        uses: ./.github/actions/upload-secure-artifact
         with:
           name: jumpcloud-module-nupkg
           path: /home/runner/work/support/support/JumpCloud.*.nupkg

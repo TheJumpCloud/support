@@ -147,7 +147,7 @@ jobs:
           Write-Host ('[status] Setting up org')
           $variables = . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
           $variables | ConvertTo-Json -Depth 10 | Out-File -FilePath /home/runner/.local/share/powershell/Modules/PesterVariables.json
-      - uses: TheJumpCloud/common-github-actions/upload-secure-artifact@v2
+      - uses: ./.github/actions/upload-secure-artifact
         with:
           name: jumpcloud-vars
           path: /home/runner/.local/share/powershell/Modules/PesterVariables.json
