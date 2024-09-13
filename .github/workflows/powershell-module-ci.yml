@@ -2,14 +2,21 @@ name: PowerShell Module CI
 
 on:
   pull_request:
-
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - "master"
+    paths:
+      - "PowerShell/Deploy/**"
+      - "PowerShell/JumpCloud Module/**"
+      - "PowerShell/ModuleChangelog.md"
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
   Filter-Branch:
     runs-on: ubuntu-latest
-    # if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
+    if: contains(github.event.pull_request.labels.*.name, 'PowerShell Module')
     steps:
       - run: echo "Building JumpCloud Module Event 'JumpCloudModule_'"
   Check-PR-Labels:
@@ -37,8 +44,12 @@ jobs:
               }
           }
 
-          echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_OUTPUT
-
+          if ($typeCount -eq 1) {
+              echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_OUTPUT
+          } else {
+              throw "Multiple or invalid release types were found on PR"
+              exit 1
+          }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   Validate-Env-Variables:
