@@ -60,6 +60,7 @@ if verify_jc_mdm "$":; then
             do
                 echo $adminUser
             done
+            exit 1
         fi
 
         # Prompt for DEP Enrollment
