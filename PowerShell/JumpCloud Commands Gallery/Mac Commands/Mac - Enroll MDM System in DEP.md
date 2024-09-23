@@ -25,13 +25,45 @@ verify_jc_mdm (){
     fi
 }
 
+isAdmin() {
+    local username=${1}
+    groupMembership=$(id -nG $username)
+    for group in $groupMembership
+    do
+        if [[ $group == "admin" ]]; then
+            return
+        fi
+    done
+    false
+}
+
+currentUser=$(/usr/bin/stat -f%Su /dev/console)
+currentUserUID=$(id -u "$currentUser")
+
 # If JumpCLoud MDM is on the system check for DEP Enrollment
 if verify_jc_mdm "$":; then
     depApproveCheck=$(profiles status -type enrollment | grep "Enrolled via DEP:" | awk 'NF>1{print $NF}')
     if [[ $depApproveCheck = "No" ]]; then
         echo "MDM is not DEP enrolled, enrolling and prompted for User Approval"
+        # check if the logged in user is admin
+        isAdmin $currentUser
+        status=$?
+        echo "Status: $status"
+        if [[ $status -eq 0 ]]; then
+            echo "The logged in user $currentUser: is an administrator"
+        else
+            echo "The logged in user $currentUser: is not an administrator"
+            echo "Please login as an administrator user before issuing the enrollment command to this device again"
+            adminUsers=$(dscl . -read /Groups/admin GroupMembership | awk '{$1=""; print $0}')
+            echo "The following users are administrators on this device:"
+            for adminUser in $adminUsers
+            do
+                echo $adminUser
+            done
+        fi
+
         # Prompt for DEP Enrollment
-        profiles renew -type enrollment
+        /bin/launchctl asuser "$currentUserUID" sudo profiles renew -type enrollment
         exit 0
     elif [[ $depApproveCheck = "Yes)" ]]; then
         echo "MDM is DEP enrolled already"
@@ -60,7 +92,7 @@ If the user clicks allow the device will be DEP enrolled and the MDM profile wil
 
 ![Enrollment Type](../Files/enrollmentType.png)
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
