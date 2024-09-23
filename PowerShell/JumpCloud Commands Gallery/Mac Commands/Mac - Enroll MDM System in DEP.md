@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Enroll MDM System in DEP | v1.1 JCCG
+Mac - Enroll MDM System in DEP | v1.0.2 JCCG
 
 #### commandType
 
