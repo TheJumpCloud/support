@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.13.1
+Help Version: 2.14.0
 Locale: en-Us
 ---
 
@@ -110,6 +110,9 @@ Returns the System Group members of a JumpCloud System Group.
 ### [Get-JCSystemInsights](Get-JCSystemInsights.md)
 JumpCloud's System Insights feature provides admins with the ability to easily interrogate their fleet of systems to find important pieces of information.
 Using this function you can easily gather heightened levels of information from your fleet of JumpCloud managed systems.
+
+### [Get-JCSystemKB](Get-JCSystemKB.md)
+Returns applied hotfixes/KBs on Windows devices
 
 ### [Get-JCSystemUser](Get-JCSystemUser.md)
 Returns all JumpCloud Users associated with a JumpCloud System.
