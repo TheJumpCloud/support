@@ -1,12 +1,15 @@
 ## 2.14.0
 
-Release Date: September 09, 2024
+Release Date: September 24, 2024
 
 #### RELEASE NOTES
 
 ```
 Introduces the `Get-JCSystemKB` Function - This function will allow you to search for applied hotfixes/KBs on your Windows devices across your organization
 ```
+#### BUG FIXES:
+
+Fixed a bug where Get-JCPolicy would return multiple templateIDs per policy
 
 #### FEATURES:
 
