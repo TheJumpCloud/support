@@ -239,7 +239,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager username, ID or primary email of the JumpCloud manager user; must be a valid user')]
-        [string]
         $manager,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The managedAppleId for the user')]
@@ -322,7 +321,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         Write-Debug 'Verifying JCAPI Key'
         if ($JCAPIKEY.length -ne 40) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         $hdrs = @{
@@ -563,7 +562,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
                         if ([System.String]::isNullOrEmpty($param.value)) {
-                            continue
+                            $managerValue = $null
                         } else {
                             # First check if manager returns valid user with id
                             # Regex match a userid
@@ -701,7 +700,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-                $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
+                $CurrentAttributes = Get-JCUser -userid $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
                 $CustomAttributeArrayList = New-Object System.Collections.ArrayList
@@ -734,7 +733,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
                         if ([System.String]::isNullOrEmpty($param.value)) {
-                            continue
+                            $managerValue = $null
                         } else {
                             # First check if manager returns valid user with id
                             # Regex match a userid
@@ -943,7 +942,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-                $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
+                $CurrentAttributes = Get-JCUser -userid $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
                 foreach ($param in $PSBoundParameters.GetEnumerator()) {
@@ -974,7 +973,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
                         if ([System.String]::isNullOrEmpty($param.value)) {
-                            continue
+                            $managerValue = $null
                         } else {
                             # First check if manager returns valid user with id
                             # Regex match a userid
@@ -1167,7 +1166,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 # Get the manager using manager username instead of userId
                 if ("manager" -eq $param.Key) {
                     if ([System.String]::isNullOrEmpty($param.value)) {
-                        continue
+                        $managerValue = $null
                     } else {
                         # First check if manager returns valid user with id
                         # Regex match a userid
@@ -1309,7 +1308,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             $URL = "$JCUrlBasePath/api/Systemusers/$UserID"
 
-            $CurrentAttributes = Get-JCUser -UserID $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
+            $CurrentAttributes = Get-JCUser -userid $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
             Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
             $CustomAttributeArrayList = New-Object System.Collections.ArrayList
