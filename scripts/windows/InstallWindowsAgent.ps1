@@ -16,6 +16,9 @@ $AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/jcagent-msi-signe
 $AGENT_INSTALLER_PATH = "C:\windows\Temp\jcagent-msi-signed.msi"
 # JumpCloud Agent Installation Functions
 Function InstallAgent() {
+    if (!(Test-Path "C:\ProgramData\JumpCloud\Agent")) {
+        New-Item -ItemType Directory -Path "C:\ProgramData\JumpCloud\Agent" -Force
+    }
     msiexec /i $AGENT_INSTALLER_PATH /quiet /norestart JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey`" /L*V "C:\ProgramData\JumpCloud\Agent\jcUpdate.log"
 }
 Function DownloadAgentInstaller() {
