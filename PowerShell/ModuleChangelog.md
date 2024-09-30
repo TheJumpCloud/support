@@ -1,6 +1,19 @@
+## 2.14.1
+
+Release Date: September 30, 2024
+
+#### RELEASE NOTES
+
+```
+Fixed a bug with `Set-JCUser` not having the ability to remove a user's manager by setting it to `$null`
+```
+
+#### BUG FIXES:
+- Set-JCUser now allows removing a user's manager by inputting a `$null` value as expected
+
 ## 2.14.0
 
-Release Date: September 24, 2024
+Release Date: September 25, 2024
 
 #### RELEASE NOTES
 
