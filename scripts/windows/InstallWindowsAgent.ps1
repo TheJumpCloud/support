@@ -20,7 +20,7 @@ Function InstallAgent() {
     if (!(Test-Path "C:\ProgramData\JumpCloud\Agent")) {
         New-Item -ItemType Directory -Path "C:\ProgramData\JumpCloud\Agent" -Force
     }
-    msiexec /i $AGENT_INSTALLER_PATH /quiet /norestart JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey`" /L*V "C:\ProgramData\JumpCloud\Agent\jcUpdate.log"
+    msiexec /i $AGENT_INSTALLER_PATH /quiet /norestart JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey`" /L*V "$TempPath\jcUpdate.log"
 }
 Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
