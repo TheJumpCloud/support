@@ -2441,7 +2441,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:description>
             <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -2520,7 +2520,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:description>
           <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -8800,11 +8800,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCSystemKB</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Returns applied hotfixes/KBs on Windows devices</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Get-JCSystemKB function returns all applied hotfixes/KBs on Windows Devices. The function can be used to filter based on a specific hotfix/KB, a specific system, or both. An object is returned that contains information on the hotfix/KB including the description of the KB and when it was installed</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -8891,9 +8891,37 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemKB</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>This example returns all installed hotfixes/KBs on all of the Windows devices in the organization</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemKB -SystemID 59f2s305383coo7t369ef7r2</dev:code>
+        <dev:remarks>
+          <maml:para>This example returns all installed hotfixes/KBs on one Windows device</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemKB -KB KB5000736</dev:code>
+        <dev:remarks>
+          <maml:para>This example returns all devices that have the hotfix/KB installed</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystemKB -KB KB5000736 -SystemID 59f2s305383coo7t369ef7r2</dev:code>
+        <dev:remarks>
+          <maml:para>This example checks a specific system for a specific hotfix/KB</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCSystem -hostname JC-Windows-01 | Get-JCSystemKB</dev:code>
+        <dev:remarks>
+          <maml:para>This example uses pipeline input from Get-JCSystem to find all installed KBs for the system with the hostname JC-Windows-01</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -19426,9 +19454,9 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           <maml:description>
             <maml:para>The manager for the user</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.Object</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -20122,9 +20150,9 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           <maml:description>
             <maml:para>The manager for the user</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.Object</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -20814,9 +20842,9 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           <maml:description>
             <maml:para>The manager for the user</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.Object</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -21494,9 +21522,9 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <maml:description>
           <maml:para>The manager for the user</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
-          <maml:name>System.String</maml:name>
+          <maml:name>System.Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -21819,6 +21847,14 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:inputType>
         <dev:type>
           <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>

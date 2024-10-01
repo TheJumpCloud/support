@@ -120,6 +120,28 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.0' {
         Remove-JCUser -UserID $NewUser._id -force
         Remove-JCUser -UserID $ManagerUser._id -force
     }
+    It "Updates the manager to Null using -Username" {
+        $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $ManagerId = $ManagerUser.id
+        $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewManager = Set-JCUser -Username $NewUser.Username -manager $ManagerId
+        $NewManager.manager | Should -Be $ManagerId
+        $RemoveManager = Set-JCUser -Username $NewUser.Username -manager $null
+        $RemoveManager.manager | Should -BeNullOrEmpty
+        Remove-JCUser -UserID $NewUser._id -force
+        Remove-JCUser -UserID $ManagerUser._id -force
+    }
+    It "Updates the manager to Null using -ByID and -UserID" {
+        $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $ManagerId = $ManagerUser.id
+        $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
+        $NewManager = Set-JCUser -ByID -UserID $NewUser._id -manager $ManagerId
+        $NewManager.manager | Should -Be $ManagerId
+        $RemoveManager = Set-JCUser -ByID -UserID $NewUser._id -manager $null
+        $RemoveManager.manager | Should -BeNullOrEmpty
+        Remove-JCUser -UserID $NewUser._id -force
+        Remove-JCUser -UserID $ManagerUser._id -force
+    }
     It "Updates the password using -ByID and -UserID" {
         $NewUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         { Set-JCUser -ByID -UserID $NewUser._id -password 'Temp123!' } | Should -Not -Throw
@@ -358,7 +380,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
             $false
         }
         $match | Should -Be $true
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Adds a custom attribute to a User" {
         $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
@@ -372,7 +394,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
             $false
         }
         $match | Should -Be $true
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Removes a custom attribute from a User" {
         $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
@@ -386,7 +408,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
             $false
         }
         $match | Should -Be $true
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Removes a custom attribute from a User using the Alias 'RemoveAttribute'" {
         $NewUser = New-RandomUserCustom -Attributes -Domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -NumberOfCustomAttributes 3
@@ -400,7 +422,7 @@ Describe -Tag:('JCUser') "Set-JCUser - CustomAttributes 1.0" {
             $false
         }
         $match | Should -Be $true
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 Describe -Tag:('JCUser') 'Set-JCUser 1.3.0' {
@@ -410,19 +432,19 @@ Describe -Tag:('JCUser') 'Set-JCUser 1.3.0' {
         $SetUser = Set-JCUser -Username $RandomUser.username -unix_uid 2000000 -unix_guid 2000000
         $SetUser.unix_guid | Should -Be 2000000
         $SetUser.unix_uid | Should -Be 2000000
-        Remove-JCUser -UserID $RandomUser._id -ByID -Force
+        Remove-JCUser -UserID $RandomUser._id -ByID -force
     }
     It "Updates a JumpCloud user to password_never_expires false " {
         $ExpTrue = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -password_never_expires $true
         $SetFalse = $ExpTrue | Set-JCUser -password_never_expires $false
         $SetFalse.password_never_expires | Should -Be $false
-        Remove-JCUser -UserID $ExpTrue._id -ByID -Force
+        Remove-JCUser -UserID $ExpTrue._id -ByID -force
     }
     It "Updates a JumpCloud user to password_never_expires true " {
         $ExpFalse = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser -password_never_expires $false
         $SetTrue = $ExpFalse | Set-JCUser -password_never_expires $True
         $SetTrue.password_never_expires | Should -Be $true
-        Remove-JCUser -UserID $SetTrue._id -ByID -Force
+        Remove-JCUser -UserID $SetTrue._id -ByID -force
     }
 }
 Describe -Tag:('JCUser') "Set-JCUser 1.8.0" {
@@ -847,7 +869,7 @@ Describe -Tag:('JCUser') "Set-JCUser 1.8.0" {
         $SetUser.location | Should -Be "new_location"
     }
     It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -Like *pleasedelete* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUser') "Set-JCUser addresses 1.8.0" {
@@ -938,7 +960,7 @@ Describe -Tag:('JCUser') "Set-JCUser addresses 1.8.0" {
         $SetUser.addresses | Where-Object type -EQ home | Select-Object -ExpandProperty country | Should -Be "new_home_country"
     }
     It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -Like *pleasedelete* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUser') "Set-JCUser phoneNumbers 1.8.0" {
@@ -1118,7 +1140,7 @@ Describe -Tag:('JCUser') "Set-JCUser phoneNumbers 1.8.0" {
         $UpdatedUser.phoneNumbers | Where-Object type -EQ work_fax | Select-Object -ExpandProperty number | Should -Be "new_work_fax_number"
     }
     It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -Like *pleasedelete* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
@@ -1258,7 +1280,7 @@ Describe -Tag:('JCUser') "Set-JCuser users phoneNumbers and attributes 1.8.0" {
         $UpdatedUser.attributes | Where-Object name -EQ "attr1" | Select-Object -ExpandProperty value | Should -Be $Null
     }
     It "Removes users Where-Object Email -like *pleasedelete* " {
-        Get-JCUser | Where-Object Email -like *pleasedelete* | Remove-JCUser -force
+        Get-JCUser | Where-Object Email -Like *pleasedelete* | Remove-JCUser -force
     }
 }
 Describe -Tag:('JCUser') "Set-JCUser MFA Enrollment periods 1.10" {
@@ -1416,18 +1438,18 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param 1.15 via pipeline" {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         # This is a conflicting and unsupport state/ suspended pairing
         { $NewUser | Set-JCUser -suspended $True } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Updates a user suspended -eq false " {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         # This is a conflicting and unsupport state/ suspended pairing
         { $NewUser | Set-JCUser -suspended $false } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         { $NewUser | Set-JCUser -state "ACTIVATED" -suspended $true } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 
@@ -1436,18 +1458,18 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param via Username" {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = Set-JCUser -Username $NewUser.username -suspended $True
         $UpdatedUser.suspended | Should -Be True
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Updates a user suspended -eq false " {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         $UpdatedUser = Set-JCUser -Username $NewUser.username -suspended $false
         $UpdatedUser.suspended | Should -Be False
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         { Set-JCUser -Username $NewUser.username -state "ACTIVATED" -suspended $true } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 
@@ -1456,18 +1478,18 @@ Describe -Tag:('JCUser') "Set-JCUser with Suspend param via UserID" {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -suspended $True
         $UpdatedUser.suspended | Should -Be True
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Updates a user suspended -eq false " {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         $UpdatedUser = Set-JCUser -UserID $NewUser.id  -suspended $false
         $UpdatedUser.suspended | Should -Be False
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -suspended $true
         { Set-JCUser -UserID $NewUser.id -state "ACTIVATED" -suspended $true } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 
@@ -1477,24 +1499,24 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via pipeline' {
         $UpdatedUser = $NewUser | Set-JCUser -state "SUSPENDED"
         $UpdatedUser.suspended | Should -Be True
         $UpdatedUser.state | Should -Be "SUSPENDED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = $NewUser | Set-JCUser -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         { $NewUser | Set-JCUser -state "SUSPENDED" -suspended $false } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         { $NewUser | Set-JCUser -state "ACTIVATED" -suspended $true } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 
@@ -1504,24 +1526,24 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via Username' {
         $UpdatedUser = Set-JCUser -Username $NewUser.username -state "SUSPENDED"
         $UpdatedUser.suspended | Should -Be True
         $UpdatedUser.state | Should -Be "SUSPENDED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = Set-JCUser -Username $NewUser.username -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         { Set-JCUser -Username $NewUser.username -state "SUSPENDED" -suspended $false } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         { Set-JCUser -Username $NewUser.username -state "ACTIVATED" -suspended $true } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 
@@ -1531,26 +1553,26 @@ Describe -Tag:('JCUser') 'Set-JCUser with State param via UserID' {
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -state "SUSPENDED"
         $UpdatedUser.suspended | Should -Be True
         $UpdatedUser.state | Should -Be "SUSPENDED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         $UpdatedUser = Set-JCUser -UserID $NewUser.id -state "ACTIVATED"
         $UpdatedUser.suspended | Should -Be False
         $UpdatedUser.state | Should -Be "ACTIVATED"
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from ACTIVATED to SUSPENDED with suspended false should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         { Set-JCUser -UserID $NewUser.id -state "SUSPENDED" -suspended $false } | Should -Throw
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It 'Updates a user state from SUSPENDED to ACTIVATED with suspended true should error' {
         $NewUser = New-RandomUser -domain "delSetUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser -state "SUSPENDED"
         { Set-JCUser -UserID $NewUser.id -state "ACTIVATED" -suspended $true | Should -Throw }
-        Remove-JCUser -UserID $NewUser._id -ByID -Force
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
 AfterAll {
-    Get-JCUser | Where-Object Email -like *delSetUser* | Remove-JCUser -force
+    Get-JCUser | Where-Object Email -Like *delSetUser* | Remove-JCUser -force
 }
