@@ -72,19 +72,6 @@ function Deploy-UserCertificate {
 
     process {
         foreach ($user in $userObject) {
-
-            # Determine the work to be done:
-            ## Does the user have all their certs already distributed
-            ### if so delete their queued commands, commands
-            ## Which types of systems does the user need commands for?
-            ### If only one type, delete the other
-            ## If the user's certs are not all distributed, does the SHA1 value of the current command match the SHA1 of their current cert?
-            ### If yes, skip to association update
-            ### If no, delete the command and create with new cert
-
-
-
-
             ## first determine if the local cert sha is the same as the cert sha in the admin console:
 
             # Get the commands for this user:
@@ -212,18 +199,6 @@ function Deploy-UserCertificate {
                     Clear-JCQueuedCommand -workflowId $commandQueueIDToRemove | Out-Null
                 }
             }
-            # # determine if we need to remove commands/ queued commands if the certs match:
-            # if ($certsMatch) {
-            #     $workToBeDone.removeCommands = $false
-            #     $workToBeDone.removeQueuedCommands = $false
-
-            #     # if there's no commands/ queued commands to remove, set the command Generated status to false
-            #     $status_commandGenerated = $false
-            # } else {
-            #     $workToBeDone.removeCommands = $true
-            #     $workToBeDone.removeQueuedCommands = $true
-            # }
-
             ## determine the systems that need the cert
             try {
                 $userCertHashData = $Global:JCRCertHash["$($user.certInfo.sha1)"]
@@ -261,42 +236,9 @@ function Deploy-UserCertificate {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
             }
-
-            # ## determine which OS commands to generate:
-            # if ($workToBeDone.removeCommands) {
-            #     # if we remove commands, which os type should be generated
-            #     if ($workToBeDone.remainingMacOSDevices) {
-            #         # generate macOS commands
-            #         $workToBeDone.generateMacOSCommands = $true
-            #     }
-            #     if ($workToBeDone.remainingWindowsSDevices) {
-            #         # generate windows commands
-            #         $workToBeDone.generateWindowsCommands = $true
-            #     }
-            # }
-
-
-            ## Begin removal of queued commands + existing command:
-            # remove commands if necessary
-            # If ($workToBeDone.removeCommands) {
-            #     foreach ($command in $radiusCommandsByUser) {
-            #         Remove-JcSdkCommand -Id $command.id | Out-Null
-            #     }
-            # }
-            # # remove queued commands if necessary
-            # if ($workToBeDone.removeQueuedCommands) {
-            #     foreach ($queuedCommand in $queuedRadiusCommandsByUser) {
-            #         Clear-JCQueuedCommand -workflowId $queuedCommand.id | Out-Null
-            #     }
-            # }
             # now clear out the user command associations from users.json
             $User.commandAssociations = @()
-            #### End removal of queued commands + existing command
 
-            # write-host "____"
-            # write-host $certInfo
-            # write-host "____"
-            # validate the certIfo required for installing commands:
             If (-Not $certInfo) {
                 Write-host "$($user.username) did not have a certificate generated"
                 $status_commandGenerated = $false
@@ -318,19 +260,6 @@ function Deploy-UserCertificate {
                     continue
                 }
             }
-
-            ## If we need to generate commands:
-            # Get the cert type
-            # compress the CERT
-            # upload the command
-            # Get the command ID
-            # Set the command associations
-
-            ## If we are skipping the command generation
-            # update the command associations
-
-            # Report status
-
 
             if (($workToBeDone.forcegenerateMacOSCommands) -OR ($workToBeDone.forceGenerateWindowsCommands)) {
                 # determine certType
@@ -555,8 +484,6 @@ fi
                     # Find newly created command and add system as target
                     $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:mac")
                     $workToBeDone.macOSCommandID = $Command.Id
-                    # $systemIds | ForEach-Object {
-                    # Set-JcSdkCommandAssociation -CommandId:("$($Command.Id)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                 } catch {
                     $status_commandGenerated = $false
                     # throw $_
@@ -605,15 +532,6 @@ fi
                 if ($systemIds.count -eq 0) {
                     continue
                 }
-                # Check to see if previous commands exist
-                # $Command = Get-JCCommand -name "RadiusCert-Install:$($user.userName):Windows"
-
-                # if ($Command.Count -ge 1) {
-                #     # $confirmation = Write-Host "[status] RadiusCert-Install:$($user.userName):Windows command already exists, skipping..."
-                #     $status_commandGenerated = $false
-                #     continue
-                # }
-
                 # Create new Command and upload the signed pfx
                 try {
                     $CommandBody = @{
@@ -761,11 +679,8 @@ exit 4
                     # Find newly created command and add system as target
                     $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
                     $workToBeDone.windowsCommandID = $command.Id
-                    # $systemIds | ForEach-Object {
-                    #     Set-JcSdkCommandAssociation -CommandId:("$($workToBeDone.windowsCommandID)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null }
                 } catch {
                     $status_commandGenerated = $false
-                    # throw $_
                 }
 
                 $CommandTable = [PSCustomObject]@{
@@ -801,22 +716,11 @@ exit 4
 
             }
         }
-        # if (($workToBeDone.generateMacOSCommands -eq $false) -AND ($workToBeDone.generateWindowsCommands -eq $false)) {
-        #     Write-host "$($user.username) is not associated with any systems, skipping command generation"
-        #     $status_commandGenerated = $false
-        #     $result_deployed = $false
-        # }
-        # TODO: return this object along with results:
-        # Update the user table with the information from the generated commands:
+        # TODO: get the userIndex only?
         $userObjectFromTable, $userIndex = Get-UserFromTable -userid $user.userid
 
-        # Set-UserTable -index $userIndex -commandAssociationsObject $user.commandAssociations
         switch ($invokeCommands) {
             $true {
-                # finally update the user table to note that the command has been run, the cert has been deployed
-                # get the object once more:
-                # $userObjectFromTable, $userIndex = Get-UserFromTable -userid $user.userid
-                # Set commandPreviouslyRun property to true if there are command associations to set
                 if ($user.commandAssociations) {
                     $user.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $true }
                     # set the deployed status to true, set the date
@@ -834,13 +738,6 @@ exit 4
                     } else {
                         $user.certInfo | Add-Member -Name 'deploymentDate' -Type NoteProperty -Value (Get-Date)
                     }
-
-
-                    # Set-UserTable -index $userIndex -commandAssociationsObject $userObjectFromTable.commandAssociations -certInfoObject $userObjectFromTable.certInfo
-                    # $invokeCommands = invoke-commandByUserId -userID $user.userId -commandAssociationsObject $($user.commandAssociations)
-
-                    # Start-JcSdkCommand -Id
-                    # $result_deployed = $true
                 }
             }
             $false {
@@ -856,13 +753,6 @@ exit 4
 
 
     end {
-        #TODO: eventually add message if we fail to generate a command
-        # if (($status_commandGenerated)::isNullOrEmpty) {
-        #     $status_commandGenerated = $false
-        # }
-        # if (($result_deployed)::isNullOrEmpty) {
-        #     $result_deployed = $false
-        # }
         $resultTable = [ordered]@{
             'Username'          = $user.username;
             'Command Generated' = $status_commandGenerated;
