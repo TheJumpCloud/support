@@ -109,10 +109,10 @@ function Deploy-UserCertificate {
                 foreach ($maOSRadiusCommand in $macOSCommands) {
                     if ((-Not $workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
                         # set the existing command IDs:
-                        $workToBeDone.macOSCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "MacOSX" }).Id
+                        $workToBeDone.macOSCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "MacOSX" }).Id | Select-Object -First 1
                     } elseif (($workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
                         # add the duplicate command to the list to remove
-                        $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
+                        $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
                     } else {
                         # add the command to the list to remove
                         $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
@@ -126,7 +126,7 @@ function Deploy-UserCertificate {
                 foreach ($windowsOSRadiusCommands in $windowsOSCommands) {
                     if ((-Not $workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
                         # set the existing command IDs:
-                        $workToBeDone.windowsCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "Windows" }).Id
+                        $workToBeDone.windowsCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "Windows" }).Id | Select-Object -First 1
                     } elseif (($workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
                         # add the duplicate command to the list to remove
                         $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
