@@ -601,6 +601,32 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
     }
 }
 
+Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.14.2" {
+    Context "Import-JCUsersFromCSV with empty custom attribute" {
+        It "When there are custom attributes with empty names and values, the API should not return an error message in the status field and continue to import the user" {
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
+            $today = Get-Date
+            $EnrollmentDays = 14
+            $CSVDATA = @{
+                Username         = $user.username
+                LastName         = $user.LastName
+                FirstName        = $user.FirstName
+                Email            = $user.Email
+                Attribute1_name  = "Name"
+                Attribute1_value = "Value"
+                Attribute2_name  = ""
+                Attribute2_value = ""
+                Attribute3_name  = "Name1"
+                Attribute3_value = "Value1"
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/custom_attribute.csv" -Force
+            $importResults = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/custom_attribute.csv" -force
+            # ImportResults should not be error
+            $importResults[0].Status | Should -Match "User Created"
+        }
+    }
+}
+
 AfterAll {
     Get-JCUser | Where-Object Email -like *testimportcsvuser* | Remove-JCUser -force
 }

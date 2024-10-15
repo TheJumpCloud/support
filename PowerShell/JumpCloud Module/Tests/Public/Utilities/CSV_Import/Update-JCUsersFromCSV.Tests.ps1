@@ -997,6 +997,27 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
         }
     }
 }
+
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.14.2" {
+    Context "User should be updated even with empty custom attribute values" {
+        It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
+            $user = New-RandomUser -Domain "testupdatecsvuser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+            $CSVDATA = @{
+                Username         = $user.username
+                Attribute1_name  = "Name"
+                Attribute1_value = 'Value'
+                Attribute2_name  = ""
+                Attribute2_value = ''
+                Attribute3_name  = "Name1"
+                Attribute3_value = 'Value1'
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/custom_attribute.csv" -Force
+            $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/custom_attribute.csv" -force
+            # the error message should show that custom attribute names cannot contain spaces
+            $UpdateStatus[0].status | Should -Be "User Updated"
+        }
+    }
+}
 AfterAll {
     Get-JCUser | Where-Object Email -like *testupdatecsvuser* | Remove-JCUser -force
 }
