@@ -28,7 +28,7 @@ function Get-WifiProfile {
     )
     Begin {
         `$list = ((netsh.exe wlan show profiles) -match '\s{2,}:\s') -replace '.*:\s' , ''
-        `$ProfileList = `$List | Foreach-object { [pscustomobject]@{Name = $_ } }
+        `$ProfileList = `$List | Foreach-object { [pscustomobject]@{Name = `$_ } }
     }
     Process {
          Foreach (`$WLANProfile in `$Name) {
@@ -61,7 +61,7 @@ function Remove-WifiProfile {
     }
 }
 
-Remove-WifiProfile $RadiusSSID
+Remove-WifiProfile "$($RadiusSSID)"
 "@
 function Distribute-JCScheduledTask {
     param (
@@ -90,8 +90,8 @@ function Distribute-JCScheduledTask {
   </Triggers>
   <Actions Context="Author">
     <Exec>
-      <Command>“C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe”</Command>
-      <Arguments>-ExecutionPolicy ByPass -File “C:\scripts\removeWifi.ps1”</Arguments>
+      <Command>"C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe"</Command>
+      <Arguments>-ExecutionPolicy ByPass -File "C:\scripts\removeWifi.ps1"</Arguments>
     </Exec>
   </Actions>
 </Task>
@@ -114,7 +114,7 @@ function Distribute-JCScheduledTask {
         }
     } else {
         # Save the removeWifi.ps1 file to C:\scripts\removeWifi.ps1
-        if (!Test-Path -Path C:\scripts) {
+        if (!(Test-Path -Path C:\scripts)) {
             New-Item -Path "C:\" -Name "scripts" -ItemType "directory"
         }
         $removeWifips1 | Out-File -FilePath C:\scripts\removeWifi.ps1
