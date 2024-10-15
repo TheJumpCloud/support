@@ -1000,7 +1000,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
 
 Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.14.2" {
     Context "User should be updated even with empty custom attribute values" {
-        It "When a custom attribute name has a space in the field, the API should return an error message in the status field" {
+        It "When there is a custom attribute with an empty value, the user should still be updated" {
             $user = New-RandomUser -Domain "testupdatecsvuser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
             $CSVDATA = @{
                 Username         = $user.username
