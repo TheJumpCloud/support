@@ -368,15 +368,51 @@ Function Import-JCUsersFromCSV () {
             $FormatGroupOutput = $Null
             $CustomGroupArrayList = $Null
 
-            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
+            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object
 
             Write-Verbose $CustomAttributes.name.count
 
             if ($CustomAttributes.name.count -gt 1) {
                 try {
-                    $NumberOfCustomAttributes = ($CustomAttributes.name.count) / 2
+                    # Counter is used to create a clean list of attributes
+                    $counter = 1
+                    # Create a clean list of attributes
+                    $CustomAttributes | ForEach-Object {
+                        # Current value of the attribute from Definition property
+                        $value = $_.Definition -split '=' | Select-Object -Last 1
 
-                    $UpdateParams.Add("NumberOfCustomAttributes", $NumberOfCustomAttributes)
+                        # If attribute has a name
+                        if ($_.Name -like "*_name") {
+                            # If current attribute is the same as counter, skip since it is already in the UpdateParams
+                            if ($_.Name -eq "Attribute$($counter)_name") {
+                            } else {
+                                # Add the new AttributeName and current value to the UpdateParams
+                                $UpdateParams.Add("Attribute$($counter)_name", $value)
+                                # Remove the Current AttributeName from the UpdateParams since we overwrote it with the new name
+                                $UpdateParams.Remove($_.Name)
+                            }
+                        }
+
+                        # If attribute has a value
+                        if ($_.Name -like "*_value") {
+                            # If current attribute is the same as counter, skip since it is already in the UpdateParams
+                            if ($_.Name -eq "Attribute$($counter)_value") {
+                                $counter++
+                            } else {
+                                # Add the new AttributeValue and current value to the UpdateParams
+                                $UpdateParams.Add("Attribute$($counter)_value", $value)
+                                # Remove the Current AttributeValue from the UpdateParams since we overwrote it with the new value
+                                $UpdateParams.Remove($_.Name)
+                                $counter++
+                            }
+                        }
+                    }
+
+                    Write-Verbose "Attributes are $($UpdateParams)"
+
+                    $NumberOfCustomAttributes = $UpdateParams.Keys | Where-Object { $_ -like "*Attribute*" } | Measure-Object | Select-Object -ExpandProperty Count
+
+                    $UpdateParams.Add("NumberOfCustomAttributes", $NumberOfCustomAttributes / 2)
 
                     $JSONParams = $UpdateParams | ConvertTo-Json
 
