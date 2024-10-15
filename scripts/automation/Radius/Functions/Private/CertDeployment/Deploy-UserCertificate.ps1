@@ -254,7 +254,6 @@ function Deploy-UserCertificate {
                 }
             }
             # now clear out the user command associations from users.json
-            # THIS ISN't WORKING
             $user.commandAssociations = @()
 
             If (-Not $certInfo) {
@@ -522,6 +521,23 @@ fi
 
 
             }
+
+            if (-Not ($workToBeDone.forceGenerateMacOSCommands) -And ($workToBeDone.macOSCommandID)) {
+                $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
+
+                $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
+                $CommandTable = [PSCustomObject]@{
+                    commandId            = $workToBeDone.macOSCommandID
+                    commandName          = $command.name
+                    commandPreviouslyRun = $false
+                    commandQueued        = $false
+                    systems              = $systemIds
+                }
+
+                $user.commandAssociations += $CommandTable
+
+            }
+
             if (($invokeCommands) -And ($workToBeDone.remainingMacOSDevices)) {
                 try {
                     $commandStart = Start-JcSdkCommand -Id $workToBeDone.macOSCommandID -SystemIds $workToBeDone.remainingMacOSDevices.systemId | Out-Null
@@ -712,6 +728,21 @@ exit 4
                 $user.commandAssociations += $CommandTable
                 # Write-Host "[status] Successfully created $($Command.name): User - $($user.userName); OS - Windows"
                 $status_commandGenerated = $true
+            }
+
+            if (-Not ($workToBeDone.forceGenerateWindowsCommands) -And ($workToBeDone.windowsCommandID)) {
+                $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "windows")
+
+                $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
+                $CommandTable = [PSCustomObject]@{
+                    commandId            = $workToBeDone.windowsCommandID
+                    commandName          = $command.name
+                    commandPreviouslyRun = $false
+                    commandQueued        = $false
+                    systems              = $systemIds
+                }
+
+                $user.commandAssociations += $CommandTable
 
             }
             if (($invokeCommands) -AND ($workToBeDone.remainingWindowsSDevices)) {

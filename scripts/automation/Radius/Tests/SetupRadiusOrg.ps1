@@ -20,7 +20,7 @@ $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
 Write-Warning "Removing Pester Radius Commands"
 $commandsToRemove = Get-JCCommand -Name "RadiusCert-Install:*"
 foreach ($commandToRemove in $commandsToRemove) {
-    Remove-JCCommand -CommandID $commandToRemove._id -force
+    Remove-JCCommand -CommandID $commandToRemove._id -force | out-null
 }
 
 # Create users
