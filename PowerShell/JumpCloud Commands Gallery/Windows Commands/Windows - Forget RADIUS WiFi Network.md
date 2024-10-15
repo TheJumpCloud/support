@@ -18,7 +18,7 @@ $RadiusSSID = ''
 $Overwrite = $false
 
 
-#### DO NOT EDIT BELOW THIS LINE ####
+# DO NOT EDIT BELOW THIS LINE #
 $removeWifips1 = @"
 function Get-WifiProfile {
     [cmdletbinding()]
