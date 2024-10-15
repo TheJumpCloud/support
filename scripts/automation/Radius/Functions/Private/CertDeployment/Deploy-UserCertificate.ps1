@@ -107,15 +107,25 @@ function Deploy-UserCertificate {
             if ($macOSCommands) {
                 # verify the certs match for macOS systems:
                 foreach ($maOSRadiusCommand in $macOSCommands) {
-                    if ((-Not $workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
-                        # set the existing command IDs:
-                        $workToBeDone.macOSCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "MacOSX" }).Id | Select-Object -First 1
-                    } elseif (($workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
-                        # add the duplicate command to the list to remove
-                        $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
-                    } else {
-                        # add the command to the list to remove
-                        $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
+                    # if we want to forceGenerate new commands, add all commands to the remove list
+                    switch ($workToBeDone.forceGenerateMacOSCommands) {
+                        $true {
+                            # add the command to the list to remove
+                            $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
+
+                        }
+                        $false {
+                            if ((-Not $workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
+                                # set the existing command IDs:
+                                $workToBeDone.macOSCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "MacOSX" }).Id | Select-Object -First 1
+                            } elseif (($workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
+                                # add the duplicate command to the list to remove
+                                $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
+                            } else {
+                                # add the command to the list to remove
+                                $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
+                            }
+                        }
                     }
                 }
             } else {
@@ -124,15 +134,23 @@ function Deploy-UserCertificate {
             if ($windowsOSCommands) {
                 # verify the certs match for windows systems:
                 foreach ($windowsOSRadiusCommands in $windowsOSCommands) {
-                    if ((-Not $workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
-                        # set the existing command IDs:
-                        $workToBeDone.windowsCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "Windows" }).Id | Select-Object -First 1
-                    } elseif (($workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
-                        # add the duplicate command to the list to remove
-                        $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
-                    } else {
-                        # add the command to the list to remove
-                        $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
+                    switch ($workToBeDone.forceGenerateWindowsCommands) {
+                        $true {
+                            # add the command to the list to remove
+                            $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
+                        }
+                        $false {
+                            if ((-Not $workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
+                                # set the existing command IDs:
+                                $workToBeDone.windowsCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "Windows" }).Id | Select-Object -First 1
+                            } elseif (($workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
+                                # add the duplicate command to the list to remove
+                                $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
+                            } else {
+                                # add the command to the list to remove
+                                $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
+                            }
+                        }
                     }
                 }
             } else {
@@ -143,7 +161,6 @@ function Deploy-UserCertificate {
 
             if ($windowsQueuedCommands) {
                 if ($workToBeDone.windowsCommandID) {
-
                     # Get queued commands that are from a previous command; delete those
                     foreach ($queuedCommand in $windowsQueuedCommands) {
                         if ($queuedCommand.command -eq $workToBeDone.windowsCommandID) {
@@ -237,7 +254,8 @@ function Deploy-UserCertificate {
                 }
             }
             # now clear out the user command associations from users.json
-            $User.commandAssociations = @()
+            # THIS ISN't WORKING
+            $user.commandAssociations = @()
 
             If (-Not $certInfo) {
                 Write-host "$($user.username) did not have a certificate generated"
@@ -481,13 +499,13 @@ fi
                     }
                     $NewCommand = New-JcSdkCommand @CommandBody
 
-                    # Find newly created command and add system as target
-                    $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:mac")
-                    $workToBeDone.macOSCommandID = $Command.Id
                 } catch {
                     $status_commandGenerated = $false
                     # throw $_
                 }
+                # Find newly created command and add system as target
+                $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:mac")
+                $workToBeDone.macOSCommandID = $Command.Id
 
                 $CommandTable = [PSCustomObject]@{
                     commandId            = $command.Id
@@ -676,12 +694,12 @@ exit 4
                     }
                     $NewCommand = New-JcSdkCommand @CommandBody
 
-                    # Find newly created command and add system as target
-                    $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
-                    $workToBeDone.windowsCommandID = $command.Id
                 } catch {
                     $status_commandGenerated = $false
                 }
+                # Find newly created command and add system as target
+                $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
+                $workToBeDone.windowsCommandID = $command.Id
 
                 $CommandTable = [PSCustomObject]@{
                     commandId            = $workToBeDone.windowsCommandID

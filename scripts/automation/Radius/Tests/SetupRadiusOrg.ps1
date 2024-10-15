@@ -16,6 +16,13 @@ foreach ($user in $pesterRadiusUsers) {
 Write-Warning "Removing Pester Radius Users with emailDomain: *pesterRadius*"
 $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
 
+# remove existing radius commands in test:
+Write-Warning "Removing Pester Radius Commands"
+$commandsToRemove = Get-JCCommand -Name "RadiusCert-Install:*"
+foreach ($commandToRemove in $commandsToRemove) {
+    Remove-JCCommand -CommandID $commandToRemove._id -force
+}
+
 # Create users
 Write-Warning "Creating New Pester Radius Users"
 # user bound to mac

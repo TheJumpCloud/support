@@ -14,7 +14,11 @@ function Start-DeployUserCerts {
         # Force invoke commands after generation
         [Parameter(HelpMessage = 'Switch to force invoke generated commands on systems', ParameterSetName = 'cli')]
         [switch]
-        $forceInvokeCommands
+        $forceInvokeCommands,
+        # Force invoke commands after generation
+        [Parameter(HelpMessage = 'Switch to force generate new commands on systems', ParameterSetName = 'cli')]
+        [switch]
+        $forceGenerateCommands
     )
 
     # Import the users.json file and convert to PSObject
@@ -45,6 +49,14 @@ function Start-DeployUserCerts {
                         $invokeCommands = $false
                     }
                 }
+                switch ($forceGenerateCommands) {
+                    $true {
+                        $generateCommands = $true
+                    }
+                    $false {
+                        $generateCommands = $false
+                    }
+                }
             }
         }
 
@@ -60,7 +72,7 @@ function Start-DeployUserCerts {
                     }
                 }
                 for ($i = 0; $i -lt $userArray.Count; $i++) {
-                    $result, $workDone = Deploy-UserCertificate -userObject $userArray[$i] -forceInvokeCommands $invokeCommands
+                    $result, $workDone = Deploy-UserCertificate -userObject $userArray[$i] -forceInvokeCommands $invokeCommands -forceGenerateCommands $generateCommands
                     # update user json
                     Set-UserTable -index $workDone.userIndex -commandAssociationsObject $workDone.commandAssociationsObject -certInfoObject $workDone.certInfoObject
 
@@ -91,7 +103,7 @@ function Start-DeployUserCerts {
                     $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
                 }
                 for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
-                    $result, $workDone = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -forceInvokeCommands $invokeCommands
+                    $result, $workDone = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -forceInvokeCommands $invokeCommands -forceGenerateCommands $generateCommands
 
                     # update user json
                     Set-UserTable -index $workDone.userIndex -commandAssociationsObject $workDone.commandAssociationsObject -certInfoObject $workDone.certInfoObject
@@ -145,7 +157,7 @@ function Start-DeployUserCerts {
                             $result, $workDone = Deploy-UserCertificate -userObject $UserSelectionArray -prompt
                         }
                         'cli' {
-                            $result, $workDone = Deploy-UserCertificate -userObject $UserSelectionArray -forceInvokeCommands $invokeCommands
+                            $result, $workDone = Deploy-UserCertificate -userObject $UserSelectionArray -forceInvokeCommands $invokeCommands -forceGenerateCommands $generateCommands
                         }
                     }
                     # update user json

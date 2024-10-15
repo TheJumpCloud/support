@@ -314,4 +314,175 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $content -replace ('\$Global:JCR_CERT_TYPE = *.+', '$Global:JCR_CERT_TYPE = "UsernameCn"') | Set-Content -Path $configPath
         }
     }
+    Context 'Duplicate Command / Command Result Tests' {
+        It 'When a duplicate commands with differing trigger SHA1 hashes exists, the command with the old SHA1 hash should be removed' {}
+        It 'When a duplicate commands with the same trigger SHA1 hashes exists, duplicate commands should be removed, only one should remain' {}
+    }
+    Context 'Force Generate Certificate Tests' {
+        It 'When forceGenerate switch is specified, the existing commands & queued commands should be removed' {
+            # create a user that has both a mac and windows association
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
+            # add user to membership group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            # get random system
+            $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
+            $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
+            Add-JCSystemUser -UserID $user.id -SystemID $windowsSystem.id
+            Add-JCSystemUser -UserID $user.id -SystemID $macSystem.id
+
+            # update membership
+            Get-JCRGlobalVars -skipAssociation -force
+            # todo: manually update association table to account for new membership
+            Set-JCRAssociationHash -userId $user.id
+            Update-JCRUsersJson
+
+            # Generate a user certificate for the user:
+            Start-GenerateUserCerts -type ByUsername -username $user.username
+
+            # Get the SHA1 hash for the user's cert:
+            $certData = Get-CertInfo -userCerts -username $user.username
+
+            # Mock some commands with the trigger to already exist if they do not exist
+            $macCommandBody = @{
+                Name              = "RadiusCert-Install:$($user.username):MacOSX"
+                Command           = "sha1234"
+                launchType        = "trigger"
+                User              = "000000000000000000000000"
+                trigger           = "$($certData.sha1)"
+                commandType       = "mac"
+                timeout           = 600
+                TimeToLiveSeconds = 864000
+            }
+            $newMacCommand = New-JcSdkCommand @macCommandBody
+            $macCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+
+            # invoke the commands manually to simulate the command queue containing items:
+            Start-JcSdkCommand -Id $macCmdBefore.Id -SystemIds $macSystem.id
+
+            $windowsCommandBody = @{
+                Name              = "RadiusCert-Install:$($user.username):Windows"
+                Command           = "sha1234"
+                launchType        = "trigger"
+                User              = "000000000000000000000000"
+                trigger           = "$($certData.sha1)"
+                commandType       = "windows"
+                timeout           = 600
+                TimeToLiveSeconds = 864000
+            }
+            $newWindowsCommand = New-JcSdkCommand @windowsCommandBody
+            $windowsCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+
+            # invoke the commands manually to simulate the command queue containing items:
+            Start-JcSdkCommand -Id $WindowsCmdBefore.Id -SystemIds $windowsSystem.id
+
+            # Get the queued commands:
+            $queuedCmdsBefore = Get-QueuedCommandByUser -username $user.username
+
+            # Run Start Deploy User Certs by username
+            Start-DeployUserCerts -type ByUsername -username $user.username -forceGenerateCommands
+
+
+            # After running, validate that the commands before execution, no longer exist
+            $macCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+            $windowsCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+            # Get the queued after:
+            $queuedCmdsAfter = Get-QueuedCommandByUser -username $user.username
+            # test that the commands should not exist:
+            $macCmdAfter.id | Should -Not -Contain $macCmdBefore.id
+            $windowsCmdAfter.id | Should -Not -Contain $windowsCmdBefore.id
+            { Get-JcSdkCommand -Id $macCmdBefore.id } | Should -Throw # in other words the command should not exist
+            { Get-JcSdkCommand -Id $windowsCmdBefore.id } | Should -Throw # in other words the command should not exist
+            # test that the queued commands should not exist:
+            $queuedCmdsAfter.id | Should -Not -Contain $queuedCmdsBefore.Id
+            $queuedCmdsAfter.id | Should -BeNullOrEmpty
+            # user.json should have the newID in command associations.
+            $allUserData = Get-UserJsonData
+            $testUserData = $allUserData | Where-Object { $_.username -eq $user.username }
+            $testUserData.commandAssociations.commandId | Should -Not -Contain $macCmdBefore.id
+            $testUserData.commandAssociations.commandId | Should -Not -Contain $windowsCmdBefore.id
+        }
+        It 'When forceGenerate & forceInvoke switches are specified, the existing commands & queued commands should be removed; new commands queues should be queued' {
+            # create a user that has both a mac and windows association
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
+            # add user to membership group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            # get random system
+            $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
+            $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
+            Add-JCSystemUser -UserID $user.id -SystemID $windowsSystem.id
+            Add-JCSystemUser -UserID $user.id -SystemID $macSystem.id
+
+            # update membership
+            Get-JCRGlobalVars -skipAssociation -force
+            # todo: manually update association table to account for new membership
+            Set-JCRAssociationHash -userId $user.id
+            Update-JCRUsersJson
+
+            # Generate a user certificate for the user:
+            Start-GenerateUserCerts -type ByUsername -username $user.username
+
+            # Get the SHA1 hash for the user's cert:
+            $certData = Get-CertInfo -userCerts -username $user.username
+
+            # Mock some commands with the trigger to already exist if they do not exist
+            $macCommandBody = @{
+                Name              = "RadiusCert-Install:$($user.username):MacOSX"
+                Command           = "sha1234"
+                launchType        = "trigger"
+                User              = "000000000000000000000000"
+                trigger           = "$($certData.sha1)"
+                commandType       = "mac"
+                timeout           = 600
+                TimeToLiveSeconds = 864000
+            }
+            $newMacCommand = New-JcSdkCommand @macCommandBody
+            $macCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+
+            # invoke the commands manually to simulate the command queue containing items:
+            Start-JcSdkCommand -Id $macCmdBefore.Id -SystemIds $macSystem.id
+
+            $windowsCommandBody = @{
+                Name              = "RadiusCert-Install:$($user.username):Windows"
+                Command           = "sha1234"
+                launchType        = "trigger"
+                User              = "000000000000000000000000"
+                trigger           = "$($certData.sha1)"
+                commandType       = "windows"
+                timeout           = 600
+                TimeToLiveSeconds = 864000
+            }
+            $newWindowsCommand = New-JcSdkCommand @windowsCommandBody
+            $windowsCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+
+            # invoke the commands manually to simulate the command queue containing items:
+            Start-JcSdkCommand -Id $WindowsCmdBefore.Id -SystemIds $windowsSystem.id
+
+            # Get the queued commands:
+            $queuedCmdsBefore = Get-QueuedCommandByUser -username $user.username
+
+            # Run Start Deploy User Certs by username
+            Start-DeployUserCerts -type ByUsername -username $user.username -forceGenerateCommands -forceInvokeCommands
+
+            # After running, validate that the commands before execution, no longer exist
+            $macCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+            $windowsCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+            # Get the queued after:
+            $queuedCmdsAfter = Get-QueuedCommandByUser -username $user.username
+            # test that the commands should not exist:
+            $macCmdAfter.id | Should -Not -Contain $macCmdBefore.id
+            $windowsCmdAfter.id | Should -Not -Contain $windowsCmdBefore.id
+            { Get-JcSdkCommand -Id $macCmdBefore.id } | Should -Throw # in other words the command should not exist
+            { Get-JcSdkCommand -Id $windowsCmdBefore.id } | Should -Throw # in other words the command should not exist
+            # test that the queued commands should not exist:
+            $queuedCmdsAfter.id | Should -Not -Contain $queuedCmdsBefore.Id
+            $queuedCmdsAfter.id | Should -Not -BeNullOrEmpty
+            # user.json should have the newID in command associations.
+            $allUserData = Get-UserJsonData
+            $testUserData = $allUserData | Where-Object { $_.username -eq $user.username }
+            $testUserData.commandAssociations.commandId | Should -Not -Contain $macCmdBefore.id
+            $testUserData.commandAssociations.commandId | Should -Not -Contain $windowsCmdBefore.id
+        }
+    }
 }
