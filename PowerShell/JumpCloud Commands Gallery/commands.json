@@ -287,6 +287,13 @@
     "description": "This command will remove the jumpcloud-agent.exe from Windows Defender scheduled and real-time scanning.\n\nThe command Add-MpPreference is only available in the 64-bit environment and the JumpCloud agent operates in the 32-bit environment which is why sysnative is used."
   },
   {
+    "name": "Windows - Forget RADIUS WiFi Network | v1.0 JCCG",
+    "type": "windows",
+    "command": "# Enter the SSID of the Radius network\n$RadiusSSID = ''\n\n# Change Overwrite to $true if you would like to re-create existing Scheduled Tasks\n# This should only be used if redistributing this command to devices\n$Overwrite = $false",
+    "link": "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Forget%20RADIUS%20WiFi%20Network.md",
+    "description": "The purpose of this script is to resolve an issue when a user changes their JumpCloud password after connecting to a JumpCloud backed Radius network they will never be able to connect unless they forget the existing network.\n\nIn order to accomplish this, the command will create a scheduled task on the workstation that looks for 8002 errors when attempting to connect to the specified Radius SSID. If an error is detected, a PowerShell script will be initiated that will forget the network for the user which will allow them to attempt to connect again and prompt for their updated credentials"
+  },
+  {
     "name": "Windows - Get Installed PowerShell Version | v1.0 JCCG",
     "type": "windows",
     "command": "$PSVersionTable",
