@@ -117,6 +117,7 @@ function Deploy-UserCertificate {
                         $false {
                             if ((-Not $workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
                                 # set the existing command IDs:
+                                # There is a potential for this to be a bug, if duplicate commands with the same SHA1 trigger exist, this code just selects the first one and removes the second in the next iteration
                                 $workToBeDone.macOSCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "MacOSX" }).Id | Select-Object -First 1
                             } elseif (($workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
                                 # add the duplicate command to the list to remove
@@ -142,6 +143,7 @@ function Deploy-UserCertificate {
                         $false {
                             if ((-Not $workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
                                 # set the existing command IDs:
+                                # There is a potential for this to be a bug, if duplicate commands with the same SHA1 trigger exist, this code just selects the first one and removes the second in the next iteration
                                 $workToBeDone.windowsCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "Windows" }).Id | Select-Object -First 1
                             } elseif (($workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
                                 # add the duplicate command to the list to remove
