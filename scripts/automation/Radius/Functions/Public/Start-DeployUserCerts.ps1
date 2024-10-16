@@ -32,6 +32,16 @@ function Start-DeployUserCerts {
                 Show-DistributionMenu -CertObjectArray $userArray.certInfo -usersThatNeedCert $usersWithoutLatestCert.count -totalUserCount $userArray.count
                 $confirmation = Read-Host "Please make a selection"
 
+                # This can be updated later if necessary but for now if using the GUI, the $forceGenerateCommands switch will always be false
+                # Thus the GUI will never overwrite commands unless the SHA1 value does not match the local cert SHA1
+                switch ($forceGenerateCommands) {
+                    $true {
+                        $generateCommands = $true
+                    }
+                    $false {
+                        $generateCommands = $false
+                    }
+                }
             }
             'cli' {
                 $confirmationMap = @{
