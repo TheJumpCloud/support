@@ -1,6 +1,6 @@
 ## 2.14.2
 
-Release Date: October 15, 2024
+Release Date: October 16, 2024
 
 #### RELEASE NOTES
 
@@ -10,6 +10,7 @@ Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` where the a
 
 #### BUG FIXES:
 - Import-JCUsersFromCSV and Update-JCUsersFromCSV are now able to update/create users even when some Attributes column are not filled in
+
 ## 2.14.1
 
 Release Date: October 1, 2024
