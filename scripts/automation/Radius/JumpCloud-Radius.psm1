@@ -28,7 +28,7 @@ $global:JCScriptRoot = "$PSScriptRoot"
 # try to get the settings file, create new one if it does not exist:
 $global:JCRConfig = Get-JCRSettingsFile
 
-# if the Certs / UserCerts directories do not exist, create thenm
+# if the Certs / UserCerts directories do not exist, create them
 if (-Not (Test-Path -Path "$JCScriptRoot/Cert" -PathType Container)) {
     New-Item -Path "$JCScriptRoot/Cert" -ItemType Directory
 }
