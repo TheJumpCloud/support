@@ -97,7 +97,7 @@ chmod -R 777 $baseDir
 echo "Gathering jumpcloud logs from macOS system logs"
 log show --last ${days}d --predicate="eventMessage CONTAINS[c] 'jumpcloud'" > $baseDir/systemLogs/jumpcloud_syslog.log
 log show --last ${days}d --debug --info --style compact --predicate 'senderImagePath CONTAINS[c] "JCLoginPlugin"' > $baseDir/systemLogs/SSAP_LoginWindow_events.log
-
+log show --last ${days}d --predicate="process CONTAINS[c] 'DurtService' || process CONTAINS[c] 'JumpCloudGo'" > $baseDir/systemLogs/JumpCloudGo_events.log
 
 ## pull patch management logs
 echo "Gathering profiles & OS Patch Management settings"
