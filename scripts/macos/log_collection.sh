@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.1
+version=1.2
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -97,7 +97,7 @@ chmod -R 777 $baseDir
 echo "Gathering jumpcloud logs from macOS system logs"
 log show --last ${days}d --predicate="eventMessage CONTAINS[c] 'jumpcloud'" > $baseDir/systemLogs/jumpcloud_syslog.log
 log show --last ${days}d --debug --info --style compact --predicate 'senderImagePath CONTAINS[c] "JCLoginPlugin"' > $baseDir/systemLogs/SSAP_LoginWindow_events.log
-
+log show --last ${days}d --predicate="process CONTAINS[c] 'DurtService' || process CONTAINS[c] 'JumpCloudGo'" > $baseDir/systemLogs/JumpCloudGo_events.log
 
 ## pull patch management logs
 echo "Gathering profiles & OS Patch Management settings"
@@ -106,6 +106,10 @@ profiles show -o stdout > $baseDir/installedProfiles.txt
 softwareupdate --list > $baseDir/systemInfo/SoftwareUpdateList.txt 2>&1
 
 defaults read /Library/Preferences/com.apple.SoftwareUpdate > $baseDir/com.apple.SoftwareUpdate.plist 2>&1
+
+if [ -e /Library/Preferences/com.jumpcloud.Nudge.json ]; then
+    cp /Library/Preferences/com.jumpcloud.Nudge.json $baseDir/systemInfo/com.jumpcloud.Nudge.json
+fi
 
 ## Only run if a user is actually logged in
 if [[ $localuser ]]; then
