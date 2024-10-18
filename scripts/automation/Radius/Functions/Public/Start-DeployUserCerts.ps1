@@ -134,14 +134,6 @@ function Start-DeployUserCerts {
                     $resultItemCount++
                 }
 
-                # for ($i = 0; $i -lt $userArray.Count; $i++) {
-                #     $result, $workDone = Deploy-UserCertificate -userObject $userArray[$i] -forceInvokeCommands $invokeCommands -forceGenerateCommands $generateCommands
-                #     # update user json
-                #     Set-UserTable -index $workDone.userIndex -commandAssociationsObject $workDone.commandAssociationsObject -certInfoObject $workDone.certInfoObject
-
-                #     # show progress
-                #     Show-RadiusProgress -completedItems ($i + 1) -totalItems $userArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
-                # }
                 # return after an action if cli, else stay in function
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
