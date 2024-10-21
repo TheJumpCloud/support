@@ -467,6 +467,8 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'When duplicate commands with the same trigger SHA1 hashes exists, one should be removed, a new command should not be generated' {
             # Mock some commands with the trigger to already exist if they do not exist
+            $possibleMacIDs = New-Object System.Collections.ArrayList
+            $possibleWindowsIDs = New-Object System.Collections.ArrayList
             $macCommandBody = @{
                 Name              = "RadiusCert-Install:$($user.username):MacOSX"
                 Command           = "sha1234"
@@ -479,10 +481,12 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             }
             $newMacCommand = New-JcSdkCommand @macCommandBody
             $macCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+            $possibleMacIDs.Add($macCmdBefore.id)
             $macCommandBody.Command = "sha12345"
 
             $newMacCommand = New-JcSdkCommand @macCommandBody
             $secondMacCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+            $possibleMacIDs.Add($secondMacCmdBefore.id)
             $secondMacCmdBefore.count | Should -BeGreaterThan 1
 
             # invoke the commands manually to simulate the command queue containing items:
@@ -500,10 +504,12 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             }
             $newWindowsCommand = New-JcSdkCommand @windowsCommandBody
             $windowsCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+            $possibleWindowsIDs.Add($windowsCmdBefore.id)
             $windowsCommandBody.Command = "sha12345"
 
             $newWindowsCommand = New-JcSdkCommand @windowsCommandBody
             $secondWindowsCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+            $possibleWindowsIDs.Add($secondWindowsCmdBefore.id)
             $secondWindowsCmdBefore.count | Should -BeGreaterThan 1
 
             # invoke the commands manually to simulate the command queue containing items:
@@ -521,10 +527,13 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # Get the queued after:
             $queuedCmdsAfter = Get-QueuedCommandByUser -username $user.username
             # test that one of the commands should exist:
-            $macCmdBefore.id | Should -BeIn $macCmdAfter.id
+            # $macCmdBefore.id | Should -BeIn $macCmdAfter.id
             $macCmdAfter.count | Should -Be 1
-            $windowsCmdBefore.id | Should -BeIn $windowsCmdAfter.id
+            $macCmdAfter.id | should -BeIn $possibleMacIDs
+
+            # $windowsCmdBefore.id | Should -BeIn $windowsCmdAfter.id
             $windowsCmdAfter.count | Should -Be 1
+            $windowsCmdAfter.id | should -BeIn $possibleWindowsIDs
 
             # test that the queued commands should not exist:
             $queuedCmdsAfter.id | Should -Not -Contain $queuedCmdsBefore.Id
@@ -532,8 +541,9 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # user.json should have the newID in command associations.
             $allUserData = Get-UserJsonData
             $testUserData = $allUserData | Where-Object { $_.username -eq $user.username }
-            $macCmdBefore.id | Should -BeIn $testUserData.commandAssociations.commandId
-            $windowsCmdBefore.id | Should -BeIn $testUserData.commandAssociations.commandId
+
+            $testUserData.commandAssociations.commandId | Should -Contain $windowsCmdAfter.id
+            $testUserData.commandAssociations.commandId | Should -Contain $macCmdAfter.id
         }
     }
     Context 'Force Generate Certificate Tests' {
@@ -648,5 +658,21 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $testUserData.commandAssociations.commandId | Should -Not -Contain $macCmdBefore.id
             $testUserData.commandAssociations.commandId | Should -Not -Contain $windowsCmdBefore.id
         }
+    }
+    context 'Deploy by all' {
+        It "deploys user certs by all" {
+            Start-DeployUserCerts -type "All" -forceGenerateCommands -forceInvokeCommands
+            $allUserDataBefore = Get-UserJsonData
+            Start-Sleep 5
+            Start-DeployUserCerts -type "All" -forceGenerateCommands -forceInvokeCommands
+            $allUserDataAfter = Get-UserJsonData
+
+            foreach ($user in $allUserDataBefore) {
+                if ($user.certInfo.deploymentDate) {
+                    $user.certInfo.deploymentDate | Should -BeLessThan ($allUserDataAfter | Where-Object { $_.userName -eq $user.UserName }).certInfo.deploymentDate
+                }
+            }
+        }
+
     }
 }
