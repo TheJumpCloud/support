@@ -86,7 +86,7 @@ function Start-DeployUserCerts {
                 $resultArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
-                $userArray| Foreach-Object -ThrottleLimit 5 -Parallel {
+                $userArray | Foreach-Object -ThrottleLimit 20 -Parallel {
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
@@ -118,7 +118,6 @@ function Start-DeployUserCerts {
                     # keep track of results & work done
                     $resultArray.Add($result)
                     $WorkDoneArray.Add($workDone)
-
                 }
 
                 # update the userTable:
@@ -162,7 +161,7 @@ function Start-DeployUserCerts {
                 $resultArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 # foreach user:
-                $usersWithoutLatestCert | Foreach-Object -ThrottleLimit 5 -Parallel {
+                $usersWithoutLatestCert | Foreach-Object -ThrottleLimit 20 -Parallel {
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
