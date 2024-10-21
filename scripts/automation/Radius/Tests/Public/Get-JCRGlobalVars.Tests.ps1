@@ -17,6 +17,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 Write-Error -Message "Failed to import function $($Import.FullName): $_"
             }
         }
+        Start-GenerateRootCert -certKeyPassword "TestCertificate123!@#"
     }
     Context "When no 'data' directory exists" {
         BeforeAll {

@@ -79,4 +79,5 @@ if ($IsMacOS) {
     $configContent -replace ('\$Global:JCR_OPENSSL = *.+', "`$Global:JCR_OPENSSL = `"$($brewListBinary)`"") | Set-Content -Path $configPath
 }
 
+$env:certKeyPassword = "TestCertificate123!@#"
 Import-Module "$psscriptRoot/../JumpCloud-Radius.psd1" -Force
