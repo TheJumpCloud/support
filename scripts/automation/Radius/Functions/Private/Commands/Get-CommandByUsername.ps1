@@ -11,14 +11,14 @@ function Get-CommandByUsername {
         # define searchFilter
         $SearchFilter = @{
             searchTerm = "RadiusCert-Install:${username}:"
-            fields     = @('name')
+            fields     = @('name', 'trigger', 'commandType')
         }
 
     }
 
     process {
         # Get command Results
-        $commandResults = Search-JcSdkCommand -SearchFilter $SearchFilter -Fields name
+        $commandResults = Search-JcSdkCommand -SearchFilter $SearchFilter -Fields "name trigger commandType"
     }
 
     end {

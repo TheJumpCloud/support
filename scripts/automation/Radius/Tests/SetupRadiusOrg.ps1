@@ -16,6 +16,13 @@ foreach ($user in $pesterRadiusUsers) {
 Write-Warning "Removing Pester Radius Users with emailDomain: *pesterRadius*"
 $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
 
+# remove existing radius commands in test:
+Write-Warning "Removing Pester Radius Commands"
+$commandsToRemove = Get-JCCommand -Name "RadiusCert-Install:*"
+foreach ($commandToRemove in $commandsToRemove) {
+    Remove-JCCommand -CommandID $commandToRemove._id -force | out-null
+}
+
 # Create users
 Write-Warning "Creating New Pester Radius Users"
 # user bound to mac
@@ -72,4 +79,5 @@ if ($IsMacOS) {
     $configContent -replace ('\$Global:JCR_OPENSSL = *.+', "`$Global:JCR_OPENSSL = `"$($brewListBinary)`"") | Set-Content -Path $configPath
 }
 
+$env:certKeyPassword = "TestCertificate123!@#"
 Import-Module "$psscriptRoot/../JumpCloud-Radius.psd1" -Force

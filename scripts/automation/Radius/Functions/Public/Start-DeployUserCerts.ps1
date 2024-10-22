@@ -14,7 +14,11 @@ function Start-DeployUserCerts {
         # Force invoke commands after generation
         [Parameter(HelpMessage = 'Switch to force invoke generated commands on systems', ParameterSetName = 'cli')]
         [switch]
-        $forceInvokeCommands
+        $forceInvokeCommands,
+        # Force invoke commands after generation
+        [Parameter(HelpMessage = 'Switch to force generate new commands on systems', ParameterSetName = 'cli')]
+        [switch]
+        $forceGenerateCommands
     )
 
     # Import the users.json file and convert to PSObject
@@ -28,6 +32,16 @@ function Start-DeployUserCerts {
                 Show-DistributionMenu -CertObjectArray $userArray.certInfo -usersThatNeedCert $usersWithoutLatestCert.count -totalUserCount $userArray.count
                 $confirmation = Read-Host "Please make a selection"
 
+                # This can be updated later if necessary but for now if using the GUI, the $forceGenerateCommands switch will always be false
+                # Thus the GUI will never overwrite commands unless the SHA1 value does not match the local cert SHA1
+                switch ($forceGenerateCommands) {
+                    $true {
+                        $generateCommands = $true
+                    }
+                    $false {
+                        $generateCommands = $false
+                    }
+                }
             }
             'cli' {
                 $confirmationMap = @{
@@ -45,6 +59,14 @@ function Start-DeployUserCerts {
                         $invokeCommands = $false
                     }
                 }
+                switch ($forceGenerateCommands) {
+                    $true {
+                        $generateCommands = $true
+                    }
+                    $false {
+                        $generateCommands = $false
+                    }
+                }
             }
         }
 
@@ -59,10 +81,58 @@ function Start-DeployUserCerts {
                         }
                     }
                 }
-                for ($i = 0; $i -lt $userArray.Count; $i++) {
-                    $result = Deploy-UserCertificate -userObject $userArray[$i] -forceInvokeCommands $invokeCommands
-                    Show-RadiusProgress -completedItems ($i + 1) -totalItems $userArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+
+                # set thread safe variables:
+                $resultArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+                $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+
+                $userArray | Foreach-Object -ThrottleLimit 20 -Parallel {
+                    # set the required variables
+                    $JCAPIKEY = $using:JCAPIKEY
+                    $JCORGID = $using:JCORGID
+                    $JCScriptRoot = $using:JCScriptRoot
+
+                    # set the required global variables
+                    $Global:JCRUsers = $using:JCRUsers
+                    $Global:JCRSystems = $using:JCRSystems
+                    $Global:JCRAssociations = $using:JCRAssociations
+                    $Global:JCRRadiusMembers = $using:JCRRadiusMembers
+                    $Global:JCRCertHash = $using:JCRCertHash
+
+                    # set the thread safe variables
+                    $resultArray = $using:resultArray
+                    $workDoneArray = $using:workDoneArray
+
+                    # import the private functions:
+                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+                    Foreach ($Import in $Private) {
+                        Try {
+                            . $Import.FullName
+                        } Catch {
+                            Write-Error -Message "Failed to import function $($Import.FullName): $_"
+                        }
+                    }
+
+                    # deploy user certs:
+                    $result, $workDone = Deploy-UserCertificate -userObject $_ -forceInvokeCommands $using:invokeCommands -forceGenerateCommands $using:generateCommands
+                    # keep track of results & work done
+                    $resultArray.Add($result)
+                    $WorkDoneArray.Add($workDone)
                 }
+
+                # update the userTable:
+                foreach ($item in $workDoneArray) {
+                    Set-UserTable -index $item.userIndex -commandAssociationsObject $item.commandAssociationsObject -certInfoObject $item.certInfoObject
+                }
+
+                # print the progress:
+                $resultCount = $resultArray.Count
+                $resultItemCount = 1
+                foreach ($item in $resultArray) {
+                    Show-RadiusProgress -completedItems ($resultItemCount) -totalItems $resultArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $item
+                    $resultItemCount++
+                }
+
                 # return after an action if cli, else stay in function
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
@@ -86,9 +156,56 @@ function Start-DeployUserCerts {
                 if (-Not $usersWithoutLatestCert) {
                     $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
                 }
-                for ($i = 0; $i -lt $usersWithoutLatestCert.Count; $i++) {
-                    $result = Deploy-UserCertificate -userObject $usersWithoutLatestCert[$i] -forceInvokeCommands $invokeCommands
-                    Show-RadiusProgress -completedItems ($i + 1) -totalItems $usersWithoutLatestCert.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
+
+                # set thread safe variables:
+                $resultArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+                $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
+                # foreach user:
+                $usersWithoutLatestCert | Foreach-Object -ThrottleLimit 20 -Parallel {
+                    # set the required variables
+                    $JCAPIKEY = $using:JCAPIKEY
+                    $JCORGID = $using:JCORGID
+                    $JCScriptRoot = $using:JCScriptRoot
+
+                    # set the required global variables
+                    $Global:JCRUsers = $using:JCRUsers
+                    $Global:JCRSystems = $using:JCRSystems
+                    $Global:JCRAssociations = $using:JCRAssociations
+                    $Global:JCRRadiusMembers = $using:JCRRadiusMembers
+                    $Global:JCRCertHash = $using:JCRCertHash
+
+                    # set the thread safe variables
+                    $resultArray = $using:resultArray
+                    $workDoneArray = $using:workDoneArray
+
+                    # import the private functions:
+                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+                    Foreach ($Import in $Private) {
+                        Try {
+                            . $Import.FullName
+                        } Catch {
+                            Write-Error -Message "Failed to import function $($Import.FullName): $_"
+                        }
+                    }
+
+                    # deploy user certs:
+                    $result, $workDone = Deploy-UserCertificate -userObject $_ -forceInvokeCommands $using:invokeCommands -forceGenerateCommands $using:generateCommands
+                    # keep track of results & work done
+                    $resultArray.Add($result)
+                    $WorkDoneArray.Add($workDone)
+                }
+
+                # update the userTable:
+                foreach ($item in $workDoneArray) {
+                    Set-UserTable -index $item.userIndex -commandAssociationsObject $item.commandAssociationsObject -certInfoObject $item.certInfoObject
+                }
+
+                # print the progress:
+                $resultCount = $resultArray.Count
+                $resultItemCount = 1
+                foreach ($item in $resultArray) {
+                    Show-RadiusProgress -completedItems ($resultItemCount) -totalItems $resultArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $item
+                    $resultItemCount++
                 }
                 # return after an action if cli, else stay in function
                 switch ($PSCmdlet.ParameterSetName) {
@@ -133,12 +250,16 @@ function Start-DeployUserCerts {
                     # Process existing commands/ Generate new commands/ Deploy new Certificate
                     switch ($PSCmdlet.ParameterSetName) {
                         'gui' {
-                            $result = Deploy-UserCertificate -userObject $UserSelectionArray -prompt
+                            $result, $workDone = Deploy-UserCertificate -userObject $UserSelectionArray -prompt
                         }
                         'cli' {
-                            $result = Deploy-UserCertificate -userObject $UserSelectionArray -forceInvokeCommands $invokeCommands
+                            $result, $workDone = Deploy-UserCertificate -userObject $UserSelectionArray -forceInvokeCommands $invokeCommands -forceGenerateCommands $generateCommands
                         }
                     }
+                    # update user json
+                    Set-UserTable -index $workDone.userIndex -commandAssociationsObject $workDone.commandAssociationsObject -certInfoObject $workDone.certInfoObject
+
+                    # show progress
                     Show-RadiusProgress -completedItems $UserSelectionArray.count -totalItems $UserSelectionArray.Count -ActionText "Distributing Radius Certificates" -previousOperationResult $result
                 }
                 # return after an action if cli, else stay in function
