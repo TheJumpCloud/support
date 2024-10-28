@@ -16,6 +16,24 @@ if (-not (Test-Administrator)) {
     exit
 }
 
+# Function to get PowerShell Version
+function Check-PowerShellVersion {
+    $requiredVersion = 5
+    $currentVersion = $PSVersionTable.PSVersion.Major
+
+    if ($currentVersion -lt $requiredVersion) {
+        Write-Warning "This script requires PowerShell version 5.0 or higher. Current version: $currentVersion. Exiting..."
+        exit
+    } else {
+        Write-Host "PowerShell version $currentVersion detected. Proceeding..."
+    }
+}
+
+# Call the function to check the version
+Check-PowerShellVersion
+
+
+
 # Function to Gather Logs Based on User Selection
 function Gather-Logs {
     [CmdletBinding()]
@@ -48,6 +66,14 @@ function Gather-Logs {
 
         # Create the Temp Directory
         New-Item -ItemType Directory -Path $tempDir > $null
+
+        # Gather Windows Version Information
+        $winVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
+        $winVersion += " - Version " + (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
+        $winVersionFile = Join-Path $tempDir "WinVersion.txt"
+        $winVersion | Out-File -FilePath $winVersionFile -ErrorAction SilentlyContinue
+
+
 
         # List of Log Files and Event Logs to Gather
         $fileList = @{
@@ -132,6 +158,30 @@ function Gather-Logs {
                 "Agent Logs" {
                     $files += $fileList["AgentLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
+                    # Handle jc-user-agent.log and jcupdate.log
+                    $allUsers = Get-LocalUser
+                    foreach ($user in $allUsers) {
+                        if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
+                            $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
+                            $profileImagePath = $profilePath.ProfileImagePath
+                        }
+
+                        # Define paths to jc-user-agent.log and jcupdate.log
+                        $jcUserAgentLog = "$profileImagePath\AppData\Local\Temp\jc-user-agent.log"
+                        $jcUpdateLog = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
+
+                        # Check and copy jc-user-agent.log if it exists
+                        if (Test-Path -Path $jcUserAgentLog) {
+                            $destinationPath = "$tempDir\$($user.Name).jc-user-agent.log"
+                            Copy-Item -Path $jcUserAgentLog -Destination $destinationPath -ErrorAction SilentlyContinue
+                        }
+
+                        # Check and copy jcupdate.log if it exists
+                        if (Test-Path -Path $jcUpdateLog) {
+                            $destinationPath = "$tempDir\$($user.Name).jcupdate.log"
+                            Copy-Item -Path $jcUpdateLog -Destination $destinationPath -ErrorAction SilentlyContinue
+                        }
+                    }
                 }
                 "Remote Assist logs" {
                     $files += $fileList["RemoteAssistLogs"]
@@ -176,7 +226,7 @@ function Gather-Logs {
 
                     # Generate RSOP Output
                     $rsopOutputPath = Join-Path $tempDir "RSOP.html"
-                    $rsopCmd = "gpresult /H $rsopOutputPath"
+                    $rsopCmd = "gpresult /SCOPE COMPUTER /H $rsopOutputPath"
                     Invoke-Expression $rsopCmd
                 }
                 "Active Directory Logs" {
@@ -184,15 +234,15 @@ function Gather-Logs {
                     # Export AD Integration Registry Keys
                     # test for import agent files
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\JumpCloud\AD Integration Import Agent" -ErrorAction SilentlyContinue ) {
-                        reg export "HKLM:\SOFTWARE\JumpCloud\AD Integration Import Agent" "$tempDir\AD_Integration_Import_Agent.reg" -ErrorAction SilentlyContinue
+                        reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Import Agent" "$tempDir\ADIntegrationImportAgent.reg" /y
                     } else {
-                        Write-Warning "No AD Import Agent Logs exist"
+                        Write-Warning "No AD Import Agent Keys exist"
                     }
                     # test for sync agent files
-                    if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
-                        reg export "HKLM:\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\AD_Integration_Sync_Agent.reg" -ErrorAction SilentlyContinue
+                    if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Jumpcloud\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
+                        reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\ADIntegrationSyncAgent.reg" /y
                     } else {
-                        Write-Warning "No AD Sync Agent Logs exist"
+                        Write-Warning "No AD Sync Agent Keys exist"
                     }
                     # Output DistinguishedName to a Text File
                     if (Get-Module -Name ActiveDirectory) {
@@ -242,8 +292,8 @@ function Gather-Logs {
     }
     end {
 
-        # Create a Log File of All Copied Files
-        $logFilePath = Join-Path (Get-Location) "CopiedFiles.log"
+        # Create a Log File of All Copied Files and include it in the ZIP
+        $logFilePath = Join-Path $tempDir "CopiedFiles.log"
         $files | Out-File -FilePath $logFilePath -ErrorAction SilentlyContinue
 
         # Create the Zip File
@@ -259,7 +309,6 @@ function Gather-Logs {
         Write-Host "Logs have been gathered and compressed into $zipFilePath"
 
         # Open the Folder Containing the Zip File
-        #explorer.exe /select, $zipFilePath
         Start-Process "explorer.exe" -ArgumentList "/select,`"$zipFilepath`""
 
         # Cleanup Temporary Directory
@@ -304,4 +353,3 @@ if ($automate) {
         Gather-Logs -selections $selectedSections
     }
 }
-
