@@ -1,5 +1,5 @@
-# Function to check if Powershell is running as Administrator
-function Test-Administrator {
+ # Function to check if running as Administrator
+ function Test-Administrator {
     $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -13,83 +13,112 @@ if (-not (Test-Administrator)) {
 # Create HKCR Mapping
 New-PSDrive -Name "HKCR" -PSProvider Registry -Root "HKEY_CLASSES_ROOT" -ErrorAction SilentlyContinue
 
-# Function to recursively search for DisplayName in the registry
+# Function to recursively search for DisplayName and ProductName in the registry
 function Find-JumpCloudGUID {
     $rootKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products"
     $uninstallKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
-    $jumpcloudGUIDs = @()
+    $classesKey = "HKCR:\Installer\Products"
+    
+    $agentGUIDs = @()
+    $msiGUIDs = @()
 
-    # Searching Installed Products
+    # Searching Installer Products for JumpCloud Agent GUIDs
     Get-ChildItem -Path $rootKey | ForEach-Object {
         $installPropertiesPath = "$($_.PSPath)\InstallProperties"
         try {
             $displayName = (Get-ItemProperty -Path $installPropertiesPath -ErrorAction SilentlyContinue).DisplayName
             if ($displayName -like "*JumpCloud Agent*") {
                 $guid = $_.PSChildName
-                $jumpcloudGUIDs += $guid
+                $agentGUIDs += $guid
             }
         } catch {
             Write-Host "Error accessing $installPropertiesPath"
         }
     }
 
-    # Searching for the Uninstall Key
+    # Searching Uninstall Key for MSI GUIDs
     Get-ChildItem -Path $uninstallKey | ForEach-Object {
         try {
             $displayName = (Get-ItemProperty -Path $_.PSPath -ErrorAction SilentlyContinue).DisplayName
             if ($displayName -like "*JumpCloud Agent*") {
                 $uninstallGUID = $_.PSChildName
-                $jumpcloudGUIDs += $uninstallGUID
+                $msiGUIDs += $uninstallGUID
             }
         } catch {
             Write-Host "Error accessing $($_.PSPath)"
         }
     }
 
-    return $jumpcloudGUIDs
+    # Searching HKEY_CLASSES_ROOT\Installer\Products for JumpCloud Agent GUIDs
+    Get-ChildItem -Path $classesKey | ForEach-Object {
+        try {
+            $productName = (Get-ItemProperty -Path $_.PSPath -ErrorAction SilentlyContinue).ProductName
+            if ($productName -like "*JumpCloud Agent*") {
+                $guid = $_.PSChildName
+                $agentGUIDs += $guid
+            }
+        } catch {
+            Write-Host "Error accessing $($_.PSPath)"
+        }
+    }
+
+    return @{ AgentGUIDs = $agentGUIDs; MSIGUIDs = $msiGUIDs }
 }
 
-# Function to remove registry keys, JC folder, and JC service
+# Function to remove registry keys, folder, and service
 function Remove-JumpCloud {
     $guids = Find-JumpCloudGUID
-
-    foreach ($guid in $guids) {
+    
+    # Flag to track if items to remove were found
+    $foundItemsToRemove = $false  
+    
+    foreach ($guid in $guids.AgentGUIDs) {
         # Removing registry keys
         $installerKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\$guid"
         $classesKey = "HKCR:\Installer\Products\$guid"
-        $uninstallKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$guid"
         $jumpcloudSoftwareKey = "HKLM:\Software\JumpCloud"
-        $jumpcloudClasses = "HKLM:\SOFTWARE\Classes\Installer\Products\$guid"
+        
+        foreach ($msiGuid in $guids.MSIGUIDs) {
+            $uninstallKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$msiGuid"
 
-        $keysToDelete = @($installerKey, $classesKey, $uninstallKey, $jumpcloudSoftwareKey)
+            $keysToDelete = @($installerKey, $classesKey, $uninstallKey, $jumpcloudSoftwareKey)
 
-        foreach ($key in $keysToDelete) {
-            if (Test-Path $key) {
-                Remove-Item -Path $key -Recurse -Force -Verbose -ErrorAction SilentlyContinue
-            } else {
-                Write-Host "Registry key $key not found."
+            foreach ($key in $keysToDelete) {
+                if (Test-Path $key) {
+                    $foundItemsToRemove = $true
+                    Remove-Item -Path $key -Recurse -Force
+                    Write-Host "Successfully deleted registry key: $key"
+                }
             }
         }
 
-        # Stopping and removing the service
+        # Stopping and removing the JumpCloud Agent service
         $serviceName = "jumpcloud-agent"
         if (Get-Service -Name $serviceName -ErrorAction SilentlyContinue) {
-            Stop-Service -Name $serviceName -Force -Verbose
-            start-sleep 6
+            $foundItemsToRemove = $true
+            Stop-Service -Name $serviceName -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 6
             sc.exe delete $serviceName
-            start-sleep 6
-        } else {
-            Write-Host "Service $serviceName not found."
-        }
+            Start-Sleep -Seconds 6
+            Write-Host "Service $serviceName successfully removed."
+        } 
 
-        # Removing folder
+        # Removing the JumpCloudfolder
         $jumpcloudFolder = "C:\Program Files\JumpCloud"
         if (Test-Path $jumpcloudFolder) {
-            Remove-Item -Path $jumpcloudFolder -Recurse -ErrorAction SilentlyContinue
-        }
+            $foundItemsToRemove = $true
+            Remove-Item -Path $jumpcloudFolder -Recurse -Force -ErrorAction SilentlyContinue
+            Write-Host "Successfully deleted folder: $jumpcloudFolder"
+        } 
+    }
 
+    # Check if nothing was found to remove
+    if (-not $foundItemsToRemove) {
+        Write-Host "Nothing was found to remove."
     }
 }
 
 # Run the removal function
 Remove-JumpCloud
+
+Remove-Variable * -ErrorAction SilentlyContinue
