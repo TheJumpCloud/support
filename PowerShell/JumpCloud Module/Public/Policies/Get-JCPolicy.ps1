@@ -80,7 +80,7 @@ Function Get-JCPolicy () {
     }
     End {
         If ($Results) {
-            Return $Results | Select-Object -Property "name", "id", "templateID", "values", "template"
+            Return $Results | Select-Object -Property "name", "id", "templateID", "values", "template", "notes"
         }
     }
 }
