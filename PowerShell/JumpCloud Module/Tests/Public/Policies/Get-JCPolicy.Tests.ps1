@@ -42,5 +42,7 @@ Describe -Tag:('JCPolicy') 'Get-JCPolicy 1.10' {
         $SingleResult.values | Should -BeNullOrEmpty
         $SingleResult.template | Should -Not -BeNullOrEmpty
         $SingleResult.templateID | Should -Not -BeNullOrEmpty
+        # notes should be returned
+        $SingleResult.notes.PSObject.Properties | Should -BeTrue
     }
 }

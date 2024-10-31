@@ -1,7 +1,5 @@
 Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     BeforeAll {
-
-
         $policies = Get-JCPolicy
         $policies | Where-Object { $_.Name -like "Pester -*" } | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
         $policyTemplates = Get-JcSdkPolicyTemplate
@@ -281,22 +279,24 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
     Context 'New-JCPolicy should reutrn policies with the correct data types' {
         It 'New-JCPolicy returns expected parameters' {
             $usbTemplateLinux = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
-            $usbLinuxPolicy = New-JCPolicy -TemplateID $usbTemplateLinux.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $usbTemplateLinux.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)" -Notes "usb"
             $usbLinuxPolicy.name | Should -Not -BeNullOrEmpty
             $usbLinuxPolicy.id | Should -Not -BeNullOrEmpty
             $usbLinuxPolicy.values | Should -BeNullOrEmpty
             $usbLinuxPolicy.template | Should -Not -BeNullOrEmpty
             $usbLinuxPolicy.templateID | Should -Not -BeNullOrEmpty
+            $registryPolicy.notes | Should -Be "usb"
         }
     }
     Context 'Create new policy using Registry file' {
         It 'New-JCPolicy using regFilePath parameter' {
-            $registryPolicy = New-JCPolicy -Name 'Pester - RegFileUpload' -templateID '5f07273cb544065386e1ce6f' -registryFile $PesterParams_RegistryFilePath
+            $registryPolicy = New-JCPolicy -Name 'Pester - RegFileUpload' -templateID '5f07273cb544065386e1ce6f' -registryFile $PesterParams_RegistryFilePath -Notes "regfile"
             $registryPolicy.name | Should -Not -BeNullOrEmpty
             $registryPolicy.templateID | Should -Be '5f07273cb544065386e1ce6f'
             $registryPolicy.values | Should -Not -BeNullOrEmpty
             $registryPolicy.id | Should -Not -BeNullOrEmpty
             $registryPolicy.template | Should -Not -BeNullOrEmpty
+            $registryPolicy.notes | Should -Be "regfile"
         }
     }
     Context 'Manual Test Cases' -Skip {
