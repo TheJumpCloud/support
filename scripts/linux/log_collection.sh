@@ -65,6 +65,8 @@ sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$
 # system information and logs
 echo "Gathering system information."
 hostnamectl 2>&1 > $baseDir/systemInfo/sysInfo.txt
+/opt/jc/bin/jcosqueri --line "select * from users;" > $baseDir/systemInfo/osq_usersList.txt
+last > $baseDir/systemInfo/last.txt
 
 LOGS=(
     "syslog"
