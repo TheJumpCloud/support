@@ -1,12 +1,16 @@
 ## 2.14.3
 
-Release Date: November 4, 2024
+Release Date: October 31, 2024
 
 #### RELEASE NOTES
 
 ```
-Removed 40 character validation for the JumpCloud API key
+Removed 40 character validation for the JumpCloud API key, Add "notes" to the JCPolicy Functions
 ```
+
+#### FEATURES:
+
+- Notes can be set and added when creating new policies using the Set/New-JCPolicy Functions. Notes are returned when querying Get-JCPolicy
 
 ## 2.14.2
 
@@ -19,6 +23,7 @@ Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` where the a
 ```
 
 #### BUG FIXES:
+
 - Import-JCUsersFromCSV and Update-JCUsersFromCSV are now able to update/create users even when some Attributes column are not filled in
 
 ## 2.14.1
@@ -32,6 +37,7 @@ Fixed a bug with `Set-JCUser` not having the ability to remove a user's manager 
 ```
 
 #### BUG FIXES:
+
 - Set-JCUser now allows removing a user's manager by inputting a `$null` value as expected
 
 ## 2.14.0
@@ -43,6 +49,7 @@ Release Date: September 25, 2024
 ```
 Introduces the `Get-JCSystemKB` Function - This function will allow you to search for applied hotfixes/KBs on your Windows devices across your organization
 ```
+
 #### BUG FIXES:
 
 Fixed a bug where Get-JCPolicy would return multiple templateIDs per policy
@@ -50,7 +57,6 @@ Fixed a bug where Get-JCPolicy would return multiple templateIDs per policy
 #### FEATURES:
 
 - Get-JCSystemKB - Returns applied hotfixes/KBs on Windows devices in your organization
-
 
 ## 2.13.1
 
