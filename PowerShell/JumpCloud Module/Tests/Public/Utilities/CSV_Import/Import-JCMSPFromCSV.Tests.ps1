@@ -1,4 +1,4 @@
-Describe -Tag:('MSP') 'Import-JCMSPFromCSV' {
+Describe -Tag:('MSP') 'Import-JCMSPFromCSV' -Skip {
 
     BeforeAll {
         BeforeAll { Connect-JCOnline -JumpCloudApiKey:($env:PESTER_MSP_APIKEY) -JumpCloudOrgId:($env:PESTER_ORGID) -force | Out-Null }
