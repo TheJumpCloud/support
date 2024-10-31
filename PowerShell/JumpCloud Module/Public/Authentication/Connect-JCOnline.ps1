@@ -11,7 +11,6 @@ Function Connect-JCOnline () {
             'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'ValidateLength'                  = (40, 40);
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{

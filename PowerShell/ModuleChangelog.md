@@ -1,3 +1,13 @@
+## 2.14.3
+
+Release Date: November 4, 2024
+
+#### RELEASE NOTES
+
+```
+Removed 40 character validation for the JumpCloud API key
+```
+
 ## 2.14.2
 
 Release Date: October 16, 2024
