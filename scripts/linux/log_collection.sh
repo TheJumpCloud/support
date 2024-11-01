@@ -114,13 +114,13 @@ done
 ## Package up the archive
 
 echo "Resetting gathered logs permissions"
-chmod -R 777 $baseDir
+chmod -R 444 $baseDir
 
 ## compress everything
 
 echo "Compressing logs"
 tar -czf "${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz" -C $baseDir .
-chmod 777 ${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz
+chmod 444 ${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz
 
 ## Clean up uncompressed collection
 
