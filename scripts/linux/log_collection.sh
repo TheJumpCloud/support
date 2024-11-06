@@ -65,7 +65,7 @@ sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$
 # system information and logs
 echo "Gathering system information."
 hostnamectl 2>&1 > $baseDir/systemInfo/sysInfo.txt
-/opt/jc/bin/jcosqueri --line "select * from users;" > $baseDir/systemInfo/osq_usersList.txt
+/opt/jc/bin/jcosqueryi --line "select * from users" > $baseDir/systemInfo/osq_usersList.txt
 last > $baseDir/systemInfo/last.txt
 
 LOGS=(
@@ -111,16 +111,16 @@ for USER in $(ls /home/); do
     fi
 done
 
-## Package up the archive
+## Package up the archive - execute bit for owner appears to be required for readability on macOS
 
 echo "Resetting gathered logs permissions"
-chmod -R 444 $baseDir
+chmod -R 766 $baseDir
 
 ## compress everything
 
 echo "Compressing logs"
 tar -czf "${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz" -C $baseDir .
-chmod 444 ${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz
+chmod 666 ${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz
 
 ## Clean up uncompressed collection
 
