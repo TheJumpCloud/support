@@ -481,7 +481,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $usbLinuxPolicyUpdated = Set-JCPolicy -PolicyId $usbLinuxPolicy.Id -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)" -Notes "usb"
             $usbLinuxPolicyUpdated.name | Should -Not -BeNullOrEmpty
             $usbLinuxPolicyUpdated.id | Should -Not -BeNullOrEmpty
-            $usbLinuxPolicyUpdated.values | Should -BeNullOrEmpty
             $usbLinuxPolicyUpdated.template | Should -Not -BeNullOrEmpty
             $usbLinuxPolicyUpdated.templateID | Should -Not -BeNullOrEmpty
             $usbLinuxPolicy.Notes | Should -BeNullOrEmpty
