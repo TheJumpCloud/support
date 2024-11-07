@@ -13,17 +13,15 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
     }
     Context 'Set-JCRadiusServer' {
         It ('Should update a radius server ByName.') {
-            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -newName:('Something') -networkSourceIp:($PesterParams_networkSourceIpUpdate) -sharedSecret:('kldFaSDfAdgfAgxcxWEQTRDS') -Force;
+            $RadiusServer = Set-JCRadiusServer -Name:($RadiusServerTemplate.name) -newName:('Something') -sharedSecret:('kldFaSDfAdgfAgxcxWEQTRDS') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.name | Should -Be 'Something'
-            $RadiusServer.networkSourceIp | Should -Be $PesterParams_networkSourceIpUpdate
             $RadiusServer.sharedSecret | Should -Be 'kldFaSDfAdgfAgxcxWEQTRDS'
         }
         It ('Should update a radius server ById.') {
-            $RadiusServer = Set-JCRadiusServer -Id:($RadiusServerTemplate.id) -newName:('SomethingElse') -networkSourceIp:($PesterParams_networkSourceIpInitial) -sharedSecret:('aseRDGsDFGSDfgBsdRFTygSW') -Force;
+            $RadiusServer = Set-JCRadiusServer -Id:($RadiusServerTemplate.id) -newName:('SomethingElse') -sharedSecret:('aseRDGsDFGSDfgBsdRFTygSW') -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
             $RadiusServer.name | Should -Be 'SomethingElse'
-            $RadiusServer.networkSourceIp | Should -Be $PesterParams_networkSourceIpInitial
             $RadiusServer.sharedSecret | Should -Be 'aseRDGsDFGSDfgBsdRFTygSW'
         }
     }
