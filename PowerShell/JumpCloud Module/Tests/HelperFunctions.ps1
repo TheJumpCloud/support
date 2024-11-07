@@ -139,3 +139,36 @@ Function New-RandomStringLower () {
     }
     end { Return $Random.ToLower() }
 }
+
+function Create-RadiusServerTryCatch {
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [System.Object]
+        $RadiusDefinition
+    )
+    begin {
+        $catch_counter = 0
+    }
+    process {
+        do {
+            $RadiusServerBuilt = $false
+            try {
+                Write-Host "Creating Radius Server with IP: $($RadiusDefinition.networkSourceIp)..."
+                $radiusServer = New-JCRadiusServer @RadiusDefinition
+                if ($radiusServer) {
+                    $RadiusServerBuilt = $true
+                } else {
+                    break
+                }
+            } catch {
+                Write-Host "$_"
+                $RadiusDefinition.networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+                Write-Host "Creating Radius Server with NEW IP: $($RadiusDefinition.networkSourceIp)..."
+            }
+        } until ($RadiusServerBuilt)
+    }
+    end {
+        return $radiusServer
+    }
+}
