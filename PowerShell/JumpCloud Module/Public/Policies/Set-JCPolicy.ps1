@@ -22,7 +22,11 @@ function Set-JCPolicy {
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
-        $Values
+        $Values,
+        [Parameter(Mandatory = $false,
+            HelpMessage = 'The notes to set on the existing JumpCloud Policy.')]
+        [System.String]
+        $Notes
     )
     DynamicParam {
 
@@ -161,10 +165,19 @@ function Set-JCPolicy {
         $requiredSet = @('PolicyID', 'PolicyName', 'NewName' , 'Values')
         foreach ($parameter in $paramterSet) {
             $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
-            if ($parameterComparison | Where-Object { $_.sideindicator -eq "=>" }) {
+            if ($parameterComparison | Where-Object { ( $_.sideindicator -eq "=>") -And ($_.InputObject -ne "Notes") }) {
                 $DynamicParamSet = $true
                 break
             }
+        }
+        # only update newName or Notes:
+        if ((("NewName" -in $params.keys) -AND ("Values" -notin $params.Keys)) -OR
+            (("Notes" -in $params.keys) -AND ("Values" -notin $params.Keys))) {
+            $Values = $foundPolicy.values
+        }
+        # get the notes if it's not in the param set
+        if (-not $PSBoundParameters["Notes"]) {
+            $Notes = $foundPolicy.Notes
         }
         if ($DynamicParamSet) {
             # begin dynamic param set
@@ -318,11 +331,13 @@ function Set-JCPolicy {
                 name     = $policyNameFromProcess
                 template = @{id = $foundPolicy.Template.Id }
                 values   = @($updatedPolicyObject)
+                notes    = $Notes
             } | ConvertTo-Json -Depth 99
         } else {
             $body = [PSCustomObject]@{
                 name     = $policyNameFromProcess
                 template = @{id = $foundPolicy.Template.Id }
+                notes    = $Notes
             } | ConvertTo-Json -Depth 99
         }
         $headers = @{
@@ -336,6 +351,6 @@ function Set-JCPolicy {
         }
     }
     end {
-        return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
+        return $response | Select-Object -Property "name", "id", "templateID", "values", "template", "notes"
     }
 }

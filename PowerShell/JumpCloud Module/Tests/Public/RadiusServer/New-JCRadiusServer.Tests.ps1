@@ -1,7 +1,21 @@
 Describe -Tag:('JCRadiusServer') 'New-JCRadiusServer Tests' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
-        $AzureRadiusServerTemplate = Get-JCRadiusServer -Name:($PesterParams_RadiusAzureServer.name); # -Fields:('') -Filter:('') -Limit:(1) -Skip:(1) -Paginate:($true) -Force;
+        $NewRadiusServer = @{
+            networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+            sharedSecret    = "$(Get-Random)"
+            name            = "PesterTest_RadiusServer_$(Get-Random)"
+            authIdp         = 'JUMPCLOUD'
+
+        };
+        $NewAzureRadiusServer = @{
+            networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+            sharedSecret    = "$(Get-Random)"
+            name            = "PesterTest_AzureRadiusServer_$(Get-Random)"
+            authIdp         = 'AZURE'
+        };
+
+        $RadiusServerTemplate = Create-RadiusServerTryCatch $NewRadiusServer
+        $AzureRadiusServerTemplate = Create-RadiusServerTryCatch $NewAzureRadiusServer
     }
     Context 'New-JCRadiusServer' {
         It ('Should create a new radius server.') {

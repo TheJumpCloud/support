@@ -19,13 +19,13 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 
 ### ByID (Default)
 ```
-Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>]
+Set-JCPolicy -PolicyID <String> [-NewName <String>] [-Values <Object[]>] [-Notes <String>]
  [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>]
+Set-JCPolicy -PolicyName <String> [-NewName <String>] [-Values <Object[]>] [-Notes <String>]
  [<CommonParameters>]
 ```
 
@@ -95,6 +95,21 @@ This command would overwrite the registry policy's existing values with the impo
 ### -NewName
 
 The new name to set on the existing JumpCloud Policy
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Notes
+The notes to set on the existing JumpCloud Policy.
 
 ```yaml
 Type: System.String

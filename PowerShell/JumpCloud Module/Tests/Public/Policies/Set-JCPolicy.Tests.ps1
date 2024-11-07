@@ -477,21 +477,22 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     Context 'Set-JCPolicy should reutrn policies with the correct data types' {
         It 'Set-JCPolicy returns expected parameters' {
             $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
-            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
-            $usbLinuxPolicyUpdated = Set-JCPolicy -PolicyId $usbLinuxPolicy.Id -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)"
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $(new-randomString -NumberOfChars 8)" -disable_mtp $true -disable_afc $false -disable_mmc $false
+            $usbLinuxPolicyUpdated = Set-JCPolicy -PolicyId $usbLinuxPolicy.Id -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)" -Notes "usb"
             $usbLinuxPolicyUpdated.name | Should -Not -BeNullOrEmpty
             $usbLinuxPolicyUpdated.id | Should -Not -BeNullOrEmpty
-            $usbLinuxPolicyUpdated.values | Should -BeNullOrEmpty
             $usbLinuxPolicyUpdated.template | Should -Not -BeNullOrEmpty
             $usbLinuxPolicyUpdated.templateID | Should -Not -BeNullOrEmpty
+            $usbLinuxPolicy.Notes | Should -BeNullOrEmpty
+            $usbLinuxPolicyUpdated.Notes | Should -Be "usb"
         }
     }
     Context 'Validates Throw Conditions' {
         It 'Should throw an error when multiple policies with the same name exist and the policyName param is specified' {
             $registryTemplate = $policyTemplates | Where-Object { $_.name -eq "disable_usb_storage_linux" }
             $randomValue = $(new-randomString -NumberOfChars 8)
-            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $($randomValue)"
-            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $($randomValue)"
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $($randomValue)" -disable_mtp $true -disable_afc $false -disable_mmc $false
+            $usbLinuxPolicy = New-JCPolicy -TemplateID $registryTemplate.Id -Name "Pester - USB Linux $($randomValue)" -disable_mtp $true -disable_afc $false -disable_mmc $false
             { Set-JCPolicy -PolicyName -Name "Pester - USB Linux $($randomValue)" -NewName "Pester - USB Linux $(new-randomString -NumberOfChars 8)" } | Should -Throw
 
         }

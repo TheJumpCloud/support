@@ -273,7 +273,7 @@ Function Get-JCObject {
                 Write-Error ('$Type of "' + $Type + '" not found. $Type must be:' + ($JCType.TypeName.TypeNameSingular -join ','))
             }
         } Catch {
-            Write-Error ($_)
+            Throw ($_)
         }
     }
     End {

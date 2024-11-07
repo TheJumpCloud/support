@@ -19,7 +19,11 @@ function New-JCPolicy {
         [Parameter(ValueFromPipelineByPropertyName = $true,
             HelpMessage = 'The values object either built manually or passed in through Get-JCPolicy')]
         [System.object[]]
-        $Values
+        $Values,
+        [Parameter(Mandatory = $false,
+            HelpMessage = 'The notes of the policy to create.')]
+        [System.String]
+        $Notes
     )
     DynamicParam {
         if ($PSBoundParameters["TemplateID"]) {
@@ -125,7 +129,7 @@ function New-JCPolicy {
         $requiredSet = @('TemplateID', 'TemplateName', 'Name' , 'Values')
         foreach ($parameter in $paramterSet) {
             $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
-            if ($parameterComparison | Where-Object { $_.sideindicator -eq "=>" }) {
+            if ($parameterComparison | Where-Object { ( $_.sideindicator -eq "=>") -And ($_.InputObject -ne "Notes") }) {
                 $DynamicParamSet = $true
                 break
             }
@@ -268,12 +272,14 @@ function New-JCPolicy {
                 name     = $policyName
                 template = @{id = $templateID }
                 values   = @($updatedPolicyObject)
+                notes    = $Notes
             } | ConvertTo-Json -Depth 99
         } else {
             # for policies w/o payloads, just pass in the name & template
             $body = [PSCustomObject]@{
                 name     = $policyName
                 template = @{id = $templateID }
+                notes    = $Notes
             } | ConvertTo-Json -Depth 99
 
         }
@@ -290,6 +296,6 @@ function New-JCPolicy {
 
     }
     end {
-        return $response | Select-Object -Property "name", "id", "templateID", "values", "template"
+        return $response | Select-Object -Property "name", "id", "templateID", "values", "template", "notes"
     }
 }

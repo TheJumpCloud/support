@@ -19,13 +19,13 @@ At a minimum to display the dynamic set of parameters per template, the `Templat
 
 ### ByID (Default)
 ```
-New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>]
+New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [-Notes <String>]
  [<CommonParameters>]
 ```
 
 ### ByName
 ```
-New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>]
+New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [-Notes <String>]
  [<CommonParameters>]
 ```
 
@@ -87,6 +87,21 @@ This command would create a new Windows Custom Registry Policy named "Windows - 
 ### -Name
 
 The name of the policy to create
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Notes
+The notes of the policy to create.
 
 ```yaml
 Type: System.String
