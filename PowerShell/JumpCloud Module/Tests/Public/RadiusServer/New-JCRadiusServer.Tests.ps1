@@ -1,8 +1,7 @@
 Describe -Tag:('JCRadiusServer') 'New-JCRadiusServer Tests' {
     BeforeAll {
         $NewRadiusServer = @{
-            # networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
-            networkSourceIp = "119.213.49.186"
+            networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
             sharedSecret    = "$(Get-Random)"
             name            = "PesterTest_RadiusServer_$(Get-Random)"
             authIdp         = 'JUMPCLOUD'
