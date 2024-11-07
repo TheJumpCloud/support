@@ -30,19 +30,13 @@ Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer Tests' {
 }
 Describe -Tag:('JCRadiusServer') 'Set-JCRadiusServer 1.15.3' {
     BeforeAll {
-        $RadiusServerTemplate = Get-JCRadiusServer -Name:($RadiusServerTemplate.name)
-        If (-not $RadiusServerTemplate) {
-            try {
-                $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
-            } catch {
-                $PesterParams_NewRadiusServer = @{
-                    networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
-                    sharedSecret    = 'f3TkHSK2GT4JR!W9tugRPp2zQnAVObv'
-                    name            = 'PesterTest_RadiusServer'
-                };
-                $RadiusServerTemplate = New-JCRadiusServer @PesterParams_NewRadiusServer
-            }
-        }
+        $NewRadiusServer = @{
+            networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+            sharedSecret    = "$(Get-Random)"
+            name            = "PesterTest_RadiusServer_$(Get-Random)"
+            authIdp         = 'JUMPCLOUD'
+        };
+        $RadiusServerTemplate = Create-RadiusServerTryCatch $NewRadiusServer
     }
     Context 'Set-JCRadiusServer params' {
         It ('Should ENABLE mfa on a radius server by ByName.') {
