@@ -19,7 +19,7 @@ Get-JCPolicyGroupTemplate [<CommonParameters>]
 
 ### ByID
 ```
-Get-JCPolicyGroupTemplate [-GroupTemplateID <String>] [<CommonParameters>]
+Get-JCPolicyGroupTemplate -GroupTemplateID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -44,7 +44,7 @@ Type: System.String
 Parameter Sets: ByID
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False

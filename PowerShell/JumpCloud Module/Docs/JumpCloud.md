@@ -208,6 +208,9 @@ Removes a user or usergroup from an Office365 instance
 ### [Remove-JCPolicy](Remove-JCPolicy.md)
 Removes a JumpCloud Policy
 
+### [Remove-JCPolicyGroup](Remove-JCPolicyGroup.md)
+{{ Fill in the Synopsis }}
+
 ### [Remove-JCRadiusReplyAttribute](Remove-JCRadiusReplyAttribute.md)
 Removes Radius reply attributes from a JumpCloud user group.
 
@@ -253,6 +256,9 @@ Set-JCPolicy updates existing JumpCloud Policies in an organization by PolicyID 
 PolicyIDs or PolicyNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL on existing policies or running `Get-JCpolicy -Name "Some Policy Name` to get the policy by ID. PolicyNames can be specified if you know the name of a policy you wish to update or by running `Get-JCpolicy -Name "Some Policy Name` to get the policy by Name
 
 Set-JCPolicy can display the available parameters per policy if a `PolicyName` or `PolicyID` is specified. Tab actions display the available dynamic parameters available per function. For example, `Set-JCPolicy -PolicyName "macOS - Login Window Policy" -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `macOS - Login Window Policy` policy. Dynamic parameters for policies are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
+
+### [Set-JCPolicyGroup](Set-JCPolicyGroup.md)
+{{ Fill in the Synopsis }}
 
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.

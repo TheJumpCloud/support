@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-JCConfiguredTemplatePolicy [[-ConfiguredTemplatePolicyID] <String>]
+Get-JCConfiguredTemplatePolicy [-ConfiguredTemplatePolicyID] <String>
  [<CommonParameters>]
 ```
 
@@ -39,7 +39,7 @@ Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 0
 Default value: None
 Accept pipeline input: False

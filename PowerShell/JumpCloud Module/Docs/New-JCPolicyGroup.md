@@ -14,12 +14,13 @@ schema: 2.0.0
 
 ### FromTemplateID
 ```
-New-JCPolicyGroup [-TemplateID <String>] [<CommonParameters>]
+New-JCPolicyGroup -TemplateID <String> [<CommonParameters>]
 ```
 
 ### Name
 ```
-New-JCPolicyGroup [-Name <String>] [<CommonParameters>]
+New-JCPolicyGroup -Name <String> [-Description <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,6 +37,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -Description
+The description of the policy group to create
+
+```yaml
+Type: System.String
+Parameter Sets: Name
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Name
 {{ Fill Name Description }}
 
@@ -44,7 +60,7 @@ Type: System.String
 Parameter Sets: Name
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -59,7 +75,7 @@ Type: System.String
 Parameter Sets: FromTemplateID
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False

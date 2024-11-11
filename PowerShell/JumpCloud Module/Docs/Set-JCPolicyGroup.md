@@ -5,21 +5,23 @@ online version: https://github.com/TheJumpCloud/support/wiki/
 schema: 2.0.0
 ---
 
-# Get-JCPolicyGroup
+# Set-JCPolicyGroup
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
 
 ## SYNTAX
 
-### ReturnAll (Default)
+### ByName
 ```
-Get-JCPolicyGroup [<CommonParameters>]
+Set-JCPolicyGroup -Name <String> -Description <String>
+ [<CommonParameters>]
 ```
 
-### Name
+### ByID
 ```
-Get-JCPolicyGroup -Name <String> [<CommonParameters>]
+Set-JCPolicyGroup -PolicyGroupID <String> -Description <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,18 +38,48 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -Name
-The Name of the JumpCloud policy group you wish to query.
+### -Description
+The Description of the JumpCloud policy group you wish to set.
 
 ```yaml
 Type: System.String
-Parameter Sets: Name
+Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Name
+The Name of the JumpCloud policy group you wish to set.
+
+```yaml
+Type: System.String
+Parameter Sets: ByName
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -PolicyGroupID
+The Id of the JumpCloud policy group you wish to set.
+
+```yaml
+Type: System.String
+Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -56,7 +88,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### System.String
 ## OUTPUTS
 
 ### System.Object
