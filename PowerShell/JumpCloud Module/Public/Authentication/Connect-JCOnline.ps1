@@ -2,7 +2,11 @@ Function Connect-JCOnline () {
     [CmdletBinding()]
     Param
     (
-        [Parameter(ParameterSetName = 'force', HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.')][Switch]$force
+        [Parameter(
+            ParameterSetName = 'force',
+            HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.'
+        )]
+        [Switch]$force
     )
     DynamicParam {
         $Param_JumpCloudApiKey = @{

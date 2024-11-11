@@ -1,6 +1,29 @@
+## 2.15.0
+
+Release Date: November 11, 2024
+
+#### RELEASE NOTES
+
+```
+This release adds support for new functions to interact with Policy Groups and Policy Group Templates
+```
+
+#### FEATURES:
+
+New Functions:
+Get/New-JCPolicyGroup
+Get-JCPolicyGroupMember
+Get-JCConfiguredTemplatePolicy
+Get-JCPolicyGroupTemplate
+Get-JCPolicyGroupTemplateMember
+
+#### IMPROVEMENTS:
+
+Support for future MTP specific functions
+
 ## 2.14.3
 
-Release Date: October 31, 2024
+Release Date: November 7, 2024
 
 #### RELEASE NOTES
 

@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.14.3
+Help Version: 2.15.0
 Locale: en-Us
 ---
 
@@ -65,6 +65,9 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 ### [Get-JCCommandTarget](Get-JCCommandTarget.md)
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
 
+### [Get-JCConfiguredTemplatePolicy](Get-JCConfiguredTemplatePolicy.md)
+{{ Fill in the Synopsis }}
+
 ### [Get-JCEvent](Get-JCEvent.md)
 Query the API for Directory Insights events
 
@@ -79,6 +82,18 @@ Returns all JumpCloud organizations associated with the authenticated JumpCloud 
 
 ### [Get-JCPolicy](Get-JCPolicy.md)
 Returns all JumpCloud Policies within a JumpCloud tenant.
+
+### [Get-JCPolicyGroup](Get-JCPolicyGroup.md)
+{{ Fill in the Synopsis }}
+
+### [Get-JCPolicyGroupMember](Get-JCPolicyGroupMember.md)
+{{ Fill in the Synopsis }}
+
+### [Get-JCPolicyGroupTemplate](Get-JCPolicyGroupTemplate.md)
+{{ Fill in the Synopsis }}
+
+### [Get-JCPolicyGroupTemplateMember](Get-JCPolicyGroupTemplateMember.md)
+{{ Fill in the Synopsis }}
 
 ### [Get-JCPolicyResult](Get-JCPolicyResult.md)
 Returns all JumpCloud results for a given policy within a JumpCloud tenant.
@@ -156,6 +171,9 @@ New-JCPolicy creates new JumpCloud Policies in an organization by TemplateID or 
 TemplateIDs or TemplateNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL while creating new policies. TemplateNames can be dynamically pulled in while using the `New-JCPolicy` function by typing: `New-JCPolicy -TemplateName *tab*` where the tab key is pressed in place of `*tab*`, if prompted, press 'y' to list all policies. Policies by operating system can be 'searched' by typing `darwin` (macOS), `windows`, `linux`, `ios`. For example, `New-JCPolicy -TemplateName darwin*tab*` where the tab key is pressed in place of `*tab*`, the list of available macOS policies would then be displayed and can be autocompleted through further tab presses.
 
 At a minimum to display the dynamic set of parameters per template, the `TemplateID` or `TemplateName` must be specified. Tab actions display the available dynamic parameters available per function. For example, `New-JCPolicy -TemplateName darwin_Login_Window_Text -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `darwin_Login_Window_Text` policy. Dynamic parameters for templates are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
+
+### [New-JCPolicyGroup](New-JCPolicyGroup.md)
+{{ Fill in the Synopsis }}
 
 ### [New-JCRadiusServer](New-JCRadiusServer.md)
 Creates a JumpCloud radius server.

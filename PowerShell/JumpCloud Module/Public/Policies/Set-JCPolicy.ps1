@@ -11,7 +11,7 @@ function Set-JCPolicy {
         [Parameter(Mandatory = $true,
             ParameterSetName = 'ByName',
             ValueFromPipelineByPropertyName = $false,
-            HelpMessage = 'The name of the existing JumpCloud Poliicy template to modify')]
+            HelpMessage = 'The name of the existing JumpCloud Policy template to modify')]
         [Alias("name")]
         [System.String]
         $PolicyName,
@@ -170,6 +170,17 @@ function Set-JCPolicy {
                 break
             }
         }
+
+        # only update newName or Notes:
+        if ((("NewName" -in $params.keys) -AND ("Values" -notin $params.Keys)) -OR
+            (("Notes" -in $params.keys) -AND ("Values" -notin $params.Keys))) {
+            $Values = $foundPolicy.values
+        }
+        # get the notes if it's not in the param set
+        if (-not $PSBoundParameters["Notes"]) {
+            $Notes = $foundPolicy.Notes
+        }
+
         if ($DynamicParamSet) {
             # begin dynamic param set
             $newObject = New-Object System.Collections.ArrayList
