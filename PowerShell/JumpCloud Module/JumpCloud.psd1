@@ -95,15 +95,17 @@ FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget', 'Add-JCGsuiteMem
                'New-JCUserGroup', 'Remove-JCAssociation', 'Remove-JCCommand', 
                'Remove-JCCommandResult', 'Remove-JCCommandTarget', 
                'Remove-JCGsuiteMember', 'Remove-JCOffice365Member', 
-               'Remove-JCPolicy', 'Remove-JCRadiusReplyAttribute', 
-               'Remove-JCRadiusServer', 'Remove-JCSystem', 'Remove-JCSystemGroup', 
+               'Remove-JCPolicy', 'Remove-JCPolicyGroup', 
+               'Remove-JCRadiusReplyAttribute', 'Remove-JCRadiusServer', 
+               'Remove-JCSystem', 'Remove-JCSystemGroup', 
                'Remove-JCSystemGroupMember', 'Remove-JCSystemUser', 'Remove-JCUser', 
                'Remove-JCUserGroup', 'Remove-JCUserGroupMember', 
                'Send-JCPasswordReset', 'Set-JCCloudDirectory', 'Set-JCCommand', 
-               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCRadiusReplyAttribute', 
-               'Set-JCRadiusServer', 'Set-JCSettingsFile', 'Set-JCSystem', 
-               'Set-JCSystemUser', 'Set-JCUser', 'Set-JCUserGroupLDAP', 
-               'Update-JCModule', 'Update-JCMSPFromCSV', 'Update-JCUsersFromCSV'
+               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCPolicyGroup', 
+               'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer', 
+               'Set-JCSettingsFile', 'Set-JCSystem', 'Set-JCSystemUser', 'Set-JCUser', 
+               'Set-JCUserGroupLDAP', 'Update-JCModule', 'Update-JCMSPFromCSV', 
+               'Update-JCUsersFromCSV'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
