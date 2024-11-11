@@ -3,10 +3,14 @@ Function Get-JCPolicyGroup {
     param (
         [Parameter(
             ParameterSetName = 'Name',
+            Mandatory = $true,
             HelpMessage = 'The Name of the JumpCloud policy group you wish to query.')]
         [System.String]$Name
     )
     begin {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
+        }
         $URL = switch ($PSCmdlet.ParameterSetName) {
             "ReturnAll" {
                 "$JCUrlBasePath/api/v2/policygroups"

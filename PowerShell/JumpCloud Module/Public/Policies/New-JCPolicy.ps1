@@ -91,7 +91,7 @@ function New-JCPolicy {
                         $paramType = 'string'
                     }
                 }
-                if ([String]::isNullorEmpty($($key.help))) {
+                if ([String]::IsNullOrEmpty($($key.help))) {
                     $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
                 } else {
                     $ParameterAttribute.HelpMessage = "$($key.help)"

@@ -1,13 +1,16 @@
 Function Get-JCConfiguredTemplatePolicy {
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(
+            Mandatory = $true,
+            HelpMessage = "Retrieves a Configured Policy Templates by Id"
+        )]
         [System.String]
         $ConfiguredTemplatePolicyID
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if (($JCAPIKEY)::isNullorEmpty) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
         Write-Debug 'Verifying JCProviderID Key'

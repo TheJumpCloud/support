@@ -2,12 +2,16 @@ Function Get-JCPolicyGroupMember {
     [CmdletBinding()]
     param (
         [Parameter(
+            Mandatory = $true,
             HelpMessage = "The ID of the JumpCloud policy group to query and return members of"
         )]
         [System.String]
         $PolicyGroupID
     )
     begin {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
+        }
         $URL = "$JCUrlBasePath/api/v2/policygroups/$PolicyGroupID/membership"
     }
     process {

@@ -2,6 +2,7 @@ Function Get-JCPolicyGroupTemplateMember {
     [CmdletBinding()]
     param (
         [Parameter(
+            Mandatory = $true,
             HelpMessage = 'Use the -GroupTemplateID parameter when you want to query a specific group template members.'
         )]
         [System.String]
@@ -9,7 +10,7 @@ Function Get-JCPolicyGroupTemplateMember {
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if (($JCAPIKEY)::isNullorEmpty) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
         Write-Debug 'Verifying JCProviderID Key'
