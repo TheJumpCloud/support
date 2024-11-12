@@ -107,17 +107,21 @@ Function Connect-JCOnline () {
                 $global:JCAPIKEY = $env:JCApiKey
             }
             # Set $env:JCOrgId in Set-JCOrganization
-            $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey)
-            } ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
-            } ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
-            } ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId) {
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId)
-            } Else {
-                Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
-                Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId)
+            try {
+                $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -ErrorVariable api_err
+                } ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId) -ErrorVariable api_err
+                } ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId) -ErrorVariable api_err
+                } ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId) {
+                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId) -ErrorVariable api_err
+                } Else {
+                    Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
+                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId) -ErrorVariable api_err
+                }
+            } catch {
+                Write-Verbose "Error: Unable to validate API Key"
             }
             If (-not [System.String]::IsNullOrEmpty($Auth)) {
                 # Each time a new org is selected get settings info
@@ -197,7 +201,7 @@ Function Connect-JCOnline () {
                 # 'JCOrgName' = $Auth.JCOrgName;
                 # }
             } Else {
-                Write-Error ('Unable to set module authentication')
+                Write-Verbose "Error: Unable to set module authentication"
             }
             # set Argument Completer(s) which require authentication
             $templates = Get-JCSDKPolicyTemplate
@@ -218,7 +222,7 @@ Function Connect-JCOnline () {
             }
 
         } Catch {
-            Write-Error $_
+            Throw "Unable to authenticate: $_"
         }
     }
     End {

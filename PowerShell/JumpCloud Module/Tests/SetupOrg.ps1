@@ -97,7 +97,7 @@ Try {
     # Generate required policies
     foreach ( $policyName in $PesterParamsHash_Common.MultiplePolicyList ) {
         If (-not (Get-JCPolicy -Name $policyName)) {
-            New-JCPolicy -TemplateName linux_Disable_USB_Storage -Name $policyName
+            New-JCPolicy -TemplateName linux_Disable_USB_Storage -Name $policyName -disable_mtp $true -disable_afc $false -disable_mmc $false
         }
     }
     Write-Host "[Status] Finished Generating Policies: $($stopwatch.Elapsed)"

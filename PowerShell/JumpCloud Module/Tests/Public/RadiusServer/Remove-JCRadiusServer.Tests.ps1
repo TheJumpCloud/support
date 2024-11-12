@@ -1,15 +1,19 @@
 Describe -Tag:('JCRadiusServer') 'Remove-JCRadiusServer Tests' {
     BeforeAll {
-        $PesterParams_RadiusServer = Get-JCRadiusServer -Name:($PesterParams_RadiusServer.name)
-        If (-not $PesterParams_RadiusServer) {
-            $PesterParams_RadiusServer = New-JCRadiusServer @PesterParams_NewRadiusServer
-        }
+        $NewRadiusServer = @{
+            networkSourceIp = [IPAddress]::Parse([String](Get-Random)).IPAddressToString
+            sharedSecret    = "$(Get-Random)"
+            name            = "PesterTest_RadiusServer_$(Get-Random)"
+            authIdp         = 'JUMPCLOUD'
+
+        };
+        $RadiusServerTemplate = Create-RadiusServerTryCatch $NewRadiusServer
     }
     Context 'Remove-JCRadiusServer' {
         It ('Should remove a specific radius server.') {
-            $RadiusServer = Remove-JCRadiusServer -Id:($PesterParams_RadiusServer.id) -Force;
+            $RadiusServer = Remove-JCRadiusServer -Id:($RadiusServerTemplate.id) -Force;
             $RadiusServer | Should -Not -BeNullOrEmpty
-            $RadiusServer.name | Should -Be $PesterParams_RadiusServer.name
+            $RadiusServer.name | Should -Be $RadiusServerTemplate.name
         }
     }
 }

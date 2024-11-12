@@ -31,7 +31,11 @@ Function Set-JCOrganization {
         If ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -eq $env:JCApiKey) {
             Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
             Write-Verbose ('Populating JCOrganizations')
-            $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
+            try {
+                $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName') -ErrorVariable api_err
+            } catch {
+                Throw
+            }
             If (-not [System.String]::IsNullOrEmpty($Organizations)) {
                 If ($Organizations.Count -gt 1) {
                     # Set the JCProviderID
