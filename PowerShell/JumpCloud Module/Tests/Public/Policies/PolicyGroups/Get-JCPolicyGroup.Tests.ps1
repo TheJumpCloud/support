@@ -26,4 +26,11 @@ Describe -Tag:('JCPolicyGroup') 'Get-JCPolicyGroup' {
         $PesterGroup.description | Should -Be $PesterGroupDesc
         $PesterGroup.id | Should -Be $PesterGroup.id
     }
+    It ('Returns the policy group by searching by Id') {
+        $matchedPolicy = Get-JCPolicyGroup -PolicyGroupID $PesterGroup.id
+        $matchedPolicy | Should -Not -BeNullOrEmpty
+        $matchedPolicy.name | Should -Be $PesterGroupName
+        $PesterGroup.description | Should -Be $PesterGroupDesc
+        $PesterGroup.id | Should -Be $PesterGroup.id
+    }
 }
