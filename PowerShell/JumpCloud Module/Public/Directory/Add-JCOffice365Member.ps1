@@ -16,7 +16,7 @@ function Add-JCOffice365Member () {
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
         $resultsArray = [System.Collections.Generic.List[PSObject]]::new()

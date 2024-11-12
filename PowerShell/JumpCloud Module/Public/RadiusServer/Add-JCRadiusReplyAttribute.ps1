@@ -87,7 +87,7 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
     begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 

@@ -34,7 +34,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JConline
         }
 

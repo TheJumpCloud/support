@@ -17,7 +17,7 @@ function Get-JCSystemApp () {
     )
     begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
         $Parallel = $JCConfig.parallel.Calculated

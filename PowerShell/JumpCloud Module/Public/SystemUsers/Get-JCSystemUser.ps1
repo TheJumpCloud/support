@@ -17,7 +17,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
     begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JConline
         }
 

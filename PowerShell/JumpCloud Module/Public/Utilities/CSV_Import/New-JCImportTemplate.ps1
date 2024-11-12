@@ -186,7 +186,7 @@ Function New-JCImportTemplate() {
 
                 if ($ConfirmUserPop -eq 'Y') {
                     Write-Verbose 'Verifying JCAPI Key'
-                    if ($JCAPIKEY.length -ne 40) {
+                    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                         Connect-JConline
                     }
                     $ExistingUsers = Get-DynamicHash -Object User -returnProperties username

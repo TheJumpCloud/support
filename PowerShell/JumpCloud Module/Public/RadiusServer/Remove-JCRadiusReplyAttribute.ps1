@@ -15,7 +15,7 @@ function Remove-JCRadiusReplyAttribute {
     begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JConline
         }
 

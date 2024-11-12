@@ -15,7 +15,7 @@ Function Get-JCCommandTarget {
     begin {
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JConline
         }
 

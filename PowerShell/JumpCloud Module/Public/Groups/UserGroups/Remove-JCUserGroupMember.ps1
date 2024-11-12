@@ -24,7 +24,7 @@ The UserID will be the 24 character string populated for the _id field. UserID h
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 
