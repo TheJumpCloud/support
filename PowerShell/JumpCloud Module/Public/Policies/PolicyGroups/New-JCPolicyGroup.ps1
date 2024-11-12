@@ -47,7 +47,7 @@ Function New-JCPolicyGroup {
     }
     process {
         # TODO: CUT-4439 eventually Invoke-JCAPI should have a dynamic list of policy endpoints that do not accept ORGIDs in the headers.
-        Invoke-JCApi -URL:("$URL") -Method:("POST") -Body:($BODY)
+        $response = Invoke-JCApi -URL:("$URL") -Method:("POST") -Body:($BODY)
     }
     end {
         return $response

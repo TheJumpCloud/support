@@ -1,4 +1,4 @@
-Describe -Tag:('JCPolicyGroup') 'Get-JCPolicyGroup' {
+Describe -Tag:('JCPolicyGroup') 'Get-JCPolicyGroupMember' {
     BeforeAll {
         # remove pester policy groups before starting these tests
         $policyGroups = Get-JCPolicyGroup
