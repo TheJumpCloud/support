@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Forget RADIUS WiFi Network | v1.0 JCCG
+Windows - Forget RADIUS WiFi Network | v2.0 JCCG
 
 
 #### commandType
@@ -34,7 +34,6 @@ function Get-WifiProfile {
          Foreach (`$WLANProfile in `$Name) {
             `$ProfileList | Where-Object { `$_.Name -match `$WLANProfile }
          }
-
     }
     End {
          If (`$Name -eq `$NULL) {
@@ -60,8 +59,64 @@ function Remove-WifiProfile {
          }
     }
 }
-
+function Show-WiFiReconnectForm {
+    param
+    (
+         [System.Array]`$Name = `$NULL
+    )
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+    `$form = New-Object System.Windows.Forms.Form
+    `$form.Text = 'JumpCloud Radius'
+    `$form.Size = New-Object System.Drawing.Size(300,150)
+    `$form.StartPosition = 'CenterScreen'
+    `$okButton = New-Object System.Windows.Forms.Button
+    `$okButton.Location = New-Object System.Drawing.Point(75,75)
+    `$okButton.Size = New-Object System.Drawing.Size(75,23)
+    `$okButton.Text = 'OK'
+    `$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    `$form.AcceptButton = `$okButton
+    `$form.Controls.Add(`$okButton)
+    `$cancelButton = New-Object System.Windows.Forms.Button
+    `$cancelButton.Location = New-Object System.Drawing.Point(150,75)
+    `$cancelButton.Size = New-Object System.Drawing.Size(75,23)
+    `$cancelButton.Text = 'Cancel'
+    `$cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+    `$form.CancelButton = `$cancelButton
+    `$form.Controls.Add(`$cancelButton)
+    `$label = New-Object System.Windows.Forms.Label
+    `$label.Location = New-Object System.Drawing.Point(10,20)
+    `$label.Size = New-Object System.Drawing.Size(280,50)
+    `$label.Text = "Please reconnect to the `$Name network with your updated credentials"
+    `$form.Controls.Add(`$label)
+    if (`$PSVersionTable.PSVersion.Major -gt 5) {
+        `$iconBase64      = [Convert]::ToBase64String((Get-Content "C:\Program Files\JumpCloudTray\TrayIconLight.ico" -AsByteStream))
+        `$iconBytes       = [Convert]::FromBase64String(`$iconBase64)
+        # initialize a Memory stream holding the bytes
+        `$stream          = [System.IO.MemoryStream]::new(`$iconBytes, 0, `$iconBytes.Length)
+        `$Form.Icon       = [System.Drawing.Icon]::FromHandle(([System.Drawing.Bitmap]::new(`$stream).GetHIcon()))
+    } else {
+        # PowerShell versions older than 5.0 use this:
+        `$iconBase64      = [Convert]::ToBase64String((Get-Content "C:\Program Files\JumpCloudTray\TrayIconLight.ico" -Encoding Byte))
+        `$iconBytes       = [Convert]::FromBase64String(`$iconBase64)
+        `$stream        = New-Object IO.MemoryStream(`$iconBytes, 0, `$iconBytes.Length)
+        `$Form.Icon     = [System.Drawing.Icon]::FromHandle((New-Object System.Drawing.Bitmap -Argument `$stream).GetHIcon())
+    }
+    `$form.Topmost = `$true
+    `$form.FormBorderStyle = 'FixedDialog'
+    `$RadiusForm = `$form.ShowDialog()
+    if (`$RadiusForm -eq [System.Windows.Forms.DialogResult]::OK) {
+        explorer ms-availablenetworks:
+        # when done, dispose of the stream and form
+        `$stream.Dispose()
+        `$Form.Dispose()
+    } else {
+        `$stream.Dispose()
+        `$Form.Dispose()
+    }
+}
 Remove-WifiProfile "$($RadiusSSID)"
+Show-WiFiReconnectForm "$($RadiusSSID)"
 "@
 function Distribute-JCScheduledTask {
     param (
