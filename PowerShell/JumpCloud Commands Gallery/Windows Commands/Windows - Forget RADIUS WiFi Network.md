@@ -146,7 +146,7 @@ function Distribute-JCScheduledTask {
   <Actions Context="Author">
     <Exec>
       <Command>"C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe"</Command>
-      <Arguments>-ExecutionPolicy ByPass -File "C:\scripts\removeWifi.ps1"</Arguments>
+      <Arguments>-NonInteractive -WindowStyle Hidden -ExecutionPolicy ByPass -File "C:\scripts\removeWifi.ps1"</Arguments>
     </Exec>
   </Actions>
 </Task>
@@ -164,7 +164,7 @@ function Distribute-JCScheduledTask {
             # Overwrite specified, unregister existing task and recreate
             Unregister-ScheduledTask -TaskPath '\JumpCloud RADIUS\' -TaskName 'JumpCloud - Remove Wifi Failure' -Confirm:$false
             Write-Output "[status] Removed existing 'JumpCloud - Remove WiFi Failure' Scheduled Task"
-            Register-ScheduledTask -xml $ScheduledTaskXML -TaskName "JumpCloud - Remove WiFi Failure" -TaskPath "\JumpCloud RADIUS\" -User $CurrentUser –Force
+            Register-ScheduledTask -xml $ScheduledTaskXML -TaskName "JumpCloud - Remove WiFi Failure" -TaskPath "\JumpCloud RADIUS\" -User $CurrentUser -Force
             Write-Output "[status] Distributed 'JumpCloud - Remove WiFi Failure' Scheduled Task"
         }
     } else {
@@ -174,7 +174,7 @@ function Distribute-JCScheduledTask {
         }
         $removeWifips1 | Out-File -FilePath C:\scripts\removeWifi.ps1
         # Create the Scheduled Task
-        Register-ScheduledTask -xml $ScheduledTaskXML -TaskName "JumpCloud - Remove WiFi Failure" -TaskPath "\JumpCloud RADIUS\" -User $CurrentUser –Force
+        Register-ScheduledTask -xml $ScheduledTaskXML -TaskName "JumpCloud - Remove WiFi Failure" -TaskPath "\JumpCloud RADIUS\" -User $CurrentUser -Force
         Write-Output "[status] Distributed 'JumpCloud - Remove WiFi Failure' Scheduled Task"
     }
 }
