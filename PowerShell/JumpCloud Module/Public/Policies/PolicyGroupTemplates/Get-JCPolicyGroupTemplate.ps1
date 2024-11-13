@@ -2,10 +2,17 @@ Function Get-JCPolicyGroupTemplate {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param (
         [Parameter(
+            ParameterSetName = 'ByName',
+            Mandatory = $true,
+            HelpMessage = 'The Name of the JumpCloud policy group you wish to query. This value is case sensitive')]
+        [System.String]
+        $Name,
+        [Parameter(
             ParameterSetName = 'ByID',
             Mandatory = $true,
             HelpMessage = 'Use the -GroupTemplateID parameter when you want to query a specific group template.'
         )]
+        [Alias('_id', 'id')]
         [System.String]
         $GroupTemplateID
     )
@@ -23,6 +30,10 @@ Function Get-JCPolicyGroupTemplate {
         $URL = switch ($PSCmdlet.ParameterSetName) {
             "ReturnAll" {
                 "$JCUrlBasePath/api/v2/providers/$ProviderID/policygrouptemplates/"
+                $paginateRequired = $true
+            }
+            "ByName" {
+                "$JCUrlBasePath/api/v2/providers/$ProviderID/policygrouptemplates/?sort=name&filter=name%3Aeq%3A$Name"
                 $paginateRequired = $true
             }
             "ByID" {

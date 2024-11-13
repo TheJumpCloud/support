@@ -22,6 +22,11 @@ Get-JCPolicyGroup [<CommonParameters>]
 Get-JCPolicyGroup -Name <String> [<CommonParameters>]
 ```
 
+### ById
+```
+Get-JCPolicyGroup -PolicyGroupID <String> [<CommonParameters>]
+```
+
 ## DESCRIPTION
 {{ Fill in the Description }}
 
@@ -42,6 +47,21 @@ The Name of the JumpCloud policy group you wish to query.
 ```yaml
 Type: System.String
 Parameter Sets: Name
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PolicyGroupID
+The ID of the JumpCloud policy group you wish to query
+
+```yaml
+Type: System.String
+Parameter Sets: ById
 Aliases:
 
 Required: True
