@@ -2,11 +2,19 @@ Function Get-JCPolicyGroupTemplateMember {
     [CmdletBinding()]
     param (
         [Parameter(
+            ParameterSetName = 'ById',
             Mandatory = $true,
-            HelpMessage = 'Use the -GroupTemplateID parameter when you want to query a specific group template members.'
+            HelpMessage = "The ID of the JumpCloud policy group template to query and return members of"
         )]
         [System.String]
-        $GroupTemplateID
+        $GroupTemplateID,
+        [Parameter(
+            ParameterSetName = 'ByName',
+            Mandatory = $true,
+            HelpMessage = "The name of the JumpCloud policy group template to query and return members of"
+        )]
+        [System.String]
+        $Name
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
@@ -16,10 +24,27 @@ Function Get-JCPolicyGroupTemplateMember {
         Write-Debug 'Verifying JCProviderID Key'
         # validate MTP Org/ ProviderID. Will throw if $env:JCProviderId is missing:
         $ProviderID = Test-JCProviderID -providerID $env:JCProviderId -FunctionName $($MyInvocation.MyCommand)
+
+        $URL = switch ($PSCmdlet.ParameterSetName) {
+            "ByName" {
+                try {
+                    $policyGroupTemplate = Get-JCPolicyGroupTemplate -Name $Name
+                    if ($policyGroupTemplate) {
+                        $PolicyGroupTemplateID = $policyGroupTemplate.Id
+                    } else {
+                        throw
+                    }
+                } catch {
+                    throw "Could not find policy group template with name: $name"
+                }
+                "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
+            }
+            "ById" {
+                "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
+            }
+        }
     }
     process {
-        # TODO: CUT-4439 set to Invoke-JCApi when that supports dynamic support for endpoints that do not require
-        $URL = "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
         $response = Invoke-JCApi -Method:('Get') -Paginate:($true) -Url:($URL)
     }
     end {

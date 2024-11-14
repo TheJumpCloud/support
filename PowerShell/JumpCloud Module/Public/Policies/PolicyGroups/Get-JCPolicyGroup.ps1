@@ -40,7 +40,6 @@ Function Get-JCPolicyGroup {
         $Result = Invoke-JCApi -Method:('GET') -Paginate:($paginateRequired) -Url:($URL)
     }
     end {
-
         return $Result
     }
 }

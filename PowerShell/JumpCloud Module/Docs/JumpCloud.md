@@ -90,7 +90,7 @@ Returns all policy groups, policy groups by name or id.
 This function will return the policies that are members of the specified policy group.
 
 ### [Get-JCPolicyGroupTemplate](Get-JCPolicyGroupTemplate.md)
-{{ Fill in the Synopsis }}
+Returns the policy group templates for an MTP organization
 
 ### [Get-JCPolicyGroupTemplateMember](Get-JCPolicyGroupTemplateMember.md)
 {{ Fill in the Synopsis }}

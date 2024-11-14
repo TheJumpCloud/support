@@ -14,19 +14,16 @@ Returns the policy group templates for an MTP organization
 ## SYNTAX
 
 ### ReturnAll (Default)
-
 ```
 Get-JCPolicyGroupTemplate [<CommonParameters>]
 ```
 
 ### ByName
-
 ```
 Get-JCPolicyGroupTemplate -Name <String> [<CommonParameters>]
 ```
 
 ### ByID
-
 ```
 Get-JCPolicyGroupTemplate -GroupTemplateID <String> [<CommonParameters>]
 ```
@@ -96,17 +93,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

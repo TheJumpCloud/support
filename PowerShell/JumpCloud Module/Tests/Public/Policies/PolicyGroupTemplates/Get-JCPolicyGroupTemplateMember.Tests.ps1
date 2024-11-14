@@ -29,8 +29,17 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplateMember' {
         $newPolicyGroupTemplate = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$env:JCProviderId/policygrouptemplates" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
 
     }
-    It "Lists members of a policy group templates" {
+    It "Lists members of a policy group templates by ID" {
         $templateMembers = Get-JCPolicyGroupTemplateMember -GroupTemplateID $newPolicyGroupTemplate.id
+        # the template created in beforeAll should contain members:
+        $templateMembers | Should -Not -BeNullOrEmpty
+        # the policy added to the template in beforeAll should be in the member list:
+        $usbLinuxPolicy.name | Should -BeIn templateMembers.name
+        $usbLinuxPolicy.id | Should -BeIn templateMembers.id
+        $usbLinuxPolicy.policyTemplateId | Should -BeIn templateMembers.policyTemplateId
+    }
+    It "Lists members of a policy group templates by Name" {
+        $templateMembers = Get-JCPolicyGroupTemplateMember -Name $newPolicyGroupTemplate.Name
         # the template created in beforeAll should contain members:
         $templateMembers | Should -Not -BeNullOrEmpty
         # the policy added to the template in beforeAll should be in the member list:
