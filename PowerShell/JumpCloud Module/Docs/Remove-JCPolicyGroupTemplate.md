@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-{{ Fill in the Synopsis }}
+Deletes a Policy Group Template
 
 ## SYNTAX
 
@@ -28,17 +28,25 @@ Remove-JCPolicyGroupTemplate -GroupTemplateID <String> [-Force]
 
 ## DESCRIPTION
 
-{{ Fill in the Description }}
+Remove-JCPolicyGroupTemplate deletes policy group templates defined in an MTP organization. Policy Group Templates are defined on the MTP level for all organizations to access.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Remove-JCPolicyGroupTemplate -GroupTemplateID "64022e24f7763b2295302342"
 ```
 
-{{ Add example description here }}
+Removes the Policy Group Template with id: 64022e24f7763b2295302342
+
+### Example 2
+
+```powershell
+PS C:\> Remove-JCPolicyGroupTemplate -name "PolicyGroupName"
+```
+
+Removes the Policy Group Template with name: PolicyGroupName
 
 ## PARAMETERS
 
@@ -58,6 +66,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -GroupTemplateID
+
+The ID of the JumpCloud policy group template you wish to remove.
+
+```yaml
+Type: System.String
+Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -Name
 
 The Name of the JumpCloud policy group template you wish to remove.
@@ -71,22 +95,6 @@ Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PolicyGroupTemplateID
-
-The ID of the JumpCloud policy group template you wish to remove.
-
-```yaml
-Type: System.String
-Parameter Sets: ByID
-Aliases: _id, id
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
