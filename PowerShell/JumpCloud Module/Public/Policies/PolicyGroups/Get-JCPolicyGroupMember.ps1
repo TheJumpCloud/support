@@ -2,20 +2,49 @@ Function Get-JCPolicyGroupMember {
     [CmdletBinding()]
     param (
         [Parameter(
+            ParameterSetName = 'ById',
             Mandatory = $true,
             HelpMessage = "The ID of the JumpCloud policy group to query and return members of"
         )]
+        [Alias('_id', 'id')]
         [System.String]
-        $PolicyGroupID
+        $PolicyGroupID,
+        [Parameter(
+            ParameterSetName = 'ByName',
+            Mandatory = $true,
+            HelpMessage = "Retrieves a Configured Policy Templates by Name"
+        )]
+        [System.String]
+        $Name
     )
     begin {
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
+
+        $URL = switch ($PSCmdlet.ParameterSetName) {
+            "ByName" {
+                try {
+                    $policyGroup = Get-JCPolicyGroup -Name $Name
+                    if ($policyGroup) {
+                        $PolicyGroupID = $policyGroup.Id
+                    } else {
+                        throw
+                    }
+                } catch {
+                    throw "Could not find policy group with name: $name"
+                }
+                "$JCUrlBasePath/api/v2/policygroups/$PolicyGroupID/membership"
+            }
+            "ById" {
+                "$JCUrlBasePath/api/v2/policygroups/$PolicyGroupID/membership"
+                # $paginateRequired = $false
+            }
+        }
         $URL = "$JCUrlBasePath/api/v2/policygroups/$PolicyGroupID/membership"
     }
     process {
-        $response = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
+        $response = Invoke-JCApi -Method:('GET') -Paginate:($false) -Url:($URL)
 
         If ('NoContent' -in $response.PSObject.Properties.Name) {
             $policyMemberList = $null

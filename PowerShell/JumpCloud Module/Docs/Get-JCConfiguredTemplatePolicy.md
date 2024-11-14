@@ -12,9 +12,20 @@ schema: 2.0.0
 
 ## SYNTAX
 
+### ReturnAll (Default)
 ```
-Get-JCConfiguredTemplatePolicy [-ConfiguredTemplatePolicyID] <String>
+Get-JCConfiguredTemplatePolicy [<CommonParameters>]
+```
+
+### ById
+```
+Get-JCConfiguredTemplatePolicy -ConfiguredTemplatePolicyID <String>
  [<CommonParameters>]
+```
+
+### ByName
+```
+Get-JCConfiguredTemplatePolicy -Name <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,11 +47,26 @@ PS C:\> {{ Add example code here }}
 
 ```yaml
 Type: System.String
-Parameter Sets: (All)
+Parameter Sets: ById
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Name
+Retrieves a Configured Policy Templates by Name
+
+```yaml
+Type: System.String
+Parameter Sets: ByName
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

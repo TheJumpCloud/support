@@ -1,6 +1,6 @@
 ## 2.15.0
 
-Release Date: November 13, 2024
+Release Date: November 14, 2024
 
 #### RELEASE NOTES
 

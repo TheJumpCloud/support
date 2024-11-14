@@ -8,7 +8,8 @@ schema: 2.0.0
 # Get-JCPolicyGroup
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+Returns all policy groups, policy groups by name or id.
 
 ## SYNTAX
 
@@ -17,7 +18,7 @@ schema: 2.0.0
 Get-JCPolicyGroup [<CommonParameters>]
 ```
 
-### Name
+### ByName
 ```
 Get-JCPolicyGroup -Name <String> [<CommonParameters>]
 ```
@@ -28,25 +29,44 @@ Get-JCPolicyGroup -PolicyGroupID <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+Get-JCPolicyGroup will return all policy groups for a given organization by default. If either the 'name' or 'PolicyGroupId' parameters are specified, the function will attempt to find policy groups by name or id.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCPolicyGroup
 ```
 
-{{ Add example description here }}
+Returns all JumpCloud policy groups
+
+### Example 2
+
+```powershell
+PS C:\> Get-JCPolicyGroup -Name "PolicyGroupName"
+```
+
+Returns the policy group with name 'PolicyGroupName'
+
+### Example 3
+
+```powershell
+PS C:\> Get-JCPolicyGroup -PolicyGroupId "66c3a774294f1e9071f080c9"
+```
+
+Returns the policy group with id '66c3a774294f1e9071f080c9'
 
 ## PARAMETERS
 
 ### -Name
+
 The Name of the JumpCloud policy group you wish to query.
 
 ```yaml
 Type: System.String
-Parameter Sets: Name
+Parameter Sets: ByName
 Aliases:
 
 Required: True
@@ -57,12 +77,13 @@ Accept wildcard characters: False
 ```
 
 ### -PolicyGroupID
+
 The ID of the JumpCloud policy group you wish to query
 
 ```yaml
 Type: System.String
 Parameter Sets: ById
-Aliases:
+Aliases: _id, id
 
 Required: True
 Position: Named

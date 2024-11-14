@@ -17,6 +17,11 @@ schema: 2.0.0
 Get-JCPolicyGroupTemplate [<CommonParameters>]
 ```
 
+### ByName
+```
+Get-JCPolicyGroupTemplate -Name <String> [<CommonParameters>]
+```
+
 ### ByID
 ```
 Get-JCPolicyGroupTemplate -GroupTemplateID <String> [<CommonParameters>]
@@ -42,6 +47,21 @@ Use the -GroupTemplateID parameter when you want to query a specific group templ
 ```yaml
 Type: System.String
 Parameter Sets: ByID
+Aliases: _id, id
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Name
+The Name of the JumpCloud policy group you wish to query. This value is case sensitive
+
+```yaml
+Type: System.String
+Parameter Sets: ByName
 Aliases:
 
 Required: True

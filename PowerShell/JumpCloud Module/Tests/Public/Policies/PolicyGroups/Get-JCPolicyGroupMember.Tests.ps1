@@ -33,4 +33,10 @@ Describe -Tag:('JCPolicyGroup') 'Get-JCPolicyGroupMember' {
         # the policyGroup should contain the new Policy
         $usbLinuxPolicy.Name | Should -BeIn $policyGroupMembers.Name
     }
+    It ('Returns members of a policy group specified by name') {
+        $policyGroupMembers = Get-JCPolicyGroupMember -Name $PesterGroup.name
+        # response should return nothing
+        $policyGroupMembers | Should -Not -BeNullOrEmpty
+    }
+    It
 }

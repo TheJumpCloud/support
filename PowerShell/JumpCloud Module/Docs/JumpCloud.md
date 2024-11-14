@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.14.4
+Help Version: 2.15.0
 Locale: en-Us
 ---
 
@@ -84,10 +84,10 @@ Returns all JumpCloud organizations associated with the authenticated JumpCloud 
 Returns all JumpCloud Policies within a JumpCloud tenant.
 
 ### [Get-JCPolicyGroup](Get-JCPolicyGroup.md)
-{{ Fill in the Synopsis }}
+Returns all policy groups, policy groups by name or id.
 
 ### [Get-JCPolicyGroupMember](Get-JCPolicyGroupMember.md)
-{{ Fill in the Synopsis }}
+This function will return the policies that are members of the specified policy group.
 
 ### [Get-JCPolicyGroupTemplate](Get-JCPolicyGroupTemplate.md)
 {{ Fill in the Synopsis }}
