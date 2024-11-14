@@ -14,11 +14,13 @@ This function will return the policies that are members of the specified policy 
 ## SYNTAX
 
 ### ById
+
 ```
 Get-JCPolicyGroupMember -PolicyGroupID <String> [<CommonParameters>]
 ```
 
 ### ByName
+
 ```
 Get-JCPolicyGroupMember -Name <String> [<CommonParameters>]
 ```
@@ -49,7 +51,7 @@ This will return all policies that are members of the policy group with name: 'P
 
 ### -Name
 
-Retrieves a Configured Policy Templates by Name
+The Name of the JumpCloud policy group to query and return members of
 
 ```yaml
 Type: System.String
@@ -80,14 +82,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
