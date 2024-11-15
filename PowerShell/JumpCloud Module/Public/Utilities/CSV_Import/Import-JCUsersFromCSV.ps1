@@ -23,6 +23,7 @@ Function Import-JCUsersFromCSV () {
         $UserUpdateParams.Add("Email", "Email")
         $UserUpdateParams.Add("Password", "Password")
         $UserUpdateParams.Add("alternateEmail", "alternateEmail")
+        $UserUpdateParams.Add("recoveryEmail", "recoveryEmail")
         $UserUpdateParams.Add("manager", "manager")
         $UserUpdateParams.Add("managedAppleId", "managedAppleId")
         $UserUpdateParams.Add("middlename", "middlename")
