@@ -34,17 +34,15 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplateMember' {
         # the template created in beforeAll should contain members:
         $templateMembers | Should -Not -BeNullOrEmpty
         # the policy added to the template in beforeAll should be in the member list:
-        $usbLinuxPolicy.name | Should -BeIn templateMembers.name
-        $usbLinuxPolicy.id | Should -BeIn templateMembers.id
-        $usbLinuxPolicy.policyTemplateId | Should -BeIn templateMembers.policyTemplateId
+        $usbLinuxPolicy.name | Should -BeIn $templateMembers.name
+        $usbLinuxPolicy.templateId | Should -BeIn $templateMembers.policyTemplateId
     }
     It "Lists members of a policy group templates by Name" {
         $templateMembers = Get-JCPolicyGroupTemplateMember -Name $newPolicyGroupTemplate.Name
         # the template created in beforeAll should contain members:
         $templateMembers | Should -Not -BeNullOrEmpty
         # the policy added to the template in beforeAll should be in the member list:
-        $usbLinuxPolicy.name | Should -BeIn templateMembers.name
-        $usbLinuxPolicy.id | Should -BeIn templateMembers.id
-        $usbLinuxPolicy.policyTemplateId | Should -BeIn templateMembers.policyTemplateId
+        $usbLinuxPolicy.name | Should -BeIn $templateMembers.name
+        $usbLinuxPolicy.templateId | Should -BeIn templateMembers.policyTemplateId
     }
 }

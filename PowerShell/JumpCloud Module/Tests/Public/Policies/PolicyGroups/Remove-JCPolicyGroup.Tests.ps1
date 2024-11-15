@@ -30,12 +30,17 @@ Describe -Tag:('JCPolicyGroup') 'Remove-JCPolicyGroup' {
         # create the new policy group
         $randomName = $(Get-Random)
         # remove it
-        { Remove-JCPolicyGroup -PolicyGroupID "$randomName" -Force } | Should -Throw
+        $removedGroup = Remove-JCPolicyGroup -PolicyGroupID "$randomName" -Force
+        $removedGroup.Name | Should -Be "Not Found"
+        $removedGroup.Result | Should -BeNullOrEmpty
+
     }
     It ("Removing a non-valid policy group by 'name' should throw") {
         # create the new policy group
         $randomName = $(Get-Random)
         # remove it
-        { Remove-JCPolicyGroup -Name "$randomName" -Force } | Should -Throw
+        $removedGroup = Remove-JCPolicyGroup -Name "$randomName" -Force
+        $removedGroup.Name | Should -Be "Not Found"
+        $removedGroup.Result | Should -BeNullOrEmpty
     }
 }
