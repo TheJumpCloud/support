@@ -66,7 +66,7 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
 
 ### [Get-JCConfiguredTemplatePolicy](Get-JCConfiguredTemplatePolicy.md)
-{{ Fill in the Synopsis }}
+Retrieves a Configured Policy Templates
 
 ### [Get-JCEvent](Get-JCEvent.md)
 Query the API for Directory Insights events
@@ -93,7 +93,7 @@ This function will return the policies that are members of the specified policy 
 Returns the policy group templates for an MTP organization
 
 ### [Get-JCPolicyGroupTemplateMember](Get-JCPolicyGroupTemplateMember.md)
-{{ Fill in the Synopsis }}
+Retrieves a Policy Group Template's Members
 
 ### [Get-JCPolicyResult](Get-JCPolicyResult.md)
 Returns all JumpCloud results for a given policy within a JumpCloud tenant.
@@ -212,7 +212,7 @@ Removes a JumpCloud Policy
 {{ Fill in the Synopsis }}
 
 ### [Remove-JCPolicyGroupTemplate](Remove-JCPolicyGroupTemplate.md)
-{{ Fill in the Synopsis }}
+Deletes a Policy Group Template
 
 ### [Remove-JCRadiusReplyAttribute](Remove-JCRadiusReplyAttribute.md)
 Removes Radius reply attributes from a JumpCloud user group.

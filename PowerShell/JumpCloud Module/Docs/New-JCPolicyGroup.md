@@ -8,36 +8,50 @@ schema: 2.0.0
 # New-JCPolicyGroup
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+This endpoint allows you to create a new Policy Group.
 
 ## SYNTAX
 
 ### FromTemplateID
+
 ```
 New-JCPolicyGroup -TemplateID <String> [<CommonParameters>]
 ```
 
 ### Name
+
 ```
 New-JCPolicyGroup -Name <String> [-Description <String>]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+New-JCPolicyGroup allows you to create a new Policy Group to add policies to.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> New-JCPolicyGroup -Name "Windows Policy Group"
 ```
 
-{{ Add example description here }}
+Creates a policy group with name: "Windows Policy Group"
+
+### Example 2
+
+```powershell
+PS C:\> New-JCPolicyGroup -Name "Windows Policy Group" -Description "Windows MDM Policies"
+```
+
+Creates a policy group with name: "Windows Policy Group" and description: "Windows MDM Policies"
 
 ## PARAMETERS
 
 ### -Description
+
 The description of the policy group to create
 
 ```yaml
@@ -53,7 +67,8 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-{{ Fill Name Description }}
+
+The name of the policy group to create
 
 ```yaml
 Type: System.String
@@ -68,7 +83,9 @@ Accept wildcard characters: False
 ```
 
 ### -TemplateID
-{{ Fill TemplateID Description }}
+
+The Policy Template ID to apply to this MTP org.
+This parameter will only work in MTP organizations
 
 ```yaml
 Type: System.String
@@ -83,14 +100,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
