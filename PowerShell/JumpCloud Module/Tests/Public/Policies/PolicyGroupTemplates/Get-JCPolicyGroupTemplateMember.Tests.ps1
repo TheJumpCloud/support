@@ -38,7 +38,7 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplateMember' {
         $usbLinuxPolicy.templateId | Should -BeIn $templateMembers.policyTemplateId
     }
     It "Lists members of a policy group templates by Name" {
-        $templateMembers = Get-JCPolicyGroupTemplateMember -Name $newPolicyGroupTemplate.Name
+        $templateMembers = Get-JCPolicyGroupTemplateMember -Name "$($newPolicyGroupTemplate.Name)"
         # the template created in beforeAll should contain members:
         $templateMembers | Should -Not -BeNullOrEmpty
         # the policy added to the template in beforeAll should be in the member list:

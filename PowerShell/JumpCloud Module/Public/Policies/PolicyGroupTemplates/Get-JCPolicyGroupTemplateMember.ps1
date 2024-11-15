@@ -6,6 +6,7 @@ Function Get-JCPolicyGroupTemplateMember {
             Mandatory = $true,
             HelpMessage = "The ID of the JumpCloud policy group template to query and return members of"
         )]
+        [Alias('_id', 'id')]
         [System.String]
         $GroupTemplateID,
         [Parameter(
@@ -25,12 +26,14 @@ Function Get-JCPolicyGroupTemplateMember {
         # validate MTP Org/ ProviderID. Will throw if $env:JCProviderId is missing:
         $ProviderID = Test-JCProviderID -providerID $env:JCProviderId -FunctionName $($MyInvocation.MyCommand)
 
+    }
+    process {
         $URL = switch ($PSCmdlet.ParameterSetName) {
             "ByName" {
                 try {
                     $policyGroupTemplate = Get-JCPolicyGroupTemplate -Name $Name
                     if ($policyGroupTemplate) {
-                        $PolicyGroupTemplateID = $policyGroupTemplate.Id
+                        $GroupTemplateID = $policyGroupTemplate.Id
                     } else {
                         throw
                     }
@@ -43,8 +46,6 @@ Function Get-JCPolicyGroupTemplateMember {
                 "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
             }
         }
-    }
-    process {
         $response = Invoke-JCApi -Method:('Get') -Paginate:($true) -Url:($URL)
     }
     end {

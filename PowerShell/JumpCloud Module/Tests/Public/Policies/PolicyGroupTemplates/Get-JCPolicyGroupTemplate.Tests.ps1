@@ -43,7 +43,7 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplate' {
     }
     It "Lists one policy group template policies by Name" {
         # get a single item:
-        $policyGroupTemplateResult = Get-JCPolicyGroupTemplate -Name $newPolicyGroupTemplate.name
+        $policyGroupTemplateResult = Get-JCPolicyGroupTemplate -Name "$($newPolicyGroupTemplate.name)"
         $policyGroupTemplateResult | Should -Not -BeNullOrEmpty
         $policyGroupTemplateResult.id | Should -Be $newPolicyGroupTemplate.id
         $policyGroupTemplateResult.name | Should -Be $newPolicyGroupTemplate.name
