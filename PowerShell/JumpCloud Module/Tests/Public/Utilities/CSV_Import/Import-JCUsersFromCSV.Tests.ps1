@@ -78,7 +78,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
-            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
 
         }
     }
@@ -256,7 +256,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
-            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
             $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
@@ -394,7 +394,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
-            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
             # TODO: Dynamically populate manager
             # $ImportCheck.manager | Should -Be $NewUserInfo.manager
             $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId

@@ -184,7 +184,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
-            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
             $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
