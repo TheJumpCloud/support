@@ -6923,7 +6923,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroupTemplateMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
           <maml:name>GroupTemplateID</maml:name>
           <maml:description>
             <maml:para>Use the -GroupTemplateID parameter when you want to query a specific group template members.</maml:para>
@@ -6955,7 +6955,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
         <maml:name>GroupTemplateID</maml:name>
         <maml:description>
           <maml:para>Use the -GroupTemplateID parameter when you want to query a specific group template members.</maml:para>

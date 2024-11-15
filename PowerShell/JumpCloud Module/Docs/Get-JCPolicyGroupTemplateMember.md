@@ -55,7 +55,7 @@ Use the -GroupTemplateID parameter when you want to query a specific group templ
 ```yaml
 Type: System.String
 Parameter Sets: ById
-Aliases:
+Aliases: _id, id
 
 Required: True
 Position: Named
