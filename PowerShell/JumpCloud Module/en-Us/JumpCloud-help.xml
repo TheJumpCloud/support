@@ -5171,19 +5171,35 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCConfiguredTemplatePolicy</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Retrieves a Configured Policy Templates</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCConfiguredTemplatePolicy returns the configured values for a defined policy member of a MTP Policy Template.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCConfiguredTemplatePolicy</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
           <maml:name>ConfiguredTemplatePolicyID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ConfiguredTemplatePolicyID Description }}</maml:para>
+            <maml:para>Retrieves a Configured Policy Templates by Id</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCConfiguredTemplatePolicy</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Retrieves a Configured Policy Templates by Name</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -5196,10 +5212,22 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
         <maml:name>ConfiguredTemplatePolicyID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ConfiguredTemplatePolicyID Description }}</maml:para>
+          <maml:para>Retrieves a Configured Policy Templates by Id</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Retrieves a Configured Policy Templates by Name</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -5238,9 +5266,16 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCConfiguredTemplatePolicy -ConfiguredTemplatePolicyID "671958685191450001cc5f2b"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Retrieves a Configured Policy Template for this provider with id: 671958685191450001cc5f2b</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCConfiguredTemplatePolicy -Name "ConfiguredPolicyName"</dev:code>
+        <dev:remarks>
+          <maml:para>Retrieves a Configured Policy Template for this provider with name: ConfiguredPolicyName</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6502,11 +6537,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyGroup</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Returns all policy groups, policy groups by name or id.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCPolicyGroup will return all policy groups for a given organization by default. If either the 'name' or 'PolicyGroupId' parameters are specified, the function will attempt to find policy groups by name or id.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -6527,7 +6562,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroup</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
           <maml:name>PolicyGroupID</maml:name>
           <maml:description>
             <maml:para>The ID of the JumpCloud policy group you wish to query</maml:para>
@@ -6555,7 +6590,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
         <maml:name>PolicyGroupID</maml:name>
         <maml:description>
           <maml:para>The ID of the JumpCloud policy group you wish to query</maml:para>
@@ -6597,9 +6632,23 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroup</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns all JumpCloud policy groups</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroup -Name "PolicyGroupName"</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the policy group with name 'PolicyGroupName'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroup -PolicyGroupId "66c3a774294f1e9071f080c9"</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the policy group with id '66c3a774294f1e9071f080c9'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6616,16 +6665,32 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyGroupMember</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>This function will return the policies that are members of the specified policy group.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCPolicyGroupMember will return policies which are members of the specified policy group.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>The Name of the JumpCloud policy group to query and return members of</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCPolicyGroupMember</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
           <maml:name>PolicyGroupID</maml:name>
           <maml:description>
             <maml:para>The ID of the JumpCloud policy group to query and return members of</maml:para>
@@ -6641,7 +6706,19 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>The Name of the JumpCloud policy group to query and return members of</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
         <maml:name>PolicyGroupID</maml:name>
         <maml:description>
           <maml:para>The ID of the JumpCloud policy group to query and return members of</maml:para>
@@ -6683,9 +6760,16 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupMember -PolicyGroupID 66c3a774294f1e9071f080c9</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>This will return all policies that are members of the policy group with id: '66c3a774294f1e9071f080c9'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupMember -Name "PolicyGroupName"</dev:code>
+        <dev:remarks>
+          <maml:para>This will return all policies that are members of the policy group with name: 'PolicyGroupName'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6702,16 +6786,16 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyGroupTemplate</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Returns the policy group templates for an MTP organization</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCPolicyGroupTemplate requires an administrator be connected to an MTP organization. Policy Group Templates are defined on the MTP level for all organizations to access.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroupTemplate</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
           <maml:name>GroupTemplateID</maml:name>
           <maml:description>
             <maml:para>Use the -GroupTemplateID parameter when you want to query a specific group template.</maml:para>
@@ -6725,12 +6809,40 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </command:parameter>
 
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCPolicyGroupTemplate</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>The Name of the JumpCloud policy group you wish to query. This value is case sensitive</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id, id">
         <maml:name>GroupTemplateID</maml:name>
         <maml:description>
           <maml:para>Use the -GroupTemplateID parameter when you want to query a specific group template.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>The Name of the JumpCloud policy group you wish to query. This value is case sensitive</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -6769,9 +6881,23 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupTemplate</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns all available Policy Group Templates in the MTP Organization</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupTemplate -Name "PolicyGroupTemplateName"</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the policy group template with name: PolicyGroupTemplateName</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupTemplate -GroupTemplateID 6733de990662210001e76bcc</dev:code>
+        <dev:remarks>
+          <maml:para>Gets the policy group template with id: 6733de990662210001e76bcc</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6788,16 +6914,16 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCPolicyGroupTemplateMember</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Retrieves a Policy Group Template's Members</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCPolicyGroupTemplateMember returns members of the policy group template in an MTP organization. Policy Group Templates are defined on the MTP level for all organizations to access.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroupTemplateMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>GroupTemplateID</maml:name>
           <maml:description>
             <maml:para>Use the -GroupTemplateID parameter when you want to query a specific group template members.</maml:para>
@@ -6811,12 +6937,40 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </command:parameter>
 
       </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-JCPolicyGroupTemplateMember</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>The name of the JumpCloud policy group template to query and return members of</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>GroupTemplateID</maml:name>
         <maml:description>
           <maml:para>Use the -GroupTemplateID parameter when you want to query a specific group template members.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>The name of the JumpCloud policy group template to query and return members of</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -6855,9 +7009,16 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupTemplateMember -GroupTemplateID 670e935fbf700a0001990e7d</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Retrieves a Policy Group Template with id: 670e935fbf700a0001990e7d policy members</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCPolicyGroupTemplateMember -Name "GroupTemplateName"</dev:code>
+        <dev:remarks>
+          <maml:para>Retrieves a Policy Group Template with name: GroupTemplateName policy members</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -12376,7 +12537,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Name</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Name Description }}</maml:para>
+            <maml:para>The name of the policy group to create</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -12393,7 +12554,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>TemplateID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TemplateID Description }}</maml:para>
+            <maml:para>The Policy Template ID to apply to this MTP org. This parameter will only work in MTP organizations</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -12420,7 +12581,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Name</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Name Description }}</maml:para>
+          <maml:para>The name of the policy group to create</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -12433,7 +12594,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>TemplateID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill TemplateID Description }}</maml:para>
+          <maml:para>The Policy Template ID to apply to this MTP org. This parameter will only work in MTP organizations</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -15876,13 +16037,40 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>Remove</command:verb>
       <command:noun>JCPolicyGroupTemplate</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Deletes a Policy Group Template</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Remove-JCPolicyGroupTemplate deletes policy group templates defined in an MTP organization. Policy Group Templates are defined on the MTP level for all organizations to access.</maml:para>
     </maml:description>
     <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Remove-JCPolicyGroupTemplate</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Force</maml:name>
+          <maml:description>
+            <maml:para>A SwitchParameter which suppresses the warning message when removing a JumpCloud policy group template.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
+          <maml:name>GroupTemplateID</maml:name>
+          <maml:description>
+            <maml:para>The ID of the JumpCloud policy group template you wish to remove.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+      </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Remove-JCPolicyGroupTemplate</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
@@ -15910,33 +16098,6 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         </command:parameter>
 
       </command:syntaxItem>
-      <command:syntaxItem>
-        <maml:name>Remove-JCPolicyGroupTemplate</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Force</maml:name>
-          <maml:description>
-            <maml:para>A SwitchParameter which suppresses the warning message when removing a JumpCloud policy group template.</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
-          <maml:name>PolicyGroupTemplateID</maml:name>
-          <maml:description>
-            <maml:para>The ID of the JumpCloud policy group template you wish to remove.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-
-      </command:syntaxItem>
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
@@ -15951,10 +16112,10 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Name</maml:name>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
+        <maml:name>GroupTemplateID</maml:name>
         <maml:description>
-          <maml:para>The Name of the JumpCloud policy group template you wish to remove.</maml:para>
+          <maml:para>The ID of the JumpCloud policy group template you wish to remove.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -15963,10 +16124,10 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
-        <maml:name>PolicyGroupTemplateID</maml:name>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
         <maml:description>
-          <maml:para>The ID of the JumpCloud policy group template you wish to remove.</maml:para>
+          <maml:para>The Name of the JumpCloud policy group template you wish to remove.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -16005,9 +16166,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Remove-JCPolicyGroupTemplate -GroupTemplateID "64022e24f7763b2295302342"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Removes the Policy Group Template with id: 64022e24f7763b2295302342</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCPolicyGroupTemplate -name "PolicyGroupName"</dev:code>
+        <dev:remarks>
+          <maml:para>Removes the Policy Group Template with name: PolicyGroupName</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
