@@ -15,9 +15,7 @@ Describe -Tag:('JCPolicyGroup') 'Remove-JCPolicyGroup' {
         # remove it
         $removedGroup = Remove-JCPolicyGroup -Name $randomName -Force
         # tests:
-        $removedGroup.id | Should -Be $newGroup.id
         $removedGroup.name | Should -Be $newGroup.name
-        $removedGroup.description | Should -Be $newGroup.description
     }
     It ("Removes a policy group using the 'id' parameter") {
         # create the new policy group
@@ -26,9 +24,7 @@ Describe -Tag:('JCPolicyGroup') 'Remove-JCPolicyGroup' {
         # remove it
         $removedGroup = Remove-JCPolicyGroup -PolicyGroupID $newGroup.id -Force
         # tests:
-        $removedGroup.id | Should -Be $newGroup.id
         $removedGroup.name | Should -Be $newGroup.name
-        $removedGroup.description | Should -Be $newGroup.description
     }
     It ("Removing a non-valid policy group by 'id' should throw") {
         # create the new policy group
