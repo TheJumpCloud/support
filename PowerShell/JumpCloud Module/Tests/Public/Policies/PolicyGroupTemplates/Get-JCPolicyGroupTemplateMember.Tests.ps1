@@ -43,6 +43,6 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplateMember' {
         $templateMembers | Should -Not -BeNullOrEmpty
         # the policy added to the template in beforeAll should be in the member list:
         $usbLinuxPolicy.name | Should -BeIn $templateMembers.name
-        $usbLinuxPolicy.templateId | Should -BeIn templateMembers.policyTemplateId
+        $usbLinuxPolicy.templateId | Should -BeIn $templateMembers.policyTemplateId
     }
 }
