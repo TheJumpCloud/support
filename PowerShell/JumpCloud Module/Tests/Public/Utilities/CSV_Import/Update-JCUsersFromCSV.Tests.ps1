@@ -460,7 +460,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
-            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
             # TODO: Dynamically populate manager
             # $ImportCheck.manager | Should -Be $NewUserInfo.manager            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
@@ -786,7 +786,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
-            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
             # TODO: Dynamically populate manager
             # $ImportCheck.manager | Should -Be $NewUserInfo.manager            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
