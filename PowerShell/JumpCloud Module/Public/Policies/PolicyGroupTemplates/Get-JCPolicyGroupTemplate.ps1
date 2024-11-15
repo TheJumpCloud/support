@@ -43,6 +43,9 @@ Function Get-JCPolicyGroupTemplate {
             }
         }
         $response = Invoke-JCApi -Method:('Get') -Paginate:($paginateRequired) -Url:($URL)
+        if ($response.totalCount -eq 0) {
+            $response = $null
+        }
 
     }
     end {

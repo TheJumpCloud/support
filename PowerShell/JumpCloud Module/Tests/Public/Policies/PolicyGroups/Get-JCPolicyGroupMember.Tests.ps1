@@ -38,5 +38,4 @@ Describe -Tag:('JCPolicyGroup') 'Get-JCPolicyGroupMember' {
         # response should return nothing
         $policyGroupMembers | Should -Not -BeNullOrEmpty
     }
-    It
 }

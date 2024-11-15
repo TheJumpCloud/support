@@ -33,7 +33,7 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplate' {
         $allPolicyGroupTemplates = Get-JCPolicyGroupTemplate
         $allPolicyGroupTemplates | Should -Not -BeNullOrEmpty
     }
-    It "Lists one configured template policies by ID" {
+    It "Lists one policy group template policies by ID" {
         # get a single item:
         $policyGroupTemplateResult = Get-JCPolicyGroupTemplate -GroupTemplateID $newPolicyGroupTemplate.id
         $policyGroupTemplateResult | Should -Not -BeNullOrEmpty
@@ -41,9 +41,9 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplate' {
         $policyGroupTemplateResult.name | Should -Be $newPolicyGroupTemplate.name
         $policyGroupTemplateResult.description | Should -Be $newPolicyGroupTemplate.description
     }
-    It "Lists one configured template policies by Name" {
+    It "Lists one policy group template policies by Name" {
         # get a single item:
-        $policyGroupTemplateResult = Get-JCConfiguredTemplatePolicy -Name $newPolicyGroupTemplate.name
+        $policyGroupTemplateResult = Get-JCPolicyGroupTemplate -Name $newPolicyGroupTemplate.name
         $policyGroupTemplateResult | Should -Not -BeNullOrEmpty
         $policyGroupTemplateResult.id | Should -Be $newPolicyGroupTemplate.id
         $policyGroupTemplateResult.name | Should -Be $newPolicyGroupTemplate.name
@@ -55,7 +55,7 @@ Describe -Tag:('MSP') 'Get-JCPolicyGroupTemplate' {
         { Get-JCPolicyGroupTemplate -GroupTemplateID "111111111111111111111111" } | Should -Throw
     }
     It "Should return nothing if there is not an object found byName" {
-        $search = Get-JCConfiguredTemplatePolicy -Name "111111111111111111111111"
+        $search = Get-JCPolicyGroupTemplate -Name "111111111111111111111111"
         $search | Should -BeNullOrEmpty
     }
 }
