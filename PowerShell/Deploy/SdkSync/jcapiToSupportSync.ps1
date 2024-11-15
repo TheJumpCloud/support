@@ -137,28 +137,27 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' })
 
                 for ($i = 0; $i -lt $ParameterContent.Count; $i++) {
-                    <# Action that will repeat until the condition is met #>
                     if ($i -ne ($ParameterContent.Count - 1 )) {
                         $ParameterContent[$i] = $($ParameterContent[$i].Replace('}', '},'))
-                        # $ParameterContent[$i] = $ParameterContent[$i].Trim()
-                        # $ParameterContent[$i] = $ParameterContent[$i] -replace '(^\s+|\s+$)', ''
                         $ParameterContent[$i] += "`n"
                     } else {
                         $ParameterContent[$i] = $ParameterContent[$i]
                     }
                 }
-                $string = @"
+                # declare param here string
+                $paramString = @"
 "@
                 ForEach ($line in $($ParameterContent -split "`n")) {
-                    # for the last item:
+                    # for the last item don't add a new line:
                     if ($line -eq $($ParameterContent -split "`n")[-1] ) {
                         $line = $line -replace '(^\s+|\s+$)', ''
-                        $string += @"
+                        $paramString += @"
         $line
 "@
                     } else {
+                        # otherwise add a new line after each row
                         $line = $line -replace '(^\s+|\s+$)', ''
-                        $string += @"
+                        $paramString += @"
         $line`n
 "@
                     }
@@ -185,7 +184,7 @@ Function $NewCommandName {
     $($OutputType)
     $($CmdletBinding)
     Param(
-$string
+$paramString
     )
     Begin {
         Connect-JCOnline -force | Out-Null
