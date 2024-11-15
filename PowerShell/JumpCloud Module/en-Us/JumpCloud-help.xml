@@ -12513,11 +12513,11 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>New</command:verb>
       <command:noun>JCPolicyGroup</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>This endpoint allows you to create a new Policy Group.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>New-JCPolicyGroup allows you to create a new Policy Group to add policies to.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12632,9 +12632,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; New-JCPolicyGroup -Name "Windows Policy Group"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Creates a policy group with name: "Windows Policy Group"</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-JCPolicyGroup -Name "Windows Policy Group" -Description "Windows MDM Policies"</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a policy group with name: "Windows Policy Group" and description: "Windows MDM Policies"</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -15889,11 +15896,11 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>Remove</command:verb>
       <command:noun>JCPolicyGroup</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>This endpoint allows you to delete a Policy Group.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Remove-JCPolicyGroup deletes a policy group by name or id.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -16018,9 +16025,23 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Remove-JCPolicyGroup -Name "Policy Group Name"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Removes a policy group with name: "Policy Group Name", the cmdlet will prompt before deleting the group</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCPolicyGroup -Name "Policy Group Name" -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Removes a policy group with name: "Policy Group Name", the cmdlet will not prompt before deleting the group</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Remove-JCPolicyGroup -PolicyGroupID "66ace9082dfb9356f460bee4" -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Removes a policy group with id: "66ace9082dfb9356f460bee4", the cmdlet will not prompt before deleting the group</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -18808,11 +18829,11 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:verb>Set</command:verb>
       <command:noun>JCPolicyGroup</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>This endpoint allows you to do a full update of the Policy Group.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Set-JCPolicyGroup sets a policy group's description and "newName"</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -18975,9 +18996,23 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Set-JCPolicyGroup -Name "Policy Group Name" -NewName "New Policy Group"</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Sets the policy group with name: "Policy Group Name" to: "New Policy Group"</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-JCPolicyGroup -PolicyGroupID "671aa7190133c4000119e158" -NewName "New Policy Group"</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the policy group with id: "671aa7190133c4000119e158" to: "New Policy Group"</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-JCPolicyGroup -PolicyGroupID "671aa7190133c4000119e158" -Description "A group of Windows policies"</dev:code>
+        <dev:remarks>
+          <maml:para>Sets the policy group with id: "671aa7190133c4000119e158" and it's description to: "A group of Windows policies"</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

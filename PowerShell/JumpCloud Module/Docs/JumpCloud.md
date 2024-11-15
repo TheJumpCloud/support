@@ -173,7 +173,7 @@ TemplateIDs or TemplateNames are required to identify which JumpCloud Policy to 
 At a minimum to display the dynamic set of parameters per template, the `TemplateID` or `TemplateName` must be specified. Tab actions display the available dynamic parameters available per function. For example, `New-JCPolicy -TemplateName darwin_Login_Window_Text -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `darwin_Login_Window_Text` policy. Dynamic parameters for templates are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
 
 ### [New-JCPolicyGroup](New-JCPolicyGroup.md)
-{{ Fill in the Synopsis }}
+This endpoint allows you to create a new Policy Group.
 
 ### [New-JCRadiusServer](New-JCRadiusServer.md)
 Creates a JumpCloud radius server.
@@ -209,7 +209,7 @@ Removes a user or usergroup from an Office365 instance
 Removes a JumpCloud Policy
 
 ### [Remove-JCPolicyGroup](Remove-JCPolicyGroup.md)
-{{ Fill in the Synopsis }}
+This endpoint allows you to delete a Policy Group.
 
 ### [Remove-JCPolicyGroupTemplate](Remove-JCPolicyGroupTemplate.md)
 Deletes a Policy Group Template
@@ -261,7 +261,7 @@ PolicyIDs or PolicyNames are required to identify which JumpCloud Policy to be b
 Set-JCPolicy can display the available parameters per policy if a `PolicyName` or `PolicyID` is specified. Tab actions display the available dynamic parameters available per function. For example, `Set-JCPolicy -PolicyName "macOS - Login Window Policy" -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `macOS - Login Window Policy` policy. Dynamic parameters for policies are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
 
 ### [Set-JCPolicyGroup](Set-JCPolicyGroup.md)
-{{ Fill in the Synopsis }}
+This endpoint allows you to do a full update of the Policy Group.
 
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.
