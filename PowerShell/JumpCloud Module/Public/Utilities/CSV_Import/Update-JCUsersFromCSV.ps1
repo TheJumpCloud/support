@@ -35,6 +35,7 @@ Function Update-JCUsersFromCSV () {
         $UserUpdateParams.Add("Email", "Email")
         $UserUpdateParams.Add("Password", "Password")
         $UserUpdateParams.Add("alternateEmail", "alternateEmail")
+        $UserUpdateParams.Add("recoveryEmail", "recoveryEmail")
         $UserUpdateParams.Add("manager", "manager")
         $UserUpdateParams.Add("managedAppleId", "managedAppleId")
         $UserUpdateParams.Add("middlename", "middlename")
@@ -97,7 +98,7 @@ Function Update-JCUsersFromCSV () {
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
             Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) {
+            if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                 Connect-JCOnline
             }
 

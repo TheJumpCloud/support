@@ -74,7 +74,7 @@ Function New-JCCommand {
     begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JConline }
 
         $hdrs = @{
 

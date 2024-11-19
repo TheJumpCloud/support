@@ -51,7 +51,7 @@ function Set-JCSettingsFile {
         }
     }
     begin {
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline -Force | Out-Null
         }
 

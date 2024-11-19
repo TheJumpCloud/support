@@ -28,8 +28,12 @@ Function Invoke-JCApi {
             'x-api-key'    = "$($env:JCApiKey)";
             'x-org-id'     = "$($env:JCOrgId)";
         }
+        # TODO: CUT-4439 need a dynamic list of endpoints that do not accept x-org-id
         # Organizations endpoint does not accept x-org-id in header
-        If ($Url -like '*/api/organizations*') {
+        If (
+            ($Url -like '*/api/organizations*') -or
+            ($URL -like "*/api/v2/providers/*") -or
+            ($URL -like "*/api/v2/organizations/*")) {
             $Headers.Remove('x-org-id') | Out-Null
         }
     }

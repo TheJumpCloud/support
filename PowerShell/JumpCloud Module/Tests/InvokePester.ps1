@@ -85,7 +85,7 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
         }
     } else {
         # run setup org locally and set variables
-        $variables = . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$JumpCloudApiKey" -JumpCloudApiKeyMsp "$JumpCloudApiKey"
+        $variables = . ("$PSScriptRoot/SetupOrg.ps1") -JumpCloudApiKey "$JumpCloudApiKey" -JumpCloudApiKeyMsp "$JumpCloudApiKey"
         Write-Host "[status] Setting Env Variables for tests"
         $variables | Foreach-Object {
             if ($_.Name) {

@@ -11,7 +11,7 @@ function Set-JCPolicy {
         [Parameter(Mandatory = $true,
             ParameterSetName = 'ByName',
             ValueFromPipelineByPropertyName = $false,
-            HelpMessage = 'The name of the existing JumpCloud Poliicy template to modify')]
+            HelpMessage = 'The name of the existing JumpCloud Policy template to modify')]
         [Alias("name")]
         [System.String]
         $PolicyName,
@@ -99,7 +99,7 @@ function Set-JCPolicy {
                     }
                 }
                 # Set the help message
-                if ([String]::isNullorEmpty($($key.help))) {
+                if ([String]::IsNullOrEmpty($($key.help))) {
                     $ParameterAttribute.HelpMessage = "sets the value for the $($key.name) field"
                 } else {
                     $ParameterAttribute.HelpMessage = "$($key.help)"
@@ -136,7 +136,7 @@ function Set-JCPolicy {
     }
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
     }
@@ -170,6 +170,7 @@ function Set-JCPolicy {
                 break
             }
         }
+
         # only update newName or Notes:
         if ((("NewName" -in $params.keys) -AND ("Values" -notin $params.Keys)) -OR
             (("Notes" -in $params.keys) -AND ("Values" -notin $params.Keys))) {
@@ -179,6 +180,7 @@ function Set-JCPolicy {
         if (-not $PSBoundParameters["Notes"]) {
             $Notes = $foundPolicy.Notes
         }
+
         if ($DynamicParamSet) {
             # begin dynamic param set
             $newObject = New-Object System.Collections.ArrayList

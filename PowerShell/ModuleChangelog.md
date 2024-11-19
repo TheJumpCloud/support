@@ -1,3 +1,30 @@
+## 2.15.0
+
+Release Date: November 18, 2024
+
+#### RELEASE NOTES
+
+```
+This release adds support for new functions to interact with Policy Groups and Policy Group Templates
+```
+
+#### FEATURES:
+
+New Functions:
+Get-JCPolicyGroup
+Set-JCPolicyGroup
+Remove-JCPolicyGroup
+New-JCPolicyGroup
+Get-JCPolicyGroupMember
+Get-JCConfiguredTemplatePolicy
+Get-JCPolicyGroupTemplate
+Get-JCPolicyGroupTemplateMember
+Remove-JCPolicyGroupTemplate
+
+#### IMPROVEMENTS:
+
+Support for future MTP specific functions. The Update/Import-JCUserFromCSV function can now update/import a user's recovery email.
+
 ## 2.14.3
 
 Release Date: November 7, 2024
