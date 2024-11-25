@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.4 JCCG
+Mac - Install JumpCloud Password Manager App | v1.5 JCCG
 
 #### commandType
 
@@ -11,9 +11,17 @@ mac
 ```
 #!/bin/bash
 
-# This script will install password manager in Users/$user/Applications for all user accounts
-
+# This script will install password manager in Users/$user/Applications for all user accounts based on their architecture (x64 or arm64)
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
+
+# Detect device architecture
+DeviceArchitecture=$(uname -m)
+
+
+if [ "$DeviceArchitecture" = "arm64" ]; then
+    DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/arm64/JumpCloud-Password-Manager-latest.dmg"
+fi
+
 
 regex='^https.*.dmg$'
 if [[ $DownloadUrl =~ $regex ]]; then
