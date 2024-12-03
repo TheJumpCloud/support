@@ -224,59 +224,56 @@ Function New-JCDeviceUpdateTemplate {
             }
         }
     }
-}
-
-
-
-end {
-    $ExportPath = Test-Path ("$ExportLocation/$FileName")
-    if ($PSCmdlet.ParameterSetName -eq 'force') {
-        if (!$ExportPath ) {
+    end {
+        $ExportPath = Test-Path ("$ExportLocation/$FileName")
+        if ($PSCmdlet.ParameterSetName -eq 'force') {
+            if (!$ExportPath ) {
+                Write-Host ""
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file '  -NoNewline
+                Write-Host $FileName -ForegroundColor Yellow -NoNewline
+                Write-Host ' in the location' -NoNewline
+                Write-Host " $ExportLocation" -ForegroundColor Yellow
+            } else {
+                Write-Warning "The file $fileName already exists, overwriting..."
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file '  -NoNewline
+                Write-Host $FileName -ForegroundColor Yellow -NoNewline
+                Write-Host ' in the location' -NoNewline
+                Write-Host " $ExportLocation" -ForegroundColor Yellow
+            }
+        } Else {
+            if (!$ExportPath ) {
+                Write-Host ""
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file'  -NoNewline
+                Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
+                Write-Host ' in the location' -NoNewline
+                Write-Host " $ExportLocation" -ForegroundColor Yellow
+            } else {
+                Write-Host ""
+                Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
+                Write-Host ""
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file '  -NoNewline
+                Write-Host $FileName -ForegroundColor Yellow -NoNewline
+                Write-Host ' in the location' -NoNewline
+                Write-Host " $ExportLocation" -ForegroundColor Yellow
+            }
             Write-Host ""
-            $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-            Write-Host 'Creating file '  -NoNewline
-            Write-Host $FileName -ForegroundColor Yellow -NoNewline
-            Write-Host ' in the location' -NoNewline
-            Write-Host " $ExportLocation" -ForegroundColor Yellow
-        } else {
-            Write-Warning "The file $fileName already exists, overwriting..."
-            $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-            Write-Host 'Creating file '  -NoNewline
-            Write-Host $FileName -ForegroundColor Yellow -NoNewline
-            Write-Host ' in the location' -NoNewline
-            Write-Host " $ExportLocation" -ForegroundColor Yellow
-        }
-    } Else {
-        if (!$ExportPath ) {
-            Write-Host ""
-            $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-            Write-Host 'Creating file'  -NoNewline
-            Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
-            Write-Host ' in the location' -NoNewline
-            Write-Host " $ExportLocation" -ForegroundColor Yellow
-        } else {
-            Write-Host ""
-            Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
-            Write-Host ""
-            $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-            Write-Host 'Creating file '  -NoNewline
-            Write-Host $FileName -ForegroundColor Yellow -NoNewline
-            Write-Host ' in the location' -NoNewline
-            Write-Host " $ExportLocation" -ForegroundColor Yellow
-        }
-        Write-Host ""
-        Write-Host "Do you want to open the file" -NoNewline
-        Write-Host " $FileName`?" -ForegroundColor Yellow
+            Write-Host "Do you want to open the file" -NoNewline
+            Write-Host " $FileName`?" -ForegroundColor Yellow
 
-        while ($Open -ne 'Y' -and $Open -ne 'N') {
-            $Open = Read-Host  "Enter Y for Yes or N for No"
-        }
+            while ($Open -ne 'Y' -and $Open -ne 'N') {
+                $Open = Read-Host  "Enter Y for Yes or N for No"
+            }
 
-        if ($Open -eq 'Y') {
-            Invoke-Item -Path "$ExportLocation/$FileName"
+            if ($Open -eq 'Y') {
+                Invoke-Item -Path "$ExportLocation/$FileName"
 
-        }
-        if ($Open -eq 'N') {
+            }
+            if ($Open -eq 'N') {
+            }
         }
     }
 }
