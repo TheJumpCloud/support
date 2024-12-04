@@ -341,7 +341,13 @@ Function Update-JCUsersFromCSV () {
             $FormatGroupOutput = $Null
             $CustomGroupArrayList = $Null
 
+            # Get all the custom attributes that are not null
             $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object
+
+            # Sort the attributes by number and name
+            $CustomAttributes = $CustomAttributes | Sort-Object {
+                [int]([regex]::Match($_.Name, '\d+').Value) },
+            { $_.Name }
 
             if ($CustomAttributes.name.count -gt 1) {
                 try {

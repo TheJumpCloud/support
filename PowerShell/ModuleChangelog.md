@@ -1,3 +1,17 @@
+## 2.16.0
+
+Release Date: December 4, 2024
+
+#### RELEASE NOTES
+
+```
+This release introduces a bug fix for `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` issues with importing more than 10 custom attributes
+```
+
+#### BUG FIXES:
+
+- Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` throwing error when importing 10 or more Custom Attributes due to a sorting issue
+
 ## 2.15.0
 
 Release Date: November 18, 2024
