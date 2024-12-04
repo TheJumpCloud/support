@@ -369,13 +369,7 @@ Function Import-JCUsersFromCSV () {
             $FormatGroupOutput = $Null
             $CustomGroupArrayList = $Null
 
-            # Get custom attributes with definitions that are not null
-            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" }
-
-            # Sort the custom attributes by name
-            $CustomAttributes = $CustomAttributes | Sort-Object {
-                [int]([regex]::Match($_.Name, '\d+').Value) },
-            { $_.Name }
+            $CustomAttributes = $UserAdd | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object
 
             Write-Verbose $CustomAttributes.name.count
 
