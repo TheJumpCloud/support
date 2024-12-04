@@ -23,6 +23,7 @@ function Get-UninstallExeCommand($uninstallString) {
     return @{
         Cmd       = $cmd
         Arguments = $arguments
+        Key       = ""
     }
 }
 
@@ -33,6 +34,7 @@ function Get-UninstallMsiCommand($productCode) {
     return @{
         Cmd       = $cmd
         Arguments = $arguments
+        Key       = ""
     }
 }
 
@@ -46,6 +48,7 @@ function Find-UninstallCommands($uninstallKey) {
                 $uninstallString = (Get-ItemProperty -Path $_.PSPath -ErrorAction SilentlyContinue).UninstallString
                 if ($uninstallString -like "MsiExec.exe*") {
                     $command = Get-UninstallMsiCommand $_.PSChildName
+                    $command.Key = "$uninstallKey/$($_.PSChildName)"
                     $uninstallCommands += $command
                 }
             }
@@ -55,6 +58,7 @@ function Find-UninstallCommands($uninstallKey) {
             if ($displayName -like "*JumpCloud Remote Assist*" -or $displayName -like "*jumpcloud-agent-app*") {
                 $uninstallString = (Get-ItemProperty -Path $_.PSPath -ErrorAction SilentlyContinue).QuietUninstallString
                 $command = Get-UninstallExeCommand $uninstallString
+                $command.Key = "$uninstallKey/$($_.PSChildName)"
                 $uninstallCommands += $command
             }
         } catch {
@@ -138,6 +142,11 @@ function Remove-JumpCloud {
 
     # if the MSI was used to install, we want to uninstall that route first
     foreach ($uninst in $guids.Uninstalls) {
+        if (-not(Test-Path -Path $uninst.Key)) {
+            Write-Host "$($uninst.Key) already removed"
+            continue;
+        }
+
         $foundItemsToRemove = $true
         Write-Output "Uninstallation of $($uninst.Cmd) $($uninst.Arguments) started."
 
