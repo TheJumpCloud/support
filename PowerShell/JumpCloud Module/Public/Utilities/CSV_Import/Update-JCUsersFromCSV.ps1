@@ -342,7 +342,7 @@ Function Update-JCUsersFromCSV () {
             $CustomGroupArrayList = $Null
 
             # Get all the custom attributes that are not null
-            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object
+            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" }
 
             # Sort the attributes by number and name
             $CustomAttributes = $CustomAttributes | Sort-Object {
