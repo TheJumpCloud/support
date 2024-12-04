@@ -42,7 +42,7 @@ function Get-JCSystemApp () {
                     }
                     # Get the OS Type
                     if ($SystemID) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID -Fields osFamily | Select-Object -ExpandProperty OSFamily
+                        $OSType = Get-JcSdkSystem -Id $SystemID -Fields osFamily | Select-Object -ExpandProperty OSFamily
                     } else {
                         $OSType = $SystemOS
                         if ($OSType -eq 'macOS') {
@@ -217,7 +217,9 @@ function Get-JCSystemApp () {
 
                         } elseif ($os -eq 'MacOs') {
                             $macOsSoftwareName = $name
-                            $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
+                            if ($macOsSoftwareName -contains '.app') {
+                                $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
+                            }
                             If ($ending -match '.app') {
                                 $macOsSoftwareName = $macOsSoftwareName.Replace($ending, $ending.toLower())
                                 Write-Debug "$macOsSoftwareName"
@@ -270,7 +272,7 @@ function Get-JCSystemApp () {
                     if ($version) {
                         Throw 'You cannot specify software version when using -search for a software name'
                     } elseif ($SystemId) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID | Select-Object -ExpandProperty OSFamily
+                        $OSType = Get-JcSdkSystem -Id $SystemID | Select-Object -ExpandProperty OSFamily
                         Switch ($OSType) {
                             "Windows" {
                                 $result = Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID")
