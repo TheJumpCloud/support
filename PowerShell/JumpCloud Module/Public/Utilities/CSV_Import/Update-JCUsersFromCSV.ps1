@@ -340,8 +340,15 @@ Function Update-JCUsersFromCSV () {
             $SystemAddStatus = $Null
             $FormatGroupOutput = $Null
             $CustomGroupArrayList = $Null
+            # Get custom attributes with definitions that are not null
+            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" }
 
-            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object
+            # Sort the custom attributes by name
+            $CustomAttributes = $CustomAttributes | Sort-Object {
+                [int]([regex]::Match($_.Name, '\d+').Value) },
+            { $_.Name }
+
+            $CustomAttributes | Format-Table -AutoSize
 
             if ($CustomAttributes.name.count -gt 1) {
                 try {
@@ -379,13 +386,12 @@ Function Update-JCUsersFromCSV () {
                     }
 
                     Write-Verbose "Attributes are $($UpdateParams)"
-
                     $NumberOfCustomAttributes = $UpdateParams.Keys | Where-Object { $_ -like "*Attribute*" } | Measure-Object | Select-Object -ExpandProperty Count
 
                     $UpdateParams.Add("NumberOfCustomAttributes", $NumberOfCustomAttributes / 2)
 
                     $JSONParams = $UpdateParams | ConvertTo-Json
-
+                    #Write-Debug "$($JSONParams)"
                     $NewUser = Set-JCUser @UpdateParams
 
                     if ($NewUser._id) {
