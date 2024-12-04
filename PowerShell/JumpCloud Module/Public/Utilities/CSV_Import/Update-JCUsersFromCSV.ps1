@@ -348,6 +348,8 @@ Function Update-JCUsersFromCSV () {
                 [int]([regex]::Match($_.Name, '\d+').Value) },
             { $_.Name }
 
+            $CustomAttributes | Format-Table -AutoSize
+
             if ($CustomAttributes.name.count -gt 1) {
                 try {
                     # Counter is used to create a clean list of attributes
