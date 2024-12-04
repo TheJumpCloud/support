@@ -86,6 +86,7 @@ Function New-JCDeviceUpdateTemplate {
                 $CSVDeviceUpdate = $CSV
                 $CSVDeviceUpdate.DeviceID = $System.Key
                 $CSVDeviceUpdate.displayName = $System.value.displayname
+                $CSVDeviceUpdate.hostname = $System.value.hostname
                 $SystemObject = New-Object psobject -Property $CSVDeviceUpdate
                 $CSVheader += $SystemObject
             }
@@ -96,124 +97,85 @@ Function New-JCDeviceUpdateTemplate {
             $CSV = [ordered]@{
                 DeviceID    = $null
                 displayname = $null
+                hostname    = $null
             }
+
+            # Begin Prompts for Properties
 
             Write-Host "`nWould you like to populate this update template with all of your existing systems?"
             Write-Host -ForegroundColor Yellow 'You can remove systems you do not wish to modify from the import file after it is created.'
-
-
             while ($ConfirmDevicePop -ne 'Y' -and $ConfirmDevicePop -ne 'N') {
                 $ConfirmDevicePop = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmDevicePop -eq 'Y') {
                 Write-Verbose 'Verifying JCAPI Key'
                 if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                     Connect-JCOnline
                 }
                 $systems = Get-DynamicHash -Object System -returnProperties displayName, description, allowSshPasswordAuthentication, allowSshRootLogin, allowMultiFactorAuthentication, allowPublicKeyAuthentication, systemInsights, hostname
-            }
-
-            elseif ($ConfirmDevicePop -eq 'N') {
+            } elseif ($ConfirmDevicePop -eq 'N') {
             }
 
 
             Write-Host "`nWould you like to update device descriptions?"
-
             while ($ConfirmDeviceDescription -ne 'Y' -and $ConfirmDeviceDescription -ne 'N') {
                 $ConfirmDeviceDescription = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmDeviceDescription -eq 'Y') {
                 $CSV.add('description', $null)
-            }
-
-            elseif ($ConfirmDeviceDescription -eq 'N') {
-            }
-
-            Write-Host "`nWould you like to update device hostnames?"
-
-            while ($ConfirmDeviceHostname -ne 'Y' -and $ConfirmDeviceHostname -ne 'N') {
-                $ConfirmDeviceHostname = Read-Host  "Enter Y for Yes or N for No"
-            }
-
-            if ($ConfirmDeviceHostname -eq 'Y') {
-                $CSV.add('hostname', $null)
-            }
-
-            elseif ($ConfirmDeviceHostname -eq 'N') {
+            } elseif ($ConfirmDeviceDescription -eq 'N') {
             }
 
             Write-Host "`nWould you like to update allowing SSH Password Authentication?"
-
             while ($ConfirmSshPasswordAuth -ne 'Y' -and $ConfirmSshPasswordAuth -ne 'N') {
                 $ConfirmSshPasswordAuth = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmSshPasswordAuth -eq 'Y') {
                 $CSV.add('allowSshPasswordAuthentication', $null)
-            }
-
-            elseif ($ConfirmSshPasswordAuth -eq 'N') {
+            } elseif ($ConfirmSshPasswordAuth -eq 'N') {
             }
 
             Write-Host "`nWould you like to update allowing SSH Root Login?"
-
             while ($ConfirmSshRootLogin -ne 'Y' -and $ConfirmSshRootLogin -ne 'N') {
                 $ConfirmSshRootLogin = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmSshRootLogin -eq 'Y') {
                 $CSV.add('allowSshRootLogin', $null)
-            }
-
-            elseif ($ConfirmSshRootLogin -eq 'N') {
+            } elseif ($ConfirmSshRootLogin -eq 'N') {
             }
 
             Write-Host "`nWould you like to update allowing MFA?"
-
             while ($ConfirmMFA -ne 'Y' -and $ConfirmMFA -ne 'N') {
                 $ConfirmMFA = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmMFA -eq 'Y') {
                 $CSV.add('allowMultiFactorAuthentication', $null)
-            }
-
-            elseif ($ConfirmMFA -eq 'N') {
+            } elseif ($ConfirmMFA -eq 'N') {
             }
 
             Write-Host "`nWould you like to update allowing Public Key Authentication?"
-
             while ($ConfirmPublicKeyAuth -ne 'Y' -and $ConfirmPublicKeyAuth -ne 'N') {
                 $ConfirmPublicKeyAuth = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmPublicKeyAuth -eq 'Y') {
                 $CSV.add('allowPublicKeyAuthentication', $null)
-            }
-
-            elseif ($ConfirmPublicKeyAuth -eq 'N') {
+            } elseif ($ConfirmPublicKeyAuth -eq 'N') {
             }
 
             Write-Host "`nWould you like to update enabling System Insights?"
-
             while ($ConfirmSystemInsights -ne 'Y' -and $ConfirmSystemInsights -ne 'N') {
                 $ConfirmSystemInsights = Read-Host  "Enter Y for Yes or N for No"
             }
-
             if ($ConfirmSystemInsights -eq 'Y') {
                 $CSV.add('systemInsights', $null)
+            } elseif ($ConfirmSystemInsights -eq 'N') {
             }
 
-            elseif ($ConfirmSystemInsights -eq 'N') {
-            }
+            # End Prompts
 
             $CSVheader = New-Object psobject -Property $Csv
-
             if ($systems) {
                 $CSVheader = @()
-
                 foreach ($System in $Systems.GetEnumerator()) {
                     $CSVDeviceUpdate = $CSV
                     $CSVDeviceUpdate.DeviceID = $System.Key
