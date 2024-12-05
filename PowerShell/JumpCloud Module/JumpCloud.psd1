@@ -89,7 +89,7 @@
     'Get-JCSystemKB', 'Get-JCSystemUser', 'Get-JCUser',
     'Get-JCUserGroupMember', 'Import-JCCommand', 'Import-JCMSPFromCSV',
     'Import-JCUsersFromCSV', 'Invoke-JCCommand', 'Invoke-JCDeployment',
-    'New-JCCommand', 'New-JCDeploymentTemplate', 'New-JCImportTemplate',
+    'New-JCCommand', 'New-JCDeploymentTemplate', 'New-JCImportTemplate', 'New-JCDeviceUpdateTemplate',
     'New-JCMSPImportTemplate', 'New-JCPolicy', 'New-JCPolicyGroup',
     'New-JCRadiusServer', 'New-JCSystemGroup', 'New-JCUser',
     'New-JCUserGroup', 'Remove-JCAssociation', 'Remove-JCCommand',
@@ -105,7 +105,7 @@
     'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer',
     'Set-JCSettingsFile', 'Set-JCSystem', 'Set-JCSystemUser', 'Set-JCUser',
     'Set-JCUserGroupLDAP', 'Update-JCModule', 'Update-JCMSPFromCSV',
-    'Update-JCUsersFromCSV'
+    'Update-JCUsersFromCSV', 'Update-JCDeviceFromCSV'
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
