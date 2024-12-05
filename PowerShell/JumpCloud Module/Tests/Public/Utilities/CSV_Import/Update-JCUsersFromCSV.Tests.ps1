@@ -1032,6 +1032,43 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.14.2" {
         }
     }
 }
+
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.15.1" {
+    Context "User should be updated even with 10 or more custom attributes" {
+        It "When there are 10 or more custom attributes, the user should still be updated" {
+            $user = New-RandomUser -Domain "testupdatecsvuser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+            $CSVDATA = @{
+                Username          = $user.username
+                Attribute1_name   = "Name"
+                Attribute1_value  = "Value"
+                Attribute2_name   = "Name1"
+                Attribute2_value  = "Value1"
+                Attribute3_name   = "Name2"
+                Attribute3_value  = "Value2"
+                Attribute4_name   = "Name3"
+                Attribute4_value  = "Value3"
+                Attribute5_name   = "Name4"
+                Attribute5_value  = "Value4"
+                Attribute6_name   = "Name5"
+                Attribute6_value  = "Value5"
+                Attribute7_name   = "Name6"
+                Attribute7_value  = "Value6"
+                Attribute8_name   = "Name7"
+                Attribute8_value  = "Value7"
+                Attribute9_name   = "Name8"
+                Attribute9_value  = "Value8"
+                Attribute10_name  = "Name9"
+                Attribute10_value = "Value9"
+                Attribute11_name  = "Name10"
+                Attribute11_value = "Value10"
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/custom_attribute.csv" -Force
+            $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/custom_attribute.csv" -force
+            # the error message should show that custom attribute names cannot contain spaces
+            $UpdateStatus[0].status | Should -Be "User Updated"
+        }
+    }
+}
 AfterAll {
     Get-JCUser | Where-Object Email -like *testupdatecsvuser* | Remove-JCUser -force
 }
