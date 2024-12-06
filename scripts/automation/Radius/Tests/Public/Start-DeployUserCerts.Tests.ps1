@@ -675,4 +675,94 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
 
     }
+    Context "Certs generated for users with users with localUsernames and special characters" {
+
+        It "Generates a command for a user with a localUsername (systemUsername)" {
+            # create a user that has both a mac and windows association
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            # manually set the user
+            $headers = @{
+                "x-api-key"    = "$env:JCApiKey"
+                "content-type" = "application/json"
+            }
+            # set a unique systemUsername for the user
+            $body = @{
+                'systemUsername' = "$($user.username)$($user.unix_guid)"
+            } | ConvertTo-Json
+            # update the user
+            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/systemusers/$($user.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
+            # get the before date
+            $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
+            # add user to membership group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            # get random system
+            $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
+            $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
+            # associate the system
+            Add-JCSystemUser -UserID $user.id -SystemID $windowsSystem.id
+            Add-JCSystemUser -UserID $user.id -SystemID $macSystem.id
+
+
+            # update membership
+            Get-JCRGlobalVars -skipAssociation -force
+            # todo: manually update association table to account for new membership
+            Set-JCRAssociationHash -userId $user.id
+            Update-JCRUsersJson
+
+            # Generate a user certificate for the user:
+            Start-GenerateUserCerts -type ByUsername -username $user.username
+
+            # Get the SHA1 hash for the user's cert:
+            $certData = Get-CertInfo -userCerts -username $user.username
+
+            # Run Start Deploy User Certs by username
+            Start-DeployUserCerts -type ByUsername -username $user.username
+
+            # get the commands
+            $windowsCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+            $macCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+            # validate that the correct local user name is found in the command body:
+            $macCmdAfter | Should -Match "userCompare=`"$($response.systemUsername)`""
+            $windowsCmdAfter | Should -Match "`$CurrentUser -eq `"$($response.systemUsername)`""
+        }
+        It "Generates a command for a user with a hyphen in their username" {
+            # create a user that has both a mac and windows association
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+            # manually update the user with a hyphen in their username
+            $user = Set-JCSdkUser -id $($user.id) -username "$($user.username)-$($user.username)"
+            # get the before date
+            $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
+            # add user to membership group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            # get random system
+            $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
+            $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
+            # associate the system
+            Add-JCSystemUser -UserID $user.id -SystemID $windowsSystem.id
+            Add-JCSystemUser -UserID $user.id -SystemID $macSystem.id
+
+            # update membership
+            Get-JCRGlobalVars -skipAssociation -force
+            # todo: manually update association table to account for new membership
+            Set-JCRAssociationHash -userId $user.id
+            Update-JCRUsersJson
+
+            # Generate a user certificate for the user:
+            Start-GenerateUserCerts -type ByUsername -username $user.username
+
+            # Get the SHA1 hash for the user's cert:
+            $certData = Get-CertInfo -userCerts -username $user.username
+
+            # Run Start Deploy User Certs by username
+            Start-DeployUserCerts -type ByUsername -username $user.username
+
+            # get the commands
+            $windowsCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+            $macCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+            # validate that the correct local user name is found in the command body:
+            $macCmdAfter | Should -Match "userCompare=`"$($user.username)`""
+            $windowsCmdAfter | Should -Match "`$CurrentUser -eq `"$($user.username)`""
+
+        }
+    }
 }
