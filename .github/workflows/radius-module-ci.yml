@@ -145,12 +145,12 @@ jobs:
       - name: Test PWSH Radius Module
         shell: pwsh
         env:
-          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
-          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+          PESTER_APIKEY: ${{ secrets.RADIUSAPIKEY }}
+          PESTER_ORGID: ${{ secrets.RADIUSORGID }}
         run: |
           $items = get-childItem -path "./scripts/automation/Radius/"
           foreach ($item in $items){
             write-host "$($item.FullName)"
           }
           # Invoke Pester
-          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList "ModuleValidation"
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:RADIUSAPIKEY" -ExcludeTagList "ModuleValidation"
