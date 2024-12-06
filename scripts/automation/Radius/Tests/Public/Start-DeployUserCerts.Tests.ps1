@@ -140,9 +140,10 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Add-JCSystemUser -UserID $user.id -SystemID $system.id
 
             # update membership
-            Get-JCRGlobalVars -skipAssociation -force
+            Get-JCRGlobalVars -force -associationUsername $user.username
+            # Get-JCRGlobalVars -skipAssociation -force
             # todo: manually update association table to account for new membership
-            Set-JCRAssociationHash -userId $user.id
+            # Set-JCRAssociationHash -userId $user.id
             Update-JCRUsersJson
             # now generate the user certs
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts

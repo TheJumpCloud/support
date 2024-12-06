@@ -100,7 +100,7 @@ function Get-CertInfo {
                     # lastly add the username of the certificate to the hash:
                     $certFile = Get-Item $($cert.Path)
                     if (('username' -notin $MyInvocation.BoundParameters) -AND (-Not [System.String]::IsNullOrEmpty($certFile.name))) {
-                        Write-Host "Attempting to parse username from string: $($certFile.name)"
+                        # Write-Host "Attempting to parse username from string: $($certFile.name)"
                         $matchNames = $certFile.name | Select-String -Pattern "(.*)-$($Global:JCR_CERT_TYPE).*"
                         if ($matchNames.Matches.groups) {
                             $username = $matchNames.Matches.groups[1].value
