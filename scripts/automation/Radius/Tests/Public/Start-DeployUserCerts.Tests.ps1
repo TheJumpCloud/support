@@ -722,8 +722,8 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $windowsCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
             $macCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
             # validate that the correct local user name is found in the command body:
-            $macCmdAfter | Should -Match "userCompare=`"$($response.systemUsername)`""
-            $windowsCmdAfter | Should -Match "`$CurrentUser -eq `"$($response.systemUsername)`""
+            $macCmdAfter.command | Should -Match "userCompare=`"$($response.systemUsername)`""
+            $windowsCmdAfter.command | Should -Match "`$CurrentUser -eq `"$($response.systemUsername)`""
         }
         It "Generates a command for a user with a hyphen in their username" {
             # create a user that has both a mac and windows association
@@ -760,8 +760,8 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $windowsCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
             $macCmdAfter = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
             # validate that the correct local user name is found in the command body:
-            $macCmdAfter | Should -Match "userCompare=`"$($user.username)`""
-            $windowsCmdAfter | Should -Match "`$CurrentUser -eq `"$($user.username)`""
+            $macCmdAfter.command | Should -Match "userCompare=`"$($user.username)`""
+            $windowsCmdAfter.command | Should -Match "`$CurrentUser -eq `"$($user.username)`""
 
         }
     }
