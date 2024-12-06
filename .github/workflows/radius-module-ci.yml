@@ -128,7 +128,7 @@ jobs:
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
     runs-on: macos-latest
-    # environment: Test Radius CI
+    environment: Test Radius CI
     timeout-minutes: 75
     strategy:
       fail-fast: false
