@@ -99,7 +99,11 @@ function Get-CertInfo {
                     }
                     # lastly add the username of the certificate to the hash:
                     $certFile = Get-Item $($cert.Path)
-                    # $username = $certFile.name.split('-')[0]
+                    if ('username' -notin $MyInvocation.BoundParameters) {
+                        $matchNames = $certFile.name | Select-String -Pattern "(.*)-$($Global:JCR_CERT_TYPE).*"
+                        $username = $matchNames.Matches.groups[1].value
+                    }
+
                     $certHash | Add-Member -Name 'username' -Type NoteProperty -Value $username
                     $certHash | Add-Member -Name 'generated' -Type NoteProperty -Value ($certFile.LastWriteTime.ToString('MM/dd/yyyy HH:mm:ss'))
                     # Add hash to certObj array if the user is a member of the userGroup
