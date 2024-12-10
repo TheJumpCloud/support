@@ -68,7 +68,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
             # update membership
             Start-Sleep 1
-            Get-JCRGlobalVars -skipAssociation -force
+            Get-JCRGlobalVars -force -associationUsername $user.username
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
 
             start-deployUserCerts -type ByUsername -username $user.username -forceInvokeCommands
