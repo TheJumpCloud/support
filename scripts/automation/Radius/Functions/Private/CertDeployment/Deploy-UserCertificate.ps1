@@ -291,7 +291,7 @@ function Deploy-UserCertificate {
                         $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
                         # in macOS search user certs by email
                         $macCertSearch = 'e'
-                        # On windows devices, search certs by Subject Alternative Name
+                        # On windows devices, search certs by Subject Alternative Name this is required to remove previously generated certs
                         $windowsCertHereString = @"
         `$SANMatch = `$cert.Extensions | Where-Object { `$_.Oid.FriendlyName -eq "Subject Alternative Name" }
         if (`$SANMatch){
