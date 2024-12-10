@@ -207,7 +207,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # Member content | Get the user with 2 system associations mac and windows
             Get-JCRGlobalVars -force -skipAssociation -associateManually
             $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
-            Write-Warning "being while loop"
+            Write-Warning "begin while loop"
             while ($Global:JCRAssociations[$($certTypeUser.userID)].systemAssociations.count -ne 2) {
                 $certTypeUser = $Global:JCRRadiusMembers | Get-Random -Count 1
             }
@@ -470,29 +470,41 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # Mock some commands with the trigger to already exist if they do not exist
             $possibleMacIDs = New-Object System.Collections.ArrayList
             $possibleWindowsIDs = New-Object System.Collections.ArrayList
+            # define command body for macOS commands
             $macCommandBody = @{
                 Name              = "RadiusCert-Install:$($user.username):MacOSX"
                 Command           = "sha1234"
                 launchType        = "trigger"
                 User              = "000000000000000000000000"
-                trigger           = "$($certData.sha1)"
+                trigger           = "$($certData.sha1)1111"
                 commandType       = "mac"
                 timeout           = 600
                 TimeToLiveSeconds = 864000
             }
+            # add a mac command to the org using the command body
             $newMacCommand = New-JcSdkCommand @macCommandBody
-            $macCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
-            $possibleMacIDs.Add($macCmdBefore.id)
+
+            # update the command body to differentiate the next command:
             $macCommandBody.Command = "sha12345"
 
+            # add a second mac command to the org using the command body
             $newMacCommand = New-JcSdkCommand @macCommandBody
-            $secondMacCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
-            $possibleMacIDs.Add($secondMacCmdBefore.id)
-            $secondMacCmdBefore.count | Should -BeGreaterThan 1
+
+            # get the commands for the user:
+            $macCommandsBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:mac")
+
+            # for each command
+            foreach ($cmd in $macCommandsBefore) {
+                # add to the list
+                $possibleMacIDs.Add($cmd.id)
+            }
+            # the number of macOS Commands for this user cert and it's identifying sha should be 2
+            $possibleMacIDs.count | Should -Be 2
 
             # invoke the commands manually to simulate the command queue containing items:
-            Start-JcSdkCommand -Id $macCmdBefore.Id -SystemIds $macSystem.id
+            Start-JcSdkCommand -Id $possibleMacIDs[0].Id -SystemIds $macSystem.id
 
+            # define windows command body
             $windowsCommandBody = @{
                 Name              = "RadiusCert-Install:$($user.username):Windows"
                 Command           = "sha1234"
@@ -503,18 +515,26 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 timeout           = 600
                 TimeToLiveSeconds = 864000
             }
+            # create the first windows command
             $newWindowsCommand = New-JcSdkCommand @windowsCommandBody
-            $windowsCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
-            $possibleWindowsIDs.Add($windowsCmdBefore.id)
+
+            # update the command body to differentiate the next command:
             $windowsCommandBody.Command = "sha12345"
 
+            # create the second windows command
             $newWindowsCommand = New-JcSdkCommand @windowsCommandBody
-            $secondWindowsCmdBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
-            $possibleWindowsIDs.Add($secondWindowsCmdBefore.id)
-            $secondWindowsCmdBefore.count | Should -BeGreaterThan 1
+
+            $windowsCommandsBefore = Get-JcSdkCommand -Filter @("trigger:eq:$($certData.sha1)", "commandType:eq:windows")
+
+            # for each command
+            foreach ($cmd in $windowsCommandsBefore) {
+                # add to the list
+                $possibleWindowsIDs.Add($cmd.id)
+            }
+            $possibleWindowsIDs.count | Should -Be 2
 
             # invoke the commands manually to simulate the command queue containing items:
-            Start-JcSdkCommand -Id $WindowsCmdBefore.Id -SystemIds $windowsSystem.id
+            Start-JcSdkCommand -Id $possibleWindowsIDs[0].Id -SystemIds $windowsSystem.id
 
             # Get the queued commands:
             $queuedCmdsBefore = Get-QueuedCommandByUser -username $user.username
@@ -528,6 +548,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # Get the queued after:
             $queuedCmdsAfter = Get-QueuedCommandByUser -username $user.username
             # test that one of the commands should exist:
+
             # $macCmdBefore.id | Should -BeIn $macCmdAfter.id
             $macCmdAfter.count | Should -Be 1
             $macCmdAfter.id | should -BeIn $possibleMacIDs
