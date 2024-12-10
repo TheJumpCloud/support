@@ -504,7 +504,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $possibleMacIDs.count | Should -Be 2
 
             # invoke the commands manually to simulate the command queue containing items:
-            Start-JcSdkCommand -Id $possibleMacIDs[0].Id -SystemIds $macSystem.id
+            Start-JcSdkCommand -Id $possibleMacIDs[0] -SystemIds $macSystem.id
 
             # define windows command body
             $windowsCommandBody = @{
@@ -536,7 +536,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $possibleWindowsIDs.count | Should -Be 2
 
             # invoke the commands manually to simulate the command queue containing items:
-            Start-JcSdkCommand -Id $possibleWindowsIDs[0].Id -SystemIds $windowsSystem.id
+            Start-JcSdkCommand -Id $possibleWindowsIDs[0] -SystemIds $windowsSystem.id
 
             # Get the queued commands:
             $queuedCmdsBefore = Get-QueuedCommandByUser -username $user.username
