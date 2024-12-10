@@ -638,7 +638,6 @@ Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.user
     `$certs = Get-ChildItem Cert:\CurrentUser\My\
 
     foreach (`$cert in `$certs){
-        # TODO: if the cert type is EmailSAN, do not search the subject
         $windowsCertHereString
     }
 }
