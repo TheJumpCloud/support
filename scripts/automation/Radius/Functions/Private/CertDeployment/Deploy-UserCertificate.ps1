@@ -291,6 +291,21 @@ function Deploy-UserCertificate {
                         $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
                         # in macOS search user certs by email
                         $macCertSearch = 'e'
+                        # On windows devices, search certs by Subject Alternative Name
+                        $windowsCertHereString = @"
+        `$SANMatch = `$cert.Extensions | Where-Object { `$_.Oid.FriendlyName -eq "Subject Alternative Name" }
+        if (`$SANMatch){
+            if ((`$SANMatch).format(`$true) -match "$($certIdentifier)") {
+                if (`$(`$cert.serialNumber) -eq "$($certInfo.serial)"){
+                    write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
+                } else {
+                    write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
+                    Get-ChildItem "Cert:\CurrentUser\My\`$(`$cert.thumbprint)" | remove-item
+                }
+            }
+        }
+"@
+
                     }
                     'EmailDN' {
                         # Else set cert identifier to email of cert subject
@@ -299,12 +314,34 @@ function Deploy-UserCertificate {
                         $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
                         # in macOS search user certs by email
                         $macCertSearch = 'e'
+                        # On windows devices, search certs by Subject
+                        $windowsCertHereString = @"
+        if (`$cert.subject -match "$($certIdentifier)") {
+            if (`$(`$cert.serialNumber) -eq "$($certInfo.serial)"){
+                write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
+            } else {
+                write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
+                Get-ChildItem "Cert:\CurrentUser\My\`$(`$cert.thumbprint)" | remove-item
+            }
+        }
+"@
                     }
                     'UsernameCn' {
                         # if username just set cert identifier to username
                         $certIdentifier = $($user.userName)
                         # in macOS search user certs by common name (username)
                         $macCertSearch = 'c'
+                        # On windows devices, search certs by Subject
+                        $windowsCertHereString = @"
+        if (`$cert.subject -match "$($certIdentifier)") {
+            if (`$(`$cert.serialNumber) -eq "$($certInfo.serial)"){
+                write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
+            } else {
+                write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
+                Get-ChildItem "Cert:\CurrentUser\My\`$(`$cert.thumbprint)" | remove-item
+            }
+        }
+"@
                     }
                 }
                 # Create the zip
@@ -601,14 +638,8 @@ Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.user
     `$certs = Get-ChildItem Cert:\CurrentUser\My\
 
     foreach (`$cert in `$certs){
-        if (`$cert.subject -match "$($certIdentifier)") {
-            if (`$(`$cert.serialNumber) -eq "$($certInfo.serial)"){
-                write-host "Found Cert:``nCert SN: `$(`$cert.serialNumber)"
-            } else {
-                write-host "Removing Cert:``nCert SN: `$(`$cert.serialNumber)"
-                Get-ChildItem "Cert:\CurrentUser\My\`$(`$cert.thumbprint)" | remove-item
-            }
-        }
+        # TODO: if the cert type is EmailSAN, do not search the subject
+        $windowsCertHereString
     }
 }
 `$scriptBlockValidate = {
