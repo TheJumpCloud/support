@@ -141,9 +141,11 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
             # update membership
             Get-JCRGlobalVars -force -associationUsername $user.username
-            # Get-JCRGlobalVars -skipAssociation -force
-            # todo: manually update association table to account for new membership
-            # Set-JCRAssociationHash -userId $user.id
+
+            # wait one second to write to the file
+            Start-Sleep 1
+
+            # update the json file
             Update-JCRUsersJson
             # now generate the user certs
             Start-GenerateUserCerts -type ByUsername -username $user.username -forceReplaceCerts
@@ -476,7 +478,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 Command           = "sha1234"
                 launchType        = "trigger"
                 User              = "000000000000000000000000"
-                trigger           = "$($certData.sha1)1111"
+                trigger           = "$($certData.sha1)"
                 commandType       = "mac"
                 timeout           = 600
                 TimeToLiveSeconds = 864000
