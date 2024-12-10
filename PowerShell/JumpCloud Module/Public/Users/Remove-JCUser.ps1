@@ -54,9 +54,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $deletedArray = @()
 
         if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
-            $UserHash = Get-DynamicHash -Object User -returnProperties username
+            $UserHash = Get-DynamicHash -Object User -returnProperties username, manager
             $UserCount = ($UserHash).Count
             Write-Debug "Populated UserHash with $UserCount users"
+            Write-Debug "UserHash is $($UserHash.Values.username)"
         }
 
     }
@@ -71,14 +72,61 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         if ($PSCmdlet.ParameterSetName -eq 'UserID' ) {
             $Username = $UserID
+            Write-Debug "UserID is $UserID"
         }
 
+        # Check if the user is a manager
+        if ($UserHash.Values.manager -contains ($UserID)) {
+            $isManager = $true
+            # Count the number of users the manager is managing
+            # $managerCount = ($UserHash.Values.manager -eq $UserID).Count
+            # Save each user the manager is managing in a list
+            $managedUsers = $UserHash.GetEnumerator().Where({ $_.Value.manager -eq $UserID }).Name
+            Write-Debug "Manager is managing $managedUsers users"
+            $hasManagerId = Get-JcSdkUser -UserID $UserID | Select-Object -ExpandProperty manager
+            Write-Debug "Manager is managed by $hasManagerId"
+
+        } else {
+            $isManager = $false
+            Write-Debug "User is not a manager"
+        }
+
+        # Check if the user is managed by another manager
+
+
+        # TODO: If force or does not have a manager, default to cascade_manager=Null -- Done
+        # TODO: If not force, prompt for cascade_manager if the user is a manager - Done
+        # TODO: If manager is managed by another manager, cascade_manager to users managed by the manager
         if (!$force) {
             try {
-                $URI = "$JCUrlBasePath/api/systemusers/$UserID"
-                Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
-                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
-                $Status = 'Deleted'
+                if ($isManager) {
+                    # Prompt for cascade_managerk, user enters the ID of the new manager
+                    $cascade_manager = Read-Host "User is a manager. Do you want to reassign their managed users to another manager? (Y/N)"
+                    if ($cascade_manager -eq 'Y') {
+                        $newManagerId = Read-Host "Enter the UserID of the new manager"
+                        $URI = "$JCUrlBasePath/api/systemusers/$($UserID)?cascade_manager=$($newManagerId)"
+                        Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
+                        $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                        Write-Debug $delete
+                        $Status = 'Deleted'
+                    } else {
+                        $URI = "$JCUrlBasePath/api/systemusers/$UserID?cascade_manager=$null"
+                        Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
+                        $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                        $Status = 'Deleted'
+                    }
+
+                    $URI = "$JCUrlBasePath/api/systemusers/$UserID?cascade_manager=$null"
+                    Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
+                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $Status = 'Deleted'
+                } else {
+                    $URI = "$JCUrlBasePath/api/systemusers/$UserID?cascade_manager=$null"
+                    Write-Warning "Are you sure you wish to delete user: $Username ?" -WarningAction Inquire
+                    $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                    $Status = 'Deleted'
+                }
+
             } catch {
                 $Status = $_.ErrorDetails
             }
@@ -94,7 +142,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         if ($force) {
             try {
-                $URI = "$JCUrlBasePath/api/systemusers/$UserID"
+                $URI = "$JCUrlBasePath/api/systemusers/$UserID?cascade_manager=$null"
                 $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Deleted'
             } catch {
