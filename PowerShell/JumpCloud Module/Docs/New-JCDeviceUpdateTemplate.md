@@ -5,57 +5,37 @@ online version: https://github.com/TheJumpCloud/support/wiki/
 schema: 2.0.0
 ---
 
-# Set-JCSettingsFile
+# New-JCDeviceUpdateTemplate
 
 ## SYNOPSIS
-
-Updates the JumpCloud Module Settings File
+A guided walk through that creates a JumpCloud Device Import CSV file on your local machine.
 
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>]
- [-parallelOverride <PSObject>] [<CommonParameters>]
+New-JCDeviceUpdateTemplate [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-The Set-JCSettingsFile function updates an the JumpCloud Module settings file.
+The New-JCDeviceUpdateTemplate command is a menu driven function that guides end users and creates a custom JumpCloud Device Import .CSV file on their machine for populating with their Device information for updating in JumpCloud.
 
 ## EXAMPLES
 
 ### Example 1
-
 ```powershell
-PS C:\> Set-JCSettingsFile -ParallelOverride $true
+PS C:\> New-JCDeviceUpdateTemplate
 ```
 
-Disables parallel processing of results in the JumpCloud PowerShell Module
+Launches the New-JCDeviceUpdateTemplate menu
 
 ## PARAMETERS
 
-### -moduleBannerMessageCount
-
-sets the messageCount settings for the moduleBanner feature
-
-```yaml
-Type: System.Management.Automation.PSObject
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -parallelOverride
-
-sets the Override settings for the parallel feature
+### -Force
+Parameter to force populate CSV with all headers when creating an update template.
+When selected this option will forcefully replace existing files in the current working directory
 
 ```yaml
-Type: System.Management.Automation.PSObject
+Type: System.Management.Automation.SwitchParameter
 Parameter Sets: (All)
 Aliases:
 

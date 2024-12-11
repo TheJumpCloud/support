@@ -17,7 +17,7 @@ Function Update-JCDeviceFromCSV () {
         [string]$CSVFilePath,
         [Parameter(
             ParameterSetName = 'force',
-            HelpMessage = 'A SwitchParameter which suppresses the GUI and data validation when using the Update-JCUsersFromCSV command.')]
+            HelpMessage = 'A SwitchParameter which suppresses the GUI and data validation when using the Update-JCDeviceFromCSV command.')]
         [Switch]
         $force
     )

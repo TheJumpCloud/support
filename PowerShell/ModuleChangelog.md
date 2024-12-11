@@ -1,6 +1,6 @@
 ## 2.16.0
 
-Release Date: December 4, 2024
+Release Date: December 11, 2024
 
 #### RELEASE NOTES
 
