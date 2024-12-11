@@ -12013,11 +12013,11 @@ SystemID                 CommandID                Status
       <command:verb>New</command:verb>
       <command:noun>JCDeviceUpdateTemplate</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>A guided walk through that creates a JumpCloud Device Import CSV file on your local machine.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The New-JCDeviceUpdateTemplate command is a menu driven function that guides end users and creates a custom JumpCloud Device Import .CSV file on their machine for populating with their Device information for updating in JumpCloud.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -12079,9 +12079,9 @@ SystemID                 CommandID                Status
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; New-JCDeviceUpdateTemplate</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Launches the New-JCDeviceUpdateTemplate menu</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -23543,11 +23543,11 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:verb>Update</command:verb>
       <command:noun>JCDeviceFromCSV</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Updates a set of JumpCloud devices from a CSV file created using the New-JCDeviceUpdateTemplate function.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>The Update-JCDeviceFromCSV bulk sets device attributes via a CSV input.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -23567,7 +23567,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>force</maml:name>
           <maml:description>
-            <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Update-JCUsersFromCSV command.</maml:para>
+            <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Update-JCDeviceFromCSV command.</maml:para>
           </maml:description>
           <dev:type>
             <maml:name>System.Management.Automation.SwitchParameter</maml:name>
@@ -23594,7 +23594,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>force</maml:name>
         <maml:description>
-          <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Update-JCUsersFromCSV command.</maml:para>
+          <maml:para>A SwitchParameter which suppresses the GUI and data validation when using the Update-JCDeviceFromCSV command.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
         <dev:type>
@@ -23633,9 +23633,16 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Update-JCDeviceFromCSV ./JCDeviceUpdateImport_12-11-2024.csv</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Updates devices from the .csv file 'JCDeviceUpdateImport_12-11-2024.csv'</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Update-JCDeviceFromCSV ./JCDeviceUpdateImport_12-11-2024.csv -Force</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the 'Force' parameter to skip the GUI and update devices from the file 'JCDeviceUpdateImport_12-11-2024.csv'</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

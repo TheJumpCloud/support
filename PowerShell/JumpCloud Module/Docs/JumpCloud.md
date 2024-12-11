@@ -160,7 +160,7 @@ Creates a new JumpCloud Mac, Linux, or Windows command
 A guided walk through that creates a command deployment CSV file on your local machine.
 
 ### [New-JCDeviceUpdateTemplate](New-JCDeviceUpdateTemplate.md)
-a guided walk through that creates a JumpCloud Device Import CSV file on your local machine.
+A guided walk through that creates a JumpCloud Device Import CSV file on your local machine.
 
 ### [New-JCImportTemplate](New-JCImportTemplate.md)
 A guided walk through that creates a JumpCloud User Import CSV file on your local machine.
@@ -288,7 +288,7 @@ Updates an existing JumpCloud User
 The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the members to/from the JumpCloud LDAP directory.
 
 ### [Update-JCDeviceFromCSV](Update-JCDeviceFromCSV.md)
-Updates a list of JumpCloud devices via CSV input
+Updates a set of JumpCloud devices from a CSV file created using the New-JCDeviceUpdateTemplate function.
 
 ### [Update-JCModule](Update-JCModule.md)
 Running this function will trigger the update of the JumpCloud PowerShell module.
