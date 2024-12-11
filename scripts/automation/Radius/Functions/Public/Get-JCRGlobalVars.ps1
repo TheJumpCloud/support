@@ -217,6 +217,23 @@ function Get-JCRGlobalVars {
                                             }
                                         }
                                     });
+                            } else {
+                                Write-Warning "user not found in association list"
+                                $userAssociationList.add(
+                                    $matchedUser.UserId, @{
+                                        'systemAssociations' = @($userSystemMembership | Select-Object -Property @{Name = 'systemId'; Expression = { $_.id } }, @{Name = 'hostname'; Expression = { $systems[$_.id].hostname } }, @{Name = 'osFamily'; Expression = {
+                                                    $osFamilyValue = $systems[$_.id].osFamily
+                                                    if ($osFamilyValue -eq 'darwin') {
+                                                        "macOS"
+                                                    } elseif ($osFamilyValue -eq 'Windows') {
+                                                        "Windows"
+                                                    } else {
+                                                        $osFamilyValue
+                                                    }
+                                                }
+                                            });
+                                        'userData'           = @($matchedUser | Select-Object -Property @{Name = 'email'; Expression = { $users[$user.userID].email } }, @{Name = 'username'; Expression = { $users[$matchedUser.userID].username } })
+                                    }) | Out-Null
                             }
                         }
                         #
