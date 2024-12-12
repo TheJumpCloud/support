@@ -120,7 +120,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         # TODO: If not force, prompt for cascade_manager if the user is a manager -- Done
         # TODO: If manager is managed by another manager, cascade_manager to users managed by the manager -- Done
         if (!$force) {
-            if ($CascadeManager) {
+            if ($CascadeManager -and $isManager) {
                 Switch ($CascadeManager) {
                     'NULL' {
                         $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs

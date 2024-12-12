@@ -1,3 +1,20 @@
+## 2.16.0
+
+Release Date: December 18, 2024
+
+#### RELEASE NOTES
+
+```
+This release introduces support for cascading managers with Remove-JCUser
+```
+
+#### FEATURES:
+
+- Remove-JCUser - Added -CascadeManager (null, auto, id) parameter
+  - null - Manager field for managed users by the user being removed will be set to null
+  - auto - If the user (manager1) being removed is a manager but also managed by another user(manager2). The manager for managed users will cascade to manager2.
+  - Id - Manually specify the manager for users managed by the user/manager being removed
+
 ## 2.15.0
 
 Release Date: November 18, 2024
