@@ -26,15 +26,30 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             HelpMessage = 'Use the -ByID parameter when the UserID is passed over the pipeline to the Remove-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance.')]
         [Switch]
         $ByID,
-
+        # Do not use $CascadeManager if $force is used
         [Parameter(HelpMessage = 'A SwitchParameter which suppresses the warning message when removing a JumpCloud User.')]
         [Switch]
         $force,
         [Parameter(HelpMessage = 'A SwitchParameter for Cascading the manager of the user to the users managed by the user. NULL, AUTOMATIC (bubble up), ID (prompt for manager ID)')]
-        [ValidateSet('NULL', 'AUTOMATIC', 'ID')]
+        [ValidateSet('NULL', 'Auto', 'ID')]
         [string]$CascadeManager
     )
-
+    DynamicParam {
+        if ($CascadeManager -eq 'ID' -and !$force) {
+            # Prompt for cascade_manager, user enters the ID of the new manager
+            $newManagerId = Read-Host "Enter the UserID of the new manager"
+            # Validate if the Id is a JC User
+            $validateUser = Get-JcSdkUser -Id $newManagerId
+            if ($validateUser) {
+                Write-Debug "User $newManagerId is a valid JumpCloud User"
+                return $newManagerId
+            } else {
+                Write-Error "User does not exist. Please enter a valid UserID."
+                # Exit the script
+                Exit
+            }
+        }
+    }
     begin {
         Write-Debug 'Verifying JCAPI Key'
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
@@ -52,43 +67,37 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
 
         $deletedArray = @()
-
-        if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
-            $UserHash = Get-DynamicHash -Object User -returnProperties username, manager
-            $UserCount = ($UserHash).Count
-            Write-Debug "Populated UserHash with $UserCount users"
+        # If $cascadeManager and $force are used, throw an error
+        if ($CascadeManager -and $force) {
+            Throw "Cannot use -CascadeManager and -Force together. Please use one or the other."
         }
 
-        # Check if CascadeManager is set to ID
-        if ($CascadeManager -eq 'ID') {
-            # Prompt for cascade_manager, user enters the ID of the new manager
-            $newManagerId = Read-Host "Enter the UserID of the new manager"
-            # Validate if the Id is a JC User
-            $validateUser = Get-JcSdkUser -Id $newManagerId
-            if ($validateUser) {
-                Write-Debug "User $newManagerId is a valid JumpCloud User"
-            } else {
-                Write-Host "User does not exist. Please enter a valid UserID."
-                # Exit the script
-                Exit
-            }
-        }
+        $UserHash = Get-DynamicHash -Object User -returnProperties 'username', 'manager'
 
     }
     process {
         if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
             if ($UserHash.Values.username -contains ($Username)) {
                 $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
+                Write-Debug "UserID: $UserID"
             } else {
                 Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
-        }
+        } elseif ($PSCmdlet.ParameterSetName -eq 'UserID') {
+            # Validate if the Id is a JC User from the $UserHash
+            if ($UserHash.ContainsKey($UserID)) {
+                Write-Debug "UserID is a valid JumpCloud User"
+                $UserId = $UserHash.GetEnumerator().Where({ $_.Name -contains ($UserID) }).Name
+                $Username = $UserHash.GetEnumerator().Where({ $_.Name -contains ($UserID) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
+                Write-Debug "UserID: $UserID"
+                Write-Debug "Username: $Username"
 
-        if ($PSCmdlet.ParameterSetName -eq 'UserID' ) {
-            $Username = $UserID
-            Write-Debug "UserID is $UserID"
+            } else {
+                Write-Error "User does not exist. Please enter a valid UserID."
+                # Exit the script
+                Exit
+            }
         }
-
         # Check if the user is a manager
         if ($UserHash.Values.manager -contains ($UserID)) {
             $isManager = $true
@@ -116,8 +125,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     'NULL' {
                         $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
                     }
-                    'AUTOMATIC' {
-                        $Status = Delete-JCUser -Id $UserID -managerId 'AUTOMATIC' -Headers $hdrs
+                    'Auto' {
+                        if ($hasManagerId) {
+                            $Status = Delete-JCUser -Id $UserID -managerId $hasManagerId -Headers $hdrs
+                        } else {
+                            $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                        }
                     }
                     'ID' {
                         $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
@@ -125,10 +138,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 }
             } elseif ($isManager -and !$CascadeManager) {
                 # Prompt for cascade_managerk, user enters the ID of the new manager
-                $cascade_manager = Read-Host "User is a manager. Do you want to reassign their managed users to another manager? (Y/N)"
+                $cascade_manager = Read-Host "User $($Username) is a manager. Do you want to reassign their managed users to another manager? (Y / N)"
+                while ($cascade_manager -ne 'Y' -and $cascade_manager -ne 'N') {
+                    $cascade_manager = Read-Host "Please enter Y (Yes) or N (No)"
+                }
                 if ($cascade_manager -eq 'Y') {
                     if ($hasManagerId) {
-                        $prompt = "User is managed by another manager. Do you want to reassign their managed users to the manager who is managing this user? (Y/N)"
+                        $managerUsername = $UserHash.GetEnumerator().Where({ $_.Name -contains ($hasManagerId) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
+                        $prompt = "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign their managed users to the manager who is managing this user? (Y/N)"
                         $cascade_manager = Read-Host $prompt
                         if ($cascade_manager -eq 'Y') {
                             $newManagerId = $hasManagerId
@@ -147,28 +164,16 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             } else {
                 $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
             }
-            $FormattedResults = [PSCustomObject]@{
-                'User'    = $Username
-                'Results' = $Status
-            }
-            $deletedArray += $FormattedResults
         }
-
         if ($force) {
             try {
                 $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
             } catch {
                 $Status = $_.ErrorDetails
             }
-
-            $FormattedResults = [PSCustomObject]@{
-                'User'    = $Username
-                'Results' = $Status
-            }
-
-            $deletedArray += $FormattedResults
-
         }
+        $FormattedResults = $Status
+        $deletedArray += $FormattedResults
     }
     end {
 
