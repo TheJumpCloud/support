@@ -36,7 +36,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
     )
     DynamicParam {
         if ($CascadeManager -eq 'ID' -and !$force) {
-            # Prompt for cascade_manager, user enters the ID of the new manager
+            # Prompt for CascadeManager, user enters the ID of the new manager
             $newManagerId = Read-Host "Enter the UserID of the new manager"
             # Validate if the Id is a JC User
             $validateUser = Get-JcSdkUser -Id $newManagerId
@@ -113,12 +113,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             Write-Debug "User is not a manager"
         }
 
-        # Check if the user is managed by another manager
-
-
-        # TODO: If force or does not have a manager, default to cascade_manager=Null -- Done
-        # TODO: If not force, prompt for cascade_manager if the user is a manager -- Done
-        # TODO: If manager is managed by another manager, cascade_manager to users managed by the manager -- Done
         if (!$force) {
             if ($CascadeManager -and $isManager) {
                 Switch ($CascadeManager) {
@@ -137,7 +131,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     }
                 }
             } elseif ($isManager -and !$CascadeManager) {
-                # Prompt for cascade_managerk, user enters the ID of the new manager
+                # Prompt for CascadeManager, user enters the ID of the new manager
                 $cascade_manager = Read-Host "User $($Username) is a manager. Do you want to reassign their managed users to another manager? (Y / N)"
                 while ($cascade_manager -ne 'Y' -and $cascade_manager -ne 'N') {
                     $cascade_manager = Read-Host "Please enter Y (Yes) or N (No)"
@@ -145,18 +139,38 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 if ($cascade_manager -eq 'Y') {
                     if ($hasManagerId) {
                         $managerUsername = $UserHash.GetEnumerator().Where({ $_.Name -contains ($hasManagerId) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
-                        $prompt = "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign their managed users to the manager who is managing this user? (Y/N)"
-                        $cascade_manager = Read-Host $prompt
+                        $cascade_manager = Read-Host "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign their managed users to the manager who is managing this user? (Y/N)"
+                        while ($cascade_manager -ne 'Y' -and $cascade_manager -ne 'N') {
+                            $cascade_manager = Read-Host "Please enter Y (Yes) or N (No)"
+                        }
                         if ($cascade_manager -eq 'Y') {
                             $newManagerId = $hasManagerId
                             $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
-                        } else {
+                        } elseif ($cascade_manager -eq 'N') {
                             $newManagerId = Read-Host "Enter the UserID of the new manager"
-                            $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                            # Validate if the Id is a JC User
+                            try {
+                                $validateUser = Get-JcSdkUser -Id $newManagerId
+                                Write-Debug "User $newManagerId is a valid JumpCloud User"
+                                $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                            } catch {
+                                Write-Error "User does not exist. Please enter a valid UserID."
+                                # Exit the script
+                                Exit
+                            }
                         }
                     } else {
                         $newManagerId = Read-Host "Enter the UserID of the new manager"
-                        $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                        # Validate if the Id is a JC User
+                        try {
+                            $validateUser = Get-JcSdkUser -Id $newManagerId
+                            Write-Debug "User $newManagerId is a valid JumpCloud User"
+                            $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                        } catch {
+                            Write-Error "User does not exist. Please enter a valid UserID."
+                            # Exit the script
+                            Exit
+                        }
                     }
                 } elseif ($cascade_manager -eq 'N') {
                     $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
