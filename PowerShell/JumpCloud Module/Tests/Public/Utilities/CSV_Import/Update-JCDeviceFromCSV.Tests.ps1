@@ -1,7 +1,7 @@
 Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
     BeforeAll {  }
     It 'Updates users from a CSV populated with all information' {
-        $system = Get-JCDevice | Select-Object -First 1
+        $system = Get-JCSystem | Select-Object -First 1
         $CSVData = @{
             "DeviceID"                       = $system.id
             "displayName"                    = "PesterUpdateFromCSV"
@@ -15,12 +15,14 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $CSVDATA | Export-Csv "$PesterParams_ImportPath/UpdateDeviceFromCSV.csv" -Force
         $DeviceCSVUpdate = Update-JCDeviceFromCSV -CSVFilePath "$PesterParams_ImportPath/UpdateDeviceFromCSV.csv" -force
 
-        $DeviceCSVUpdate.displayName | Should -Be $CSVData.displayName
-        $DeviceCSVUpdate.description | Should -Be $CSVData.description
-        $DeviceCSVUpdate.allowSshPasswordAuthentication | Should -Be $CSVData.allowSshPasswordAuthentication
-        $DeviceCSVUpdate.allowSshRootLogin | Should -Be $CSVData.allowSshRootLogin
-        $DeviceCSVUpdate.allowMultiFactorAuthentication | Should -Be $CSVData.allowMultiFactorAuthentication
-        $DeviceCSVUpdate.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
-        $DeviceCSVUpdate.systemInsights | Should -Be @{state = 'enabled'}
+        $UpdatedDevice = Get-JCSystem -SystemID $system.id
+
+        $UpdatedDevice.displayName | Should -Be $CSVData.displayName
+        $UpdatedDevice.description | Should -Be $CSVData.description
+        $UpdatedDevice.allowSshPasswordAuthentication | Should -Be $CSVData.allowSshPasswordAuthentication
+        $UpdatedDevice.allowSshRootLogin | Should -Be $CSVData.allowSshRootLogin
+        $UpdatedDevice.allowMultiFactorAuthentication | Should -Be $CSVData.allowMultiFactorAuthentication
+        $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
+        $UpdatedDevice.systemInsights | Should -Be @{state = 'enabled'}
     }
 }
