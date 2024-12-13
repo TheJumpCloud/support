@@ -1,16 +1,22 @@
 ## 2.16.0
 
-Release Date: December 11, 2024
+Release Date: December 13, 2024
 
 #### RELEASE NOTES
 
 ```
-This release introduces a bug fix for `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` issues with importing more than 10 custom attributes
+This release introduces a bug fix for `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` issues with importing more than 10 custom attributes. This release also introduces `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions.
 ```
+
+#### FEATURES:
+- Introduces the `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions
+    - `New-JCDeviceUpdateTemplate`: Creates a csv template used for bulk updating devices
+    - `Update-JCDeviceFromCSV`: Updates a list of devices from a CSV created by the `New-JCDeviceUpdateTemplate` function
 
 #### BUG FIXES:
 
 - Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` throwing error when importing 10 or more Custom Attributes due to a sorting issue
+- Fixed a bug with `Get-JCSystemApp` returning an error when searching for an app that is less than 4 characters long
 
 ## 2.15.0
 
