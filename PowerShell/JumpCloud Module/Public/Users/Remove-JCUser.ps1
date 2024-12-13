@@ -141,7 +141,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 if ($cascade_manager -eq 'Y') {
                     if ($hasManagerId) {
                         $managerUsername = $UserHash.GetEnumerator().Where({ $_.Name -contains ($hasManagerId) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
-                        $cascade_manager = Read-Host "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign their managed users to the manager who is managing this user? (Y/N)"
+                        $cascade_manager = Read-Host "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign the managed users to the manager: $($managerUsername)? (Y/N)"
                         if ($cascade_manager -eq 'Y') {
                             $newManagerId = $hasManagerId
                             $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs

@@ -42,6 +42,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
         Mock -CommandName Read-Host -MockWith { return "Y" }
+        Mock -CommandName Read-Host -MockWith { return "Y" }
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager ID -CascadeManagerId $ManagerUser2._id
 
         # The manager should be removed and the new manager should be set
@@ -63,6 +65,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $ManagerUser._id -manager $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
+        Mock -CommandName Read-Host -MockWith { return "Y" }
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         Mock -CommandName Read-Host -MockWith { return "Y" }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager Auto # Remove ManagerUser and should cascade to ManagerUser2
 
@@ -86,6 +90,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
         Mock -CommandName Read-Host -MockWith { return "Y" }
+        Mock -CommandName Read-Host -MockWith { return "Y" }
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL # Remove ManagerUser and should cascade to ManagerUser2
 
         # The manager should be removed and the new manager should be set
@@ -103,6 +109,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
 
         # Set the manager for user
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
+        Mock -CommandName Read-Host -MockWith { return "Y" }
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         Mock -CommandName Read-Host -MockWith { return "Y" }
         Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force | Should -Throw
 
