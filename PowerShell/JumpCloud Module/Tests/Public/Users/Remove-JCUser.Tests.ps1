@@ -31,10 +31,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
     BeforeAll {
 
-        Mock -CommandName Read-Host -MockWith {
-            # Return "Y" to simulate 'Yes' answer
-            return "Y"
-        }
+
     }
     It "Removes JumpCloud Manager and cascades the managed user managers to the given manager (id). Test CascadeManager param with by setting a manager id" {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
@@ -44,7 +41,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # Set the manager for each user
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
-
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager ID -CascadeManagerId $ManagerUser2._id
 
         # The manager should be removed and the new manager should be set
@@ -66,6 +63,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $ManagerUser._id -manager $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager Auto # Remove ManagerUser and should cascade to ManagerUser2
 
 
@@ -87,6 +85,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # Set the manager for user
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL # Remove ManagerUser and should cascade to ManagerUser2
 
         # The manager should be removed and the new manager should be set
@@ -104,10 +103,11 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
 
         # Set the manager for user
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
-
+        Mock -CommandName Read-Host -MockWith { return "Y" }
         Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force | Should -Throw
 
         # Clean up
+        Remove-JCUser -UserID $ManagerUser._id -force
         Remove-JCUser -UserID $NewUser._id -force
     }
 }

@@ -27,6 +27,11 @@ Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
 Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> [<CommonParameters>]
 ```
 
+### CascadeManagerId
+```
+Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> -CascadeManagerId <String> [<CommonParameters>]
+```
+
 ## DESCRIPTION
 The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organization. This will remove the deleted users access to any JumpCloud bound resources.
 
@@ -63,7 +68,7 @@ Removes the JumpCloud user with the username 'cclemons'. If this user is a manag
 
 ### Example 5
 ```powershell
-PS C:\> Remove-JCUser cclemons -CascadeManager id
+PS C:\> Remove-JCUser cclemons -CascadeManager id -CascadeManagerId cascadeManagerId
 ```
 
 Removes the JumpCloud user with the username 'cclemons'. If this user is a manager, their managed users will be reassigned to the manager specified by the provided ID.

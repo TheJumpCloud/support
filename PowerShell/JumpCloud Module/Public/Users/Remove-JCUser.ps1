@@ -138,16 +138,10 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             } elseif ($isManager -and !$CascadeManager) {
                 # Prompt for CascadeManager, user enters the ID of the new manager
                 $cascade_manager = Read-Host "User $($Username) is a manager. Do you want to reassign their managed users to another manager? (Y / N)"
-                while ($cascade_manager -ne 'Y' -and $cascade_manager -ne 'N') {
-                    $cascade_manager = Read-Host "Please enter Y (Yes) or N (No)"
-                }
                 if ($cascade_manager -eq 'Y') {
                     if ($hasManagerId) {
                         $managerUsername = $UserHash.GetEnumerator().Where({ $_.Name -contains ($hasManagerId) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
                         $cascade_manager = Read-Host "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign their managed users to the manager who is managing this user? (Y/N)"
-                        while ($cascade_manager -ne 'Y' -and $cascade_manager -ne 'N') {
-                            $cascade_manager = Read-Host "Please enter Y (Yes) or N (No)"
-                        }
                         if ($cascade_manager -eq 'Y') {
                             $newManagerId = $hasManagerId
                             $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
@@ -179,6 +173,9 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     }
                 } elseif ($cascade_manager -eq 'N') {
                     $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                } else {
+                    Write-Error "Please enter Y or N"
+                    Exit
                 }
             } else {
                 $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
