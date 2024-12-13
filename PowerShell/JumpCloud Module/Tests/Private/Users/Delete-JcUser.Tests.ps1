@@ -21,8 +21,8 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
 
-        Delete-JCUser -Id $ManagerUser._id -manager $ManagerUser2._id -Headers $hdrs | Should -Be 'Deleted'
-
+        $RemoveUser = Delete-JCUser -Id $ManagerUser._id -manager $ManagerUser2._id -Headers $hdrs
+        $RemoveUser.Results | Should -Be 'Deleted'
         # The new manager should be set
         Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager | Should -Be $ManagerUser2._id
 
@@ -39,7 +39,8 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
         # Set the manager for user
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
 
-        Delete-JCUser -Id $ManagerUser._id -Headers $hdrs | Should -Be 'Deleted'
+        $RemoveUser = Delete-JCUser -Id $ManagerUser._id -Headers $hdrs
+        $RemoveUser.Results | Should -Be 'Deleted'
 
         # The new manager should be set to NULL
         Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager | Should -BeNullOrEmpty

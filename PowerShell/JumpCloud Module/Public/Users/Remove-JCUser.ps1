@@ -35,19 +35,18 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [string]$CascadeManager
     )
     DynamicParam {
-        if ($CascadeManager -eq 'ID' -and !$force) {
-            # Prompt for CascadeManager, user enters the ID of the new manager
-            $newManagerId = Read-Host "Enter the UserID of the new manager"
-            # Validate if the Id is a JC User
-            $validateUser = Get-JcSdkUser -Id $newManagerId
-            if ($validateUser) {
-                Write-Debug "User $newManagerId is a valid JumpCloud User"
-                return $newManagerId
-            } else {
-                Write-Error "User does not exist. Please enter a valid UserID."
-                # Exit the script
-                Exit
-            }
+        # Create a dynamic parameter to get the -CascadeManagerId
+        if ($CascadeManager -eq 'ID') {
+            $paramDictionary = New-Object -Type System.Management.Automation.RuntimeDefinedParameterDictionary
+            $paramAttributesCollect = New-Object -Type System.Collections.ObjectModel.Collection[System.Attribute]
+
+            $paramAttributes = New-Object -Type System.Management.Automation.ParameterAttribute
+            $paramAttributes.Mandatory = $true
+            $paramAttributesCollect.Add($paramAttributes)
+
+            $dynParam1 = New-Object -Type System.Management.Automation.RuntimeDefinedParameter("CascadeManagerId", [string], $paramAttributesCollect)
+            $paramDictionary.Add('CascadeManagerId', $dynParam1)
+            return $paramDictionary
         }
     }
     begin {
@@ -73,13 +72,22 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
 
         $UserHash = Get-DynamicHash -Object User -returnProperties 'username', 'manager'
-
+        # Validate dynamic parameter
+        if ($CascadeManager -eq 'ID') {
+            try {
+                $CascadeManagerId = $PSBoundParameters['CascadeManagerId']
+                Get-JcSdkUser -Id $CascadeManagerId | Out-Null
+            } catch {
+                Write-Error "Please enter the UserID of the new manager."
+                # Exit the script
+                Exit
+            }
+        }
     }
     process {
         if ($PSCmdlet.ParameterSetName -eq 'Username' ) {
             if ($UserHash.Values.username -contains ($Username)) {
                 $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
-                Write-Debug "UserID: $UserID"
             } else {
                 Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
@@ -89,9 +97,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 Write-Debug "UserID is a valid JumpCloud User"
                 $UserId = $UserHash.GetEnumerator().Where({ $_.Name -contains ($UserID) }).Name
                 $Username = $UserHash.GetEnumerator().Where({ $_.Name -contains ($UserID) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
-                Write-Debug "UserID: $UserID"
-                Write-Debug "Username: $Username"
-
             } else {
                 Write-Error "User does not exist. Please enter a valid UserID."
                 # Exit the script
@@ -127,7 +132,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         }
                     }
                     'ID' {
-                        $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                        $Status = Delete-JCUser -Id $UserID -managerId $CascadeManagerId -Headers $hdrs
                     }
                 }
             } elseif ($isManager -and !$CascadeManager) {

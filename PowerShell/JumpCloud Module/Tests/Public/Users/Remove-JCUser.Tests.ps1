@@ -45,16 +45,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
 
-        Mock -CommandName Read-Host -MockWith {
-            # Return "Y" to simulate 'Yes' answer
-            param (
-                [string]$prompt
-            )
-            if ($prompt -eq "Enter the UserID of the new manager") {
-                return $ManagerUser2._id
-            }
-        }
-        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager ID
+        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager ID -CascadeManagerId $ManagerUser2._id
 
         # The manager should be removed and the new manager should be set
         $RemoveUser.Results | Should -Be 'Deleted'
