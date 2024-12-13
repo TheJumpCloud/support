@@ -181,7 +181,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
         if ($force) {
             try {
-                $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -force
             } catch {
                 $Status = $_.ErrorDetails
             }

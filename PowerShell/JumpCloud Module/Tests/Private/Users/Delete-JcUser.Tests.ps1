@@ -5,6 +5,11 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
             'Accept'       = 'application/json'
             'X-API-KEY'    = $env:JCAPIKEY
         }
+
+        Mock -CommandName Read-Host -MockWith {
+            # Return "Y" to simulate 'Yes' answer
+            return "Y"
+        }
     }
 
     It "Remove manager and cascade managed users to the new manager" {
@@ -42,3 +47,4 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
         # Clean up
         Remove-JCUser -UserID $NewUser._id -force
     }
+}

@@ -4,7 +4,8 @@ function Delete-JCUser {
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud User ID.')][ValidateNotNullOrEmpty()][System.String]$Id
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud cascade manager ID.')][System.String]$managerId,
         # headers are required
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud API headers.')][ValidateNotNullOrEmpty()][System.Collections.Hashtable]$Headers
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud API headers.')][ValidateNotNullOrEmpty()][System.Collections.Hashtable]$Headers, # Add force parameter
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Force the deletion of the user.')][System.Management.Automation.SwitchParameter]$force
     )
     process {
         try {
@@ -25,6 +26,11 @@ function Delete-JCUser {
                     Write-Debug "User not deleted"
                     $Status = 'Not Deleted'
                 }
+            } elseif ($force) {
+                $URI = "$JCUrlBasePath/api/systemusers/$($Id)?cascade_manager=null"
+                $delete = Invoke-RestMethod -Method Delete -Uri $URI -Headers $Headers -UserAgent:(Get-JCUserAgent)
+                Write-Debug $delete
+                $Status = 'Deleted'
             } else {
                 $URI = "$JCUrlBasePath/api/systemusers/$($Id)?cascade_manager=null"
                 $Username = Get-JcSdkUser -Id $Id | Select-Object -ExpandProperty username

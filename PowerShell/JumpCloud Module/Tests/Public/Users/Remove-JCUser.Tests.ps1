@@ -29,7 +29,13 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 
 }
 Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
-    BeforeAll {  }
+    BeforeAll {
+
+        Mock -CommandName Read-Host -MockWith {
+            # Return "Y" to simulate 'Yes' answer
+            return "Y"
+        }
+    }
     It "Removes JumpCloud Manager and cascades the managed user managers to the given manager (id). Test CascadeManager param with by setting a manager id" {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $ManagerUser2 = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
@@ -38,7 +44,16 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # Set the manager for each user
         Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
         # Remove the manager and set the new manager
-        Mock Read-Host { Return $ManagerUser2._id }
+
+        Mock -CommandName Read-Host -MockWith {
+            # Return "Y" to simulate 'Yes' answer
+            param (
+                [string]$prompt
+            )
+            if ($prompt -eq "Enter the UserID of the new manager") {
+                return $ManagerUser2._id
+            }
+        }
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager ID
 
         # The manager should be removed and the new manager should be set
@@ -99,10 +114,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # Set the manager for user
         Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
 
-        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force
-
-        # Cascade manager and force should throw an error
-        $RemoveUser | Should -Throw
+        Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force | Should -Throw
 
         # Clean up
         Remove-JCUser -UserID $NewUser._id -force
