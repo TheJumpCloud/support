@@ -6,7 +6,7 @@ Function Get-ReportByID {
         $reportID
     )
     begin {
-        write-host "attempting to get report by id: $reportId"
+        # write-host "attempting to get report by id: $reportId"
     }
     process {
         do {

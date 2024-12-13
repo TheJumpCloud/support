@@ -25,18 +25,18 @@ Function Get-LatestUserToDeviceReport {
             $timespan = New-TimeSpan -end $utcTimeNow -start $firstUAndDReport.Created_At
             # if time between now and the last generated report is >=24, create a new report
             if ($timespan.Minutes -ge $minutes) {
-                write-host "last report generated $($timespan.Minutes) minutes ago; generating new user to device report"
+                # write-host "last report generated $($timespan.Minutes) minutes ago; generating new user to device report"
                 $requestedReport = New-JcSdkReport -ReportType 'users-to-devices'
                 $latestReport = Get-ReportByID -reportID $requestedReport.Id
             } else {
-                write-host "last report generated $($timespan.Minutes) minutes ago"
+                # write-host "last report generated $($timespan.Minutes) minutes ago"
                 # return the last report
                 $latestReport = Get-ReportByID -reportID $firstUAndDReport.Id
             }
 
         } else {
             # if there are no reports create a new one:
-            write-host "generating new user to device report"
+            # write-host "generating new user to device report"
             $requestedReport = New-JcSdkReport -ReportType 'users-to-devices'
             $latestReport = Get-ReportByID -reportID $requestedReport.Id
         }
