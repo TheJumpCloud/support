@@ -23,6 +23,6 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowSshRootLogin | Should -Be $CSVData.allowSshRootLogin
         $UpdatedDevice.allowMultiFactorAuthentication | Should -Be $CSVData.allowMultiFactorAuthentication
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
-        $UpdatedDevice.systemInsights | Should -Be @{state = 'enabled'}
+        $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
     }
 }
