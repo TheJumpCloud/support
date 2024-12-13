@@ -42,7 +42,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         # Set the manager for each user
-        Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
+        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
 
         Mock -CommandName Read-Host -MockWith {
@@ -72,8 +72,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         # Set the manager for user
-        Set-JCUser -UserID $ManagerUser._id -ManagerID $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
-        Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
+        Set-JCUser -UserID $ManagerUser._id -manager $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
+        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager Auto # Remove ManagerUser and should cascade to ManagerUser2
 
@@ -94,7 +94,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         # Set the manager for user
-        Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
+        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL # Remove ManagerUser and should cascade to ManagerUser2
 
@@ -112,7 +112,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         # Set the manager for user
-        Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
+        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
 
         Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force | Should -Throw
 

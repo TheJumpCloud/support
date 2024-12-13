@@ -18,10 +18,10 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         # Set the manager for each user
-        Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
+        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
 
-        Delete-JCUser -Id $ManagerUser._id -managerId $ManagerUser2._id -Headers $hdrs | Should -Be 'Deleted'
+        Delete-JCUser -Id $ManagerUser._id -manager $ManagerUser2._id -Headers $hdrs | Should -Be 'Deleted'
 
         # The new manager should be set
         Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager | Should -Be $ManagerUser2._id
@@ -37,7 +37,7 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
 
         # Set the manager for user
-        Set-JCUser -UserID $NewUser._id -ManagerID $ManagerUser._id
+        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
 
         Delete-JCUser -Id $ManagerUser._id -Headers $hdrs | Should -Be 'Deleted'
 
