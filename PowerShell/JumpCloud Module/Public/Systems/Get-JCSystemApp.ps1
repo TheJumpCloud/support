@@ -104,7 +104,6 @@ function Get-JCSystemApp () {
                                 if ($macOsSoftwareName -contains '.app') {
                                     $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
                                 }
-
                                 If ($ending -match '.app') {
                                     $macOsSoftwareName = $macOsSoftwareName.Replace($ending, $ending.toLower())
                                     Write-Debug "$macOsSoftwareName"
