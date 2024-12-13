@@ -127,27 +127,8 @@ function Get-JCRGlobalVars {
                     ) | Out-Null
                 }
                 if ($updateAssociation) {
-                    # Get Report Hash:
-                    $headers = @{
-                        "accept"    = "application/json";
-                        "x-api-key" = $Env:JCApiKey;
-                        "x-org-id"  = $Env:JCOrgId
-                    }
-                    # request new user to device report:
-                    $reportRequest = Invoke-RestMethod -Uri 'https://api.jumpcloud.com/insights/directory/v1/reports/users-to-devices' -Method POST -Headers $headers
-                    # now fetch available reports:
-                    do {
-                        $reportList = Invoke-RestMethod -Uri 'https://api.jumpcloud.com/insights/directory/v1/reports?sort=CREATED_AT' -Method GET -Headers $headers
-                        $lastReport = $reportList | Where-Object { $_.id -eq $reportRequest.id }
-                        if ($lastReport.status -eq 'PENDING') {
-                            Write-Warning "[status] waiting 20s for jumpcloud report to complete"
-                            start-sleep -Seconds 20
-                        }
-                    } until ($lastReport.status -eq 'COMPLETED')
-                    # download json
-                    $artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'json' }).id
-                    $reportID = $lastReport.id
-                    $reportContent = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+                    # get the latest report, generate a new report if it's been more than 10 mins
+                    $reportContent = Get-LatestUserToDeviceReport -minutes 10
                     # create the hashtable:
                     $userAssociationList = New-Object System.Collections.Hashtable
                     foreach ($item in $reportContent) {
