@@ -34,14 +34,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
     }
     It "Tests for CascadeManager param with Force" {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
-
-        # Set the manager for user
-        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
-        Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force | Should -Throw
-
+        { Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL -force } | Should -Throw
         # Clean up
         Remove-JCUser -UserID $ManagerUser._id -force
-        Remove-JCUser -UserID $NewUser._id -force
     }
 }

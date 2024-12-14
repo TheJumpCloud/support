@@ -62,8 +62,5 @@ Describe -Tag:('JCUser') "Delete-JCUser 2.16.0" {
 
         $RemoveUser = Delete-JCUser -Id $NewUser._id -Headers $hdrs -UserHash $UserHash
         $RemoveUser.Results | Should -Be 'Deleted'
-
-        # Clean up
-        Remove-JCUser -UserID $NewUser._id -force
     }
 }
