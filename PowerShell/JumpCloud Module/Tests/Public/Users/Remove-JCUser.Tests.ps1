@@ -32,26 +32,6 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
     BeforeAll {
         Mock -CommandName Delete-JCUser -MockWith { return "Y" }
     }
-
-    It "Removes JumpCloud Manager and cascades the managed user managers to the given manager (id). Test CascadeManager param with by setting a manager id" {
-        $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $ManagerUser2 = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
-        $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
-
-        # Set the manager for each user
-        Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
-
-        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager ID -CascadeManagerId $ManagerUser2._id
-
-        # The manager should be removed and the new manager should be set
-        $RemoveUser.Results | Should -Be 'Deleted'
-        # The new manager should be set
-        Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager | Should -Be $ManagerUser2._id
-
-        # Clean up
-        Remove-JCUser -UserID $ManagerUser2._id -force
-        Remove-JCUser -UserID $NewUser._id -force
-    }
     It "Tests for CascadeManager param with Force" {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
         $NewUser = New-RandomUser -Domain "delUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser

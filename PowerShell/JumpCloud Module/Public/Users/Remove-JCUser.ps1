@@ -74,11 +74,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $UserHash = Get-DynamicHash -Object User -returnProperties 'username', 'manager'
         # Validate dynamic parameter
         if ($CascadeManager -eq 'ID') {
-            try {
-                $CascadeManagerId = $PSBoundParameters['CascadeManagerId']
-                Get-JcSdkUser -Id $CascadeManagerId | Out-Null
-            } catch {
-                Write-Error "Please enter the UserID of the new manager."
+            $CascadeManagerId = $PSBoundParameters['CascadeManagerId']
+            # Validate if the Id is a JC User from the $UserHash
+            if ($UserHash.ContainsKey($CascadeManagerId)) {
+                Write-Debug "CascadeManagerId is a valid JumpCloud User"
+            } else {
+                Write-Error "User does not exist. Please enter a valid UserID."
                 # Exit the script
                 Exit
             }
@@ -122,17 +123,17 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             if ($CascadeManager -and $isManager) {
                 Switch ($CascadeManager) {
                     'NULL' {
-                        $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                        $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -UserHash $UserHash
                     }
                     'Auto' {
                         if ($hasManagerId) {
-                            $Status = Delete-JCUser -Id $UserID -managerId $hasManagerId -Headers $hdrs
+                            $Status = Delete-JCUser -Id $UserID -managerId $hasManagerId -Headers $hdrs -UserHash $UserHash
                         } else {
-                            $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                            $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -UserHash $UserHash
                         }
                     }
                     'ID' {
-                        $Status = Delete-JCUser -Id $UserID -managerId $CascadeManagerId -Headers $hdrs
+                        $Status = Delete-JCUser -Id $UserID -managerId $CascadeManagerId -Headers $hdrs -UserHash $UserHash
                     }
                 }
             } elseif ($isManager -and !$CascadeManager) {
@@ -144,14 +145,14 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         $cascade_manager = Read-Host "User $($Username) is managed by manager: $($managerUsername). Do you want to reassign the managed users to the manager: $($managerUsername)? (Y/N)"
                         if ($cascade_manager -eq 'Y') {
                             $newManagerId = $hasManagerId
-                            $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                            $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs -UserHash $UserHash
                         } elseif ($cascade_manager -eq 'N') {
                             $newManagerId = Read-Host "Enter the UserID of the new manager"
                             # Validate if the Id is a JC User
                             try {
                                 $validateUser = Get-JcSdkUser -Id $newManagerId
                                 Write-Debug "User $newManagerId is a valid JumpCloud User"
-                                $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                                $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs -UserHash $UserHash
                             } catch {
                                 Write-Error "User does not exist. Please enter a valid UserID."
                                 # Exit the script
@@ -164,7 +165,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         try {
                             $validateUser = Get-JcSdkUser -Id $newManagerId
                             Write-Debug "User $newManagerId is a valid JumpCloud User"
-                            $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs
+                            $Status = Delete-JCUser -Id $UserID -managerId $newManagerId -Headers $hdrs -UserHash $UserHash
                         } catch {
                             Write-Error "User does not exist. Please enter a valid UserID."
                             # Exit the script
@@ -172,18 +173,18 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         }
                     }
                 } elseif ($cascade_manager -eq 'N') {
-                    $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                    $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -UserHash $UserHash
                 } else {
                     Write-Error "Please enter Y or N"
                     Exit
                 }
             } else {
-                $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs
+                $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -UserHash $UserHash
             }
         }
         if ($force) {
             try {
-                $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -force
+                $Status = Delete-JCUser -Id $UserID -managerId $null -Headers $hdrs -force -UserHash $UserHash
             } catch {
                 $Status = $_.ErrorDetails
             }

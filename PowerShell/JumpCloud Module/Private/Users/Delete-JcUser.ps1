@@ -4,15 +4,20 @@ function Delete-JCUser {
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud User ID.')][ValidateNotNullOrEmpty()][System.String]$Id
         , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud cascade manager ID.')][System.String]$managerId,
         # headers are required
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud API headers.')][ValidateNotNullOrEmpty()][System.Collections.Hashtable]$Headers, # Add force parameter
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Force the deletion of the user.')][System.Management.Automation.SwitchParameter]$force
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud API headers.')][ValidateNotNullOrEmpty()][System.Collections.Hashtable]$Headers,
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Force the deletion of the user.')][System.Management.Automation.SwitchParameter]$force,
+        # Parameter for $UserHash hashtable
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'The JumpCloud User Hash.')][System.Collections.Hashtable]$UserHash
     )
+    begin {
+        $Username = $UserHash.GetEnumerator().Where({ $_.Name -contains ($Id) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
+    }
     process {
         try {
             if ($managerId) {
                 $URI = "$JCUrlBasePath/api/systemusers/$($Id)?cascade_manager=$($managerId)"
-                $Username = Get-JcSdkUser -Id $Id | Select-Object -ExpandProperty username
-                $ManagerUsername = Get-JcSdkUser -Id $managerId | Select-Object -ExpandProperty username
+                # Get the manager's username from $Userhash
+                $managerUsername = $UserHash.GetEnumerator().Where({ $_.Name -contains ($managerId) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
                 Write-Host "Deleting user: $($Username) and cascading managed users to manager: $($ManagerUsername)" -ForegroundColor Yellow
                 $prompt = Read-Host "Are you sure you wish to delete the user: $($Username)? (Y/N)"
                 while ($prompt -ne 'Y' -and $prompt -ne 'N') {
@@ -33,7 +38,6 @@ function Delete-JCUser {
                 $Status = 'Deleted'
             } else {
                 $URI = "$JCUrlBasePath/api/systemusers/$($Id)?cascade_manager=null"
-                $Username = Get-JcSdkUser -Id $Id | Select-Object -ExpandProperty username
                 Write-Host "Deleting user: $Username" -ForegroundColor Yellow
                 $prompt = Read-Host "Are you sure you wish to delete the user: $($Username)? (Y/N)"
                 # Do a loop until the user enters Y or N
