@@ -27,9 +27,9 @@ Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
 Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> [<CommonParameters>]
 ```
 
-### CascadeManagerId
+### CascadeManagerUser
 ```
-Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> -CascadeManagerId <String> [<CommonParameters>]
+Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> -CascadeManagerUser <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -61,17 +61,17 @@ Removes the Jumpcloud user with Username 'cclemons'. If the user is a manager, t
 
 ### Example 4
 ```powershell
-PS C:\> Remove-JCUser cclemons -CascadeManager auto
+PS C:\> Remove-JCUser cclemons -CascadeManager automatic
 ```
 
 Removes the JumpCloud user with the username 'cclemons'. If this user is a manager (Manager1) and is also managed by another manager (Manager2), the users managed by Manager1 will be reassigned to Manager2 upon Manager1's removal. If Manager1 is not managed by anyone, the manager field for the users managed by Manager1 will be set to null.
 
 ### Example 5
 ```powershell
-PS C:\> Remove-JCUser cclemons -CascadeManager id -CascadeManagerId cascadeManagerId
+PS C:\> Remove-JCUser cclemons -CascadeManager id -CascadeManager User -CascadeManagerUser username/id
 ```
 
-Removes the JumpCloud user with the username 'cclemons'. If this user is a manager, their managed users will be reassigned to the manager specified by the provided ID.
+Removes the JumpCloud user with the username 'cclemons'. If this user is a manager, their managed users will be reassigned to the manager specified by the provided username/id with CascadeManagerUser.
 
 ## PARAMETERS
 
