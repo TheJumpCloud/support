@@ -22,16 +22,6 @@ Remove-JCUser [-Username] <String> [-force] [<CommonParameters>]
 Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
 ```
 
-### CascadeManager
-```
-Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> [<CommonParameters>]
-```
-
-### CascadeManagerUser
-```
-Remove-JCUser [-Username] <String> [-ByID] -CascadeManager <String> -CascadeManagerUser <String> [<CommonParameters>]
-```
-
 ## DESCRIPTION
 The Remove-JCUser function will remove a JumpCloud user from the JumpCloud organization. This will remove the deleted users access to any JumpCloud bound resources.
 

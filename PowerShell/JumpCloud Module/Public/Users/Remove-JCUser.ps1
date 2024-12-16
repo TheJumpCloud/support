@@ -83,7 +83,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $CascadeManagerId = $CascadeManagerValue
                     Write-Debug "$CascadeManagerId is a valid JumpCloud User"
                 } else {
-                    Write-Error "User does not exist. Please enter a valid UserID."
+                    Write-Error "UserId $($CascadeManagerValue) does not exist. Please enter a valid UserID."
                     # Throw the script
                     Throw
                 }
@@ -96,7 +96,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     Write-Debug "CascadeManagerId is a valid JumpCloud User $CascadeManagerId"
 
                 } else {
-                    Write-Error "User does not exist. Please enter a valid Username."
+                    Write-Error "Username $($CascadeManagerValue) does not exist. Please enter a valid Username."
                     # Throw the script
                     Throw
                 }
@@ -116,7 +116,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $Username = $UserHash.GetEnumerator().Where({ $_.Name -contains ($UserID) }) | Select-Object -ExpandProperty Value | Select-Object -ExpandProperty username
                 Write-Host "UserID $($UserId) is a valid JumpCloud User: $($Username)"
             } else {
-                Write-Error "User does not exist. Please enter a valid UserID."
+                Write-Error "UserId $($UserID) does not exist. Please enter a valid UserID."
                 # Throw the script
                 Throw
             }
