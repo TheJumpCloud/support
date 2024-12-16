@@ -101,10 +101,8 @@ function Get-JCSystemApp () {
                             if ($name) {
                                 # Check for .app at the end of the software name
                                 $macOsSoftwareName = $name
-                                if ($macOsSoftwareName -contains '.app') {
+                                if ($macOsSoftwareName -match '.app') {
                                     $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
-                                }
-                                If ($ending -match '.app') {
                                     $macOsSoftwareName = $macOsSoftwareName.Replace($ending, $ending.toLower())
                                     Write-Debug "$macOsSoftwareName"
                                 } else {
@@ -219,10 +217,8 @@ function Get-JCSystemApp () {
 
                         } elseif ($os -eq 'MacOs') {
                             $macOsSoftwareName = $name
-                            if ($macOsSoftwareName -contains '.app') {
+                            if ($macOsSoftwareName -match '.app') {
                                 $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
-                            }
-                            If ($ending -match '.app') {
                                 $macOsSoftwareName = $macOsSoftwareName.Replace($ending, $ending.toLower())
                                 Write-Debug "$macOsSoftwareName"
                             } else {
