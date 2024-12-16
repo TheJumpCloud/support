@@ -49,7 +49,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $ManagerUser._id -manager $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
-        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager Auto # Remove ManagerUser and should cascade to ManagerUser2
+        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager Automatic # Remove ManagerUser and should cascade to ManagerUser2
 
 
         # The manager should be removed and the new manager should be set
@@ -75,7 +75,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # The manager should be removed and the new manager should be set
         $RemoveUser.Results | Should -Be 'Deleted'
         # The new manager should be set to ManagerUser2
-        { Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager } | Should -BeNullOrEmpty
+        $manager = Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager
+        $manager | Should -BeNullOrEmpty
         # Clean up
         Remove-JCUser -UserID $NewUser._id -force
     }
@@ -93,7 +94,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # The manager should be removed and the new manager should be set
         $RemoveUser.Results | Should -Be 'Deleted'
         # The new manager should be set to ManagerUser2
-        { Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager } | Should -Be $ManagerUser2._id
+        $manager = Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager
+        $manager | Should -Be $ManagerUser2._id
         # Clean up
         Remove-JCUser -UserID $ManagerUser2._id -force
         Remove-JCUser -UserID $NewUser._id -force
@@ -112,7 +114,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # The manager should be removed and the new manager should be set
         $RemoveUser.Results | Should -Be 'Deleted'
         # The new manager should be set to ManagerUser2
-        { Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager } | Should -Be $ManagerUser2._id
+        $manager = Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager
+        $manager | Should -Be $ManagerUser2._id
         # Clean up
         Remove-JCUser -UserID $ManagerUser2._id -force
         Remove-JCUser -UserID $NewUser._id -force
@@ -139,14 +142,17 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         # Set the manager for user
         Set-JCUser -UserID $ManagerUser._id -manager $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
-
+        Mock -CommandName 'Read-Host' -MockWith { return 'Y' }
+        Mock -CommandName 'Read-Host' -MockWith { return 'Y' }
+        Mock -CommandName 'Read-Host' -MockWith { return 'Y' }
         # Remove the manager and set the new manager
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id # Remove ManagerUser and should cascade to ManagerUser2. Prompts should be auto answered with 'Y'
 
         # The manager should be removed and the new manager should be set
         $RemoveUser.Results | Should -Be 'Deleted'
         # The new manager should be set to ManagerUser2
-        { Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager } | Should -Be $ManagerUser2._id
+        $manager = Get-JCUser -UserID $NewUser._id | Select-Object -ExpandProperty manager
+        $manager | Should -Be $ManagerUser2._id
         # Clean up
         Remove-JCUser -UserID $ManagerUser2._id -force
         Remove-JCUser -UserID $NewUser._id -force
