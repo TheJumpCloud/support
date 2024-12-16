@@ -30,7 +30,8 @@ Describe -Tag:('JCUser') "Remove-JCUser 1.10" {
 }
 Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
     BeforeAll {
-        Mock -CommandName Delete-JCUser -MockWith { return "Y" }
+        # Mock Read-Host to auto answer 'Y' to the prompt
+        Mock -CommandName 'Read-Host' -MockWith { return 'Y' }
     }
     It "Tests for CascadeManager param with Force" {
         $ManagerUser = New-RandomUser "PesterTest$(Get-Date -Format MM-dd-yyyy)" | New-JCUser
