@@ -143,7 +143,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $ManagerUser._id -manager $ManagerUser2._id # ManagerUser2 is the manager of ManagerUser
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
 
-        Mock -CommandName 'Read-Host' -MockWith { return 'Y' }
+        Mock -CommandName Read-Host -MockWith { return 'y' }
         # Remove the manager and set the new manager
         $RemoveUser = Remove-JCUser -UserID $ManagerUser._id # Remove ManagerUser and should cascade to ManagerUser2. Prompts should be auto answered with 'Y'
 
