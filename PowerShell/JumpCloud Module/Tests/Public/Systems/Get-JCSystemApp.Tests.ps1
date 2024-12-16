@@ -230,8 +230,8 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         Get-JCSystemApp -SystemID $mac._id -name "Chess" | Should -Not -BeNullOrEmpty
     }
     It "Tests to make sure an error is not thrown if an app is less than 4 characters long" {
-        Get-JCSystemApp -SystemID $mac._id -name "vlc" | Should -Not -Throw
-        Get-JCSystemApp -SystemID $windows._id -name "vlc" | Should -Not -Throw
-        Get-JCSystemApp -SystemID $linux._id -name "vlc" | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $mac._id -name "vlc" } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $windows._id -name "vlc" } | Should -Not -Throw
+        { Get-JCSystemApp -SystemID $linux._id -name "vlc" } | Should -Not -Throw
     }
 }
