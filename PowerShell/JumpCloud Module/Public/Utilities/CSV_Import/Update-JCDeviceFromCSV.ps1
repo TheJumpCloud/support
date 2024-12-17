@@ -96,6 +96,8 @@ Function Update-JCDeviceFromCSV () {
                     $DeviceHash[$_.Name] = $true
                 } elseif (($_.Value -eq '$false') -or ($_.Value -eq 'false')) {
                     $DeviceHash[$_.Name] = $false
+                } elseif ($_.Value -eq "") {
+                    return
                 } else {
                     $DeviceHash[$_.Name] = $_.Value
                 }
