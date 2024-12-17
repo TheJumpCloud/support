@@ -60,7 +60,7 @@ Removes the JumpCloud user with the username 'cclemons'. If this user is a manag
 
 ### Example 5
 ```powershell
-PS C:\> Remove-JCUser cclemons -CascadeManager id -CascadeManager User -CascadeManagerUser username/id
+PS C:\> Remove-JCUser cclemons -CascadeManager User -CascadeManagerUser some.manager
 ```
 
 Removes the JumpCloud user with the username 'cclemons'. If this user is a manager, their managed users will be reassigned to the manager specified by the provided username/id with CascadeManagerUser.
