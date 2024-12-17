@@ -48,7 +48,8 @@ If the cclemons is a manager of other users, the `Force` parameter will clear cc
 PS C:\> Remove-JCUser cclemons -CascadeManager null
 ```
 
-Removes the Jumpcloud user with Username 'cclemons'. If the user is a manager, the manager field for the managed users by this manager will be set to null.
+Removes the Jumpcloud user with Username 'cclemons'. If `cclemons` manages other JumpCloud users, those user's will have their manager field set to null. Note. This command as the same effect as running `Remove-JCUser cclemons -Force`
+
 
 ### Example 4
 ```powershell
