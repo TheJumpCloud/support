@@ -1,18 +1,24 @@
 ## 2.16.0
 
-Release Date: December 16, 2024
+Release Date: December 17, 2024
 
 #### RELEASE NOTES
 
 ```
+This release introduces support for cascading managers with `Remove-JCUser`
 This release introduces a bug fix for `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` issues with importing more than 10 custom attributes. This release also introduces `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions.
 ```
 
 #### FEATURES:
+
 - Introduces the `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions
     - `New-JCDeviceUpdateTemplate`: Creates a csv template used for bulk updating devices
     - `Update-JCDeviceFromCSV`: Updates a list of devices from a CSV created by the `New-JCDeviceUpdateTemplate` function
-
+- Introduces `Remove-JCUser` - Added -CascadeManager (null, automatic, user) parameter
+  - null - Manager field for managed users by the user being removed will be set to null
+  - automatic - If the user (manager1) being removed is a manager but also managed by another user(manager2). The manager for managed users will cascade to manager2.
+  - User - Manually specify the manager for users managed by the user/manager being removed
+    - -CascadeManagerUser Id/Username
 #### BUG FIXES:
 
 - Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` throwing error when importing 10 or more Custom Attributes due to a sorting issue

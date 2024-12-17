@@ -10,7 +10,7 @@ mac
 
 ```
 # DMG Download URL
-DownloadUrl="https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg"
+DownloadUrl="https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg"
 
 ### Modify below this line at your own risk!
 
@@ -173,7 +173,7 @@ echo "Deleted /tmp/$TempFolder"
 
 #### Description
 
-Installs Google Chrome from the DMG file available for download from the link: `https://dl.google.com/chrome/mac/stable/GGRO/googlechrome.dmg`.
+Installs Google Chrome from the DMG file available for download from the link: `https://dl.google.com/chrome/mac/universal/stable/GGRO/googlechrome.dmg`.
 
 This command creates a temporary folder in the /tmp directory and to downloads the DMG file to this folder.
 
