@@ -63,7 +63,7 @@ Removes the JumpCloud user with the username 'cclemons'. If this user is a manag
 PS C:\> Remove-JCUser cclemons -CascadeManager User -CascadeManagerUser some.manager
 ```
 
-Removes the JumpCloud user with the username 'cclemons'. If this user is a manager, their managed users will be reassigned to the manager specified by the provided username/id with CascadeManagerUser.
+Removes the JumpCloud user with the username `cclemons`. If `cclemons` is a manager, their subordinates will be reassigned to the manager specified by the provided username/id with CascadeManagerUser parameter. In this case, `cclemons` subordinates will be managed by the user with username: `some.manager` after `cclemons` is removed.
 
 ## PARAMETERS
 
