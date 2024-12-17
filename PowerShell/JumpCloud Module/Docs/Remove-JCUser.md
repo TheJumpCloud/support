@@ -40,7 +40,8 @@ PS C:\> Remove-JCUser cclemons -Force
 ```
 
 Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. A warning message will not be presented to confirm this operation.
-If the user is a manager, this parameter will clear the manager field for the managed users by this manager.
+If the cclemons is a manager of other users, the `Force` parameter will clear cclemons' subordinates `manager` field. In other words if a user is managed by cclemons, removing cclemons will also remove that user's manager field in JumpCloud.
+
 
 ### Example 3
 ```powershell
