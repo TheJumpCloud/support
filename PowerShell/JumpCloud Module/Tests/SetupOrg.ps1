@@ -74,8 +74,9 @@ Try {
         }
         # Remove all Commands from an org
         If ($Commands) {
+            #$null = Get-JCCommandResult | Remove-JCCommandResult -force
             $null = Get-JCCommand | Remove-JCCommand -force
-            $null = Get-JCCommandResult | Remove-JCCommandResult -force
+            #$null = Get-JCCommandResult | Remove-JCCommandResult -force
             Write-Host "[status] Removed commands: $($stopwatch.Elapsed)"
         }
         # Remove all RadiusServers from an org
