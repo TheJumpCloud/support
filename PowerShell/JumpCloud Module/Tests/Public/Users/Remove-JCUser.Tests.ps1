@@ -70,7 +70,7 @@ Describe -Tag:('JCUser') "Remove-JCUser 2.16.0" {
         Set-JCUser -UserID $NewUser._id -manager $ManagerUser._id
         # Remove the manager and set the new manager
 
-        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL # Remove ManagerUser and should cascade to ManagerUser2
+        $RemoveUser = Remove-JCUser -UserID $ManagerUser._id -CascadeManager NULL
 
         # The manager should be removed and the new manager should be set
         $RemoveUser.Results | Should -Be 'Deleted'
