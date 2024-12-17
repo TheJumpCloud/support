@@ -14,12 +14,14 @@ Removes a JumpCloud User
 
 ### Username (Default)
 ```
-Remove-JCUser [-Username] <String> [-force] [<CommonParameters>]
+Remove-JCUser [-Username] <String> [-force] [-CascadeManager <String>]
+ [<CommonParameters>]
 ```
 
 ### UserID
 ```
-Remove-JCUser -UserID <String> [-ByID] [-force] [<CommonParameters>]
+Remove-JCUser -UserID <String> [-ByID] [-force] [-CascadeManager <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,14 +44,12 @@ PS C:\> Remove-JCUser cclemons -Force
 Removes the JumpCloud User with Username 'cclemons' using the -Force Parameter. A warning message will not be presented to confirm this operation.
 If the cclemons is a manager of other users, the `Force` parameter will clear cclemons' subordinates `manager` field. In other words if a user is managed by cclemons, removing cclemons will also remove that user's manager field in JumpCloud.
 
-
 ### Example 3
 ```powershell
 PS C:\> Remove-JCUser cclemons -CascadeManager null
 ```
 
 Removes the Jumpcloud user with Username 'cclemons'. If `cclemons` manages other JumpCloud users, those user's will have their manager field set to null. Note. This command as the same effect as running `Remove-JCUser cclemons -Force`
-
 
 ### Example 4
 ```powershell
@@ -75,6 +75,22 @@ The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increas
 Type: System.Management.Automation.SwitchParameter
 Parameter Sets: UserID
 Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -CascadeManager
+A SwitchParameter for Cascading the manager of the user to the users managed by the user. NULL, AUTOMATIC (bubble up), ID (prompt for manager ID)
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: NULL, Automatic, User
 
 Required: False
 Position: Named
