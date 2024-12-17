@@ -86,6 +86,7 @@ Function New-JCDeviceUpdateTemplate {
                 $CSVDeviceUpdate = $CSV
                 $CSVDeviceUpdate.DeviceID = $System.Key
                 $CSVDeviceUpdate.displayName = $System.value.displayname
+                $CSVDeviceUpdate.hostname = $System.value.hostname
                 $SystemObject = New-Object psobject -Property $CSVDeviceUpdate
                 $CSVheader += $SystemObject
             }
@@ -96,6 +97,7 @@ Function New-JCDeviceUpdateTemplate {
             $CSV = [ordered]@{
                 DeviceID    = $null
                 displayname = $null
+                hostname = $null
             }
 
             Write-Host "`nWould you like to populate this update template with all of your existing systems?"
@@ -129,19 +131,6 @@ Function New-JCDeviceUpdateTemplate {
             }
 
             elseif ($ConfirmDeviceDescription -eq 'N') {
-            }
-
-            Write-Host "`nWould you like to update device hostnames?"
-
-            while ($ConfirmDeviceHostname -ne 'Y' -and $ConfirmDeviceHostname -ne 'N') {
-                $ConfirmDeviceHostname = Read-Host  "Enter Y for Yes or N for No"
-            }
-
-            if ($ConfirmDeviceHostname -eq 'Y') {
-                $CSV.add('hostname', $null)
-            }
-
-            elseif ($ConfirmDeviceHostname -eq 'N') {
             }
 
             Write-Host "`nWould you like to update allowing SSH Password Authentication?"
@@ -218,6 +207,7 @@ Function New-JCDeviceUpdateTemplate {
                     $CSVDeviceUpdate = $CSV
                     $CSVDeviceUpdate.DeviceID = $System.Key
                     $CSVDeviceUpdate.displayName = $System.value.displayname
+                    $CSVDeviceUpdate.hostname = $System.value.hostname
                     $SystemObject = New-Object psobject -Property $CSVDeviceUpdate
                     $CSVheader += $SystemObject
                 }
