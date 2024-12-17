@@ -56,7 +56,7 @@ Removes the Jumpcloud user with Username 'cclemons'. If `cclemons` manages other
 PS C:\> Remove-JCUser cclemons -CascadeManager automatic
 ```
 
-Removes the JumpCloud user with the username 'cclemons'. If this user is a manager (Manager1) and is also managed by another manager (Manager2), the users managed by Manager1 will be reassigned to Manager2 upon Manager1's removal. If Manager1 is not managed by anyone, the manager field for the users managed by Manager1 will be set to null.
+Removes the JumpCloud user with the username 'cclemons' and automatically update's their subordinates manager field to `cclemons` manager. Ex. If `cclemons` is a manager and is also managed by another user with username: `some.manager`, the users managed by `cclemons` will be reassigned to `some.manager` upon `cclemons` removal. If `cclemons` is not managed by anyone, the manager field for the `cclemons` subordinates will be set to null.
 
 ### Example 5
 ```powershell
