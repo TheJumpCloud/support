@@ -9,9 +9,17 @@ $ApprovedFunctions = [Ordered]@{
         [PSCustomObject]@{
             Name        = 'Get-JcSdkEventCount';
             Destination = '/Public/DirectoryInsights';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkReport';
+            Destination = '/Public/Reports';
+        },
+        [PSCustomObject]@{
+            Name        = 'New-JcSdkReport';
+            Destination = '/Public/Reports';
         }
     );
-    # 'JumpCloud.SDK.V2'                = @(
+    #'JumpCloud.SDK.V2'                = @(
     #     [PSCustomObject]@{
     #         Name        = 'Get-JcSdkAppleMdm';
     #         Destination = '/Public/AppleMdm';
@@ -60,7 +68,7 @@ $ApprovedFunctions = [Ordered]@{
     #         Name        = 'Get-JcSdkAppleMdmEnrollmentProfile';
     #         Destination = '/Public/AppleMdm';
     #     }
-    # )
+    #)
 }
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
@@ -136,6 +144,11 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 $Params = $FunctionContent | Select-String -Pattern:([regex]'(?s)(    \[Parameter)(.*?)(\})') -AllMatches
                 $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' })
 
+                # Check if there is only one parameter
+                if ($ParameterContent -is [string]) {
+                    $ParameterContent = @($ParameterContent)
+                }
+
                 for ($i = 0; $i -lt $ParameterContent.Count; $i++) {
                     if ($i -ne ($ParameterContent.Count - 1 )) {
                         $ParameterContent[$i] = $($ParameterContent[$i].Replace('}', '},'))
@@ -175,10 +188,9 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 # $EndContent = @()
                 # Build "Begin" block
 
-                If (-not [System.String]::IsNullOrEmpty($BeginContent) -and -not [System.String]::IsNullOrEmpty($ProcessContent) -and -not [System.String]::IsNullOrEmpty($EndContent)) {
-                    # Build "Function"
-                    # $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, $ParameterContent, $BeginContent, $ProcessContent, $EndContent
-                    $NewScript = @"
+                # Build "Function"
+                # $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, $ParameterContent, $BeginContent, $ProcessContent, $EndContent
+                $NewScript = @"
 $PSScriptInfo
 Function $NewCommandName {
     $($OutputType)
@@ -198,20 +210,20 @@ $paramString
     }
 }
 "@
-                    # $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, ($ParameterContent -join ", `n`n"), ($BeginContent -join "`n"), ($ProcessContent -join "`n"), ($EndContent -join "`n")
-                    # Fix line endings
-                    # $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
-                    # Export the function
-                    Write-Host ("[STATUS] Writing File: $OutputPath/$NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-                    $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
-                    New-FolderRecursive -Path:($OutputFilePath) -Force
-                    $NewScript | Out-File -FilePath:($OutputFilePath) -Force
-                    # Validate script syntax
-                    $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
-                    If ($ScriptAnalyzerResult) {
-                        $ScriptAnalyzerResults += $ScriptAnalyzerResult
-                    }
+                # $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, ($ParameterContent -join ", `n`n"), ($BeginContent -join "`n"), ($ProcessContent -join "`n"), ($EndContent -join "`n")
+                # Fix line endings
+                # $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
+                # Export the function
+                Write-Host ("[STATUS] Writing File: $OutputPath/$NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+                $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
+                New-FolderRecursive -Path:($OutputFilePath) -Force
+                $NewScript | Out-File -FilePath:($OutputFilePath) -Force
+                # Validate script syntax
+                $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
+                If ($ScriptAnalyzerResult) {
+                    $ScriptAnalyzerResults += $ScriptAnalyzerResult
                 }
+
                 # Copy tests?
                 # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
                 # Update .Psd1 file
