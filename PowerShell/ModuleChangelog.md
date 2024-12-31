@@ -1,6 +1,22 @@
+## 2.17.0
+
+Release Date: December 31, 2024
+
+#### RELEASE NOTES
+
+```
+This release introduces two new functions `New-JCReport` and `Get-JCReport`
+```
+
+#### FEATURES:
+
+- Introduces two new functions `New-JCReport` and `Get-JCReport`
+    - `New-JCReport` - Generates a report using the pre-built report generators available in the console
+    - `Get-JCReport` - Allows you get get the report metadata and once the report is finished processing, using the reportID and the artifactID, you can output the report content via JSON or CSV
+
 ## 2.16.0
 
-Release Date: December 17, 2024
+Release Date: December 31, 2024
 
 #### RELEASE NOTES
 
