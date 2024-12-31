@@ -9,15 +9,15 @@ $ApprovedFunctions = [Ordered]@{
         [PSCustomObject]@{
             Name        = 'Get-JcSdkEventCount';
             Destination = '/Public/DirectoryInsights';
-        },
-        [PSCustomObject]@{
-            Name        = 'Get-JcSdkReport';
-            Destination = '/Public/Reports';
-        },
-        [PSCustomObject]@{
-            Name        = 'New-JcSdkReport';
-            Destination = '/Public/Reports';
         }
+        #     [PSCustomObject]@{
+        #         Name        = 'Get-JcSdkReport';
+        #         Destination = '/Public/Reports';
+        #     },
+        #     [PSCustomObject]@{
+        #         Name        = 'New-JcSdkReport';
+        #         Destination = '/Public/Reports';
+        #     }
     );
     #'JumpCloud.SDK.V2'                = @(
     #     [PSCustomObject]@{
