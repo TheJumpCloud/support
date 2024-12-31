@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.16.0
+Help Version: 2.17.0
 Locale: en-Us
 ---
 
@@ -110,6 +110,9 @@ Returns the Radius reply attributes associated with a JumpCloud user group.
 ### [Get-JCRadiusServer](Get-JCRadiusServer.md)
 Return JumpCloud radius server information.
 
+### [Get-JCReport](Get-JCReport.md)
+Ordered list of report metadata
+
 ### [Get-JCScheduledUserstate](Get-JCScheduledUserstate.md)
 Returns scheduled userstate changes by state or returns a user's scheduled userstate changes
 
@@ -180,6 +183,9 @@ This endpoint allows you to create a new Policy Group.
 
 ### [New-JCRadiusServer](New-JCRadiusServer.md)
 Creates a JumpCloud radius server.
+
+### [New-JCReport](New-JCReport.md)
+Request a JumpCloud report to be generated asynchronously
 
 ### [New-JCSystemGroup](New-JCSystemGroup.md)
 Creates a JumpCloud System Group
