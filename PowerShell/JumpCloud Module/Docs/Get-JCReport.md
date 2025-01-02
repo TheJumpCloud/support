@@ -58,7 +58,6 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'
 
 Returns the report's content in CSV format from the last generated report
 
-
 ## PARAMETERS
 
 ### -ReportID

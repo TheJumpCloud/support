@@ -8136,9 +8136,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
         <dev:code>$lastReport = Get-JCReport -Sort 'CREATED_AT' | Select -First 1
-$artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'json' }).id
-$reportID = $lastReport.id
-$reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID</dev:code>
+$reportContent = Get-JCReport -reportID $lastReport.id -type 'json'</dev:code>
         <dev:remarks>
           <maml:para>Returns the report's content in JSON format from the last generated report</maml:para>
         </dev:remarks>
@@ -8146,40 +8144,9 @@ $reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID</dev:c
       <command:example>
         <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
         <dev:code>$lastReport = Get-JCReport -Sort 'CREATED_AT' | Select -First 1
-$artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'csv' }).id
-$reportID = $lastReport.id
-$reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID</dev:code>
+$reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
         <dev:remarks>
           <maml:para>Returns the report's content in CSV format from the last generated report</maml:para>
-        </dev:remarks>
-      </command:example>
-      <command:example>
-        <maml:title>-------------------------- EXAMPLE 5 --------------------------</maml:title>
-        <dev:code>$usersToUserGroups = New-JCReport -ReportType "users-to-user-groups"
-do {
-    $finishedReport = Get-JCReport | Where-Object { $_.id -eq $usersToUserGroups.id }
-    switch ($finishedReport.status) {
-        PENDING {
-            Write-Warning "[status] waiting 5s for jumpcloud report to complete"
-            Start-Sleep -Seconds 5
-        }
-        IN_PROGRESS {
-            Write-Warning "[status] waiting 5s for jumpcloud report to complete"
-            Start-Sleep -Seconds 5
-        }
-        FAILED {
-            throw "Report failed to generate"
-        }
-        DELETED {
-            throw "Report was deleted"
-        }
-    }
-} until ($finishedReport.status -eq "COMPLETED")
-$artifactID = ($finishedReport.artifacts | Where-Object { $_.format -eq 'json' }).id
-$reportID = $usersToUserGroups.id
-$reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID</dev:code>
-        <dev:remarks>
-          <maml:para>Generates a report using New-JCReport, then using a do-until loop, checks to see if the report is finished generating and then saves the finished report's content in JSON format to the $reportContent variable</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
