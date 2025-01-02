@@ -1,6 +1,6 @@
 ## 2.17.0
 
-Release Date: December 31, 2024
+Release Date: January 02, 2025
 
 #### RELEASE NOTES
 
@@ -16,7 +16,7 @@ This release introduces two new functions `New-JCReport` and `Get-JCReport`
 
 ## 2.16.0
 
-Release Date: December 31, 2024
+Release Date: January 02, 2025
 
 #### RELEASE NOTES
 
