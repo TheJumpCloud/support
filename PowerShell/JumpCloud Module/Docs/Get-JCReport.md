@@ -19,7 +19,7 @@ Get-JCReport [-Sort <Sort>] [<CommonParameters>]
 
 ### Report
 ```
-Get-JCReport [-Sort <Sort>] [-ReportID <String>] [-ArtifactID <String>]
+Get-JCReport [-Sort <Sort>] -ReportID <String> -Type <String>
  [<CommonParameters>]
 ```
 
@@ -45,9 +45,7 @@ Returns a list of all available reports, sorted by the most recently created rep
 ### EXAMPLE 3
 ```
 $lastReport = Get-JCReport -Sort 'CREATED_AT' | Select -First 1
-$artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'json' }).id
-$reportID = $lastReport.id
-$reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID
+$reportContent = Get-JCReport -reportID $lastReport.id -type 'json'
 ```
 
 Returns the report's content in JSON format from the last generated report
@@ -55,58 +53,13 @@ Returns the report's content in JSON format from the last generated report
 ### EXAMPLE 4
 ```
 $lastReport = Get-JCReport -Sort 'CREATED_AT' | Select -First 1
-$artifactID = ($lastReport.artifacts | Where-Object { $_.format -eq 'csv' }).id
-$reportID = $lastReport.id
-$reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID
+$reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'
 ```
 
 Returns the report's content in CSV format from the last generated report
 
-### EXAMPLE 5
-```
-$usersToUserGroups = New-JCReport -ReportType "users-to-user-groups"
-do {
-    $finishedReport = Get-JCReport | Where-Object { $_.id -eq $usersToUserGroups.id }
-    switch ($finishedReport.status) {
-        PENDING {
-            Write-Warning "[status] waiting 5s for jumpcloud report to complete"
-            Start-Sleep -Seconds 5
-        }
-        IN_PROGRESS {
-            Write-Warning "[status] waiting 5s for jumpcloud report to complete"
-            Start-Sleep -Seconds 5
-        }
-        FAILED {
-            throw "Report failed to generate"
-        }
-        DELETED {
-            throw "Report was deleted"
-        }
-    }
-} until ($finishedReport.status -eq "COMPLETED")
-$artifactID = ($finishedReport.artifacts | Where-Object { $_.format -eq 'json' }).id
-$reportID = $usersToUserGroups.id
-$reportContent = Get-JCReport -artifactID $artifactID -reportID $reportID
-```
-
-Generates a report using New-JCReport, then using a do-until loop, checks to see if the report is finished generating and then saves the finished report's content in JSON format to the $reportContent variable
 
 ## PARAMETERS
-
-### -ArtifactID
-ID of the Artifact
-
-```yaml
-Type: System.String
-Parameter Sets: Report
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
 
 ### -ReportID
 ID of the Report request.
@@ -114,9 +67,9 @@ ID of the Report request.
 ```yaml
 Type: System.String
 Parameter Sets: Report
-Aliases:
+Aliases: id
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -133,6 +86,21 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Type
+Output type of the report content, either CSV or JSON
+
+```yaml
+Type: System.String
+Parameter Sets: Report
+Aliases:
+
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
