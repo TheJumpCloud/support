@@ -36,7 +36,7 @@ Try {
         )
         # Remove all users from an org
         If ($Users) {
-            $NonExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and -not $_.externally_managed }
+            $NonExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*del*' -or $_.Email -like '*pester*') -and -not $_.externally_managed }
             $RemoveNonExternallyManagedUsers = $NonExternallyManagedUsersToRemove | Remove-JCUser -force
             $ExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and $_.externally_managed }
             $UpdateExternallyManagedUsersToRemove = $ExternallyManagedUsersToRemove | Set-JCUser -externally_managed $false
@@ -52,16 +52,16 @@ Try {
         If ($Groups) {
             $AllGroupsToRemove = Get-JCGroup
             foreach ($group in $allGroupsToRemove) {
-                write-host "Group Name: $($group.Name) $($group.id) $($group.type)"
+                Write-Host "Group Name: $($group.Name) $($group.id) $($group.type)"
                 switch ($group.type) {
                     'system_group' {
                         try {
-                            Remove-JcSdkSystemGroup -Id $group.id -ErrorAction Ignore -errorVariable groupError
+                            Remove-JcSdkSystemGroup -Id $group.id -ErrorAction Ignore -ErrorVariable groupError
                         } catch {
                             if ($groupError.ErrorRecord -Match "default macOS ADE device group") {
-                                Set-JCsdkSystemGroup -Id $group.id -Name "MDM-$(Get-Random)"
+                                Set-JcSdkSystemGroup -Id $group.id -Name "MDM-$(Get-Random)"
                             } else {
-                                Set-JCsdkSystemGroup -Id $group.id -Name "unknown-$(Get-Random)"
+                                Set-JcSdkSystemGroup -Id $group.id -Name "unknown-$(Get-Random)"
                             }
                         }
                     }
@@ -208,8 +208,8 @@ Try {
 # Clean up unnecessary Radius Server Attributes to Export:
 $r1 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusAzureServer' }
 $r2 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusServer' }
-$r1.value | % { $_.psobject.properties.remove('httpMetaData') }
-$r2.value | % { $_.psobject.properties.remove('httpMetaData') }
+$r1.value | ForEach-Object { $_.psobject.properties.remove('httpMetaData') }
+$r2.value | ForEach-Object { $_.psobject.properties.remove('httpMetaData') }
 
-write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
+Write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
 Return $variableArray
