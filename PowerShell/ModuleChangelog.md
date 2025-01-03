@@ -1,6 +1,6 @@
 ## 2.17.0
 
-Release Date: January 03, 2025
+Release Date: January 3, 2025
 
 #### RELEASE NOTES
 
