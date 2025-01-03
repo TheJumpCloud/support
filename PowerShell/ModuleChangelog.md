@@ -1,6 +1,6 @@
 ## 2.17.0
 
-Release Date: January 2, 2025
+Release Date: January 03, 2025
 
 #### RELEASE NOTES
 
@@ -11,8 +11,8 @@ This release introduces two new functions `New-JCReport` and `Get-JCReport`
 #### FEATURES:
 
 - Introduces two new functions `New-JCReport` and `Get-JCReport`
-    - `New-JCReport` - Generates a report using the pre-built report generators available in the console
-    - `Get-JCReport` - Allows you get get the report metadata and once the report is finished processing, using the reportID and the artifactID, you can output the report content via JSON or CSV
+  - `New-JCReport` - Generates a report using the pre-built report generators available in the console
+  - `Get-JCReport` - Allows you get get the report metadata and once the report is finished processing, using the reportID and the artifactID, you can output the report content via JSON or CSV
 
 ## 2.16.0
 
@@ -28,13 +28,14 @@ This release introduces a bug fix for `Import-JCUsersFromCSV` and `Update-JCUser
 #### FEATURES:
 
 - Introduces the `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions
-    - `New-JCDeviceUpdateTemplate`: Creates a csv template used for bulk updating devices
-    - `Update-JCDeviceFromCSV`: Updates a list of devices from a CSV created by the `New-JCDeviceUpdateTemplate` function
+  - `New-JCDeviceUpdateTemplate`: Creates a csv template used for bulk updating devices
+  - `Update-JCDeviceFromCSV`: Updates a list of devices from a CSV created by the `New-JCDeviceUpdateTemplate` function
 - Introduces `Remove-JCUser` - Added -CascadeManager (null, automatic, user) parameter
   - null - Manager field for managed users by the user being removed will be set to null
   - automatic - If the user (manager1) being removed is a manager but also managed by another user(manager2). The manager for managed users will cascade to manager2.
   - User - Manually specify the manager for users managed by the user/manager being removed
     - -CascadeManagerUser Id/Username
+
 #### BUG FIXES:
 
 - Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` throwing error when importing 10 or more Custom Attributes due to a sorting issue
