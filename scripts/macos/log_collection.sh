@@ -128,7 +128,7 @@ diskutil apfs list > $baseDir/systemInfo/diskReport.txt
 
 ## list managed usernames
 echo "finding managed users"
-grep -o '\"username\":\"\w*' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
+grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
 
 ## descend into managed user's homedirs (requires full disk access) and gather JumpCloud logs
 for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
