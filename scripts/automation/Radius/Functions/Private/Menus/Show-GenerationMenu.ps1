@@ -11,7 +11,7 @@ function Show-GenerationMenu {
         Write-Host $(PadCenter -string ' Certs Expiring Soon ' -char '-')
 
         $Global:expiringCerts | Format-Table -Property username, @{name = 'Remaining Days'; expression = {
-            (New-TimeSpan -Start ((Get-Date).ToUniversalTime()) -End ([dateTime]("$($_.notAfter)"))).Days
+            (New-TimeSpan -Start (Get-Date -Format "o") -End ([dateTime]("$($_.notAfter)"))).Days
             }
         }, @{name = "Expires On"; expression = {
                 [datetime]($_.notAfter)

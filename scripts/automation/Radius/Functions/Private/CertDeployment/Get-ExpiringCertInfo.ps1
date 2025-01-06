@@ -10,7 +10,7 @@ function Get-ExpiringCertInfo {
     )
     begin {
         $expiringCerts = New-Object System.Collections.ArrayList
-        $currentTime = (Get-Date).ToUniversalTime()
+        $currentTime = (Get-Date -Format "o")
     }
     process {
         foreach ($cert in $certInfo) {

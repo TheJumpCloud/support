@@ -31,7 +31,7 @@ Function Invoke-CommandsRetry {
                             (($user.commandAssociations) | Where-Object { $_.commandId -eq $command.commandId }).commandPreviouslyRun = $true
                             (($user.commandAssociations) | Where-Object { $_.commandId -eq $command.commandId }).commandQueued = $true
                             $user.certInfo.deployed = $true
-                            $user.certInfo.deploymentDate = (get-date).ToUniversalTime()
+                            $user.certInfo.deploymentDate = (Get-Date -Format "o")
                             Set-UserTable -index $userIndex -certInfoObject $user.certInfo -commandAssociationsObject $user.commandAssociations
                             # track retried commands
                             $RetryCommands += $command.commandId
