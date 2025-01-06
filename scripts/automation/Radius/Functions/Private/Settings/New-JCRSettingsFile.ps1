@@ -16,7 +16,7 @@ function New-JCRSettingsFile {
     }
     process {
         # Define Default Settings for the Config file
-        $date = Get-Date
+        $date = (Get-Date).ToUniversalTime()
         $config = @{
             'globalVars' = @{
                 'lastUpdate' = @{value = $date; write = $true; copy = $true ;

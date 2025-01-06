@@ -10,11 +10,13 @@ function Get-ExpiringCertInfo {
     )
     begin {
         $expiringCerts = New-Object System.Collections.ArrayList
-        $currentTime = Get-Date
+        $currentTime = (Get-Date -Format "o")
     }
     process {
         foreach ($cert in $certInfo) {
-            $certTimespan = New-Timespan -Start $currentTime -End $cert.notAfter
+            $startDate = [datetime]$currentTime
+            $endDate = [datetime]$cert.notAfter
+            $certTimespan = New-Timespan -Start $startDate -End $endDate
             # $cert
             if ($certTimespan.days -lt 15) {
                 Write-Debug "$($cert.userName)'s certificate will expire in $($certTimespan.Days) days"

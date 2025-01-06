@@ -62,9 +62,10 @@ function Get-CertInfo {
                     # Convert notAfter property into datetime format
                     if ($property.notAfter) {
                         $date = $property.notAfter
-                        $date = $date.replace('GMT', '').Trim()
+                        # $date = $date.replace('GMT', '').Trim()
                         $date = $date -replace '\s+', ' '
-                        $property.notAfter = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy", $null)
+                        $date = ([datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy GMT", $null)).ToUniversalTime()
+                        $property.notAfter = Get-Date $date.ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z'
                     }
 
                     $certHash += $property
@@ -84,9 +85,11 @@ function Get-CertInfo {
                         switch ($($property.keys)) {
                             'notAfter' {
                                 $date = $property.notAfter
-                                $date = $date.replace('GMT', '').Trim()
+                                # $date = $date.replace('GMT', '').Trim()
                                 $date = $date -replace '\s+', ' '
-                                $property.notAfter = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy", $null)
+                                $date = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy GMT", $null)
+                                $property.notAfter = Get-Date $date.ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z'
+
                             }
                             'sha1 Fingerprint' {
                                 $property.Values = ($($property.Values)).ToLower().Replace(":", "")
@@ -108,7 +111,7 @@ function Get-CertInfo {
                     }
 
                     $certHash | Add-Member -Name 'username' -Type NoteProperty -Value $username
-                    $certHash | Add-Member -Name 'generated' -Type NoteProperty -Value ($certFile.LastWriteTime.ToString('MM/dd/yyyy HH:mm:ss'))
+                    $certHash | Add-Member -Name 'generated' -Type NoteProperty -Value (Get-Date $certFile.LastWriteTime.ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z')
                     # Add hash to certObj array if the user is a member of the userGroup
                     if ($username -in $global:JCRRadiusMembers.username) {
                         $certObj.add( $certHash) | Out-Null
