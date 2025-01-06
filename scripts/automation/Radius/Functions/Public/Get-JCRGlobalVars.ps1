@@ -27,10 +27,10 @@ function Get-JCRGlobalVars {
 
         # get settings file
         if ($IsMacOS) {
-            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -end (Get-Date)
+            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -end (Get-Date).ToUniversalTime()
         }
         if ($ifWindows) {
-            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -end (Get-Date)
+            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -end (Get-Date).ToUniversalTime()
         }
         if ($lastUpdateTimespan.TotalHours -gt 24) {
             $update = $true
@@ -247,7 +247,7 @@ function Get-JCRGlobalVars {
                 $Global:JCRRadiusMembers = $radiusMemberList
                 $Global:JCRCertHash = $certHash
                 # update the settings date
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date).ToUniversalTime()
                 # update users.json
                 Update-JCRUsersJson
             }

@@ -9,7 +9,14 @@ function Show-GenerationMenu {
 
     if ($Global:expiringCerts) {
         Write-Host $(PadCenter -string ' Certs Expiring Soon ' -char '-')
-        $Global:expiringCerts | Format-Table -Property username, @{name = 'Remaining Days'; expression = { (New-TimeSpan -Start (Get-Date) -End ("$($_.notAfter)")).Days } }, @{name = "Expires On"; expression = { $_.notAfter } }
+
+        $Global:expiringCerts | Format-Table -Property username, @{name = 'Remaining Days'; expression = {
+            (New-TimeSpan -Start ((Get-Date).ToUniversalTime()) -End ([dateTime]("$($_.notAfter)"))).Days
+            }
+        }, @{name = "Expires On"; expression = {
+                [datetime]($_.notAfter)
+            }
+        }
     }
 
     Write-Host $(PadCenter -string ' User Certificate Generation Options ' -char '-')

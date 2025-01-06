@@ -803,10 +803,10 @@ exit 4
                     }
                     if (Get-Member -inputObject $user.certInfo -name "deploymentDate" -MemberType Properties) {
                         # if ($userObjectFromTable.certInfo.deploymentDate) {
-                        $user.certInfo.deploymentDate = (Get-Date)
+                        $user.certInfo.deploymentDate = (Get-Date).ToUniversalTime()
 
                     } else {
-                        $user.certInfo | Add-Member -Name 'deploymentDate' -Type NoteProperty -Value (Get-Date)
+                        $user.certInfo | Add-Member -Name 'deploymentDate' -Type NoteProperty -Value (Get-Date).ToUniversalTime()
                     }
                 }
             }

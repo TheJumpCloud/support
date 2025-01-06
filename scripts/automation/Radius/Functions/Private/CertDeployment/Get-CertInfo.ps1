@@ -64,7 +64,7 @@ function Get-CertInfo {
                         $date = $property.notAfter
                         $date = $date.replace('GMT', '').Trim()
                         $date = $date -replace '\s+', ' '
-                        $property.notAfter = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy", $null)
+                        $property.notAfter = ([datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy", $null)).ToUniversalTime()
                     }
 
                     $certHash += $property
