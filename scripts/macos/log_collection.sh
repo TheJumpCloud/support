@@ -128,22 +128,34 @@ diskutil apfs list > $baseDir/systemInfo/diskReport.txt
 
 ## list managed usernames
 echo "finding managed users"
-grep -o '\"username\":\"\w*' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
+grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
 
 ## descend into managed user's homedirs (requires full disk access) and gather JumpCloud logs
 for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
     echo "pulling logs from user $u"
+    mkdir $baseDir/userLogs/$u
+
     if [ -d /Users/$u/Library/Logs/JumpCloud\ Password\ Manager ]; then
         cp -r /Users/$u/Library/Logs/JumpCloud\ Password\ Manager $baseDir/userLogs/$u/
     fi
 
-    if [ -d /Users/$u/Library/Logs/JumpCloud\ Remote\ Assist ]; then
-        cp -r /Users/$u/Library/Logs/JumpCloud\ Remote\ Assist $baseDir/userLogs/$u/
+    if [ -d /Users/$u/Library/Logs/JumpCloud-Remote-Assist ]; then
+        cp -r /Users/$u/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/$u/
     fi
+
+    # report on any user scope configuration profiles
+    sudo -u $u profiles -L -o stdout > $baseDir/userLogs/$u/installedProfiles.txt
 
     cp -r /Users/$u/Library/Logs/JumpCloud $baseDir/userLogs/$u/
 
 done
+
+# check for and gather remote assist logs from root homedir
+
+if [ -d /var/root/Library/Logs/JumpCloud-Remote-Assist ]; then
+    mkdir $baseDir/userLogs/root
+    cp -r /var/root/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/root/
+fi
 
 echo "Resetting gathered logs permissions"
 chmod -R 777 $baseDir
