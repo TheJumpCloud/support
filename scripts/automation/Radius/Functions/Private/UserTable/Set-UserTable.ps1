@@ -29,6 +29,15 @@ function Set-UserTable {
     begin {
         # Get User Array:
         $userArray = Get-UserJsonData
+
+        # CUT-3470: Check to see if the userArray is not an array, cast it to one
+        if ($userArray -isnot [array]) {
+            Write-Debug "userArray is $($userArray.GetType().Name), casting to arrayList"
+            $array = New-Object System.Collections.ArrayList
+            $array.add($userArray) | Out-Null
+            $userArray = $array
+        }
+
         if ($PSBoundParameters.ContainsKey('index')) {
             $userIndex = $index
             $userObject = $userArray[$index]
