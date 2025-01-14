@@ -238,7 +238,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     Context 'Certs generated when userGroup only contains 1 user' {
         BeforeAll {
             # Save users in userGroup to variable for later
-            $RadiusMembers = Get-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP
+            $RadiusMembers = Get-JCUserGroupMember -ByID $Global:JCR_USER_GROUP
 
             # Remove all members from UserGroup
             $RadiusMembers | ForEach-Object {
