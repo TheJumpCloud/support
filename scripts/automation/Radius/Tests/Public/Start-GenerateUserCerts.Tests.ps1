@@ -270,7 +270,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
 
             # Add original members back to the UserGroup
-            $userAdd = $RadiusMembers | Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID
+            $userAdd = $RadiusMembers | ForEach-Object { Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID }
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
