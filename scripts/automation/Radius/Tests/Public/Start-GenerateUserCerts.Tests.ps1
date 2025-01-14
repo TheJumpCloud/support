@@ -263,7 +263,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
 
             # Check for non-terminating errors
             Start-GenerateUserCerts -type ByUsername -username $($SingleUser.username) -forceReplaceCerts -ErrorVariable err
-            $err.Count | -Should -Be 0
+            $err.Count | Should -Be 0
         }
         AfterAll {
             # Remove the single User
