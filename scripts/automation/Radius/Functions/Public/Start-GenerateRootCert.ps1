@@ -71,9 +71,7 @@ Function Start-GenerateRootCert {
 
                 # Convert SecureString to plain text to validate
                 $plainCertKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
-                Write-Host "plainCertKeyPass: $plainCertKeyPass"
                 $plainCertKeyPassReEntry = ConvertFrom-SecureString $secureCertKeyPass2ReEntry -AsPlainText
-                Write-Host "plainCertKeyPassReEntry: $plainCertKeyPassReEntry"
 
                 # Validate that the passwords match
                 if ($plainCertKeyPass -ne $plainCertKeyPassReEntry) {
