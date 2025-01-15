@@ -81,7 +81,6 @@ Function Start-GenerateRootCert {
                 } else {
                     Write-Host "Password set successfully" -foregroundcolor Green
                     $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
-                    Write-Host "certKeyPass: $certKeyPass"
                 }
             } while ($plainCertKeyPass -ne $plainCertKeyPassReEntry)
         }
