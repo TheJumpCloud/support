@@ -63,26 +63,27 @@ Function Start-GenerateRootCert {
             # Loop until the passwords match
             do {
                 # Prompt for password
+                Write-Host "NOTE: Please save your root certificate password in a password manager" -foregroundcolor Yellow
                 $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
 
                 # Reprompt for password
-                $secureCertKeyPass2 = Read-Host -Prompt "Re-enter the password for the certificate key" -AsSecureString
+                $secureCertKeyPass2ReEntry = Read-Host -Prompt "Re-enter the password for the certificate key" -AsSecureString
 
                 # Convert SecureString to plain text to validate
                 $plainCertKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                 Write-Host "plainCertKeyPass: $plainCertKeyPass"
-                $plainCertKeyPass2 = ConvertFrom-SecureString $secureCertKeyPass2 -AsPlainText
-                Write-Host "plainCertKeyPass2: $plainCertKeyPass2"
+                $plainCertKeyPassReEntry = ConvertFrom-SecureString $secureCertKeyPass2ReEntry -AsPlainText
+                Write-Host "plainCertKeyPassReEntry: $plainCertKeyPassReEntry"
 
                 # Validate that the passwords match
-                if ($plainCertKeyPass -ne $plainCertKeyPass2) {
+                if ($plainCertKeyPass -ne $plainCertKeyPassReEntry) {
                     Write-Host "Passwords do not match. Please try again." -foregroundcolor Red
                 } else {
                     Write-Host "Password set successfully" -foregroundcolor Green
                     $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                     Write-Host "certKeyPass: $certKeyPass"
                 }
-            } while ($plainCertKeyPass -ne $plainCertKeyPass2)
+            } while ($plainCertKeyPass -ne $plainCertKeyPassReEntry)
         }
         'cli' {
             $certKeyPass = $certKeyPassword
