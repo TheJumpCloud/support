@@ -163,6 +163,9 @@ function Start-GenerateUserCerts {
                             $false {
                                 return
                             }
+                            'exit' {
+                                return
+                            }
                         }
                     }
                 }
