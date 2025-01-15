@@ -240,6 +240,13 @@ function Deploy-UserCertificate {
                 if (($workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
+                # regenerate the cert to keep it on the console:
+                if ((-Not $workToBeDone.remainingMacOSDevices) -AND (-Not $workToBeDone.macOSCommandID)) {
+                    $workToBeDone.forceGenerateMacOSCommands = $true
+                }
+                if ((-Not $workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
+                    $workToBeDone.forceGenerateWindowsCommands = $true
+                }
             } else {
                 # set the remaining devices to the association list from users.json
                 # macOS
@@ -252,6 +259,13 @@ function Deploy-UserCertificate {
                 }
                 # if there's work to be done but not a valid cert command, generate the command
                 if (($workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
+                    $workToBeDone.forceGenerateWindowsCommands = $true
+                }
+                # regenerate the cert to keep it on the console:
+                if ((-Not $workToBeDone.remainingMacOSDevices) -AND (-Not $workToBeDone.macOSCommandID)) {
+                    $workToBeDone.forceGenerateMacOSCommands = $true
+                }
+                if ((-Not $workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
             }

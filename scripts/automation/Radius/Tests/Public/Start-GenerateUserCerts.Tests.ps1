@@ -27,10 +27,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             foreach ($cert in $certs) {
                 $matchingBeforeCert = $certsBefore | Where-Object { $username -eq $cert.username }
                 # Each cert should have a generated date -gt the $timeBefore
-                $cert.generated | should -BeGreaterThan $timeBefore
-                $cert.generated | should -BeGreaterThan $matchingBeforeCert.generated
-                $cert.serial | should -Not -Be $matchingBeforeCert.serial
-                $cert.sha1 | should -Not -Be $matchingBeforeCert.sha1
+                $cert.generated | Should -BeGreaterThan $timeBefore
+                $cert.generated | Should -BeGreaterThan $matchingBeforeCert.generated
+                $cert.serial | Should -Not -Be $matchingBeforeCert.serial
+                $cert.sha1 | Should -Not -Be $matchingBeforeCert.sha1
             }
         }
     }
@@ -61,10 +61,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist
             $UserCerts.Name | Should -Match $user.username
-            $UserCerts.fullname | where-object { $_ -match ".csr" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".pfx" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".crt" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".key" } | Should -exist
+            $UserCerts.fullname | Where-Object { $_ -match ".csr" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".pfx" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".crt" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".key" } | Should -Exist
             # cleanup
             Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # update cache
@@ -83,7 +83,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             . "$JCScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
             # Set config
             $configPath = "$JCScriptRoot/Config.ps1"
-            $content = Get-Content -path $configPath
+            $content = Get-Content -Path $configPath
             # set the user cert validity to just 10 days
             $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath
 
@@ -91,7 +91,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             Get-JCRGlobalVars -force -skipAssociation
 
             # get user from membership list
-            $RandomUsername = $global:JCRRadiusMembers.username | Get-Random -count 1
+            $RandomUsername = $global:JCRRadiusMembers.username | Get-Random -Count 1
 
             # regenerate user cert
             Start-GenerateUserCerts -type ByUsername -username $($RandomUsername) -forceReplaceCerts
@@ -105,9 +105,9 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
         It 'Certs that are set to expire soon can be updated programmatically' {
             # at this point expiring certs should be populated from beforeAll block
-            $Global:expiringCerts | Should -not -BeNullOrEmpty
+            $Global:expiringCerts | Should -Not -BeNullOrEmpty
             # reset the validity counter
-            $content = Get-Content -path $configPath
+            $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
             $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
             # Get the certs before generation minus the .zip if it exists
@@ -130,16 +130,16 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
                 $beforeWriteTime = (($certsBefore | Where-Object { $_.Name -eq $cert.Name })).LastWriteTime.Ticks
                 $afterWriteTime = (($certsAfter | Where-Object { $_.Name -eq $cert.Name })).LastWriteTime.Ticks
                 # the time written on the cert should be updated
-                $beforeWriteTime | should -Not -Be $afterWriteTime
+                $beforeWriteTime | Should -Not -Be $afterWriteTime
             }
             # the user cert table should have been updated too
             $certInfo = Get-CertInfo -UserCerts -username $RandomUsername
-            $certInfo.count | should -be 1
+            $certInfo.count | Should -Be 1
             $certInfo.generated | Should -BeGreaterThan $dateBefore
         }
         AfterAll {
             # reset the validity counter
-            $content = Get-Content -path $configPath
+            $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
             $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
         }
@@ -153,7 +153,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
 
         }
-        it 'A user with a localUsername (SystemUsername) will generate a cert' {
+        It 'A user with a localUsername (SystemUsername) will generate a cert' {
             # manually set the user
             $headers = @{
                 "x-api-key"    = "$env:JCApiKey"
@@ -187,15 +187,15 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # specifically for this test, the username should not be the localUsername (systemUsername)
             $UserCerts.Name | Should -Match $user.username
             $userCerts.Name | Should -Not -Match $response.systemUsername
-            $UserCerts.fullname | where-object { $_ -match ".csr" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".pfx" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".crt" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".key" } | Should -exist
+            $UserCerts.fullname | Where-Object { $_ -match ".csr" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".pfx" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".crt" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".key" } | Should -Exist
 
         }
-        it 'A user with a hyphen in their username will generate a cert' {
+        It 'A user with a hyphen in their username will generate a cert' {
             # manually update the user with a hyphen in their username
-            $user = Set-JCSdkUser -id $($user.id) -username "$($user.username)-$($user.username)"
+            $user = Set-JcSdkUser -Id $($user.id) -Username "$($user.username)-$($user.username)"
             # add a user to the radius Group
             Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
             # Get the certs before
@@ -217,10 +217,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # the files and each type of expected cert file should exist
             # specifically for this test, the username should not be the localUsername (systemUsername)
             $UserCerts.Name | Should -Match $user.username
-            $UserCerts.fullname | where-object { $_ -match ".csr" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".pfx" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".crt" } | Should -exist
-            $UserCerts.fullname | where-object { $_ -match ".key" } | Should -exist
+            $UserCerts.fullname | Where-Object { $_ -match ".csr" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".pfx" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".crt" } | Should -Exist
+            $UserCerts.fullname | Where-Object { $_ -match ".key" } | Should -Exist
         }
         AfterEach {
             # cleanup
@@ -234,5 +234,46 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
 
         }
 
+    }
+    Context 'Certs generated when userGroup only contains 1 user' {
+        BeforeAll {
+            # Save users in userGroup to variable for later
+            $RadiusMembers = Get-JCUserGroupMember -ByID $Global:JCR_USER_GROUP
+
+            # Remove all members from UserGroup
+            $RadiusMembers | ForEach-Object {
+                $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID
+            }
+
+            # Add One Member back to the Group
+            $SingleUser = $RadiusMembers | Select-Object -First 1
+            $userAdd = Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
+        }
+        It "When the Radius UserGroup only contains 1 user, the generation functions will not error" {
+            # update the cache
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
+
+            Start-Sleep 1
+
+            # the updated Radius Members cache should only contain 1 user
+            $global:JCRRadiusMembers.username.Count | Should -Be 1
+
+            # the new user should be in the membership list:
+            $global:JCRRadiusMembers.username | Should -Contain $SingleUser.username
+
+            # Check for non-terminating errors
+            Start-GenerateUserCerts -type ByUsername -username $($SingleUser.username) -forceReplaceCerts -ErrorVariable err
+            $err.Count | Should -Be 0
+        }
+        AfterAll {
+            # Remove the single User
+            $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
+
+            # Add original members back to the UserGroup
+            $userAdd = $RadiusMembers | ForEach-Object { Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID }
+
+            # update cache
+            Get-JCRGlobalVars -force -skipAssociation
+        }
     }
 }
