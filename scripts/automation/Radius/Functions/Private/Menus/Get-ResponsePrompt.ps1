@@ -12,8 +12,9 @@ function Get-ResponsePrompt {
         $invokeCommands = Read-Host "$message`nPlease type: 'y'/'n' (or 'E' to return to menu)"
         switch ($invokeCommands) {
             'e' {
+                Write-Host "Returning to Main Menu..."
                 $promptForInvokeInput = $false
-                break
+                return 'exit'
             }
             'n' {
                 return $false

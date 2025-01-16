@@ -42,6 +42,9 @@ Function Start-GenerateRootCert {
                     $false {
                         return
                     }
+                    'exit' {
+                        return
+                    }
                 }
             }
             'cli' {
@@ -57,8 +60,27 @@ Function Start-GenerateRootCert {
     switch ($PSCmdlet.ParameterSetName) {
         'gui' {
             $env:certKeyPassword = ""
-            $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
-            $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+            # Loop until the passwords match
+            do {
+                # Prompt for password
+                Write-Host "NOTE: Please save your root certificate password in a password manager" -foregroundcolor Yellow
+                $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
+
+                # Reprompt for password
+                $secureCertKeyPass2ReEntry = Read-Host -Prompt "Re-enter the password for the certificate key" -AsSecureString
+
+                # Convert SecureString to plain text to validate
+                $plainCertKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+                $plainCertKeyPassReEntry = ConvertFrom-SecureString $secureCertKeyPass2ReEntry -AsPlainText
+
+                # Validate that the passwords match
+                if ($plainCertKeyPass -ne $plainCertKeyPassReEntry) {
+                    Write-Host "Passwords do not match. Please try again." -foregroundcolor Red
+                } else {
+                    Write-Host "Password set successfully" -foregroundcolor Green
+                    $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
+                }
+            } while ($plainCertKeyPass -ne $plainCertKeyPassReEntry)
         }
         'cli' {
             $certKeyPass = $certKeyPassword
