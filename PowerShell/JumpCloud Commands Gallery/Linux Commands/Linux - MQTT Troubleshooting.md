@@ -1,6 +1,6 @@
 #### Name
 
-Linux - Troubleshooting MQTT script | v1.0 JCCG
+Linux - MQTT Troubleshooting script | v1.0 JCCG
 
 #### commandType
 
