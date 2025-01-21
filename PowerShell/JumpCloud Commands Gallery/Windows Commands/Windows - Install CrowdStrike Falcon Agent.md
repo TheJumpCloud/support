@@ -152,17 +152,17 @@ if (Get-Service "CSFalconService" -ErrorAction SilentlyContinue) {
 }
 Write-Host "Falcon Agent not installed."
 
-Write-Host "Downloading Falcon Agent installer now."
+Write-Host "Downloading Falcon Agent v$($LatestInstaller.version) installer now."
 try {
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Headers $CrowdStrikeAuthHeader -Uri $installerURL -UseBasicParsing -OutFile $installerTempLocation
 } catch {
-    Write-Error "Unable to download Falcon Agent installer."
+    Write-Error "Unable to download Falcon Agent v$($LatestInstaller.version) installer."
     exit 1
 }
-Write-Host "Finished downloading Falcon Agent installer."
+Write-Host "Finished downloading Falcon Agent v$($LatestInstaller.version) installer."
 
-Write-Host "Installing Falcon Agent now, this may take a few minutes."
+Write-Host "Installing Falcon Agent v$($LatestInstaller.version) now, this may take a few minutes."
 try {
     $args = @("/install", "/quiet", "/norestart", "CID=$CID")
     if ($CSInstallToken){
