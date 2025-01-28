@@ -169,7 +169,6 @@ Function Update-JCDeviceFromCSV () {
                                 Write-Warning "primarySystemUser - $userInfo is already associated to $($DeviceUpdate.DeviceID); skipping..."
                             }
                         }
-
                     }
                 } elseif (($_.Value -eq '$true') -or ($_.Value -eq 'true')) {
                     $DeviceHash[$_.Name] = $true
