@@ -2,11 +2,22 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
     Context "A new certificate can be generated" {
         It 'Generates a new root certificate' {
             # If the /Cert/ folder is not empty, clear the directory
-            $items = Get-ChildItem $JCScriptRoot/Cert
+            $items = Get-ChildItem "$JCScriptRoot/Cert"
             if ($items) {
                 foreach ($item in $items) {
-                    write-host "removing $($item.FullName)"
-                    Remove-Item -Path $item.FullName -force
+                    # If the item is the 'backup' folder, process its contents separately
+                    if ($item.Name -eq 'Backups') {
+                        $backupItems = Get-ChildItem $item.FullName
+                        foreach ($backupItem in $backupItems) {
+                            Write-Host "Removing $($backupItem.FullName)"
+                            Remove-Item -Path $backupItem.FullName -Force
+                        }
+                    }
+                    # Otherwise, remove the item directly (outside of the 'backup' folder)
+                    elseif ($item.PSIsContainer -eq $false) {
+                        Write-Host "Removing $($item.FullName)"
+                        Remove-Item -Path $item.FullName -Force
+                    }
                 }
             }
             Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
@@ -36,11 +47,22 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
     Context "Overwrite an existing root certificate when creating a new one" {
         It 'Generates a new root certificate when there is an existing one' {
             # If the /Cert/ folder is not empty, clear the directory
-            $items = Get-ChildItem $JCScriptRoot/Cert
+            $items = Get-ChildItem "$JCScriptRoot/Cert"
             if ($items) {
                 foreach ($item in $items) {
-                    write-host "removing $($item.FullName)"
-                    Remove-Item -Path $item.FullName -Force
+                    # If the item is the 'backup' folder, process its contents separately
+                    if ($item.Name -eq 'Backups') {
+                        $backupItems = Get-ChildItem $item.FullName
+                        foreach ($backupItem in $backupItems) {
+                            Write-Host "Removing $($backupItem.FullName)"
+                            Remove-Item -Path $backupItem.FullName -Force
+                        }
+                    }
+                    # Otherwise, remove the item directly (outside of the 'backup' folder)
+                    elseif ($item.PSIsContainer -eq $false) {
+                        Write-Host "Removing $($item.FullName)"
+                        Remove-Item -Path $item.FullName -Force
+                    }
                 }
             }
 
@@ -82,11 +104,22 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
     Context "An existing certificate can be replaced" {
         It 'Replaces a root certificate' {
             # If the /Cert/ folder is not empty, clear the directory
-            $items = Get-ChildItem $JCScriptRoot/Cert
+            $items = Get-ChildItem "$JCScriptRoot/Cert"
             if ($items) {
                 foreach ($item in $items) {
-                    write-host "removing $($item.FullName)"
-                    Remove-Item -Path $item.FullName -Force
+                    # If the item is the 'backup' folder, process its contents separately
+                    if ($item.Name -eq 'Backups') {
+                        $backupItems = Get-ChildItem $item.FullName
+                        foreach ($backupItem in $backupItems) {
+                            Write-Host "Removing $($backupItem.FullName)"
+                            Remove-Item -Path $backupItem.FullName -Force
+                        }
+                    }
+                    # Otherwise, remove the item directly (outside of the 'backup' folder)
+                    elseif ($item.PSIsContainer -eq $false) {
+                        Write-Host "Removing $($item.FullName)"
+                        Remove-Item -Path $item.FullName -Force
+                    }
                 }
             }
             # Create a new root certificate
@@ -127,11 +160,22 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
     Context "An existing certificate can be renewed" {
         It 'Renews a root certificate' {
             # If the /Cert/ folder is not empty, clear the directory
-            $items = Get-ChildItem $JCScriptRoot/Cert
+            $items = Get-ChildItem "$JCScriptRoot/Cert"
             if ($items) {
                 foreach ($item in $items) {
-                    write-host "removing $($item.FullName)"
-                    Remove-Item -Path $item.FullName -Force
+                    # If the item is the 'backup' folder, process its contents separately
+                    if ($item.Name -eq 'Backups') {
+                        $backupItems = Get-ChildItem $item.FullName
+                        foreach ($backupItem in $backupItems) {
+                            Write-Host "Removing $($backupItem.FullName)"
+                            Remove-Item -Path $backupItem.FullName -Force
+                        }
+                    }
+                    # Otherwise, remove the item directly (outside of the 'backup' folder)
+                    elseif ($item.PSIsContainer -eq $false) {
+                        Write-Host "Removing $($item.FullName)"
+                        Remove-Item -Path $item.FullName -Force
+                    }
                 }
             }
             # Generate new CA
