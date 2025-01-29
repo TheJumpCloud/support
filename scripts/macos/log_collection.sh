@@ -139,6 +139,10 @@ for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
         cp -r /Users/$u/Library/Logs/JumpCloud\ Password\ Manager $baseDir/userLogs/$u/
     fi
 
+    if [ -d /Users/$u/Library/Application\ Support/JumpCloud\ Password\ Manager/data/daemon/log ]; then
+        cp -r /Users/$u/Library/Application\ Support/JumpCloud\ Password\ Manager/data/daemon/log $baseDir/userLogs/$u/PWM_daemon_logs
+    fi
+
     if [ -d /Users/$u/Library/Logs/JumpCloud-Remote-Assist ]; then
         cp -r /Users/$u/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/$u/
     fi
