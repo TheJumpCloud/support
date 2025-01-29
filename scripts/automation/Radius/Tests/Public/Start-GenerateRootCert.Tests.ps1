@@ -9,7 +9,7 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
                     Remove-Item -Path $item.FullName
                 }
             }
-            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#"
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
 
             # both the key and the cert should be generated
             $itemsAfter = Get-ChildItem $JCScriptRoot/Cert
@@ -25,17 +25,23 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+
+            # Clean up the Cert directory
+            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
     }
 
     # Overwrite the existing certificate
 
-    Context "Overwrite an existing root certificate" {
+    Context "Overwrite an existing root certificate when creating a new one" {
         It 'Generates a new root certificate when there is an existing one' {
+
+            # Create a new root certificate
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "New" -force
             # get existing cert serial:
             $origSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
-            # force generate new CA
-            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "New" -forceReplaceCert
+            # Force overwrite the existing certificate
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "New" -force
             # get new SN
             $newSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
@@ -59,15 +65,21 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+
+            # Clean up the Cert directory
+            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
     }
 
     Context "An existing certificate can be replaced" {
         It 'Replaces a root certificate' {
+
+            # Create a new root certificate
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
             # get existing cert serial:
             $origSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
-            # force generate new CA
-            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "replace" -forceReplaceCert
+            # Replace root certificate
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "replace" -force
             # get new SN
             $newSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
@@ -91,15 +103,21 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+
+            # Clean up the Cert directory
+            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
 
     }
     Context "An existing certificate can be renewed" {
         It 'Renews a root certificate' {
+
+            # Generate new CA
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
             # get existing cert serial:
             $origSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
-            # force generate new CA
-            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "renew" -forceReplaceCert
+            # Renew CA
+            Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "renew" -force
             # get new SN
             $newSN = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -serial"
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
@@ -123,17 +141,10 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+
+            # Clean up the Cert directory
+            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
-
-    }
-    Context "Zip backup should be created when replacing certs" {
-
-
-    }
-    Context "Zip backup should be created when renewing certs" {
-
-    }
-    Context "Zip backup should be created when overwrting certs" {
 
     }
 }

@@ -34,7 +34,7 @@ function Get-ResponsePrompt {
                 return $true
             }
             default {
-                write-host "Invalid input`nPlease type 'y'/ 'n' (or 'E' to exit)"
+                Write-host "Invalid input`nPlease type 'y'/ 'n' (or 'E' to exit)" -ForegroundColor Red
             }
         }
     }
