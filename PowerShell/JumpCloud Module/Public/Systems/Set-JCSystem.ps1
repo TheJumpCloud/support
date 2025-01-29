@@ -46,7 +46,7 @@ Function Set-JCSystem () {
 
         Write-Debug 'Verifying JCAPI Key'
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         $hdrs = @{
@@ -86,86 +86,24 @@ Function Set-JCSystem () {
                 continue
             }
             if ($param.key -eq "primarySystemUser") {
-                    $userInfo = $param.value
-                    # First check if primarySystemUser returns valid user with id
-                    # Regex match a userid
-                    $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                    if (((Select-String -InputObject $userInfo -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
-                        # if we have a 24 characterid, try to match the id using the search endpoint
-                        $primarySystemUserSearch = @{
-                            filter = @{
-                                'and' = @(
-                                    @{'_id' = @{'$eq' = "$($userInfo)" } }
-                                )
-                            }
-                            fields = 'id'
-                        }
-                        $primarySystemUserResults = Search-JcSdkUser -Body:($primarySystemUserSearch)
-                        # Set primarySystemUserValue; this is a validated user id
-                        $primarySystemUserValue = $primarySystemUserResults.id
-                    } else {
-                        # Use class mailaddress to check if $_.value is email
-                        try {
-                            $null = [mailaddress]$userInfo
-                            Write-Debug "This is true"
-                            # Search for primarySystemUser using email
-                            $primarySystemUserSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'email' = @{'$regex' = "(?i)(`^$($userInfo)`$)" } }
-                                    )
-                                }
-                                fields = 'email'
-                            }
-                            $primarySystemUserResults = Search-JcSdkUser -Body:($primarySystemUserSearch)
-                            # Set primarySystemUserValue; this is a validated user id
-                            $primarySystemUserValue = $primarySystemUserResults.id
-                            # if no value was returned, then assume the case this is actually a username and search
-                            if (!$primarySystemUserValue) {
-                                $primarySystemUserSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($userInfo)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $primarySystemUserResults = Search-JcSdkUser -Body:($primarySystemUserSearch)
-                                # Set primarySystemUserValue from the matched username
-                                $primarySystemUserValue = $primarySystemUserResults.id
-                            }
-                        } catch {
-                            # search the username in the search endpoint
-                            $primarySystemUserSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'username' = @{'$regex' = "(?i)(`^$($userInfo)`$)" } }
-                                    )
-                                }
-                                fields = 'username'
-                            }
-                            $primarySystemUserResults = Search-JcSdkUser -Body:($primarySystemUserSearch)
-                            # Set primarySystemUserValue from the matched username
-                            $primarySystemUserValue = $primarySystemUserResults.id
-                        }
+                $userInfo = $param.value
+                try {
+                    $primarySystemUserValue = Convert-JCUserToID -UserIdentifier $userInfo
+                    $association = Set-JcSdkSystemAssociation -SystemId $SystemID -Op "add" -Type "user" -Id $primarySystemUserValue
+                    # Set-JcSdkSystemAssociation doesn't return anything, make custom return if function doesn't throw
+                    $associationResults = @{
+                        "primarySystemUser" = $primarySystemUserValue
                     }
-                    if ($null -eq $primarySystemUserValue) {
-                        Write-Warning "Could not validate $userInfo. Please ensure the information was entered correctly"
-                    }
-                    try {
-                        $association = Set-JcSdkSystemAssociation -SystemId $DeviceUpdate.DeviceID -Op "add" -Type "user" -Id $primarySystemUserValue
-                        # Set-JcSdkSystemAssociation doesn't return anything, make custom return if function doesn't throw
-                        $associationResults = @{
-                            "primarySystemUser" = $primarySystemUserValue
-                        }
-                    } catch {
-                        $associationResults = @{
-                            "primarySystemUser" = $_
-                        }
+                } catch {
+                    $associationResults = @{
+                        "primarySystemUser" = "$userInfo`: " + $_
                     }
                 }
-            $body.add($param.Key, $param.Value)
+
+                continue
             }
+            $body.add($param.Key, $param.Value)
+        }
 
         $jsonbody = $body | ConvertTo-Json
         Write-Debug $jsonbody
@@ -174,7 +112,7 @@ Function Set-JCSystem () {
         $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         if ($associationResults) {
-            $UpdatedSystems += $System | Add-Member -MemberType NoteProperty -Name "primarySystemUser" -Value $associationResults.primarySystemUser
+            $UpdatedSystems += $System | Select-Object *, @{Name = 'primarySystemUser'; Expression = { $associationResults.primarySystemUser }}
         } else {
             $UpdatedSystems += $System
         }
