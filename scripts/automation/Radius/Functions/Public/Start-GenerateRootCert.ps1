@@ -45,6 +45,14 @@ Function Start-GenerateRootCert {
         New-Item -ItemType Directory -Path "$JCScriptRoot/Cert"
     }
 
+    # If cert backup folder does not exist, create it
+    if (Test-Path -Path "$JCScriptRoot/Cert/Backups") {
+        Write-Host "Backup Path Exists"
+    } else {
+        Write-Host "Creating Backup Path"
+        New-Item -ItemType Directory -Path "$JCScriptRoot/Cert/Backups"
+    }
+
     # If parameterSetname is CLI
     if ($PSCmdlet.ParameterSetName -eq 'cli') {
         switch ($GenerateType) {

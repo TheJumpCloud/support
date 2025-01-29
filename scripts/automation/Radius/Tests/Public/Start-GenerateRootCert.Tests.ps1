@@ -6,7 +6,7 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             if ($items) {
                 foreach ($item in $items) {
                     write-host "removing $($item.FullName)"
-                    Remove-Item -Path $item.FullName
+                    Remove-Item -Path $item.FullName -force
                 }
             }
             Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
@@ -35,6 +35,14 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
 
     Context "Overwrite an existing root certificate when creating a new one" {
         It 'Generates a new root certificate when there is an existing one' {
+            # If the /Cert/ folder is not empty, clear the directory
+            $items = Get-ChildItem $JCScriptRoot/Cert
+            if ($items) {
+                foreach ($item in $items) {
+                    write-host "removing $($item.FullName)"
+                    Remove-Item -Path $item.FullName -Force
+                }
+            }
 
             # Create a new root certificate
             Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "New" -force
@@ -73,7 +81,14 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
 
     Context "An existing certificate can be replaced" {
         It 'Replaces a root certificate' {
-
+            # If the /Cert/ folder is not empty, clear the directory
+            $items = Get-ChildItem $JCScriptRoot/Cert
+            if ($items) {
+                foreach ($item in $items) {
+                    write-host "removing $($item.FullName)"
+                    Remove-Item -Path $item.FullName -Force
+                }
+            }
             # Create a new root certificate
             Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
             # get existing cert serial:
@@ -111,7 +126,14 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
     }
     Context "An existing certificate can be renewed" {
         It 'Renews a root certificate' {
-
+            # If the /Cert/ folder is not empty, clear the directory
+            $items = Get-ChildItem $JCScriptRoot/Cert
+            if ($items) {
+                foreach ($item in $items) {
+                    write-host "removing $($item.FullName)"
+                    Remove-Item -Path $item.FullName -Force
+                }
+            }
             # Generate new CA
             Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
             # get existing cert serial:
