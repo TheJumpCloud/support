@@ -360,19 +360,15 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                                 $secureCertKeyPass = Read-Host -Prompt "Enter the current password for the certificate key" -AsSecureString
                                 $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                                 do {
-                                    # Run the OpenSSL command and capture the result
                                     $result = Invoke-Expression "$JCR_OPENSSL rsa -in `"$outKey`" -passin pass:$($certKeyPass) -check"
-
-                                    # Check if the command was successful (e.g., "RSA key ok" is in the output)
                                     if ($result -match "RSA key ok") {
                                         Write-Host "Password validated! Proceeding..."
                                         $env:certKeyPassword = $certKeyPass
-                                        $passwordValid = $true  # Exit condition for the loop
+                                        $passwordValid = $true
                                     } else {
-                                        Write-Host "Incorrect password"
+                                        Write-Host "Incorrect private key password!" -ForegroundColor Red
                                         $passwordValid = $false  # Continue loop if password is incorrect
-                                        # Optionally, you could prompt the user to enter the password again
-                                        $secureCertKeyPass = Read-Host "Enter password for private key" -AsSecureString
+                                        $secureCertKeyPass = Read-Host "Please enter a valid password for the current private key" -AsSecureString
                                         $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                                     }
                                 } while (-not $passwordValid)  # Continue looping until the password is correct
@@ -382,19 +378,16 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                                 # Validate that the password works with the old CA cert
                                 # Attempt to read the private key with the password
                                 do {
-                                    # Run the OpenSSL command and capture the result
                                     $result = Invoke-Expression "$JCR_OPENSSL rsa -in `"$outKey`" -passin pass:$($certKeyPass) -check"
 
-                                    # Check if the command was successful (e.g., "RSA key ok" is in the output)
                                     if ($result -match "RSA key ok") {
                                         Write-Host "Password validated! Proceeding..."
                                         $env:certKeyPassword = $certKeyPass
                                         $passwordValid = $true  # Exit condition for the loop
                                     } else {
-                                        Write-Host "Incorrect password"
+                                        Write-Host "Incorrect password" -ForegroundColor Red
                                         $passwordValid = $false  # Continue loop if password is incorrect
-                                        # Optionally, you could prompt the user to enter the password again
-                                        $certKeyPass = Read-Host "Enter password for private key" -AsSecureString
+                                        $certKeyPass = Read-Host "Please enter a valid password for the current private key" -AsSecureString
                                         $certKeyPass = ConvertFrom-SecureString $certKeyPass -AsPlainText
                                     }
                                 } while (-not $passwordValid)  # Continue looping until the password is correct
@@ -446,6 +439,8 @@ authorityKeyIdentifier= keyid:always,issuer:always
 
                             Invoke-Expression "$JCR_OPENSSL x509 -req -days $JCR_ROOT_CERT_VALIDITY_DAYS -in $csrOutPath -set_serial `"0x$serial`" -signkey `"$outKey`" -out `"$outCA`" -extfile $certConfPath -extensions v3_ca -passin pass:$($env:certKeyPassword)"
 
+                            # Message of success
+                            Write-Host "Root Certificate Renewed Successfully!" -ForegroundColor Yellow
                             # Cleanup
                             Remove-Item -Path $certConfPath
                             Remove-Item -Path $csrOutPath
