@@ -36,9 +36,6 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
-
-            # Clean up the Cert directory
-            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
     }
 
@@ -95,9 +92,6 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
-
-            # Clean up the Cert directory
-            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
     }
 
@@ -151,9 +145,6 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
-
-            # Clean up the Cert directory
-            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
 
     }
@@ -207,9 +198,6 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
             ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
             ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
-
-            # Clean up the Cert directory
-            Remove-Item -Path $JCScriptRoot/Cert/* -Force
         }
 
     }
