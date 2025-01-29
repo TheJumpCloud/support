@@ -46,25 +46,14 @@ function Show-RadiusMainMenu {
     Write-Host $(PadCenter -string "Radius User Group: $($radiusUserGroup.Name)" -char " ") -ForegroundColor Green
     Write-Host $(PadCenter -string "Total Radius Users: $($radiusUserGroupMemberCount)" -char " ") -ForegroundColor Green
     Write-Host $(PadCenter -string "Radius SSID(s): $radiusSSID" -char " ") -ForegroundColor Green
-    if ($IsMacOS){
+    if ($IsMacOS) {
         Write-Host $(PadCenter -string "Last Updated User/System Data: $($Global:JCRConfig.globalVars.lastupdate)" -char " ") -ForegroundColor Green
-    } If ($isWindows){
+    } If ($isWindows) {
         Write-Host $(PadCenter -string "Last Updated User/System Data: $($Global:JCRConfig.globalVars.lastupdate.value)" -char " ") -ForegroundColor Green
     }
-    # Write-Host "`n"
-    # if ($radiusSSID.count -gt 1) {
-    #     Write-Host $(PadCenter -string "Radius SSIDs:" -char " ") -ForegroundColor Green
-    #     $radiusSSID | ForEach-Object {
-    #         Write-Host $(PadCenter -string $_ -char " ") -ForegroundColor Green
-    #     }
-    # } else {
-    #     Write-Host $(PadCenter -string "Radius SSID: $radiusSSID" -char " ") -ForegroundColor Green
-    #     Write-Host "`n"
-    # }
-    # /==== GROUP/SSID ====
 
     Write-Host $(PadCenter -string "-" -char '-')
-    Write-Host "1: Press '1' to generate your Root Certificate."
+    Write-Host "1: Press '1' to generate/update your Root Certificate."
     Write-Host "2: Press '2' to generate/update your User Certificate(s)."
     Write-Host "3: Press '3' to distribute your User Certificate(s)."
     Write-Host "4: Press '4' to monitor your User Certification Distribution."
