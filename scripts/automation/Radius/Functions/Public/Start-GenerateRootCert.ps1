@@ -8,7 +8,7 @@ Function Start-GenerateRootCert {
         # Parameter to "New" or "Replace" the root certificate validateSet ('1', '2', '3', 'E')
         [Parameter(HelpMessage = 'Select an option to generate or replace the root certificate', ParameterSetName = 'cli')]
         [ValidateSet('New', 'Replace', 'Renew')]
-        [string] $GenerateType = 'New',
+        [string] $generateType = 'New',
         # Force invoke commands after generation
         [Parameter(HelpMessage = 'When specified, this parameter will replace certificates if they already exist on the current filesystem', ParameterSetName = 'cli')]
         [switch]

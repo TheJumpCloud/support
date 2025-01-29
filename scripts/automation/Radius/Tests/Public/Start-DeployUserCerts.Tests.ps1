@@ -16,7 +16,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Set-JCRAssociationHash -UserID $user.userID
         }
         Get-JCRGlobalVars -Force -associateManually
-        Start-GenerateRootCert -certKeyPassword "TestCertificate123!@#"
+        Start-GenerateRootCert -certKeyPassword "TestCertificate123!@#" -generateType "new" -force
 
     }
     Context 'Distribute all certificates for all users forcibly' {
