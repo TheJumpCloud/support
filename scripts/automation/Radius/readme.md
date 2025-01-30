@@ -154,6 +154,12 @@ A Certificate Authority (CA) is required for passwordless Radius Authentication.
 
 The first option in the menu will present options to generate a self-signed CA. The resulting file `radius_ca_cert.pem` in the `projectDirectory/Radius/Cert` directory. When generating a self signed CA, a password prompt is displayed, this password is used to protect the CA from unauthorized access. Choose a secure but memorable password, during the session this password will be stored as an environment variable as it is required to generate user certificates.
 
+#### Renewing a self-signed certificate
+
+The second option in the root certificate menu allows you to renew the current CA certificate. During the renewal process, you will be prompted to enter the password for the current private key. This ensures that administrators can renew expiring CA certificates while maintaining the ability to authenticate user certificates issued by the previous CA. The renewed certificate will retain the same serial number and CA headers.
+
+![Root Cert Menu](./images/rootCertMenu.png)
+
 #### Importing a certificate
 
 To Import your own CA, the certificate and key files can be copied to the `projectDirectory/Radius/Cert` directory. **Note: Please ensure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)**
