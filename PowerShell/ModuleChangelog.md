@@ -1,6 +1,21 @@
+## 2.18.0
+
+Release Date: January 30, 2025
+
+#### RELEASE NOTES
+
+```
+Introduces the primarySystemUser parameter to Set-JCSystem and Update-JCDeviceFromCSV functions. This parameter will allow you associate a user to the specified device
+```
+
+#### FEATURES:
+
+* Added the primarySystemUser parameter to Set-JCSystem
+* Update-JCDeviceFromCSV supports the primarySystemUser param that was added to Set-JCSystem
+
 ## 2.17.0
 
-Release Date: January 3, 2025
+Release Date: January 30, 2025
 
 #### RELEASE NOTES
 

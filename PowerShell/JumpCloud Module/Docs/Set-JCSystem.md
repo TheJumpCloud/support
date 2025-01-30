@@ -16,7 +16,8 @@ Updates an existing JumpCloud System
 Set-JCSystem [-SystemID] <String> [-displayName <String>] [-description <String>]
  [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>]
  [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
- [-systemInsights <Boolean>] [<CommonParameters>]
+ [-systemInsights <Boolean>] [-primarySystemUser <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -120,6 +121,21 @@ Accept wildcard characters: False
 The system displayName.
 The displayName is set to the hostname of the system during agent installation.
 When the system hostname updates the displayName does not update.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -primarySystemUser
+A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations
 
 ```yaml
 Type: System.String
