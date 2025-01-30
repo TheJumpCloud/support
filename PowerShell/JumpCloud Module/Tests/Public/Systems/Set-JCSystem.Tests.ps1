@@ -114,6 +114,24 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
 
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
+    It "Sets a primarySystemUser to null" {
+        $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+        $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.email
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -Be $NewUser._id
+
+        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
+        $NewUser._id | Should -BeIn $systemAssociations.ToId
+
+        $removePrimarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $null
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
+
+        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
+        $NewUser._id | Should -Not -BeIn $systemAssociations.ToId
+
+        Remove-JCUser -UserID $NewUser._id -ByID -force
+    }
     It "Try to set an invalid primarySystemUser" {
         { $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist" } | Should -Throw
     }
