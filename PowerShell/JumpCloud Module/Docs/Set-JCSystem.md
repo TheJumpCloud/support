@@ -16,7 +16,7 @@ Updates an existing JumpCloud System
 Set-JCSystem [-SystemID] <String> [-displayName <String>] [-description <String>]
  [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>]
  [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
- [-systemInsights <Boolean>] [-primarySystemUser <String>]
+ [-systemInsights <Boolean>] [-primarySystemUser <Object>]
  [<CommonParameters>]
 ```
 
@@ -138,7 +138,7 @@ Accept wildcard characters: False
 A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations
 
 ```yaml
-Type: System.String
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
@@ -191,6 +191,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Boolean
+### System.Object
 ## OUTPUTS
 
 ### System.Object
