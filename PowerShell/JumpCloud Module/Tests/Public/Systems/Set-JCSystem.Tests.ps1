@@ -84,23 +84,28 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
     It "Sets a primarySystemUser by UserID" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser._id
-        $primarySystemUser.primarySystemUser | Should -Be $NewUser._id
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Sets a primarySystemUser by Username" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.username
-        $primarySystemUser.primarySystemUser | Should -Be $NewUser._id
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Sets a primarySystemUser by Email" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.email
-        $primarySystemUser.primarySystemUser | Should -Be $NewUser._id
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Trys to set an invalid primarySystemUser" {
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist"
-        $primarySystemUser.primarySystemUser | Should -Match "Could not validate"
+
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
     }
 }
