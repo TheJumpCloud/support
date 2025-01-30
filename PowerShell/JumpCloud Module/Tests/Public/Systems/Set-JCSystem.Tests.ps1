@@ -70,13 +70,37 @@ Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0 & 2.1.2" {
         $FoundSystem = Get-JCSystem -description $descriptionText
         $FoundSystem._id | Should -Be $($PesterParams_SystemWindows._id)
         # Return system to orig state
-        Set-JCSystem -SystemId $($PesterParams_SystemWindows._id) -description $systemBfore.description
+        Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $systemBfore.description
     }
     It "Sets a System using a pipeline without throwing" {
         $descriptionText = "Pester"
         $systemBfore = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $descriptionText
         { Get-JCSystem -description $descriptionText | Set-JCSystem -description "Modified" } | Should -Not -Throw
         # Return system to orig state
-        Set-JCSystem -SystemId $($PesterParams_SystemWindows._id) -description $systemBfore.description
+        Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -description $systemBfore.description
+    }
+}
+Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
+    It "Sets a primarySystemUser by UserID" {
+        $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+        $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser._id
+        $primarySystemUser.primarySystemUser | Should -Be $NewUser._id
+        Remove-JCUser -UserID $NewUser._id -ByID -force
+    }
+    It "Sets a primarySystemUser by Username" {
+        $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+        $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.username
+        $primarySystemUser.primarySystemUser | Should -Be $NewUser._id
+        Remove-JCUser -UserID $NewUser._id -ByID -force
+    }
+    It "Sets a primarySystemUser by Email" {
+        $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+        $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.email
+        $primarySystemUser.primarySystemUser | Should -Be $NewUser._id
+        Remove-JCUser -UserID $NewUser._id -ByID -force
+    }
+    It "Trys to set an invalid primarySystemUser" {
+        $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist"
+        $primarySystemUser.primarySystemUser | Should -Contain "Could not validate"
     }
 }
