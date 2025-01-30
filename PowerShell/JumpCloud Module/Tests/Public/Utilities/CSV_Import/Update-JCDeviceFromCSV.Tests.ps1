@@ -84,7 +84,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
 
-        $DeviceCSVUpdate.primarySystemUser | Should -Contain "Could not validate"
+        $DeviceCSVUpdate.primarySystemUser | Should -Match "Could not validate"
         $systemAssociations = Get-JcSdkSystemAssociation -SystemId $system.Id -Targets 'user'
         $CSVData.primarySystemUser | Should -Not -BeIn $systemAssociations.ToId
     }

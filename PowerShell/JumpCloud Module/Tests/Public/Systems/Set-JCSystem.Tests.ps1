@@ -101,6 +101,6 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
     }
     It "Trys to set an invalid primarySystemUser" {
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist"
-        $primarySystemUser.primarySystemUser | Should -Contain "Could not validate"
+        $primarySystemUser.primarySystemUser | Should -Match "Could not validate"
     }
 }
