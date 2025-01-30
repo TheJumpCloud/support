@@ -133,6 +133,9 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Try to set an invalid primarySystemUser" {
-        { $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist" } | Should -Throw
+        $removePrimarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $null
+        $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist"
+        $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
+        $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
     }
 }
