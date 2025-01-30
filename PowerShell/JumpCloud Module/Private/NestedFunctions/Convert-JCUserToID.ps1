@@ -70,9 +70,9 @@ function Convert-JCUserToID {
     }
     end {
         if ($null -eq $UserIdentifierValue) {
-            Write-Error "Could not validate $UserIdentifier. Please ensure the information was entered correctly"
+            throw "Could not validate $UserIdentifer. Please ensure the information was entered correctly."
         } else {
-            return $UserIdentifier
+            return $UserIdentifierValue
         }
     }
 }
