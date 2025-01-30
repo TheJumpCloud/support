@@ -88,4 +88,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $systemAssociations = Get-JcSdkSystemAssociation -SystemId $system.Id -Targets 'user'
         $CSVData.primarySystemUser | Should -Not -BeIn $systemAssociations.ToId
     }
+    AfterEach {
+        Remove-JCUser -UserID $NewUser._id -force
+    }
 }
