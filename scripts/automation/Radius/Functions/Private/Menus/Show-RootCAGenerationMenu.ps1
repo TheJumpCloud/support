@@ -29,9 +29,9 @@ function Show-RootCAGenerationMenu {
 
     if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
         # Generate new root CA
-        Write-Host "1: Press '1' to replace current root certificate. `n`t$([char]0x1b)[96mNOTE: you will be prompted to overwrite any previously generated certificates. This will generate a new root CA with a new serial number and user certs generated with the previous CA will no longer authenticate."
+        Write-Host "1: Press '1' to replace current root certificate. `n`t$([char]0x1b)[96mNOTE: you will be prompted to overwrite any previously generated certificates. This will generate a new root CA `n`twith a new serial number and user certs generated with the previous CA will no longer authenticate."
         # Regenerate with the same serial number
-        Write-Host  "2: Press '2' to renew root certificate. `n`t$([char]0x1b)[96mNOTE: renewing the root CA will contain the same serial number and CA subject headers. User certs generated with the previous CA will continue to authenticate."
+        Write-Host  "2: Press '2' to renew root certificate. `n`t$([char]0x1b)[96mNOTE: renewing the root CA will contain the same serial number and CA subject headers. User certs generated with`n`tthe previous CA will continue to authenticate."
         # Return to main menu
         Write-Host "E: Press 'E' to return to main menu."
     } else {
