@@ -561,13 +561,18 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
-                        $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
-                        if ($managerValue) {
-                            $body.add($param.Key, $managerValue)
+                        if ($param.Value -eq $null -or $param.Value -eq "") {
+                            $body.add($param.Key, $null)
+                            continue
                         } else {
-                            $body.add($param.Key, $param.Value)
+                            $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
+                            if ($managerValue) {
+                                $body.add($param.Key, $managerValue)
+                            } else {
+                                $body.add($param.Key, $param.Value)
+                            }
+                            continue
                         }
-                        continue
                     }
                     $body.add($param.Key, $param.Value)
                 }
@@ -655,13 +660,18 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
-                        $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
-                        if ($managerValue) {
-                            $body.add($param.Key, $managerValue)
+                        if ($param.Value -eq $null -or $param.Value -eq "") {
+                            $body.add($param.Key, $null)
+                            continue
                         } else {
-                            $body.add($param.Key, $param.Value)
+                            $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
+                            if ($managerValue) {
+                                $body.add($param.Key, $managerValue)
+                            } else {
+                                $body.add($param.Key, $param.Value)
+                            }
+                            continue
                         }
-                        continue
                     }
 
                     if ($param.Key -like 'Attribute*') {
@@ -818,13 +828,18 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
-                        $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
-                        if ($managerValue) {
-                            $body.add($param.Key, $managerValue)
+                        if ($param.Value -eq $null -or $param.Value -eq "") {
+                            $body.add($param.Key, $null)
+                            continue
                         } else {
-                            $body.add($param.Key, $param.Value)
+                            $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
+                            if ($managerValue) {
+                                $body.add($param.Key, $managerValue)
+                            } else {
+                                $body.add($param.Key, $param.Value)
+                            }
+                            continue
                         }
-                        continue
                     }
 
                     $body.add($param.Key, $param.Value)
@@ -933,13 +948,18 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 # Get the manager using manager username instead of userId
                 if ("manager" -eq $param.Key) {
-                    $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
-                    if ($managerValue) {
-                        $body.add($param.Key, $managerValue)
+                    if ($param.Value -eq $null -or $param.Value -eq "") {
+                        $body.add($param.Key, $null)
+                        continue
                     } else {
-                        $body.add($param.Key, $param.Value)
+                        $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
+                        if ($managerValue) {
+                            $body.add($param.Key, $managerValue)
+                        } else {
+                            $body.add($param.Key, $param.Value)
+                        }
+                        continue
                     }
-                    continue
                 }
 
                 if ($param.key -eq 'UserID') {
