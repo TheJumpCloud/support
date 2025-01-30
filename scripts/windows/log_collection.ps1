@@ -107,7 +107,7 @@ function Gather-Logs {
                 "C:\windows\temp\jcagent.log"
             )
             "ADLogs"              = @(
-                "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\JumpCloud_AD_Import_Grpc.log",
+                "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\JumpCloud_AD_Import_Grpc*.log",
                 "C:\Windows\Temp\JumpCloud_AD_Integration.log",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\jcadimportagent.config.json",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\JumpCloud_AD_Sync.log",
@@ -229,8 +229,9 @@ function Gather-Logs {
                     $rsopCmd = "gpresult /SCOPE COMPUTER /H $rsopOutputPath"
                     Invoke-Expression $rsopCmd
                 }
-                "Active Directory Logs" {
+                 "Active Directory Logs" {
                     $files += $fileList["ADLogs"]
+                    $eventLogs += $eventLogList["EssentialEvents"]
                     # Export AD Integration Registry Keys
                     # test for import agent files
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\JumpCloud\AD Integration Import Agent" -ErrorAction SilentlyContinue ) {
@@ -245,12 +246,14 @@ function Gather-Logs {
                         Write-Warning "No AD Sync Agent Keys exist"
                     }
                     # Output DistinguishedName to a Text File
-                    if (Get-Module -Name ActiveDirectory) {
+                    Import-Module Activedirectory
+                    if (get-Module -Name ActiveDirectory) {
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
                     } else {
                         Write-Warning "The Active Directory PowerShell Module was not installed"
-                    }
+                    } 
+
                 }
             }
         }
