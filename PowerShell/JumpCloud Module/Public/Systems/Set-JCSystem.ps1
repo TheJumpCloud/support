@@ -37,8 +37,7 @@ Function Set-JCSystem () {
         [bool]
         $systemInsights,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations')]
-        [string]
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A value indicating a JumpCloud users email, username or userID. This will add the user to the device associations')]
         $primarySystemUser
     )
 
@@ -87,20 +86,18 @@ Function Set-JCSystem () {
             }
             if ($param.key -eq "primarySystemUser") {
                 $userInfo = $param.value
-                try {
-                    $primarySystemUserValue = Convert-JCUserToID -UserIdentifier $userInfo
-                    $association = Set-JcSdkSystemAssociation -SystemId $SystemID -Op "add" -Type "user" -Id $primarySystemUserValue
-                    # Set-JcSdkSystemAssociation doesn't return anything, make custom return if function doesn't throw
-                    $associationResults = @{
-                        "primarySystemUser" = $primarySystemUserValue
+                if ($param.Value -eq $null -or $param.Value -eq "") {
+                    $body.add($param.Key, $null)
+                    continue
+                } else {
+                    try {
+                        $primarySystemUserValue = Convert-JCUserToID -UserIdentifier $userInfo
+                        $body.add("primarySystemUser.id", $primarySystemUserValue)
+                    } catch {
+                        Write-Error "Could not validate $userinfo. Please ensure the user information is correct"
                     }
-                } catch {
-                    $associationResults = @{
-                        "primarySystemUser" = "$userInfo`: " + $_
-                    }
+                    continue
                 }
-
-                continue
             }
             $body.add($param.Key, $param.Value)
         }
@@ -111,11 +108,7 @@ Function Set-JCSystem () {
         Write-Debug $URL
         $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
-        if ($associationResults) {
-            $UpdatedSystems += $System | Select-Object *, @{Name = 'primarySystemUser'; Expression = { $associationResults.primarySystemUser }}
-        } else {
-            $UpdatedSystems += $System
-        }
+        $UpdatedSystems += $System
     }
     end {
         return $UpdatedSystems
