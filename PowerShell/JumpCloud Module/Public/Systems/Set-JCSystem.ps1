@@ -37,7 +37,7 @@ Function Set-JCSystem () {
         [bool]
         $systemInsights,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A value indicating a JumpCloud users email, username or userID. This will add the user to the device associations')]
+        [Parameter(ValueFromPipelineByPropertyName = $false, HelpMessage = 'A value indicating a JumpCloud users email, username or userID. This will add the user to the device associations')]
         $primarySystemUser
     )
 
@@ -94,7 +94,7 @@ Function Set-JCSystem () {
                         $primarySystemUserValue = Convert-JCUserToID -UserIdentifier $userInfo
                         $body.add("primarySystemUser.id", $primarySystemUserValue)
                     } catch {
-                        Write-Error "Could not validate $userinfo. Please ensure the user information is correct"
+                        Write-Warning "Could not validate $userinfo. Please ensure the user information is correct"
                     }
                     continue
                 }
