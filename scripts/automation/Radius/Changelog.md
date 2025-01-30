@@ -1,6 +1,6 @@
 ## 2.0.0
 
-Release Date: January 5, 2024
+Release Date: January 30, 2024
 
 #### RELEASE NOTES
 
@@ -15,6 +15,11 @@ This release offers a significant overhaul for the Radius Cert Deployment tool, 
 - Added ability to run each public function headless in order to automate cert generation and distribution
 - Added a table to keep track of generated/deployed certificates when using the tool
 - Added password validation (re-enter) when generating root certificate
+- Added Start-GenerateRootCert menu
+  - Functionalities added
+    - New: creates new root cert. If there is an existing root cert, user gets prompted to overwrite the cert
+    - Replace: replaces the current cert. If you replace root cert, it will contain a different serial number and user certs generated with the previous CA will no longer authenticate
+    - Renew: renewing the root CA will contain the same serial number and CA subject headers. User certs generated with the previous CA will continue to authenticate.
 
 ## 1.1.0
 

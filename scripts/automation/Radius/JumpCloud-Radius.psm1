@@ -31,6 +31,7 @@ $global:JCRConfig = Get-JCRSettingsFile
 # if the Certs / UserCerts directories do not exist, create them
 if (-Not (Test-Path -Path "$JCScriptRoot/Cert" -PathType Container)) {
     New-Item -Path "$JCScriptRoot/Cert" -ItemType Directory
+    New-Item -Path "$JCScriptRoot/Cert/Backups" -ItemType Directory
 }
 if (-Not (Test-Path -Path "$JCScriptRoot/UserCerts" -PathType Container)) {
     New-Item -Path "$JCScriptRoot/UserCerts" -ItemType Directory

@@ -9,7 +9,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
                 Write-Error -Message "Failed to import function $($Import.FullName): $_"
             }
         }
-        Start-GenerateRootCert -certKeyPassword "testCertificate123!@#"
+        Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
     }
     Context 'Certs forcibly re-generated for all users' {
         It 'Certs re-generated have actually been re-written for all users' {
