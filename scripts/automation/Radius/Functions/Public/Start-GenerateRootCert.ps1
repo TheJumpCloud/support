@@ -60,10 +60,11 @@ Function Start-GenerateRootCert {
                 $selection = 1
             }
             'Replace' {
-                $selection = 2
+                # Same functionality as 'New'
+                $selection = 1
             }
             'Renew' {
-                $selection = 3
+                $selection = 2
             }
         }
     } else {
@@ -230,112 +231,8 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                 return
             }
         }
-        # Replace current root certificate
+        # Renew current root certificate
         '2' {
-            # Check if there is a current CA cert
-            if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
-
-                if (!$force) {
-                    if ($PSCmdlet.ParameterSetName -eq 'cli') {
-                        $overwritePrompt = Get-ResponsePrompt -message "Do you want to overwrite/replace the existing CA Cert? This will generate a new root CA with a new serial number and user certs generated with the previous CA will no longer authenticate." -cli $true
-                    } else {
-                        $overwritePrompt = Get-ResponsePrompt -message "Do you want to overwrite/replace the existing CA Cert? This will generate a new root CA with a new serial number and user certs generated with the previous CA will no longer authenticate."
-                    }
-                } else {
-                    $overwritePrompt = $true
-                }
-
-
-                switch ($overwritePrompt) {
-                    $true {
-                        Write-Host "Replacing Root Cert..." -ForegroundColor Yellow
-                        switch ($PSCmdlet.ParameterSetName) {
-                            'gui' {
-                                $env:certKeyPassword = ""
-                                # Loop until the passwords match
-                                do {
-                                    # Prompt for password
-                                    Write-Host "NOTE: Please save your root certificate password in a password manager" -foregroundcolor Yellow
-                                    $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
-
-                                    # Reprompt for password
-                                    $secureCertKeyPass2ReEntry = Read-Host -Prompt "Re-enter the password for the certificate key" -AsSecureString
-
-                                    # Convert SecureString to plain text to validate
-                                    $plainCertKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
-                                    $plainCertKeyPassReEntry = ConvertFrom-SecureString $secureCertKeyPass2ReEntry -AsPlainText
-
-                                    # Validate that the passwords match
-                                    if ($plainCertKeyPass -ne $plainCertKeyPassReEntry) {
-                                        Write-Host "Passwords do not match. Please try again." -foregroundcolor Red
-                                    } else {
-                                        Write-Host "Password set successfully" -foregroundcolor Green
-                                        $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
-                                    }
-                                } while ($plainCertKeyPass -ne $plainCertKeyPassReEntry)
-                            }
-                            'cli' {
-                                $certKeyPass = $certKeyPassword
-                            }
-                        }
-                        # Copy the current root cert to the backups folder and zip it
-                        try {
-                            Copy-Item -Path "$CertPath/radius_ca_cert.pem" -Destination "$CertPath/Backups/radius_ca_cert_$timestamp.pem"
-                            Copy-Item -Path "$CertPath/radius_ca_key.pem" -Destination "$CertPath/Backups/radius_ca_key_$timestamp.pem"
-
-                            # Zip the root cert and key files
-                            $zipPath = "$CertPath/Backups/replace_radius_ca_cert_backup_$timestamp.zip"
-                            Compress-Archive -Path "$CertPath/Backups/radius_ca_cert_$timestamp.pem", "$CertPath/Backups/radius_ca_key_$timestamp.pem" -DestinationPath $zipPath
-
-                            Remove-Item -Path "$CertPath/Backups/radius_ca_cert_$timestamp.pem"
-                            Remove-Item -Path "$CertPath/Backups/radius_ca_key_$timestamp.pem"
-
-                        } catch {
-                            Write-Error "Error backing up the current root cert and key. $($_.Exception.Message)"
-                            exit
-                        }
-
-                        # Save the pass phrase in the env:
-                        $env:certKeyPassword = $certKeyPass
-                        Invoke-Expression "$JCR_OPENSSL req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
-                        # REM PEM pass phrase: myorgpass
-                        Invoke-Expression "$JCR_OPENSSL x509 -in `"$outCA`" -noout -text"
-                        # openssl x509 -in ca-cert.pem -noout -text
-                        # Update Extensions Distinguished Names:
-                        $exts = Get-ChildItem -Path "$JCScriptRoot/Extensions"
-                        foreach ($ext in $exts) {
-                            Write-Host "Updating Subject Headers for $($ext.Name)"
-                            $extContent = Get-Content -Path $ext.FullName -Raw
-                            $reqDistinguishedName = @"
-[req_distinguished_name]
-C = $($JCR_SUBJECT_HEADERS.countryCode)
-ST = $($JCR_SUBJECT_HEADERS.stateCode)
-L = $($JCR_SUBJECT_HEADERS.Locality)
-O = $($JCR_SUBJECT_HEADERS.Organization)
-OU = $($JCR_SUBJECT_HEADERS.OrganizationUnit)
-CN = $($JCR_SUBJECT_HEADERS.CommonName)
-
-"@
-                            $extContent -Replace ("\[req_distinguished_name\][\s\S]*(?=\[v3_req\])", $reqDistinguishedName) | Set-Content -Path $ext.FullName -NoNewline -Force
-                        }
-                        return
-                    }
-                    $false {
-                        return
-                    }
-                    'exit' {
-                        return
-                    }
-                }
-
-
-            } else {
-                Write-Host "No Root Cert detected. Please generate a new CA Cert. Returning to main menu..." -ForegroundColor Yellow
-                return
-            }
-
-        }
-        '3' {
             $env:certKeyPassword = $certKeyPass
             # Check if there is a current CA cert
             if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
