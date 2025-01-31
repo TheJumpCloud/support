@@ -211,7 +211,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             Get-JCRGlobalVars -force -skipAssociation -associateManually
             Start-Sleep 1
             # the new user should be in the membership list
-            $global:JCRadiusMembers.username | Should -Contain $user.username
+            $global:JCRRadiusMembers.username | Should -Contain $user.username
 
             # the new user should be in user.json list
             $userData = Get-UserJsonData
@@ -231,7 +231,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             Get-JCRGlobalVars -force -skipAssociation -associateManually
             Start-Sleep 1
             # the new user should be in the membership list
-            $global:JCRadiusMembers.username | Should -Not -Contain $user.username
+            $global:JCRRadiusMembers.username | Should -Not -Contain $user.username
 
             # the new user should be in user.json list
             $userData = Get-UserJsonData
