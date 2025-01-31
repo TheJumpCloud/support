@@ -37,7 +37,7 @@ function Test-UserFromHash {
                 # Get the UserID from the keys
                 $matchedUserID = $Global:JCRUsers.keys | Select-Object -Index $matchedIndex
                 # validate that the userID is in the radiusMembership hash:
-                if ($matchedIndex) {
+                if ($matchedUserID) {
                     # finally return the $matchedUser object
                     $matchedUser = $Global:JCRUsers[$matchedUserID]
                 } else {
