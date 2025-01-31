@@ -229,7 +229,7 @@ function Gather-Logs {
                     $rsopCmd = "gpresult /SCOPE COMPUTER /H $rsopOutputPath"
                     Invoke-Expression $rsopCmd
                 }
-                 "Active Directory Logs" {
+                "Active Directory Logs" {
                     $files += $fileList["ADLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
                     # Export AD Integration Registry Keys
@@ -246,14 +246,13 @@ function Gather-Logs {
                         Write-Warning "No AD Sync Agent Keys exist"
                     }
                     # Output DistinguishedName to a Text File
-                    Import-Module Activedirectory
-                    if (get-Module -Name ActiveDirectory) {
+                    Import-Module ActiveDirectory
+                    if (Get-Module -Name ActiveDirectory) {
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
                     } else {
                         Write-Warning "The Active Directory PowerShell Module was not installed"
-                    } 
-
+                    }
                 }
             }
         }
