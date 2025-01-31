@@ -23,10 +23,17 @@ function Get-CertInfo {
         if ($UserCerts) {
             # Find all userCert paths
             if ($username) {
-                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-*.crt" -ErrorAction SilentlyContinue
+                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-$($Global:JCR_CERT_TYPE)*.crt" -ErrorAction SilentlyContinue
 
             } else {
-                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/*.crt" -ErrorAction SilentlyContinue
+                $foundCerts = New-Object System.Collections.ArrayList
+                $global:JCRRadiusMembers.username | ForEach-Object {
+                    $foundCert = Resolve-Path -Path "$JCScriptRoot/UserCerts/$_-$($Global:JCR_CERT_TYPE)*.crt" -ErrorAction SilentlyContinue
+                    if ($foundCert) {
+                        $foundCerts.Add($foundCert) | Out-Null
+                    }
+
+                }
             }
         }
 
