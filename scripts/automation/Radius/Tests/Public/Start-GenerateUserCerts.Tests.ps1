@@ -46,13 +46,14 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # wait one moment
-            Start-Sleep 2
+            Start-Sleep 1
             # update the cache
             Get-JCRGlobalVars -force -skipAssociation -associateManually
             # wait just one moment before testing membership since we are writing a file
             Start-Sleep 1
             # the new user should be in the membership list:
             $global:JCRRadiusMembers.username | Should -Contain $user.username
+            $Global:JCRUsers.keys | should -Contain $user.id
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
@@ -170,13 +171,14 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # wait one moment
-            Start-Sleep 2
+            Start-Sleep 1
             # update the cache
             Get-JCRGlobalVars -force -skipAssociation -associateManually
             # wait just one moment before testing membership since we are writing a file
             Start-Sleep 1
             # the new user should be in the membership list:
             $global:JCRRadiusMembers.username | Should -Contain $user.username
+            $Global:JCRUsers.keys | should -Contain $user.id
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
@@ -201,13 +203,14 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # wait one moment
-            Start-Sleep 2
+            Start-Sleep 1
             # update the cache
             Get-JCRGlobalVars -force -skipAssociation -associateManually
             # wait just one moment before testing membership since we are writing a file
             Start-Sleep 1
             # the new user should be in the membership list:
             $global:JCRRadiusMembers.username | Should -Contain $user.username
+            $Global:JCRUsers.keys | should -Contain $user.id
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
