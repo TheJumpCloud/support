@@ -196,4 +196,46 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
 
     }
+    Context "Tests that the RadiusMembers.json file is updated when users are added or removed from the user group" {
+        BeforeAll {
+            # create a new user
+            $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
+        }
+        It "when a user is added to the group, they should be added to the RadiusMembers.json & users.json file" {
+            # get the RadiusMembers.json before
+            # get the user.json file before
+            # add a user to the radius Group
+            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Start-Sleep 1
+            # update the cache forcefully
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
+            Start-Sleep 1
+            # the new user should be in the membership list
+            $global:JCRRadiusMembers.username | Should -Contain $user.username
+
+            # the new user should be in user.json list
+            $userData = Get-UserJsonData
+            $userData.username | Should -Contain $user.username
+
+
+
+
+        }
+        It "when a user is removed from the group, they should be removed to the RadiusMembers.json & users.json file" {
+            # get the RadiusMembers.json before
+            # get the user.json file before
+            # add a user to the radius Group
+            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Start-Sleep 1
+            # update the cache forcefully
+            Get-JCRGlobalVars -force -skipAssociation -associateManually
+            Start-Sleep 1
+            # the new user should be in the membership list
+            $global:JCRRadiusMembers.username | Should -Not -Contain $user.username
+
+            # the new user should be in user.json list
+            $userData = Get-UserJsonData
+            $userData.username | Should -Not -Contain $user.username
+        }
+    }
 }
