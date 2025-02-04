@@ -40,7 +40,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
             "allowMultiFactorAuthentication" = $false
             "allowPublicKeyAuthentication"   = $true
             "systemInsights"                 = $true
-            "primarySystemUser"              = $NewUser._id
+            "primarySystemUser"              = ""
         }
         $CSVDATA | Export-Csv "$PesterParams_ImportPath/UpdateDeviceFromCSV.csv" -Force
         $DeviceCSVUpdate = Update-JCDeviceFromCSV -CSVFilePath "$PesterParams_ImportPath/UpdateDeviceFromCSV.csv" -force
