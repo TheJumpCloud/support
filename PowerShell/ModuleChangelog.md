@@ -13,6 +13,10 @@ Introduces the primarySystemUser parameter to Set-JCSystem and Update-JCDeviceFr
 * Added the primarySystemUser parameter to Set-JCSystem
 * Update-JCDeviceFromCSV supports the primarySystemUser param that was added to Set-JCSystem
 
+#### BUG FIXES:
+
+* Added an Alias of GroupID to the ByID parameter for Get-JCUserGroupMember
+
 ## 2.17.0
 
 Release Date: January 30, 2025
