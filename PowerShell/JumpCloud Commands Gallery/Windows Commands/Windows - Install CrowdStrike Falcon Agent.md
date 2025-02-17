@@ -70,7 +70,7 @@ function Get-CrowdStrikeCcid {
         }
     }
     process {
-        $Response = Invoke-WebRequest -Uri "$CSBaseAddress/sensors/queries/installers/ccid/v1" -method Get -Headers $CrowdStrikeAuthHeader -UseBasicParsing
+        $Response = Invoke-WebRequest -Uri "$CSBaseAddress/sensors/queries/installers/ccid/v1?limit=500" -method Get -Headers $CrowdStrikeAuthHeader -UseBasicParsing
 
         if ($Response.headers."X-Ratelimit-Remaining" -le 0) {
             Write-Host "Too many requests are being made to CrowdStrike services..."
