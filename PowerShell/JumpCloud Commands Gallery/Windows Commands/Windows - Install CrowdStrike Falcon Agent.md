@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Install CrowdStrike Falcon Agent | v2.1 JCCG
+Windows - Install CrowdStrike Falcon Agent | v2.2 JCCG
 
 #### commandType
 
