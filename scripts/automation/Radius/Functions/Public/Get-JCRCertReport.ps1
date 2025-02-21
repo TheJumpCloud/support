@@ -10,8 +10,9 @@ function Get-JCRCertReport {
     $reportData = @()
 
     foreach ($groupID in $UserGroupIDs) {
-        $radiusMembersPath = Join-Path -Path $PSScriptRoot -ChildPath "data/radiusMembers.json"
-        $certHashPath = Join-Path -Path $PSScriptRoot -ChildPath "data/certHash.json"
+        $radiusMembersPath = Join-Path -Path $JCScriptRoot -ChildPath "data/radiusMembers.json"
+        $certHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/certHash.json"
+        $associationHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/associationHash.json"
 
         if (!(Test-Path $radiusMembersPath)) {
             Write-Error "radiusMembers.json not found at $radiusMembersPath"
@@ -21,40 +22,41 @@ function Get-JCRCertReport {
             Write-Error "certHash.json not found at $certHashPath"
             continue # Skip to the next group if file not found
         }
+        if (!(Test-Path $associationHashPath)) {
+            Write-Error "associationHash.json not found at $associationHashPath"
+            continue # Skip to the next group if file not found
+        }
 
 
         $radiusMembers = Get-Content $radiusMembersPath | ConvertFrom-Json
         $certHashes = Get-Content $certHashPath | ConvertFrom-Json
+        $associationHash = Get-Content $associationHashPath | ConvertFrom-Json
+
 
         foreach ($user in $radiusMembers) {
-            foreach ($device in $user.devices) {
+            $userSystemAssociations = $associationHash.$($user.userID).systemAssociations
+            $userCerts = Get-CertInfo -UserCerts -username $user.username
+            foreach ($system in $userSystemAssociations) {
                 $reportEntry = [ordered]@{}
                 $reportEntry.username = $user.username
                 $reportEntry.userid = $user.userid
-                $reportEntry.systemHostname = $device.systemHostname
-                $reportEntry.systemID = $device.systemID
-                $reportEntry.systemOS = $device.systemOS
+                $reportEntry.systemHostname = $system.hostname
+                $reportEntry.systemID = $system.systemId
+                $reportEntry.systemOS = $system.osFamily
 
 
                 # Check if certificate is installed on the device
                 $certInstalled = $false
-                $certificateSerialNumber = $null
-                $certificateExpirationDate = $null
+                $certificateSerialNumber = $userCerts.serial
+                $certificateExpirationDate = $userCerts.notAfter
 
-                if ($certHashes."$($device.systemID)") {
-                    # Check if the systemID exists in certHashes
-                    foreach ($cert in $certHashes."$($device.systemID)") {
-                        # Loop through possible certs on the device
-                        $certificateSerialNumber = $cert.serialNumber # Capture the serial number
-                        $certificateExpirationDate = $cert.notAfter # Capture expiration date
-                        $certInstalled = $true # If we got here there is at least one cert
-                        break # Exit inner loop, we can assume the user has a cert
-                    }
+                if ($certHashes.$($userCerts.sha1).systemId -contains $system.systemId) {
+                    $certInstalled = $true
                 }
 
-                $reportEntry.CertificateSerialNumber = $certificateSerialNumber
-                $reportEntry."Certificate Expiration Date" = $certificateExpirationDate
-                $reportEntry."Certificate Installed on the device" = $certInstalled
+                $reportEntry.certSerialNumber = $certificateSerialNumber
+                $reportEntry.certExpirationDate = $certificateExpirationDate
+                $reportEntry.certInstalled = $certInstalled
 
                 $reportData += [pscustomobject]$reportEntry
             }
