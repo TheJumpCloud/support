@@ -1,5 +1,5 @@
 # Import Global Config:
-. "$JCScriptRoot/config.ps1"
+. "$JCScriptRoot/Config.ps1"
 Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
