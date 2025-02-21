@@ -5,7 +5,7 @@
 . "$JCScriptRoot/Config.ps1"
 
 if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
-    throw "OrganizationID not specified, please update config.ps1"
+    throw "OrganizationID not specified, please update Config.ps1"
 }
 
 ################################################################################
