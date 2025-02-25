@@ -1,6 +1,6 @@
 ## 2.18.0
 
-Release Date: January 30, 2025
+Release Date: February 25, 2025
 
 #### RELEASE NOTES
 
@@ -12,6 +12,10 @@ Introduces the primarySystemUser parameter to Set-JCSystem and Update-JCDeviceFr
 
 * Added the primarySystemUser parameter to Set-JCSystem
 * Update-JCDeviceFromCSV supports the primarySystemUser param that was added to Set-JCSystem
+* Added new report types to the New-JCReports function
+  * user-account-health
+  * software-inventory
+  * os-version
 
 #### BUG FIXES:
 

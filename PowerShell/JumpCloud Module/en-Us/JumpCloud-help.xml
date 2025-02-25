@@ -11002,7 +11002,7 @@ Get-JCUser -Username cClemons</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCUserGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="GroupID">
           <maml:name>ByID</maml:name>
           <maml:description>
             <maml:para>If searching for a User Group using the GroupID populate the GroupID in the -ByID field.</maml:para>
@@ -11034,7 +11034,7 @@ Get-JCUser -Username cClemons</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="GroupID">
         <maml:name>ByID</maml:name>
         <maml:description>
           <maml:para>If searching for a User Group using the GroupID populate the GroupID in the -ByID field.</maml:para>
