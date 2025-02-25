@@ -1,10 +1,17 @@
 function Get-JCRCertReport {
     param(
-        [Parameter(Mandatory = $true)]
-        [string[]]$UserGroupIDs,
         [Parameter(Mandatory)]
-        [ValidateScript({ Test-Path -IsValid -Path $_ -PathType Leaf })]
-        [string]$ExportFilePath
+        [ValidateScript({
+                $directory = Split-Path -Path $_ -Parent
+                if (-not (Test-Path -Path $directory -PathType Container)) {
+                    throw "The directory '$directory' does not exist."
+                }
+                if (-not ($_ -like '*.csv')) {
+                    throw "The specified path '$_' does not end with '.csv'."
+                }
+                return $true
+            })]
+        [System.IO.FileInfo]$ExportFilePath
     )
 
     # Initialize an empty array to store the results
