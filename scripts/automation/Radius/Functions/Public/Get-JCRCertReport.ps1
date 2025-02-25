@@ -3,65 +3,65 @@ function Get-JCRCertReport {
         [Parameter(Mandatory = $true)]
         [string[]]$UserGroupIDs,
         [Parameter(Mandatory)]
+        [ValidateScript({ Test-Path -IsValid -Path $_ -PathType Leaf })]
         [string]$ExportFilePath
     )
 
     # Initialize an empty array to store the results
     $reportData = New-Object System.Collections.ArrayList
 
-    foreach ($groupID in $UserGroupIDs) {
-        $radiusMembersPath = Join-Path -Path $JCScriptRoot -ChildPath "data/radiusMembers.json"
-        $certHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/certHash.json"
-        $associationHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/associationHash.json"
+    $radiusMembersPath = Join-Path -Path $JCScriptRoot -ChildPath "data/radiusMembers.json"
+    $certHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/certHash.json"
+    $associationHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/associationHash.json"
 
-        if (!(Test-Path $radiusMembersPath)) {
-            Write-Error "radiusMembers.json not found at $radiusMembersPath"
-            continue # Skip to the next group if file not found
-        }
-        if (!(Test-Path $certHashPath)) {
-            Write-Error "certHash.json not found at $certHashPath"
-            continue # Skip to the next group if file not found
-        }
-        if (!(Test-Path $associationHashPath)) {
-            Write-Error "associationHash.json not found at $associationHashPath"
-            continue # Skip to the next group if file not found
-        }
-
-
-        $radiusMembers = Get-Content $radiusMembersPath | ConvertFrom-Json
-        $certHashes = Get-Content $certHashPath | ConvertFrom-Json
-        $associationHash = Get-Content $associationHashPath | ConvertFrom-Json
+    if (!(Test-Path $radiusMembersPath)) {
+        Write-Error "radiusMembers.json not found at $radiusMembersPath"
+        continue # Skip to the next group if file not found
+    }
+    if (!(Test-Path $certHashPath)) {
+        Write-Error "certHash.json not found at $certHashPath"
+        continue # Skip to the next group if file not found
+    }
+    if (!(Test-Path $associationHashPath)) {
+        Write-Error "associationHash.json not found at $associationHashPath"
+        continue # Skip to the next group if file not found
+    }
 
 
-        foreach ($user in $radiusMembers) {
-            $userSystemAssociations = $associationHash.$($user.userID).systemAssociations
-            $userCerts = Get-CertInfo -UserCerts -username $user.username
-            foreach ($system in $userSystemAssociations) {
-                $reportEntry = [ordered]@{}
-                $reportEntry.username = $user.username
-                $reportEntry.userid = $user.userid
-                $reportEntry.systemHostname = $system.hostname
-                $reportEntry.systemID = $system.systemId
-                $reportEntry.systemOS = $system.osFamily
+    $radiusMembers = Get-Content $radiusMembersPath | ConvertFrom-Json
+    $certHashes = Get-Content $certHashPath | ConvertFrom-Json
+    $associationHash = Get-Content $associationHashPath | ConvertFrom-Json
 
 
-                # Check if certificate is installed on the device
-                $certInstalled = $false
-                $certificateSerialNumber = $userCerts.serial
-                $certificateExpirationDate = $userCerts.notAfter
+    foreach ($user in $radiusMembers) {
+        $userSystemAssociations = $associationHash.$($user.userID).systemAssociations
+        $userCerts = Get-CertInfo -UserCerts -username $user.username
+        foreach ($system in $userSystemAssociations) {
+            $reportEntry = [ordered]@{}
+            $reportEntry.username = $user.username
+            $reportEntry.userid = $user.userid
+            $reportEntry.systemHostname = $system.hostname
+            $reportEntry.systemID = $system.systemId
+            $reportEntry.systemOS = $system.osFamily
 
-                if ($certHashes.$($userCerts.sha1).systemId -contains $system.systemId) {
-                    $certInstalled = $true
-                }
 
-                $reportEntry.certSerialNumber = $certificateSerialNumber
-                $reportEntry.certExpirationDate = $certificateExpirationDate
-                $reportEntry.certInstalled = $certInstalled
+            # Check if certificate is installed on the device
+            $certInstalled = $false
+            $certificateSerialNumber = $userCerts.serial
+            $certificateExpirationDate = $userCerts.notAfter
 
-                $reportData.Add([pscustomobject]$reportEntry) | Out-Null
+            if ($certHashes.$($userCerts.sha1).systemId -contains $system.systemId) {
+                $certInstalled = $true
             }
+
+            $reportEntry.certSerialNumber = $certificateSerialNumber
+            $reportEntry.certExpirationDate = $certificateExpirationDate
+            $reportEntry.certInstalled = $certInstalled
+
+            $reportData.Add([pscustomobject]$reportEntry) | Out-Null
         }
     }
+
 
     # Export to CSV
     $reportData | Export-Csv -Path $ExportFilePath -NoTypeInformation
