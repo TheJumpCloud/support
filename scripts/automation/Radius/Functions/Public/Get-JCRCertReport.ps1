@@ -7,7 +7,7 @@ function Get-JCRCertReport {
     )
 
     # Initialize an empty array to store the results
-    $reportData = @()
+    $reportData = New-Object System.Collections.ArrayList
 
     foreach ($groupID in $UserGroupIDs) {
         $radiusMembersPath = Join-Path -Path $JCScriptRoot -ChildPath "data/radiusMembers.json"
@@ -58,7 +58,7 @@ function Get-JCRCertReport {
                 $reportEntry.certExpirationDate = $certificateExpirationDate
                 $reportEntry.certInstalled = $certInstalled
 
-                $reportData += [pscustomobject]$reportEntry
+                $reportData.Add([pscustomobject]$reportEntry) | Out-Null
             }
         }
     }
