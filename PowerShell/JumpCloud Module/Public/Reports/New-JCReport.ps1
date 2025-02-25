@@ -34,7 +34,19 @@ Function New-JCReport {
         [ArgumentCompleter([JumpCloud.SDK.DirectoryInsights.Support.ReportType1])]
         [JumpCloud.SDK.DirectoryInsights.Category('Path')]
         [JumpCloud.SDK.DirectoryInsights.Support.ReportType1]
-        [ValidateSet("browser-patch-policy", "os-patch-policy", "users-to-devices", "users-to-directories", "users-to-ldap-servers", "users-to-radius-servers", "users-to-sso-applications", "users-to-user-groups")]
+        [ValidateSet(
+            "browser-patch-policy",
+            "os-patch-policy",
+            "users-to-devices",
+            "users-to-directories",
+            "users-to-ldap-servers",
+            "users-to-radius-servers",
+            "users-to-sso-applications",
+            "users-to-user-groups",
+            "user-account-health",
+            "software-inventory",
+            "os-version"
+        )]
         # Report Type
         ${ReportType},
 
