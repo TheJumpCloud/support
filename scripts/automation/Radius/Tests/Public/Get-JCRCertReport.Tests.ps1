@@ -1,4 +1,4 @@
-Describe 'User Cert Report' {
+Describe 'User Cert Report' -Tag "Reports" {
     BeforeAll {
         # Load all functions from private folders
         $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
