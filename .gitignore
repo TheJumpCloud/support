@@ -22,3 +22,4 @@ __pycache__/
 # Ignore PWSH CSV Import/Update Files:
 # /PowerShell/JumpCloud Module/Tests/Csv_Files/import/*
 # /PowerShell/JumpCloud Module/Tests/Csv_Files/update/*
+scripts/automation/Radius/Config.ps1
