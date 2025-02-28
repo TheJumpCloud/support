@@ -332,6 +332,7 @@ The names should correspond to the userGroupIDs of each user group. Note. Multip
 At this point, if you’ve set everything already, you should be able to just change directories into the Radius folder and run the script “MultiGroupRadius.ps1”
 
 The script will generate and deploy user certificates for each user in the defined groups.
+
 ![script running](./images/mgr_running.png)
 
 #### Scheduling the Multi Group Radius script
@@ -339,31 +340,39 @@ The script will generate and deploy user certificates for each user in the defin
 The Multi Group Radius script can be scheduled with Windows Task Scheduler
 
 Create a task
+
 ![Create a task](./images/create_task.png)
 
 Define a trigger time for the task to run
+
 ![Task Schedule](./images/task_schedule.png)
 
 Add an action to "Start A Program"
 Under the Program/ script field add: `"C:\Program Files\PowerShell\7\pwsh.exe"`
 Under the Add Arguments add: `-ExecutionPolicy ByPass -File "C:\Users\yourUsername\path\to\Radius\MultiGroupRadius.ps1"`
+
 ![Task Action](./images/task_action.png)
 
 When you click Okay and save the task it should prompt for your user account password. Enter the value and click OK
+
 ![Password Prompt](./images/pass_prompt.png)
 
 The task should run at the scheduled time. You can also kick off the task manually by pressing the run button from the task scheduler.
+
 ![Task Running](./images/task_running.png)
 
 After running the task, user certs for each user group should be added to the `/Radius/UserCerts` directory:
+
 ![User Cert List](./images/user_cert_list.png)
 
 Every user with a system association should have a command generated and queued for installatioon if they do not already have the current generated certificate installed.
+
 ![Command List](./images/command_list.png)
 
 #### Logging
 
 Each time the script runs there should be a corresponding log generated in the Radius Directory titled “log.txt”. Below is a sample screenshot showing one of the two of the user groups I’ve generated/ deployed certs for.
+
 ![Log Example](./images/log_example.png)
 
 New events will be appended to this log file until the log is greater than 5mb. At that point the log will be copied to a new file log.txt.old and a new log will be created to prevent excess log data from being stored.
