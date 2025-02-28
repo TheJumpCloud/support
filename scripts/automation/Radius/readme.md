@@ -274,6 +274,100 @@ Before Connecting, users can view the authentication source. Click "Connect" to 
 
 The user should then be connected to the radius network.
 
+## Automation Scripts
+
+The generation and distribution of certificates with Radius Certificate Module can be automated with the [multi_group_radius](./multi_group_radius.ps1) script found in this repository. This script should serve as just an example of how to automate this, there are numerous ways in which this can be achieved.
+
+For the purpose of this example, we'll assume:
+
+- A self-hosted Windows System is acting as a scripting server
+- All of the requirements from the Radius Certificate Module have been met/ software installed on that server
+- A scheduled task can be run on this device
+
+### Automation Setup
+
+In order to automate these scripts, our scripted example solution needs to know how to get the values of your JumpCloud Organization API Key and the secret password saved when the CA was generated. In the following example, these values will be saved as secure strings.
+
+On the self-hosted Windows system, create a location on the scripting server to host the Radius project directory. Within this directory and signed in as the user administering these certificates, open a powershell 7 terminal window.
+
+CD into this location root and run the following
+
+```powershell
+$APIKeyString = "yourAPIKEY"
+$APIKeySecureString = ConvertTo-SecureString -String $APIKeyString -AsPlainText -Force
+$EncryptedKey = ConvertFrom-SecureString $APIKeySecureString
+$EncryptedKey | Out-File -FilePath ".\key.encrypted"
+```
+
+This should save a "key.encrypted" file containing your API Key to the root of the Radius directory. When the Multi_Group_Radius script runs it'll connected to your organization using the contents of this file and the authentication data stored in the scheduled task.
+
+Encrypt the CA key password. Copy the following into the same PowerShell window:
+
+```powershell
+$CertKeyPass = "yourCertPass"
+$CertKeySecurePass = ConvertTo-SecureString -String $CertKeyPass -AsPlainText -Force
+$EncryptedKey = ConvertFrom-SecureString $CertKeySecurePass
+$EncryptedKey | Out-File -FilePath ".\keyCert.encrypted"
+```
+
+This should save a "keyCert.encrypted" file containing your API Key to the root of the Radius directory. This file is used to set your CA Private Key variable during the Multi_Group_Radius operation.
+
+If the [multi_group_radius](./multi_group_radius.ps1) script is not already in the project root, copy it to the root directory of the Radius project.
+
+Edit the file and name each Radius User Group you wish to generate and distribute certificates for.
+
+```powershell
+# Define list of Radius User Group IDs:
+$radiusUserGroups = @(
+    @{"US-Radius" = '5f3171a9232e1113939dd6a2' }
+    @{"US-Dairy-Farmers" = '664e50582d9c0e000143ee97' }
+    @{"AK-Farmers" = '5f7f418a1f247569e35070f1' }
+)
+```
+
+The names should correspond to the userGroupIDs of each user group. Note. Multiple user groups are not required, if you only wish to automate one single group just list the single user group name and the user group ID in the $radiusUserGroups list.
+
+#### Running the Multi Group Radius script
+
+At this point, if you’ve set everything already, you should be able to just change directories into the Radius folder and run the script “MultiGroupRadius.ps1”
+
+The script will generate and deploy user certificates for each user in the defined groups.
+![script running](./images/mgr_running.png)
+
+#### Scheduling the Multi Group Radius script
+
+The Multi Group Radius script can be scheduled with Windows Task Scheduler
+
+Create a task
+![Create a task](./images/create_task.png)
+
+Define a trigger time for the task to run
+![Task Schedule](./images/task_schedule.png)
+
+Add an action to "Start A Program"
+Under the Program/ script field add: `"C:\Program Files\PowerShell\7\pwsh.exe"`
+Under the Add Arguments add: `-ExecutionPolicy ByPass -File "C:\Users\yourUsername\path\to\Radius\MultiGroupRadius.ps1"`
+![Task Action](./images/task_action.png)
+
+When you click Okay and save the task it should prompt for your user account password. Enter the value and click OK
+![Password Prompt](./images/pass_prompt.png)
+
+The task should run at the scheduled time. You can also kick off the task manually by pressing the run button from the task scheduler.
+![Task Running](./images/task_running.png)
+
+After running the task, user certs for each user group should be added to the `/Radius/UserCerts` directory:
+![User Cert List](./images/user_cert_list.png)
+
+Every user with a system association should have a command generated and queued for installatioon if they do not already have the current generated certificate installed.
+![Command List](./images/command_list.png)
+
+#### Logging
+
+Each time the script runs there should be a corresponding log generated in the Radius Directory titled “log.txt”. Below is a sample screenshot showing one of the two of the user groups I’ve generated/ deployed certs for.
+![Log Example](./images/log_example.png)
+
+New events will be appended to this log file until the log is greater than 5mb. At that point the log will be copied to a new file log.txt.old and a new log will be created to prevent excess log data from being stored.
+
 ### Troubleshooting
 
 #### Clearing Commands Queue
