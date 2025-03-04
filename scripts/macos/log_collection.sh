@@ -121,7 +121,13 @@ if [[ $localuser ]]; then
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
 
     ## list JumpCloud Device Certificate
-    sudo -u $localuser security find-certificate -c "JumpCloud Device Trust Certificate" -p | openssl x509  -text > $baseDir/systemInfo/deviceCert.txt
+    if sudo -u "$localuser" security find-certificate -c "JumpCloud Device Trust Certificate" -p > /dev/null 2>&1; then
+        sudo -u $localuser security find-certificate -c "JumpCloud Device Trust Certificate" -p | openssl x509  -text > $baseDir/systemInfo/deviceCert.txt
+        echo "JumpCloud Device Trust Certificate found and processed."
+    else
+    # Certificate not found
+        echo "JumpCloud Device Trust Certificate not found." > $baseDir/systemInfo/deviceCert.txt
+    fi
 
 fi
 
@@ -156,10 +162,12 @@ for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
         cp -r /Users/$u/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/$u/
     fi
 
+    if [ -d /Users/$u/Library/Logs/JumpCloud ]; then
+        cp -r /Users/$u/Library/Logs/JumpCloud $baseDir/userLogs/$u/
+    fi
+
     # report on any user scope configuration profiles
     sudo -u $u profiles -L -o stdout > $baseDir/userLogs/$u/installedProfiles.txt
-
-    cp -r /Users/$u/Library/Logs/JumpCloud $baseDir/userLogs/$u/
 
 done
 
