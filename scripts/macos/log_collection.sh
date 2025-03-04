@@ -113,7 +113,16 @@ fi
 
 ## Only run if a user is actually logged in
 if [[ $localuser ]]; then
+
+    ## pull additional patch management information
     sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com.github.macadmins.Nudge.plist 2>&1
+
+    ## list jumpcloud services currently running on the system
+    sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
+
+    ## list JumpCloud Device Certificate
+    sudo -u $localuser security find-certificate -c "JumpCloud Device Trust Certificate" -p | openssl x509  -text > $baseDir/systemInfo/deviceCert.txt
+
 fi
 
 ## gather relevent system logs for software installs
