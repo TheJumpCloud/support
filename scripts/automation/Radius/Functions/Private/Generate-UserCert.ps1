@@ -21,7 +21,7 @@ function Generate-UserCert {
         $user
     )
     begin {
-        . "$JCScriptRoot/config.ps1"
+        . "$JCScriptRoot/Config.ps1"
         if (-Not (Test-Path -Path $rootCAKey)) {
             Throw "RootCAKey could not be found in project directory, have you run Generate-Cert.ps1?"
             exit 1

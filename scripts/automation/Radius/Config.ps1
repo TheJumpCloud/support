@@ -55,7 +55,7 @@ function Get-OpenSSLVersion {
         try {
             $version = Invoke-Expression "& '$opensslBinary' version"
         } catch {
-            throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$opensslBinary variable in the config.ps1 file to the correct path"
+            throw "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$opensslBinary variable in the Config.ps1 file to the correct path"
         }
 
         # Required OpenSSL Version
@@ -70,7 +70,7 @@ function Get-OpenSSLVersion {
 
         # Determine if windows:
         if ([System.Environment]::OSVersion.Platform -match "Win") {
-            # If env variable exists, skip check for subsequent runs of ./config.ps1
+            # If env variable exists, skip check for subsequent runs of ./Config.ps1
             if ($env:OPENSSL_MODULES) {
                 $binItems = Get-ChildItem -Path $env:OPENSSL_MODULES
                 if ("legacy.dll" -in $binItems.Name) {
