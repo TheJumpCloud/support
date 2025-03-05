@@ -29,9 +29,9 @@ then
 - JumpCloud logging recorded in the macOS system logs for the past ${days} days
 - Currently installed configuration profiles
 - MDM triggered software installations for the past ${days} days (Appstore, VPP and Custom Software)
-- Filevault and secure token information (no passwords or secrets are collected)
+- FileVault and secure token information (no passwords or secrets are collected)
 - Usernames of JumpCloud managed users
-If you agree to this, enter 'Y', or any other key to cancel." -n 1 -r
+If you agree to this, enter 'Y', or any other key to cancel: " -n 1 -r
     echo    # move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
@@ -126,7 +126,7 @@ if [[ $localuser ]]; then
         echo "JumpCloud Device Trust Certificate found and processed."
     else
     # Certificate not found
-        echo "JumpCloud Device Trust Certificate not found." > $baseDir/systemInfo/deviceCert.txt
+        echo "A JumpCloud Device Trust Certificate was not found - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
     fi
 
 fi
