@@ -2,7 +2,7 @@
 
 
 
-automate=false   # set to true if running via a JumpCloud command (recommended)
+automate=true   # set to true if running via a JumpCloud command (recommended)
 days=2           # number of days of OS logs to gather
 
 
@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2
+version=1.2.1
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -49,6 +49,7 @@ sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$
 
 if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
     localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
+    echo "User $localuser is currently logged in."
     archiveTargetDir="/Users/${localuser}/Documents/"
 else
     archiveTargetDir="/private/var/tmp/"
@@ -121,18 +122,19 @@ if [[ $localuser ]]; then
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
 
     ## list JumpCloud Device Certificate
-    jcDeviceCert="sudo -u \"$localuser\" security find-certificate -c \"JumpCloud Device Trust Certificate\" -p"
-    if $jcDeviceCert > /dev/null 2>&1; then
-        $jcDeviceCert | openssl x509 -text > $baseDir/systemInfo/deviceCert.txt
+    jcDeviceCert=$(sudo -u "$localuser" security find-certificate -c "JumpCloud Device Trust Certificate" -p)
+    if [ -n "$jcDeviceCert" ]; then
+        echo "$jcDeviceCert" | openssl x509 -text > $baseDir/systemInfo/deviceCert.txt
         echo "JumpCloud Device Trust Certificate found and processed."
     else
     # Certificate not found
         echo "A JumpCloud Device Trust Certificate was not found for the user: "$localuser" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
     fi
-
+else
+    echo "No user is currently logged in. Skipping user-specific information."
 fi
 
-## gather relevent system logs for software installs
+## gather relevant system logs for software installs
 echo "Gathering software installation logs"
 log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDir/systemLogs/appstored.log
 cp /var/log/install.log* $baseDir/systemLogs/
