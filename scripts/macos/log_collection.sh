@@ -2,7 +2,7 @@
 
 
 
-automate=true   # set to true if running via a JumpCloud command (recommended)
+automate=false   # set to true if running via a JumpCloud command (recommended)
 days=2           # number of days of OS logs to gather
 
 
