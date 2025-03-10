@@ -121,12 +121,13 @@ if [[ $localuser ]]; then
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
 
     ## list JumpCloud Device Certificate
-    if sudo -u "$localuser" security find-certificate -c "JumpCloud Device Trust Certificate" -p > /dev/null 2>&1; then
-        sudo -u $localuser security find-certificate -c "JumpCloud Device Trust Certificate" -p | openssl x509  -text > $baseDir/systemInfo/deviceCert.txt
+    jcDeviceCert="sudo -u \"$localuser\" security find-certificate -c \"JumpCloud Device Trust Certificate\" -p"
+    if $jcDeviceCert > /dev/null 2>&1; then
+        $jcDeviceCert | openssl x509 -text > $baseDir/systemInfo/deviceCert.txt
         echo "JumpCloud Device Trust Certificate found and processed."
     else
     # Certificate not found
-        echo "A JumpCloud Device Trust Certificate was not found - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
+        echo "A JumpCloud Device Trust Certificate was not found for the user: "$localuser" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
     fi
 
 fi
