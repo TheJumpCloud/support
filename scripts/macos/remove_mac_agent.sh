@@ -33,7 +33,7 @@ remove_user_device_trust_db() {
   local keychainpath="${userhome}/Library/Keychains/jumpcloud-device-trust-keychain-db"
 
   # Check if the path exists
-  if [[ -e "{$keychainpath}" && -f "${keychainpath}" ]]; then
+  if [[ -e "${keychainpath}" && -f "${keychainpath}" ]]; then
     echo "Removing file ${keychainpath}"
     rm -f "${keychainpath}"
   else
