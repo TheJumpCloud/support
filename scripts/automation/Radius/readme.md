@@ -11,7 +11,7 @@ This automation has been tested with OpenSSL 3.0.7. OpenSSL 3.x.x is required to
 - OpenSSL 3.x.x (Tested with 3.0.7) (see macOS/ Windows requirements below)
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 - Certificate Authority (CA) (either from a vendor or self-generated)
-- Variables in `config.ps1` updated
+- Variables in `Config.ps1` updated
   - JumpCloud API Key Set (Read/ Write Access Required)
   - JumpCloud ORG ID Set
   - JumpCloud User Group containing users and assigned to a Radius Server
@@ -65,7 +65,7 @@ At the time of this writing JumpCloud Module 2.1.3 was the latest version. Pleas
 
 ### Set the Radius Config File
 
-Before Running the `Start-RadiusDeployment.ps1` script, the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
+Before Running the `Start-RadiusDeployment.ps1` script, the environment variables for your JumpCloud Organization must first be set. Open the `Config.ps1` file with a text editor.
 
 #### Set Your API Key ID
 
