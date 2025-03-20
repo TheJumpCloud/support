@@ -569,6 +569,23 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $testUserData.commandAssociations.commandId | Should -Contain $windowsCmdAfter.id
             $testUserData.commandAssociations.commandId | Should -Contain $macCmdAfter.id
         }
+        It "When the commands are generated the names of the command should match the predetermined naming structure" {
+            # Run Start Deploy User Certs by username
+            Start-DeployUserCerts -type ByUsername -username $user.username
+
+            $macCommand = Get-JcSdkCommand -Filter @("trigger:eq:$($($certData.sha1))", "commandType:eq:mac")
+            $windowsCommand = Get-JcSdkCommand -Filter @("trigger:eq:$($($certData.sha1))", "commandType:eq:windows")
+
+            # macCommand name should be set correctly
+            $macCommand.Name | Should -Match "RadiusCert-Install:$($user.username):MacOSX"
+            # windowsCommand name should be set correctly
+            $windowsCommand.Name | Should -Match "RadiusCert-Install:$($user.username):Windows"
+
+            # validate that the command names are recorded correctly in the users.json file
+            $userData = Get-UserFromTable -userId $user.id
+            $userData.commandAssociations.commandName | Should -Contain "RadiusCert-Install:$($user.username):MacOSX"
+            $userData.commandAssociations.commandName | Should -Contain "RadiusCert-Install:$($user.username):Windows"
+        }
     }
     Context 'Force Generate Certificate Tests' {
         BeforeEach {

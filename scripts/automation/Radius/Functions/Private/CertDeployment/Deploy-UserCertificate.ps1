@@ -550,7 +550,7 @@ fi
                     $workToBeDone.macOSCommandID = $Command.Id
 
                     $CommandTable = [PSCustomObject]@{
-                        commandId            = $command.Id
+                        commandId            = $workToBeDone.macOSCommandID
                         commandName          = $command.name
                         commandPreviouslyRun = $false
                         commandQueued        = $false
@@ -569,7 +569,7 @@ fi
             if (-Not ($workToBeDone.forceGenerateMacOSCommands) -And ($workToBeDone.macOSCommandID)) {
                 $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
 
-                $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
+                $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:mac")
                 $CommandTable = [PSCustomObject]@{
                     commandId            = $workToBeDone.macOSCommandID
                     commandName          = $command.name
