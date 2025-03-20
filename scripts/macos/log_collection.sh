@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2.1
+version=1.2.2
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
