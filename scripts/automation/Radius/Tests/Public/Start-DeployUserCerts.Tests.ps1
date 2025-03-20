@@ -582,7 +582,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $windowsCommand.Name | Should -Match "RadiusCert-Install:$($user.username):Windows"
 
             # validate that the command names are recorded correctly in the users.json file
-            $userData = Get-UserFromTable -username $user.username
+            $userData = Get-UserFromTable -userId $user.id
             $userData.commandAssociations.commandName | Should -Contain "RadiusCert-Install:$($user.username):MacOSX"
             $userData.commandAssociations.commandName | Should -Contain "RadiusCert-Install:$($user.username):Windows"
         }
