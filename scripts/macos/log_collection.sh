@@ -50,8 +50,8 @@ sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$
 if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
     localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
     echo "User $localuser is currently logged in."
-    homedir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
-    archiveTargetDir="${homedir}/Documents/"
+    homeDir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
+    archiveTargetDir="${homeDir}/Documents/"
 else
     archiveTargetDir="/private/var/tmp/"
 fi
@@ -152,24 +152,24 @@ grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > 
 ## descend into managed user's homedirs (requires full disk access) and gather JumpCloud logs
 for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
     echo "pulling logs from user $u"
-    manageduserhomedir=$(dscl . -read /Users/${u} | awk '/NFSHomeDirectory/ {print $2}')
-    echo "user home dir $manageduserhomedir"
+    managedUserDir=$(dscl . -read /Users/${u} | awk '/NFSHomeDirectory/ {print $2}')
+    echo "user home dir $managedUserDir"
     mkdir $baseDir/userLogs/$u
 
-    if [ -d $manageduserhomedir/Library/Logs/JumpCloud\ Password\ Manager ]; then
+    if [ -d $managedUserDir/Library/Logs/JumpCloud\ Password\ Manager ]; then
         cp -r /Users/$u/Library/Logs/JumpCloud\ Password\ Manager $baseDir/userLogs/$u/
     fi
 
-    if [ -d $manageduserhomedir/Library/Application\ Support/JumpCloud\ Password\ Manager/data/daemon/log ]; then
-        cp -r $manageduserhomedir/Library/Application\ Support/JumpCloud\ Password\ Manager/data/daemon/log $baseDir/userLogs/$u/PWM_daemon_logs
+    if [ -d $managedUserDir/Library/Application\ Support/JumpCloud\ Password\ Manager/data/daemon/log ]; then
+        cp -r $managedUserDir/Library/Application\ Support/JumpCloud\ Password\ Manager/data/daemon/log $baseDir/userLogs/$u/PWM_daemon_logs
     fi
 
-    if [ -d $manageduserhomedir/Library/Logs/JumpCloud-Remote-Assist ]; then
-        cp -r $manageduserhomedir/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/$u/
+    if [ -d $managedUserDir/Library/Logs/JumpCloud-Remote-Assist ]; then
+        cp -r $managedUserDir/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/$u/
     fi
 
-    if [ -d $manageduserhomedir/Library/Logs/JumpCloud ]; then
-        cp -r $manageduserhomedir/Library/Logs/JumpCloud $baseDir/userLogs/$u/
+    if [ -d $managedUserDir/Library/Logs/JumpCloud ]; then
+        cp -r $managedUserDir/Library/Logs/JumpCloud $baseDir/userLogs/$u/
     fi
 
     # report on any user scope configuration profiles
