@@ -23,10 +23,12 @@ Foreach ($Import in $Public) {
 # set script root:
 $global:JCScriptRoot = "$PSScriptRoot"
 
-# import config:
-. "$JCScriptRoot/Config.ps1"
+# # import config:
+# . "$JCScriptRoot/Config.ps1"
 # try to get the settings file, create new one if it does not exist:
 $global:JCRConfig = Get-JCRSettingsFile
+
+# from the settings file we should have a location for the certs and user certs
 
 # if the Certs / UserCerts directories do not exist, create them
 if (-Not (Test-Path -Path "$JCScriptRoot/Cert" -PathType Container)) {
@@ -37,5 +39,7 @@ if (-Not (Test-Path -Path "$JCScriptRoot/UserCerts" -PathType Container)) {
     New-Item -Path "$JCScriptRoot/UserCerts" -ItemType Directory
 }
 
-# Get global variables or update if necessary
-Get-JCRGlobalVars
+# # Get global variables or update if necessary
+# Get-JCRGlobalVars
+# Export module member
+Export-ModuleMember -Function $Public.BaseName -Alias *
