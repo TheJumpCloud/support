@@ -20,6 +20,8 @@
 /scripts/automation/Radius/data/*
 /scripts/automation/Radius/Cert/Backups/*.pem
 /scripts/automation/Radius/Cert/Backups/*.zip
+/scripts/automation/Radius/*.encrypted
+/scripts/automation/Radius/log.txt
 
 __pycache__/
 *.pyc
