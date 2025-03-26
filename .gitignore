@@ -22,6 +22,7 @@
 /scripts/automation/Radius/Cert/Backups/*.zip
 /scripts/automation/Radius/*.encrypted
 /scripts/automation/Radius/log.txt
+/scripts/automation/Radius/reports/*
 
 __pycache__/
 *.pyc
