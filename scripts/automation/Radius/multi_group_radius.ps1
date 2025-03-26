@@ -1,7 +1,7 @@
 # Get the config path, set this value
 $configPath = "$PSScriptRoot/config.ps1"
 # define the PSD1 path:
-$psd1Path = "$PSScriptRoot/JumpCloud-Radius.psd1"
+$psd1Path = "$PSScriptRoot/JumpCloud.Radius.psd1"
 $logPath = "$PSScriptRoot/log.txt"
 # define data file path:
 $dataFilePath = "$PSScriptRoot/data/radiusMembers.json"
@@ -76,8 +76,6 @@ if ( -not $env:JCAPIKEY) {
 # Define list of Radius User Group IDs:
 $radiusUserGroups = @(
     @{"US-Radius" = '5f3171a9232e1113939dd6a2' }
-    @{"US-Dairy-Farmers" = '664e50582d9c0e000143ee97' }
-    @{"AK-Farmers" = '5f7f418a1f247569e35070f1' }
 )
 
 # For each group, update the config and

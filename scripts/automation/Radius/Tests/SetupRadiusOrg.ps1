@@ -80,4 +80,4 @@ if ($IsMacOS) {
 }
 
 $env:certKeyPassword = "TestCertificate123!@#"
-Import-Module "$psscriptRoot/../JumpCloud-Radius.psd1" -Force
+Import-Module "$psscriptRoot/../JumpCloud.Radius.psd1" -Force

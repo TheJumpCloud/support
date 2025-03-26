@@ -13,7 +13,10 @@ if ($JCAPIKEY.length -ne 40) {
 $global:JCScriptRoot = $PSScriptRoot
 
 # Import the functions
-Import-Module "$JCScriptRoot/JumpCloud-Radius.psm1" -DisableNameChecking -Force
+Import-Module "$JCScriptRoot/JumpCloud.Radius.psm1" -DisableNameChecking -Force
+
+# Check for Module Updates
+Update-JCRModule
 
 # Show user selection
 do {

@@ -2,7 +2,7 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
 
     It "The versions across the module should match" {
         # Get the PSD1 file and Config.ps1
-        $PSD1 = Test-ModuleManifest -Path "$PSScriptRoot/../../JumpCloud-Radius.psd1"
+        $PSD1 = Test-ModuleManifest -Path "$PSScriptRoot/../../JumpCloud.Radius.psd1"
         $config = Get-Content -Path "$PSScriptRoot/../../Config.ps1" -Raw
         # get the psd1 version
         $psd1Version = $PSD1.version
