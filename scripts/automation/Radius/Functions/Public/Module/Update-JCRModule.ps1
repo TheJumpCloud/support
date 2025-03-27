@@ -1,23 +1,17 @@
 function Update-JCRModule {
     [CmdletBinding()]
     param (
-        [Parameter(HelpMessage = 'ByPasses user prompts.')][Switch]$Force
+        [Parameter(HelpMessage = 'ByPasses user prompts.')][Switch]$Force,
+        [Parameter(HelpMessage = 'Set the PSRepository')][System.String]$Repository = 'PSGallery'
 
     )
     begin {
         # JumpCloud Module Name
         $ModuleName = 'JumpCloud.Radius'
-        # for testing allow swtich to change repo
-        $localPSRepo = $true
-        $repo = if ($localPSRepo) {
-            "localPSRepo"
-        } else {
-            "PSGallery"
-        }
     }
     process {
         # get the latest module
-        $latestModule = Find-Module -Name $ModuleName -Repository $repo
+        $latestModule = Find-Module -Name $ModuleName -Repository $Repository
         # get the currently installed module
         $currentModule = Get-InstalledModule -Name $ModuleName
 
@@ -37,8 +31,7 @@ function Update-JCRModule {
                 $UserInput = Read-Host
             }
             Until ($UserInput.ToUpper() -in ('Y', 'N'))
-        }
-        Else {
+        } Else {
             $UserInput = 'Y'
         }
 
@@ -52,7 +45,7 @@ function Update-JCRModule {
 
             # now, attempt to update the module
             try {
-                Update-Module -Name $ModuleName
+                Update-Module -Name $ModuleName -Force
             } catch {
                 Write-Error "Failed to update the module: $_"
             }

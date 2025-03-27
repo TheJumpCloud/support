@@ -62,7 +62,7 @@ jobs:
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
   Setup-Build-Dependancies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -109,7 +109,7 @@ jobs:
 
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -127,7 +127,7 @@ jobs:
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     # environment: Test Radius CI
     timeout-minutes: 75
     strategy:
