@@ -12,10 +12,10 @@ function Get-JCRSettingsFile {
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($global:JCScriptRoot))
-        $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'settings.json'
 
-        if (-Not (test-path -path $configFilePath)) {
-            write-host "write new settings file $configFilePath"
+        if (-Not (Test-Path -Path $configFilePath)) {
+            Write-Host "write new settings file $configFilePath"
             # Create new file with default settings
             New-JCRSettingsFile
         }
