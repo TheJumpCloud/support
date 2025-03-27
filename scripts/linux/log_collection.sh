@@ -16,7 +16,7 @@ automate=false   # set to true if running via a JumpCloud command (recommended)
 # do not edit below
 #######
 
-version=1.0
+version=1.0.1
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -91,7 +91,7 @@ iptables -L > $baseDir/systemInfo/firewall_rules.txt
 
 # JC Information and Logs
 echo "Collecting managed usernames"
-grep -o '\"username\":\"\w*' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/jumpcloudInfo/managedUsers.txt
+grep -o '\"username\":\"[^\"]*' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/jumpcloudInfo/managedUsers.txt
 
 cat /opt/jc/policyConf.json | json_pp > $baseDir/jumpcloudInfo/policyConf.json
 
