@@ -105,7 +105,7 @@ fi
 chmod -R 777 $baseDir
 
 ## pull jumpcloud log entries from the system logs
-collectionLog "Gathering jumpcloud logs from macOS system logs"
+collectionLog "Gathering Jumpcloud logs from macOS system logs"
 log show --last ${days}d --predicate="eventMessage CONTAINS[c] 'jumpcloud'" > $baseDir/systemLogs/jumpcloud_syslog.log
 log show --last ${days}d --debug --info --style compact --predicate 'senderImagePath CONTAINS[c] "JCLoginPlugin"' > $baseDir/systemLogs/SSAP_LoginWindow_events.log
 log show --last ${days}d --predicate="process CONTAINS[c] 'DurtService' || process CONTAINS[c] 'JumpCloudGo'" > $baseDir/systemLogs/JumpCloudGo_events.log
@@ -155,7 +155,7 @@ fdesetup list > $baseDir/systemInfo/secureTokenList.txt
 diskutil apfs list > $baseDir/systemInfo/diskReport.txt
 
 ## list managed usernames
-collectionLog "finding managed users"
+collectionLog "Finding managed users"
 grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
 
 ## descend into managed user's homedirs (requires full disk access) and gather JumpCloud logs
