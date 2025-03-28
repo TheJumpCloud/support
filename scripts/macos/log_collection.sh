@@ -45,21 +45,11 @@ hostDir="/private/var/tmp/"
 baseDir="${hostDir}JumpCloudLogCollect"
 sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
-# Setup Log output for Log Collection Script
-collectionLogFile="${baseDir}/collection.log"
-collectionLog() {
-    echo "$1" | tee -a "$collectionLogFile"
-}
-
-# Also redirect standard errors to the collectionLog file
-exec 2> >(tee -a "$collectionLogFile" >&2)
-
-
 ## Change directory to save log archive depending on active user state
 
 if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
     localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
-    collectionLog "User $localuser is currently logged in."
+    echo "User $localuser is currently logged in."
     homeDir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
     archiveTargetDir="${homeDir}/Documents/"
 else
@@ -83,6 +73,15 @@ fi
 
 ## Create directories for log collection
 mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs}
+
+# Setup Log output for Log Collection Script
+collectionLogFile="${baseDir}/collection.log"
+collectionLog() {
+    echo "$1" | tee -a "$collectionLogFile"
+}
+# Also redirect standard errors to the collectionLog file
+exec 2> >(tee -a "$collectionLogFile" >&2)
+
 
 collectionLog "Gathering all JumpCloud agent and process Logs..."
 
@@ -207,7 +206,7 @@ rm -R $baseDir
 
 if [[ $localuser ]]; then
     sudo -u $localuser open $archiveTargetDir
-    collectionLog "Log archive has been saved to the current user's Documents folder."
+    echo "Log archive has been saved to the current user's Documents folder."
 else
     echo "Please log in locally on the device and open /var/tmp to locate the log archive.
 You may run the command 'open /var/tmp' in the macOS Terminal to do this."
