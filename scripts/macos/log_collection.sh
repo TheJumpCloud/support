@@ -40,22 +40,6 @@ If you agree to this, enter 'Y', or any other key to cancel: " -n 1 -r
     fi
 fi
 
-datestamp=$(date "+%Y%m%d")
-hostDir="/private/var/tmp/"
-baseDir="${hostDir}JumpCloudLogCollect"
-sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
-
-## Change directory to save log archive depending on active user state
-
-if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
-    localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
-    echo "User $localuser is currently logged in."
-    homeDir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
-    archiveTargetDir="${homeDir}/Documents/"
-else
-    archiveTargetDir="/private/var/tmp/"
-fi
-
 ## verify system is enrolled in JumpCloud
 
 if [ ! -e /opt/jc/jcagent.conf ]
@@ -70,6 +54,10 @@ if ! plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null ; 
     exit 1
 fi
 
+datestamp=$(date "+%Y%m%d")
+hostDir="/private/var/tmp/"
+baseDir="${hostDir}JumpCloudLogCollect"
+sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
 ## Create directories for log collection
 mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs}
@@ -81,6 +69,18 @@ collectionLog() {
 }
 # Also redirect standard errors to the collectionLog file
 exec 2> >(tee -a "$collectionLogFile" >&2)
+
+
+## Change directory to save log archive depending on active user state
+
+if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
+    localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
+    collectionLog "User $localuser is currently logged in."
+    homeDir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
+    archiveTargetDir="${homeDir}/Documents/"
+else
+    archiveTargetDir="/private/var/tmp/"
+fi
 
 
 collectionLog "Gathering all JumpCloud agent and process Logs..."
