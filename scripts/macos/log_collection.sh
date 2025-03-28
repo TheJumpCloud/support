@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2.2
+version=1.2.3
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -40,22 +40,6 @@ If you agree to this, enter 'Y', or any other key to cancel: " -n 1 -r
     fi
 fi
 
-datestamp=$(date "+%Y%m%d")
-hostDir="/private/var/tmp/"
-baseDir="${hostDir}JumpCloudLogCollect"
-sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
-
-## Change directory to save log archive depending on active user state
-
-if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
-    localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
-    echo "User $localuser is currently logged in."
-    homeDir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
-    archiveTargetDir="${homeDir}/Documents/"
-else
-    archiveTargetDir="/private/var/tmp/"
-fi
-
 ## verify system is enrolled in JumpCloud
 
 if [ ! -e /opt/jc/jcagent.conf ]
@@ -70,11 +54,36 @@ if ! plutil -lint /Library/Preferences/com.apple.TimeMachine.plist >/dev/null ; 
     exit 1
 fi
 
+datestamp=$(date "+%Y%m%d")
+hostDir="/private/var/tmp/"
+baseDir="${hostDir}JumpCloudLogCollect"
+sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
 ## Create directories for log collection
 mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs}
 
-echo "Gathering all JumpCloud agent and process Logs..."
+# Setup Log output for Log Collection Script
+collectionLogFile="${baseDir}/collection.log"
+collectionLog() {
+    echo "$1" | tee -a "$collectionLogFile"
+}
+# Also redirect standard errors to the collectionLog file
+exec 2> >(tee -a "$collectionLogFile" >&2)
+
+
+## Change directory to save log archive depending on active user state
+
+if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
+    localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
+    collectionLog "User $localuser is currently logged in."
+    homeDir=$(dscl . -read /Users/${localuser} | awk '/NFSHomeDirectory/ {print $2}')
+    archiveTargetDir="${homeDir}/Documents/"
+else
+    archiveTargetDir="/private/var/tmp/"
+fi
+
+
+collectionLog "Gathering all JumpCloud agent and process Logs..."
 
 ## gather JumpCloud system logs (agent, install, patch management)
 for f in /var/log/jc*.log*
@@ -96,13 +105,13 @@ fi
 chmod -R 777 $baseDir
 
 ## pull jumpcloud log entries from the system logs
-echo "Gathering jumpcloud logs from macOS system logs"
+collectionLog "Gathering Jumpcloud logs from macOS system logs"
 log show --last ${days}d --predicate="eventMessage CONTAINS[c] 'jumpcloud'" > $baseDir/systemLogs/jumpcloud_syslog.log
 log show --last ${days}d --debug --info --style compact --predicate 'senderImagePath CONTAINS[c] "JCLoginPlugin"' > $baseDir/systemLogs/SSAP_LoginWindow_events.log
 log show --last ${days}d --predicate="process CONTAINS[c] 'DurtService' || process CONTAINS[c] 'JumpCloudGo'" > $baseDir/systemLogs/JumpCloudGo_events.log
 
 ## pull patch management logs
-echo "Gathering profiles & OS Patch Management settings"
+collectionLog "Gathering profiles & OS Patch Management settings"
 profiles show -o stdout > $baseDir/installedProfiles.txt
 
 softwareupdate --list > $baseDir/systemInfo/SoftwareUpdateList.txt 2>&1
@@ -126,34 +135,34 @@ if [[ $localuser ]]; then
     jcDeviceCert=$(sudo -u "$localuser" security find-certificate -c "JumpCloud Device Trust Certificate" -p 2>/dev/null)
     if [ -n "$jcDeviceCert" ]; then
         echo "$jcDeviceCert" | openssl x509 -text > $baseDir/systemInfo/deviceCert.txt
-        echo "JumpCloud Device Trust Certificate found and processed"
+        collectionLog "JumpCloud Device Trust Certificate found and processed"
     else
     # Certificate not found
         echo "A JumpCloud Device Trust Certificate was not found for the user: "$localuser" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
     fi
 else
-    echo "No user is currently logged in. Skipping user-specific information."
+    collectionLog "No user is currently logged in. Skipping user-specific information."
 fi
 
 ## gather relevant system logs for software installs
-echo "Gathering software installation logs"
+collectionLog "Gathering software installation logs"
 log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDir/systemLogs/appstored.log
 cp /var/log/install.log* $baseDir/systemLogs/
 
 ## list secure tokens and filesystem information
-echo "Gathering filesystem and secure token information"
+collectionLog "Gathering filesystem and secure token information"
 fdesetup list > $baseDir/systemInfo/secureTokenList.txt
 diskutil apfs list > $baseDir/systemInfo/diskReport.txt
 
 ## list managed usernames
-echo "finding managed users"
+collectionLog "Finding managed users"
 grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
 
 ## descend into managed user's homedirs (requires full disk access) and gather JumpCloud logs
 for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
-    echo "pulling logs from user $u"
+    collectionLog "Pulling logs from user $u"
     managedUserDir=$(dscl . -read /Users/${u} | awk '/NFSHomeDirectory/ {print $2}')
-    echo "user home dir $managedUserDir"
+    collectionLog "User "$u" Home Directory: $managedUserDir"
     mkdir $baseDir/userLogs/$u
 
     if [ -d $managedUserDir/Library/Logs/JumpCloud\ Password\ Manager ]; then
@@ -184,15 +193,15 @@ if [ -d /var/root/Library/Logs/JumpCloud-Remote-Assist ]; then
     cp -r /var/root/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/root/
 fi
 
-echo "Resetting gathered logs permissions"
+collectionLog "Resetting gathered logs permissions"
 chmod -R 777 $baseDir
 
 ## compress everything
-echo "Compressing logs"
+collectionLog "Compressing logs"
 tar -czf "${archiveTargetDir}jc-logArchive-${sysId}-$datestamp.tar.gz" -C $baseDir .
 chmod 777 ${archiveTargetDir}jc-logArchive-${sysId}-$datestamp.tar.gz
 
-echo "cleaning up."
+collectionLog "cleaning up."
 rm -R $baseDir
 
 if [[ $localuser ]]; then
