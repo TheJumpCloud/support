@@ -1,4 +1,4 @@
-function Get-JCRSettingsFile {
+function Get-JCRConfigFile {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -38,7 +38,6 @@ function Get-JCRSettingsFile {
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json
         }
     }
-
     end {
         return $config
     }
