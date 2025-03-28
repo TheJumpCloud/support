@@ -19,7 +19,7 @@ function Set-JCRConfigFile {
                     }
                     # Set the dynamic parameters' name
                     # write-host "adding dynamic param: $key$($item) $($config[$key][$item]['value'].getType().Name)"
-                    $ParamName_Filter = "$($key.Name)$($item.Name)"
+                    $ParamName_Filter = "$($item.Name)"
                     # Create the collection of attributes
                     $AttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
                     # If ValidateSet is specificed in the config file, set the value here:
@@ -72,12 +72,8 @@ function Set-JCRConfigFile {
         # update config settings
         foreach ($param in $params.Keys) {
             foreach ($key in $config.PSObject.Properties) {
-                if ($param -match $key.Name) {
-                    # Split the name
-                    $ParamKey = $param -split $key.Name
-                    # assign the first group
-                    $config.($($key.Name)).($paramKey[1]).value = $params[$param]
-                }
+                # assign the first group
+                $config.($($key.Name)).$param.value = $params[$param]
             }
         }
     }
