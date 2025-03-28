@@ -39,6 +39,6 @@ function Get-JCRConfigFile {
         }
     }
     end {
-        return $config
+        return $config.globalVars
     }
 }
