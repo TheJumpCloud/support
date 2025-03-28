@@ -32,7 +32,7 @@ function New-JCRConfigFile {
                 'certSubjectHeaderCommonName'       = @{value = $null; write = $true; copy = $true }
                 'certType'                          = @{value = $null; write = $true; copy = $true }
                 'radiusDirectory'                   = @{value = $null; write = $true; copy = $true }
-                'lastUpdate'                        = @{value = $date; write = $true; copy = $true ;}
+                'lastUpdate'                        = @{value = $date; write = $false; copy = $true ;}
             }
         }
     }
