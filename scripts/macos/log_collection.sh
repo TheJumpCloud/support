@@ -162,7 +162,7 @@ grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > 
 for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
     collectionLog "Pulling logs from user $u"
     managedUserDir=$(dscl . -read /Users/${u} | awk '/NFSHomeDirectory/ {print $2}')
-    collectionLog "User Home Directory: $managedUserDir"
+    collectionLog "User "$u" Home Directory: $managedUserDir"
     mkdir $baseDir/userLogs/$u
 
     if [ -d $managedUserDir/Library/Logs/JumpCloud\ Password\ Manager ]; then
