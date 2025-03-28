@@ -17,21 +17,23 @@ function New-JCRConfigFile {
     process {
         # Define Default Settings for the Config file
         $config = @{
-            'userGroup'                         = @{value = $null; write = $true; copy = $true }
-            'certSecretPass'                    = @{value = $null; write = $true; copy = $true }
-            'userCertValidityDays'              = @{value = 365; write = $true; copy = $true }
-            'caCertValidityDays'                = @{value = 1095; write = $true; copy = $true }
-            'certExpirationWarningDays'         = @{value = 15; write = $true; copy = $true }
-            'networkSSID'                       = @{value = $null; write = $true; copy = $true }
-            'certSubjectHeaderCountryCode'      = @{value = $null; write = $true; copy = $true }
-            'certSubjectHeaderStateCode'        = @{value = $null; write = $true; copy = $true }
-            'certSubjectHeaderLocality'         = @{value = $null; write = $true; copy = $true }
-            'certSubjectHeaderOrganization'     = @{value = $null; write = $true; copy = $true }
-            'certSubjectHeaderOrganizationUnit' = @{value = $null; write = $true; copy = $true }
-            'certSubjectHeaderCommonName'       = @{value = $null; write = $true; copy = $true }
-            'certType'                          = @{value = $null; write = $true; copy = $true }
-            'radiusDirectory'                   = @{value = $null; write = $true; copy = $true }
-            'lastUpdate'                        = @{value = $date; write = $true; copy = $true ;}
+            "globalVars" = @{
+                'userGroup'                         = @{value = $null; write = $true; copy = $true }
+                'certSecretPass'                    = @{value = $null; write = $true; copy = $true }
+                'userCertValidityDays'              = @{value = 365; write = $true; copy = $true }
+                'caCertValidityDays'                = @{value = 1095; write = $true; copy = $true }
+                'certExpirationWarningDays'         = @{value = 15; write = $true; copy = $true }
+                'networkSSID'                       = @{value = $null; write = $true; copy = $true }
+                'certSubjectHeaderCountryCode'      = @{value = $null; write = $true; copy = $true }
+                'certSubjectHeaderStateCode'        = @{value = $null; write = $true; copy = $true }
+                'certSubjectHeaderLocality'         = @{value = $null; write = $true; copy = $true }
+                'certSubjectHeaderOrganization'     = @{value = $null; write = $true; copy = $true }
+                'certSubjectHeaderOrganizationUnit' = @{value = $null; write = $true; copy = $true }
+                'certSubjectHeaderCommonName'       = @{value = $null; write = $true; copy = $true }
+                'certType'                          = @{value = $null; write = $true; copy = $true }
+                'radiusDirectory'                   = @{value = $null; write = $true; copy = $true }
+                'lastUpdate'                        = @{value = $date; write = $true; copy = $true ;}
+            }
         }
     }
     end {
