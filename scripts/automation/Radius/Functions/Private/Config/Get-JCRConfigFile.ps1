@@ -11,7 +11,7 @@ function Get-JCRSettingsFile {
 
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($global:JCScriptRoot))
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'config.json'
 
         if (-Not (Test-Path -Path $configFilePath)) {
@@ -27,16 +27,19 @@ function Get-JCRSettingsFile {
             $config = @{}
             foreach ($item in $rawConfig.psobject.Properties) {
                 # $config.$item
-
+                $config.Add($item.Name, @{})
+                foreach ($setting in $item.value.psobject.Properties) {
+                    # $setting
+                    $config.$($Item.Name).Add($setting.Name, $setting.value.value)
+                }
             }
+        } else {
+            # Get Contents
+            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
         }
-    } else {
-        # Get Contents
-        $config = Get-Content -Path $configFilePath | ConvertFrom-Json
+    }
+
+    end {
+        return $config
     }
 }
-
-end {
-    return $config
-}
-
