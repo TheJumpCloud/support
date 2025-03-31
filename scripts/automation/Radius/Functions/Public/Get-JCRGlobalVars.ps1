@@ -22,7 +22,7 @@ function Get-JCRGlobalVars {
         }
 
         if (-Not $global:JCRConfig) {
-            $global:JCRConfig = Get-JCRSettingsFile
+            $global:JCRConfig = Get-JCRConfigFile
         }
 
         # get settings file

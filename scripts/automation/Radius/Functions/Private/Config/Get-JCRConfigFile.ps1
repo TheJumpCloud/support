@@ -10,14 +10,8 @@ function Get-JCRConfigFile {
     )
 
     begin {
-<<<<<<< Updated upstream
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'config.json'
-=======
-        # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
-        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'config2.json'
->>>>>>> Stashed changes
 
         if (-Not (Test-Path -Path $configFilePath)) {
             Write-Host "write new settings file $configFilePath"

@@ -48,7 +48,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
         It "Data should not be refreshed when running Get-JCRGlobalVars if it's been less than 24 hours since last update" {
             # Get the settings data
-            $settingsData = Get-JCRSettingsFile
+            $settingsData = Get-JCRConfigFile
             $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
             # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
             # get files before
@@ -79,7 +79,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
         It "Data should refresh when running Get-JCRGlobalVars if it's been more than 24 hours since last update" {
             # Get the settings data
-            $settingsData = Get-JCRSettingsFile
+            $settingsData = Get-JCRConfigFile
             $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
             # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
             # get files before
@@ -91,7 +91,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 # set the settings file to a mocked value of now
                 Set-JCRSettingsFile -globalVarslastUpdate (Get-Date).AddHours(-25)
                 Start-Sleep 2
-                $settingsData = Get-JCRSettingsFile
+                $settingsData = Get-JCRConfigFile
                 $timespan = New-TimeSpan -Start  $settingsData.globalVars.lastupdate -End (Get-Date).AddHours(-24)
                 Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
             }
