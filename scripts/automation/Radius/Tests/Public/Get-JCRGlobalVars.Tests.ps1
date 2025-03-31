@@ -58,7 +58,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Set-JCRConfigFile -lastUpdate (Get-Date)
 
             }
             # run Get-JCRGlobalVars
@@ -89,7 +89,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date).AddHours(-25)
+                Set-JCRConfigFile -lastUpdate (Get-Date).AddHours(-25)
                 Start-Sleep 2
                 $settingsData = Get-JCRConfigFile
                 $timespan = New-TimeSpan -Start  $settingsData.globalVars.lastupdate -End (Get-Date).AddHours(-24)

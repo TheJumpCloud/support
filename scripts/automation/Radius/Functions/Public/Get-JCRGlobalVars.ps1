@@ -247,7 +247,7 @@ function Get-JCRGlobalVars {
                 [array]$Global:JCRRadiusMembers = $radiusMemberList
                 $Global:JCRCertHash = $certHash
                 # update the settings date
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Set-JCRConfigFile - (Get-Date)
                 # update users.json
                 Update-JCRUsersJson
             }
