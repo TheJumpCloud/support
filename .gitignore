@@ -23,6 +23,7 @@
 /scripts/automation/Radius/*.encrypted
 /scripts/automation/Radius/log.txt
 /scripts/automation/Radius/reports/*
+/scripts/automation/Radius/config.json
 
 __pycache__/
 *.pyc
