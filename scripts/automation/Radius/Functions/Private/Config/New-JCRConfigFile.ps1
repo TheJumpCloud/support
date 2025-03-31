@@ -31,7 +31,7 @@ function New-JCRConfigFile {
                 'certSubjectHeaderCommonName'       = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<JumpCloud.com>' }
                 'certType'                          = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<EmailSAN/EmailDN/UsernameCn>' }
                 'radiusDirectory'                   = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<Path/To/radiusDirectory>' }
-                'lastUpdate'                        = @{value = $date; write = $false; copy = $true; required = $false; placeholder = $null }
+                'lastUpdate'                        = @{value = $date; write = $true; copy = $true; required = $false; placeholder = $null }
             }
         }
     }
