@@ -42,10 +42,16 @@ function Update-JCRModule {
         } else {
             # else get the module config from the current module:
             # TODO: get the json config with the private function not created yet
+            $savedJCRSettings = Get-JCRConfigFile -raw
 
             # now, attempt to update the module
             try {
                 Update-Module -Name $ModuleName -Force
+
+                # update the settings file config.json
+                Update-JCSettingsFile -settings $savedJCSettings
+                # re-import the settings file variable
+                $global:JCConfig = Get-JCSettingsFile
             } catch {
                 Write-Error "Failed to update the module: $_"
             }

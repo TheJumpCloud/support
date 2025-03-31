@@ -43,4 +43,3 @@ function New-JCRConfigFile {
         }
     }
 }
-New-JCRConfigFile -force
