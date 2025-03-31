@@ -7,8 +7,7 @@ function Confirm-JCRConfigFile {
             Connect-JCOnline -force | Out-Null
         }
 
-        # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
         $rawConfig = Get-Content -Path $configFilePath | ConvertFrom-Json
 
@@ -27,7 +26,7 @@ function Confirm-JCRConfigFile {
         }
     }
     end {
-        if ($requiredAttributesNotSet) {
+        if ($requiredAttributesNotSet.count -gt 0) {
             $requiredAttributesNotSet = $requiredAttributesNotSet | Sort-Object
             $requiredAttributesNotSetString = $requiredAttributesNotSet.Keys -join ","
             Write-Warning @"

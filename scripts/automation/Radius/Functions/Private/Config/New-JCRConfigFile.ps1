@@ -9,8 +9,7 @@ function New-JCRConfigFile {
     )
 
     begin {
-        # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'config.json'
         $date = (Get-Date).ToUniversalTime()
     }
@@ -44,3 +43,4 @@ function New-JCRConfigFile {
         }
     }
 }
+New-JCRConfigFile -force
