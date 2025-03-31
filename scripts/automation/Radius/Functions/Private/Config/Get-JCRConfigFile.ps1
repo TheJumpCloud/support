@@ -36,9 +36,10 @@ function Get-JCRConfigFile {
         } else {
             # Get Contents
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json
+            $config = $config.globalVars
         }
     }
     end {
-        return $config.globalVars
+        return $config
     }
 }
