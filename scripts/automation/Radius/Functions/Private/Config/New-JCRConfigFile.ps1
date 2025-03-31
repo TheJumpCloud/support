@@ -18,21 +18,21 @@ function New-JCRConfigFile {
         # Define Default Settings for the Config file
         $config = @{
             "globalVars" = @{
-                'userGroup'                         = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSecretPass'                    = @{value = $null; write = $true; copy = $true; required = $true }
-                'userCertValidityDays'              = @{value = 365; write = $true; copy = $true; required = $true }
-                'caCertValidityDays'                = @{value = 1095; write = $true; copy = $true; required = $true }
-                'certExpirationWarningDays'         = @{value = 15; write = $true; copy = $true; required = $true }
-                'networkSSID'                       = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSubjectHeaderCountryCode'      = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSubjectHeaderStateCode'        = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSubjectHeaderLocality'         = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSubjectHeaderOrganization'     = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSubjectHeaderOrganizationUnit' = @{value = $null; write = $true; copy = $true; required = $true }
-                'certSubjectHeaderCommonName'       = @{value = $null; write = $true; copy = $true; required = $true }
-                'certType'                          = @{value = $null; write = $true; copy = $true; required = $true }
-                'radiusDirectory'                   = @{value = $null; write = $true; copy = $true; required = $true }
-                'lastUpdate'                        = @{value = $date; write = $false; copy = $true; required = $false }
+                'userGroup'                         = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<UserGroupID>' }
+                'certSecretPass'                    = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<CertPassword>' }
+                'userCertValidityDays'              = @{value = 365; write = $true; copy = $true; required = $true; placeholder = '<365>' }
+                'caCertValidityDays'                = @{value = 1095; write = $true; copy = $true; required = $true; placeholder = '<1095>' }
+                'certExpirationWarningDays'         = @{value = 15; write = $true; copy = $true; required = $true; placeholder = '<15>' }
+                'networkSSID'                       = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<networkSSID>' }
+                'certSubjectHeaderCountryCode'      = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<US>' }
+                'certSubjectHeaderStateCode'        = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<CO>' }
+                'certSubjectHeaderLocality'         = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<Boulder>' }
+                'certSubjectHeaderOrganization'     = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<JumpCloud>' }
+                'certSubjectHeaderOrganizationUnit' = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<Customer_Tools>' }
+                'certSubjectHeaderCommonName'       = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<JumpCloud.com>' }
+                'certType'                          = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<EmailSAN/EmailDN/UsernameCn>' }
+                'radiusDirectory'                   = @{value = $null; write = $true; copy = $true; required = $true; placeholder = '<Path/To/radiusDirectory>' }
+                'lastUpdate'                        = @{value = $date; write = $false; copy = $true; required = $false; placeholder = $null }
             }
         }
     }
