@@ -158,7 +158,6 @@ function New-JCPolicy {
                 if ($templateObject.objectMap[$i].configFieldName -in $params.keys) {
                     $keyName = $params.keys | Where-Object { $_ -eq $templateObject.objectMap[$i].configFieldName }
                     $keyValue = $params.$KeyName
-                    # write-host "Setting value from $($keyName) $($KeyValue)"
                     switch ($templateObject.objectMap[$i].type) {
                         'multi' {
                             $templateObject.objectMap[$i].value = $(($templateObject.objectMap[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
@@ -227,8 +226,16 @@ function New-JCPolicy {
                                         switch ($item.format) {
                                             "base64" {
                                                 try {
-                                                    [Convert]::FromBase64String($item.value)
+                                                    $validateBase64 = [Convert]::FromBase64String($item.value) | Out-Null
                                                     $item.format = "b64" # API expects "b64" for base64 format
+                                                } catch {
+                                                    throw "Invalid Base64 value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "b64" {
+                                                # Do nothing, already set to b64
+                                                try {
+                                                    $validateBase64 = [Convert]::FromBase64String($item.value) | Out-Null
                                                 } catch {
                                                     throw "Invalid Base64 value at index $j : $($item.value)"
                                                 }
@@ -236,34 +243,44 @@ function New-JCPolicy {
                                             "string" {
                                                 $item.format = "chr" # API expects "chr" for string format
                                             }
+                                            "chr" {
+                                                # Do nothing, already set to chr
+                                            }
                                             "boolean" {
-                                                if ($item.value -is [string]) {
-                                                    switch ($item.value) {
-                                                        "true" { $item.value = $true }
-                                                        "false" { $item.value = $false }
-                                                        default { throw "Invalid boolean string at index $j, expected 'true' or 'false'" }
-                                                    }
+                                                try {
+                                                    $validateBoolean = [System.Convert]::ToBoolean($item.value) | Out-Null
                                                     $item.format = "bool" # API expects "bool" for boolean format
+                                                } catch {
+                                                    # Handle the case where the string is not a valid boolean
+                                                    throw "Invalid boolean value at index $j : $($item.value). Please enter 'true' or 'false'."
+                                                }
+                                            }
+                                            "bool" {
+                                                # Do nothing, already set to bool
+                                                try {
+                                                    $validateBoolean = [System.Convert]::ToBoolean($item.value) | Out-Null
+                                                } catch {
+                                                    # Handle the case where the string is not a valid boolean
+                                                    throw "Invalid boolean value at index $j : $($item.value). Please enter 'true' or 'false'."
                                                 }
                                             }
                                             "float" {
                                                 try {
-                                                    [float]$item.value
+                                                    $validateFloat = [float]$item.value
                                                 } catch {
                                                     throw "Invalid float value at index $j : $($item.value)"
                                                 }
                                             }
                                             "int" {
                                                 try {
-                                                    [int]$item.value | Out-Null
-
+                                                    $validateInt = [int]$item.value | Out-Null
                                                 } catch {
                                                     throw "Invalid int value at index $j : $($item.value)"
                                                 }
                                             }
                                             "xml" {
                                                 try {
-                                                    [xml]$item.value
+                                                    $validateXml = [xml]$item.value
                                                 } catch {
                                                     throw "Invalid xml value at index $j : $($item.value)"
                                                 }
@@ -350,7 +367,6 @@ function New-JCPolicy {
             } | ConvertTo-Json -Depth 99
 
         }
-
         $headers = @{
             'x-api-key'    = $env:JCApiKey
             'x-org-id'     = $env:JCOrgId

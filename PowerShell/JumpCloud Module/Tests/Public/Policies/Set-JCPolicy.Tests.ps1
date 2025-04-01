@@ -41,18 +41,33 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
             $templateId = $policyTemplate.id
             # Add a new policy with multilist type:
-            $newPolicy = New-JCPolicy -templateID $templateId -Name "Pester - Windows - Custom MDM Policy" -uriList @(@{uri = "a"; format = "int"; value = 2 }, @{uri = "b"; format = "string"; value = "test" }, @{uri = "c"; format = "boolean"; value = "true" }, @{uri = "d"; format = "float"; value = "2.5" }, @{uri = "e"; format = "xml"; value = "<test>test</test>" }, @{uri = "f"; format = "base64"; value = "dGVzdA==" })
+            $uriList = @(
+                @{ uri = "a"; format = "int"; value = 2 },
+                @{ uri = "b"; format = "string"; value = "test" },
+                @{ uri = "c"; format = "boolean"; value = "true" }, # Corrected: $true is the boolean literal
+                @{ uri = "d"; format = "float"; value = 2.5 } # Corrected: 2.5 is the float literal
+                @{ uri = "e"; format = "xml"; value = "<xml>test</xml>" },
+                @{ uri = "f"; format = "base64"; value = "dGVzdA==" }
+            )
+            $testUriList = @(
+                @{ uri = "testA"; format = "int"; value = 100 },
+                @{ uri = "testB"; format = "string"; value = "example string" },
+                @{ uri = "testC"; format = "boolean"; value = "false" },
+                @{ uri = "testD"; format = "float"; value = 3.14159 },
+                @{ uri = "testE"; format = "xml"; value = "<data><item>test data</item></data>" },
+                @{ uri = "testF"; format = "base64"; value = "SGVsbG8gV29ybGQh" } # Base64 for "Hello World!"
+            )
+            $newPolicy = New-JCPolicy -templateID $templateId -Name "Pester - Windows - Custom MDM Policy" -uriList $uriList
             # Set the policy with a new multilist
-            $setPolicy = Set-JCPolicy -policyID $newPolicy.id -uriList @(@{uri = "a"; format = "int"; value = 3 }, @{uri = "b"; format = "string"; value = "test2" }, @{uri = "c"; format = "boolean"; value = "false" }, @{uri = "d"; format = "float"; value = "3.5" }, @{uri = "e"; format = "xml"; value = "<xml>test</xml>" }, @{uri = "f"; format = "base64"; value = "SGVsbG8sIFdvcmxkIQ==" })
+            $setPolicy = Set-JCPolicy -PolicyID $newPolicy.id -uriList $testUriList
             # Assert statements
             # value count for registry items should be correct
-            $newPolicy.values.value.count | Should -Be 6
-            $newPolicy.values.value[0].value | Should -Be 3
-            $newPolicy.values.value[1].value | Should -Be "test2"
-            $newPolicy.values.value[2].value | Should -Be "false"
-            $newPolicy.values.value[3].value | Should -Be "3.5"
-            $newPolicy.values.value[4].value | Should -Be "<xml>test</xml>"
-            $newPolicy.values.value[5].value | Should -Be "SGVsbG8sIFdvcmxkIQ=="
+            $newPolicy.values.value[0].value | Should -Be 100
+            $newPolicy.values.value[1].value | Should -Be "example string"
+            $newPolicy.values.value[2].value | Should -Be $false
+            $newPolicy.values.value[3].value | Should -Be 3.14159
+            $newPolicy.values.value[4].value | Should -Be "<data><item>test data</item></data>"
+            $newPolicy.values.value[5].value | Should -Be "SGVsbG8gV29ybGQh"
 
 
         }

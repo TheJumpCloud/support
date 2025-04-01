@@ -251,10 +251,8 @@ function Set-JCPolicy {
                             $templateObject.objectMap[$i].value = $regRows
                         }
                         'multilist' {
-                            Write-Host "Processing multilist"
                             if ($templateObject.objectMap[$i].configFieldName -eq "uriList") {
                                 $uriListProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
-                                Write-Host "KeyValue: $($keyValue | Out-String)"
                                 $ObjectProperties = if ($keyValue | Get-Member -MemberType NoteProperty) {
                                     # for lists get note properties
                                     ($keyValue | Get-Member -MemberType NoteProperty).Name
@@ -283,46 +281,61 @@ function Set-JCPolicy {
                                         switch ($item.format) {
                                             "base64" {
                                                 try {
-                                                    [Convert]::FromBase64String($item.value)
+                                                    $validateBase64 = [Convert]::FromBase64String($item.value) | Out-Null
                                                     $item.format = "b64" # API expects "b64" for base64 format
+                                                } catch {
+                                                    throw "Invalid Base64 value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "b64" {
+                                                # Do nothing, already set to b64
+                                                try {
+                                                    $validateBase64 = [Convert]::FromBase64String($item.value) | Out-Null
                                                 } catch {
                                                     throw "Invalid Base64 value at index $j : $($item.value)"
                                                 }
                                             }
                                             "string" {
                                                 $item.format = "chr" # API expects "chr" for string format
-                                                # Validate if the string is empty or null
-                                                if ([string]::IsNullOrEmpty($item.value)) {
-                                                    throw "Invalid string value at index $j : The value cannot be empty or null."
-                                                }
+                                            }
+                                            "chr" {
+                                                # Do nothing, already set to chr
                                             }
                                             "boolean" {
-                                                if ($item.value -is [string]) {
-                                                    switch ($item.value) {
-                                                        "true" { $item.value = $true }
-                                                        "false" { $item.value = $false }
-                                                        default { throw "Invalid boolean string at index $j, expected 'true' or 'false'" }
-                                                    }
+                                                try {
+                                                    $validateBoolean = [System.Convert]::ToBoolean($item.value) | Out-Null
                                                     $item.format = "bool" # API expects "bool" for boolean format
+                                                } catch {
+                                                    # Handle the case where the string is not a valid boolean
+                                                    throw "Invalid boolean value at index $j : $($item.value). Please enter 'true' or 'false'."
+                                                }
+                                            }
+                                            "bool" {
+                                                # Do nothing, already set to bool
+                                                try {
+                                                    $validateBoolean = [System.Convert]::ToBoolean($item.value) | Out-Null
+                                                } catch {
+                                                    # Handle the case where the string is not a valid boolean
+                                                    throw "Invalid boolean value at index $j : $($item.value). Please enter 'true' or 'false'."
                                                 }
                                             }
                                             "float" {
                                                 try {
-                                                    [float]$item.value
+                                                    $validateFloat = [float]$item.value
                                                 } catch {
                                                     throw "Invalid float value at index $j : $($item.value)"
                                                 }
                                             }
                                             "int" {
                                                 try {
-                                                    [int]$item.value
+                                                    $validateInt = [int]$item.value | Out-Null
                                                 } catch {
                                                     throw "Invalid int value at index $j : $($item.value)"
                                                 }
                                             }
                                             "xml" {
                                                 try {
-                                                    [xml]$item.value
+                                                    $validateXml = [xml]$item.value
                                                 } catch {
                                                     throw "Invalid xml value at index $j : $($item.value)"
                                                 }
