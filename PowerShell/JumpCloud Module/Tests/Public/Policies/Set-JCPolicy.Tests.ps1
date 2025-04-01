@@ -64,7 +64,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             # value count for registry items should be correct
             $setPolicy.values.value[0].value | Should -Be 100
             $setPolicy.values.value[1].value | Should -Be "example string"
-            $setPolicy.values.value[2].value | Should -Be $false
+            $setPolicy.values.value[2].value | Should -Be "false"
             $setPolicy.values.value[3].value | Should -Be 3.14159
             $setPolicy.values.value[4].value | Should -Be "<data><item>test data</item></data>"
             $setPolicy.values.value[5].value | Should -Be "SGVsbG8gV29ybGQh"
