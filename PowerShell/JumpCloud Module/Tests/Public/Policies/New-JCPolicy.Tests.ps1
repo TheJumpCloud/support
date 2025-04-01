@@ -92,6 +92,67 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "PreviewType" }).value | Should -Be 0 # 0 is the value for Always on the dropdown
             ($multipleValPolicy.values | Where-Object { $_.configFieldName -eq "BadgesEnabled" }).value | Should -Be $true
         }
+
+        # URIList Test
+        It 'Creates a new policy that tests Custom Windows MDM OMA URIList' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $policyValueList = New-Object System.Collections.ArrayList
+            # Define list Values:
+            $policyValue = [pscustomobject]@{
+                # Should look like this: (@( @{format = "string"; uri = "aasdadsdas"; value = "5" }, @{format = "string"; uri = "b"; value = "test" }, @{format = "boolean"; uri = "c"; value = "true" } ))
+                'format' = 'int'
+                'uri'    = "./Device/Vendor/MSFT/Registry/HKLM/Software/Policies/Microsoft/Windows/Control Panel/Desktop/ScreenSaveTimeOut"
+                'value'  = '600'
+            }
+            $policyValue2 = [pscustomobject]@{
+                'format' = 'boolean'
+                'uri'    = "./Device/Vendor/MSFT/Registry/HKLM/Software/Policies/Microsoft/Windows/Control Panel/Desktop/ScreenSaveActive"
+                'value'  = "true"
+            }
+            $policyValue3 = [pscustomobject]@{
+                'format' = 'string'
+                'uri'    = "./Device/Vendor/MSFT/Registry/HKLM/Software/Policies/Microsoft/Windows/Control Panel/Desktop/ScreenSaveActive"
+                'value'  = "testString"
+            }
+            $policyValue4 = [pscustomobject]@{
+                'format' = 'float'
+                'uri'    = "./Device/Vendor/MSFT/Registry/HKLM/Software/Policies/Microsoft/Windows/Control Panel/Desktop/ScreenSaveActive"
+                'value'  = "2.5"
+            }
+            $policyValue5 = [pscustomobject]@{
+                'format' = 'xml'
+                'uri'    = "./Device/Vendor/MSFT/Registry/HKLM/Software/Policies/Microsoft/Windows/Control Panel/Desktop/ScreenSaveActive"
+                'value'  = "<xml>Test</xml>"
+            }
+            $policyValue6 = [pscustomobject]@{
+                'format' = 'base64'
+                'uri'    = "./Device/Vendor/MSFT/Registry/HKLM/Software/Policies/Microsoft/Windows/Control Panel/Desktop/ScreenSaveActive"
+                'value'  = "VGhpcyBpcyBhIHRlc3Q="
+            }
+            # add values to list
+            $policyValueList.add($policyValue)
+            $policyValueList.add($policyValue2)
+
+            $uriListPolicy = New-JCPolicy -Name "Pester - URIList1" -templateID $templateId -uriList $policyValueList
+            # Should not be null
+            $uriListPolicy.values.value.count | Should -Be 2
+            $uriListPolicy.values.value[0].format | Should -Be "int"
+            $uriListPolicy.values.value[0].value | Should -Be "600"
+            $uriListPolicy.values.value[1].format | Should -Be "boolean"
+            $uriListPolicy.values.value[1].value | Should -Be "true"
+            $uriListPolicy.values.value[2].format | Should -Be "string"
+            $uriListPolicy.values.value[2].value | Should -Be "testString"
+            $uriListPolicy.values.value[3].format | Should -Be "float"
+            $uriListPolicy.values.value[3].value | Should -Be "2.5"
+            $uriListPolicy.values.value[4].format | Should -Be "xml"
+            $uriListPolicy.values.value[4].value | Should -Be "<xml>Test</xml>"
+            $uriListPolicy.values.value[5].format | Should -Be "base64"
+            $uriListPolicy.values.value[5].value | Should -Be "VGhpcyBpcyBhIHRlc3Q="
+
+            # Cleanup
+            $uriListPolicy | Remove-JCPolicy
+        }
     }
 
     Context 'Creates policies using the value parameters' {
@@ -274,6 +335,57 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $policyValueList.add($policyValue2) | Out-Null
             # New Policy
             { New-JCPolicy -templateID $registryTemplate.id -customRegTable $policyValueList -Name "Pester - Registry Validation $(new-randomString -NumberOfChars 8)" } | Should -Throw
+        }
+    }
+
+    # URIList Tests
+    Context 'New-JCPolicy should create a new policy using the URIList parameter' {
+        It 'New-JCPolicy creates a new policy using the URIList parameter successfully' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $uriList = @(
+                @{ format = "string"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage"; value = "Test" },
+                @{ format = "int"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage"; value = "555" },
+                @{ format = "boolean"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage"; value = "true" },
+                @{ format = "float"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage"; value = "2.5" }
+                @{ format = "xml"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage"; value = "<xml>Test</xml>" },
+                @{ format = "base64"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage"; value = "VGhpcyBpcyBhIHRlc3Q=" }
+            )
+            $uriListPolicy = New-JCPolicy -Name "Pester - URIList1" -templateID $templateId -uriList $uriList
+            # Should not be null
+            $uriListPolicy.values.value.count | Should -Be 5
+            $uriListPolicy.values.value[0].format | Should -Be "string"
+            $uriListPolicy.values.value[0].value | Should -Be "Test"
+            $uriListPolicy.values.value[1].format | Should -Be "int"
+            $uriListPolicy.values.value[1].value | Should -Be "555"
+            $uriListPolicy.values.value[2].format | Should -Be "boolean"
+            $uriListPolicy.values.value[2].value | Should -Be "true"
+            $uriListPolicy.values.value[3].format | Should -Be "float"
+            $uriListPolicy.values.value[3].value | Should -Be "2.5"
+            $uriListPolicy.values.value[4].format | Should -Be "xml"
+            $uriListPolicy.values.value[4].value | Should -Be "<xml>Test</xml>"
+            $uriListPolicy.values.value[5].format | Should -Be "base64"
+            $uriListPolicy.values.value[5].value | Should -Be "VGhpcyBpcyBhIHRlc3Q="
+
+            # Cleanup
+            $uriListPolicy = Get-JCPolicy | Where-Object { $_.Name -like "Pester - URIList*" }
+            $uriListPolicy | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
+        }
+
+        It 'New-JCPolicy creates a new policy using the URIList parameter with invalid formats for each format' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+
+            { New-JCPolicy -Name "Pester - URIList1" -templateID $templateId -uriList @(@{format = "string"; uri = "Test"; value = "" }) } | Should -Throw
+            { New-JCPolicy -Name "Pester - URIList2" -templateID $templateId -uriList @(@{format = "int"; uri = "Test"; value = "invalid" }) } | Should -Throw
+            { New-JCPolicy -Name "Pester - URIList3" -templateID $templateId -uriList @(@{format = "boolean"; uri = "Test"; value = "invalid" }) } | Should -Throw
+            { New-JCPolicy -Name "Pester - URIList4" -templateID $templateId -uriList @(@{format = "float"; uri = "Test"; value = "invalid" }) } | Should -Throw
+            { New-JCPolicy -Name "Pester - URIList5" -templateID $templateId -uriList @(@{format = "xml"; uri = "Test"; value = "invalid" }) } | Should -Throw
+            { New-JCPolicy -Name "Pester - URIList6" -templateID $templateId -uriList @(@{format = "base64"; uri = "Test"; value = "invalid" }) } | Should -Throw
+            # Cleanup
+            $uriListPolicy = Get-JCPolicy | Where-Object { $_.Name -like "Pester - URIList*" }
+            $uriListPolicy | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
+
         }
     }
     Context 'New-JCPolicy should reutrn policies with the correct data types' {

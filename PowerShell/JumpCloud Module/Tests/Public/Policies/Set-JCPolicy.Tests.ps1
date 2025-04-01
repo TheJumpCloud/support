@@ -36,6 +36,26 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
     }
     Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
+        # Urilist
+        It 'Sets a policy with multilist - custom windows mdm oma policy' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_windows_mdm_oma_policy" }
+            $templateId = $policyTemplate.id
+            # Add a new policy with multilist type:
+            $newPolicy = New-JCPolicy -templateID $templateId -Name "Pester - Windows - Custom MDM Policy" -uriList @(@{uri = "a"; format = "int"; value = 2 }, @{uri = "b"; format = "string"; value = "test" }, @{uri = "c"; format = "boolean"; value = "true" }, @{uri = "d"; format = "float"; value = "2.5" }, @{uri = "e"; format = "xml"; value = "<test>test</test>" }, @{uri = "f"; format = "base64"; value = "dGVzdA==" })
+            # Set the policy with a new multilist
+            $setPolicy = Set-JCPolicy -policyID $newPolicy.id -uriList @(@{uri = "a"; format = "int"; value = 3 }, @{uri = "b"; format = "string"; value = "test2" }, @{uri = "c"; format = "boolean"; value = "false" }, @{uri = "d"; format = "float"; value = "3.5" }, @{uri = "e"; format = "xml"; value = "<xml>test</xml>" }, @{uri = "f"; format = "base64"; value = "SGVsbG8sIFdvcmxkIQ==" })
+            # Assert statements
+            # value count for registry items should be correct
+            $newPolicy.values.value.count | Should -Be 6
+            $newPolicy.values.value[0].value | Should -Be 3
+            $newPolicy.values.value[1].value | Should -Be "test2"
+            $newPolicy.values.value[2].value | Should -Be "false"
+            $newPolicy.values.value[3].value | Should -Be "3.5"
+            $newPolicy.values.value[4].value | Should -Be "<xml>test</xml>"
+            $newPolicy.values.value[5].value | Should -Be "SGVsbG8sIFdvcmxkIQ=="
+
+
+        }
         It 'Sets a policy with a string/text type dynamic parameter' {
             # Define a policy with a string parameter
             # Policy 5ade0cfd1f24754c6c5dc9f2 Mac - Login Window Text Policy
@@ -525,6 +545,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $registryPolicyUpdated.template | Should -Not -BeNullOrEmpty
         }
     }
+    # Test for URIList - Custom Windows MDM OMA Policy
+    Context ''
+
     Context 'Manual Test Cases' -Skip {
         # These test cases should be executed locally; Each manual task should be executed when prompted to edit the policy
         It 'Policy with a string payload can be set interactivly' {

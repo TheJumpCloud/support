@@ -91,6 +91,9 @@ function Set-JCPolicy {
                     'table' {
                         $paramType = [system.object[]]
                     }
+                    'multilist' {
+                        $paramType = [system.object[]]
+                    }
                     'exclude' {
                         Continue
                     }
@@ -247,6 +250,92 @@ function Set-JCPolicy {
                             }
                             $templateObject.objectMap[$i].value = $regRows
                         }
+                        'multilist' {
+                            Write-Host "Processing multilist"
+                            if ($templateObject.objectMap[$i].configFieldName -eq "uriList") {
+                                $uriListProperties = $templateObject.objectMap[$i].defaultValue | Get-Member -MemberType NoteProperty
+                                Write-Host "KeyValue: $($keyValue | Out-String)"
+                                $ObjectProperties = if ($keyValue | Get-Member -MemberType NoteProperty) {
+                                    # for lists get note properties
+                                    ($keyValue | Get-Member -MemberType NoteProperty).Name
+                                } else {
+                                    # for single objects, get keys
+                                    $keyValue.keys
+                                }
+                                $uriListProperties | ForEach-Object {
+                                    if ($_.Name -notin $ObjectProperties) {
+                                        Throw "Custom Windows MDM Policy require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                    }
+                                }
+                                # uriList type validation
+                                $validFormatTypes = @('int', 'string', 'chr', 'boolean', 'bool', 'float', 'xml', 'base64', 'b64' )
+                                $validFormat = $false
+
+                                $listRows = New-Object System.Collections.ArrayList
+
+                                # Loop through each item in the keyValue array
+                                for ($j = 0; $j -lt $keyValue.Count; $j++) {
+                                    $item = $keyValue[$j]
+                                    # Validate if item.value is null or empty
+                                    if (-not $item.value) {
+                                        throw "Invalid value at index $j : The value cannot be null or empty."
+                                    } else {
+                                        switch ($item.format) {
+                                            "base64" {
+                                                try {
+                                                    [Convert]::FromBase64String($item.value)
+                                                    $item.format = "b64" # API expects "b64" for base64 format
+                                                } catch {
+                                                    throw "Invalid Base64 value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "string" {
+                                                $item.format = "chr" # API expects "chr" for string format
+                                                # Validate if the string is empty or null
+                                                if ([string]::IsNullOrEmpty($item.value)) {
+                                                    throw "Invalid string value at index $j : The value cannot be empty or null."
+                                                }
+                                            }
+                                            "boolean" {
+                                                if ($item.value -is [string]) {
+                                                    switch ($item.value) {
+                                                        "true" { $item.value = $true }
+                                                        "false" { $item.value = $false }
+                                                        default { throw "Invalid boolean string at index $j, expected 'true' or 'false'" }
+                                                    }
+                                                    $item.format = "bool" # API expects "bool" for boolean format
+                                                }
+                                            }
+                                            "float" {
+                                                try {
+                                                    [float]$item.value
+                                                } catch {
+                                                    throw "Invalid float value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "int" {
+                                                try {
+                                                    [int]$item.value
+                                                } catch {
+                                                    throw "Invalid int value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "xml" {
+                                                try {
+                                                    [xml]$item.value
+                                                } catch {
+                                                    throw "Invalid xml value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            default {
+                                                throw "Unsupported format '$($item.format)' at index $j. No conversion performed."
+                                            }
+                                        }
+                                    }
+                                }
+                                $templateObject.objectMap[$i].value = $keyValue
+                            }
+                        }
                         Default {
                             $templateObject.objectMap[$i].value = $($keyValue)
                         }
@@ -328,6 +417,8 @@ function Set-JCPolicy {
                 }
             }
         }
+
+        Write-Host "Updated Policy Object: $($updatedPolicyObject.value)"
         if ($updatedPolicyObject) {
             $body = [PSCustomObject]@{
                 name     = $policyNameFromProcess

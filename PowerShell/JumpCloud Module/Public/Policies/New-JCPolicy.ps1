@@ -87,6 +87,9 @@ function New-JCPolicy {
                     'exclude' {
                         Continue
                     }
+                    'multilist' {
+                        $paramType = [system.object[]]
+                    }
                     Default {
                         $paramType = 'string'
                     }
@@ -213,6 +216,71 @@ function New-JCPolicy {
                             }
                             $templateObject.objectMap[$i].value = $regRows
                         }
+                        'multilist' {
+                            if ($templateObject.objectMap[$i].configFieldName -eq "uriList") {
+                                for ($j = 0; $j -lt $keyValue.Count; $j++) {
+                                    $item = $keyValue[$j]
+                                    # Validate if item.value is null or empty
+                                    if (-not $item.value) {
+                                        throw "Invalid value at index $j : The value cannot be null or empty."
+                                    } else {
+                                        switch ($item.format) {
+                                            "base64" {
+                                                try {
+                                                    [Convert]::FromBase64String($item.value)
+                                                    $item.format = "b64" # API expects "b64" for base64 format
+                                                } catch {
+                                                    throw "Invalid Base64 value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "string" {
+                                                $item.format = "chr" # API expects "chr" for string format
+                                            }
+                                            "boolean" {
+                                                if ($item.value -is [string]) {
+                                                    switch ($item.value) {
+                                                        "true" { $item.value = $true }
+                                                        "false" { $item.value = $false }
+                                                        default { throw "Invalid boolean string at index $j, expected 'true' or 'false'" }
+                                                    }
+                                                    $item.format = "bool" # API expects "bool" for boolean format
+                                                }
+                                            }
+                                            "float" {
+                                                try {
+                                                    [float]$item.value
+                                                } catch {
+                                                    throw "Invalid float value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "int" {
+                                                try {
+                                                    [int]$item.value | Out-Null
+
+                                                } catch {
+                                                    throw "Invalid int value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            "xml" {
+                                                try {
+                                                    [xml]$item.value
+                                                } catch {
+                                                    throw "Invalid xml value at index $j : $($item.value)"
+                                                }
+                                            }
+                                            default {
+                                                throw "Unsupported format '$($item.format)' at index $j. No conversion performed."
+                                            }
+                                        }
+                                    }
+                                    $keyValue[$j] = $item
+                                }
+                                $templateObject.objectMap[$i].value = $keyValue
+                            } else {
+                                # For other multilist types, just pass the array
+                                $templateObject.objectMap[$i].value = $keyValue
+                            }
+                        }
                         Default {
                             $templateObject.objectMap[$i].value = $($keyValue)
                         }
@@ -259,7 +327,6 @@ function New-JCPolicy {
                 $updatedPolicyObject = $updatedPolicyObject | Select-Object configFieldID, configFieldName, value
             }
         }
-
         # Validate PolicyObject
         if ($updatedPolicyObject) {
             $updatedPolicyObject | ForEach-Object {
