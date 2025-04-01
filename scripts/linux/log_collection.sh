@@ -59,11 +59,20 @@ baseDir="${hostDir}JumpCloudLogCollect"
 mkdir -p {$baseDir/jumpcloudLogs,$baseDir/jumpcloudInfo,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs}
 sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
+# Setup Log output for Log Collection Script
+collectionLogFile="${baseDir}/collection.log"
+collectionLog() {
+    echo "$1" | tee -a "$collectionLogFile"
+}
+
+# Also redirect standard errors to the collectionLog file
+exec 2> >(tee -a "$collectionLogFile" >&2)
+
 
 ## Collect logs and information
 
 # system information and logs
-echo "Gathering system information."
+collectionLog "Gathering system information."
 hostnamectl 2>&1 > $baseDir/systemInfo/sysInfo.txt
 /opt/jc/bin/jcosqueryi --line "select * from users" > $baseDir/systemInfo/osq_usersList.txt
 last > $baseDir/systemInfo/last.txt
@@ -79,23 +88,34 @@ LOGS=(
     "dpkg.log"
 )
 
-echo "Collecting system logs"
+collectionLog "Collecting system logs"
 for LOG in "${LOGS[@]}"; do
     if [ -f /var/log/${LOG} ]; then
         cp /var/log/$LOG $baseDir/systemLogs/
-        echo "Collected /var/log/$LOG"
+        collectionLog "Collected /var/log/$LOG"
     fi
 done
 
 iptables -L > $baseDir/systemInfo/firewall_rules.txt
 
+# List JumpCloud services currently running using systemd
+collectionLog "Checking running JumpCloud services"
+jumpcloudServices="$baseDir/jumpcloudInfo/activeJumpCloudServices.txt"
+echo -e "Listing running JumpCloud services:\n" > $jumpcloudServices
+systemctl list-units --type=service --all | grep -i 'jumpcloud' >> $jumpcloudServices
+
+# In case JumpCloud services are running but not systemd services, listing running processes
+echo -e "\n\nNow checking & listing running JumpCloud proccesses: \n" >> $jumpcloudServices
+ps -aufx | grep -i 'jumpcloud' | grep -v grep >> $jumpcloudServices
+
+
 # JC Information and Logs
-echo "Collecting managed usernames"
+collectionLog "Collecting managed usernames"
 grep -o '\"username\":\"[^\"]*' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/jumpcloudInfo/managedUsers.txt
 
 cat /opt/jc/policyConf.json | json_pp > $baseDir/jumpcloudInfo/policyConf.json
 
-echo "Collecting JumpCloud Logs"
+collectionLog "Collecting JumpCloud Logs"
 cp /var/log/jc* $baseDir/jumpcloudLogs/
 cp -R /var/log/jumpcloud $baseDir/jumpcloudLogs/
 cp /opt/jc/jcagentInstall.log $baseDir/jumpcloudLogs/
@@ -104,7 +124,10 @@ cp -R /opt/jc/policies $baseDir/jumpcloudInfo/
 
 # Password Manager logs
 for USER in $(ls /home/); do
+    homeDir="/home/$USER"
     mkdir $baseDir/userLogs/$USER
+
+    # Password Manager logs
     if [ -d /home/$USER/.config/JumpCloud\ Password\ Manager/logs ]; then
         cp -R /home/$USER/.config/JumpCloud\ Password\ Manager/logs $baseDir/userLogs/$USER/PWM
     fi
@@ -112,22 +135,42 @@ for USER in $(ls /home/); do
     if [ -d /home/$USER/.config/JumpCloud\ Password\ Manager/data/daemon/log ]; then
         cp -R /home/$USER/.config/JumpCloud\ Password\ Manager/data/daemon/log $baseDir/userLogs/$USER/PWM_Daemon
     fi
+
+    # Remote Assist logs
+    if [ -d $homeDir/.config/JumpCloud-Remote-Assist/logs ]; then 
+        cp -R $homeDir/.config/JumpCloud-Remote-Assist/logs/* $baseDir/jumpcloudLogs/RemoteAssist
+    fi
+
+    # list JumpCloud Device Certificate
+    if command -v certutil &> /dev/null; then
+        jcDeviceCert=$(certutil -d "sql:$homeDir/.pki/nssdb" -L 2>/dev/null | grep "JumpCloud Device Trust Certificate" | sed 's/ \+u,u,u$//' | sed 's/ \+CTu,CTu,CTu$//')
+        if [ -n "$jcDeviceCert" ]; then
+            certutil -d "sql:$homeDir/.pki/nssdb" -L -n "$jcDeviceCert" > "$baseDir/userLogs/$USER/deviceCert.txt"
+            collectionLog "JumpCloud Device Trust Certificate found and processed for $USER"
+        else
+            # Certificate not found
+            echo "A JumpCloud Device Trust Certificate was not found for the user: \"$USER\" - If expected, check and confirm Device Certificates is enabled for the organisation." > "$baseDir/userLogs/$USER/deviceCert.txt"
+        fi
+    else
+        collectionLog "certutil not installed, device certificate check skipped for: \"$USER\""
+    fi
+
 done
 
 ## Package up the archive - execute bit for owner appears to be required for readability on macOS
 
-echo "Resetting gathered logs permissions"
+collectionLog "Resetting gathered logs permissions"
 chmod -R 766 $baseDir
 
 ## compress everything
 
-echo "Compressing logs"
+collectionLog "Compressing logs"
 tar -czf "${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz" -C $baseDir .
 chmod 666 ${hostDir}jc-logArchive-${sysId}-$datestamp.tar.gz
 
 ## Clean up uncompressed collection
 
-echo "cleaning up."
+collectionLog "cleaning up."
 rm -R $baseDir
 
 echo "Please browse to /var/tmp to locate the log archive."
