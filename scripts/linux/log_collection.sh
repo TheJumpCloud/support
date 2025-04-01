@@ -16,7 +16,7 @@ automate=false   # set to true if running via a JumpCloud command (recommended)
 # do not edit below
 #######
 
-version=1.0.1
+version=1.0.2
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
