@@ -275,8 +275,9 @@ function Set-JCPolicy {
                                 for ($j = 0; $j -lt $keyValue.Count; $j++) {
                                     $item = $keyValue[$j]
                                     # Validate if item.value is null or empty
-                                    if (-not $item.value) {
-                                        throw "Invalid value at index $j : The value cannot be null or empty."
+                                    # Ensure the item has a value and format and URI
+                                    if (!$item.uri -or !$item.format -or !$item.value) {
+                                        throw "Missing required fields 'uri', 'format', or 'value' at index $j in the uriList. Please ensure all items have these fields."
                                     } else {
                                         switch ($item.format) {
                                             "base64" {

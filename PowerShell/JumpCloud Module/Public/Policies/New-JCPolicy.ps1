@@ -219,9 +219,9 @@ function New-JCPolicy {
                             if ($templateObject.objectMap[$i].configFieldName -eq "uriList") {
                                 for ($j = 0; $j -lt $keyValue.Count; $j++) {
                                     $item = $keyValue[$j]
-                                    # Validate if item.value is null or empty
-                                    if (-not $item.value) {
-                                        throw "Invalid value at index $j : The value cannot be null or empty."
+                                    # If uri, format, or value is null or empty, throw an error
+                                    if (!$item.uri -or !$item.format -or !$item.value) {
+                                        throw "Invalid value at index $j : uri, format, and value cannot be null or empty."
                                     } else {
                                         switch ($item.format) {
                                             "base64" {

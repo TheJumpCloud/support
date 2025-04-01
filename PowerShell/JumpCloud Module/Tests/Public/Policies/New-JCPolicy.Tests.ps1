@@ -388,6 +388,78 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $uriListPolicy | ForEach-Object { Remove-JcSdkPolicy -Id $_.id }
 
         }
+
+        It 'Handles invalid value - base64' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; format = "base64"; value = "invalid" }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Invalid Base64 Format Policy" -uriList $invalidUriList } | Should -Throw
+        }
+
+        It 'Handles invalid value - xml' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; format = "xml"; value = "<invalid" }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Invalid XML Format Policy" -uriList $invalidUriList } | Should -Throw
+        }
+
+        It 'Handles invalid value - float' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; format = "float"; value = "invalid" }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Invalid Float Format Policy" -uriList $invalidUriList } | Should -Throw
+        }
+        It 'Handles invalid value - boolean' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; format = "boolean"; value = "invalid" }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Invalid Boolean Format Policy" -uriList $invalidUriList } | Should -Throw
+        }
+
+        It 'Handles invalid value - string' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; format = "string"; value = $null } #Null should be valid, so this test is changed.
+            )
+            $newPolicy = New-JCPolicy -templateID $templateId -Name "Valid String Null Policy" -uriList $invalidUriList
+            $newPolicy.values.value[0].value | Should -Be $null
+        }
+
+        It 'Handles invalid value - int' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; format = "int"; value = "invalid" }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Invalid Int Format Policy" -uriList $invalidUriList } | Should -Throw
+        }
+
+        It 'Handles missing format' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ uri = "test"; value = 1 }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Missing Format Policy" -uriList $invalidUriList } | Should -Throw
+        }
+
+        It 'Handles missing uri' {
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
+            $templateId = $policyTemplate.id
+            $invalidUriList = @(
+                @{ format = "int"; value = 1 }
+            )
+            { New-JCPolicy -templateID $templateId -Name "Missing URI Policy" -uriList $invalidUriList } | Should -Throw
+        }
     }
     Context 'New-JCPolicy should reutrn policies with the correct data types' {
         It 'New-JCPolicy returns expected parameters' {
