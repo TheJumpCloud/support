@@ -80,7 +80,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
                 @{ uri = "a"; format = "int"; value = 2 }
             )
             $newPolicy = New-JCPolicy -templateID $templateId -Name "Base Policy for Set Tests" -uriList $uriList
-            $this.newPolicy = $newPolicy #Keeping $this.newPolicy as well for backwards compatibility.
         }
 
         It 'Handles invalid value in uriList - int' {

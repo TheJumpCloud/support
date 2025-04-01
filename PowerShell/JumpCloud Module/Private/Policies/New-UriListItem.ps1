@@ -31,7 +31,7 @@ function New-UriListItem {
                 switch ($format) {
                     'int' {
                         try {
-                            [int]$value
+                            $validateInt = [int]$value
                             $isValidValue = $true
                         } catch {
                             Write-Warning "Invalid integer value. Please enter a valid integer number."
@@ -40,7 +40,7 @@ function New-UriListItem {
                     }
                     'float' {
                         try {
-                            [float]$value
+                            $validateFloat = [float]$value
                             $isValidValue = $true
                         } catch {
                             Write-Warning "Invalid float value. Please enter a valid float number."
@@ -48,9 +48,8 @@ function New-UriListItem {
 
                     }
                     'boolean' {
-                        Write-Host "Please enter 'true' or 'false'."
                         try {
-                            [System.Convert]::ToBoolean($value)
+                            $validateBoolean = [System.Convert]::ToBoolean($value)
                             $isValidValue = $true
                             $format = 'bool' # API expects boolean to be passed as bool
                         } catch {
@@ -65,7 +64,7 @@ function New-UriListItem {
                     'xml' {
                         # Convert to XML
                         try {
-                            [xml]$value
+                            $validateXml = [xml]$value
                             $isValidValue = $true
                         } catch {
                             Write-Warning "Invalid XML value. Please enter a valid XML string."
@@ -73,8 +72,7 @@ function New-UriListItem {
                     }
                     'base64' {
                         try {
-
-                            [void][Convert]::FromBase64String($value)
+                            $validateBase64 = [void][Convert]::FromBase64String($value)
                             $isValidValue = $true
                             $format = 'b64' # API expects base64 to be passed as b64
                         } catch {
@@ -127,7 +125,6 @@ function New-UriListItem {
                         } catch {
                             throw "Invalid string value. Please enter a valid string."
                         }
-
                     }
                     'xml' {
                         try {
@@ -136,7 +133,6 @@ function New-UriListItem {
                         } catch {
                             throw "Invalid XML value. Please enter a valid XML string."
                         }
-
                     }
                     'base64' {
                         try {
@@ -146,7 +142,6 @@ function New-UriListItem {
                         } catch {
                             throw "Invalid base64 value. Please enter a valid base64 string."
                         }
-
                     }
                     default {
                         throw "Invalid format. Please enter int, string, float, xml, boolean, or base64."

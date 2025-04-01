@@ -430,8 +430,7 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $invalidUriList = @(
                 @{ uri = "test"; format = "string"; value = $null } #Null should be valid, so this test is changed.
             )
-            $newPolicy = New-JCPolicy -templateID $templateId -Name "Valid String Null Policy" -uriList $invalidUriList
-            $newPolicy.values.value[0].value | Should -Be $null
+            { New-JCPolicy -templateID $templateId -Name "Valid String Null Policy" -uriList $invalidUriList } | Should -Throw
         }
 
         It 'Handles invalid value - int' {
