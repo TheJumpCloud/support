@@ -418,7 +418,6 @@ function Set-JCPolicy {
             }
         }
 
-        Write-Host "Updated Policy Object: $($updatedPolicyObject.value)"
         if ($updatedPolicyObject) {
             $body = [PSCustomObject]@{
                 name     = $policyNameFromProcess

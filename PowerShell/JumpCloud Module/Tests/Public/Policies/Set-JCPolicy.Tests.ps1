@@ -38,7 +38,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
     Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
         # Urilist
         It 'Sets a policy with multilist - custom windows mdm oma policy' {
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_windows_mdm_oma_policy" }
+            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
             $templateId = $policyTemplate.id
             # Add a new policy with multilist type:
             $newPolicy = New-JCPolicy -templateID $templateId -Name "Pester - Windows - Custom MDM Policy" -uriList @(@{uri = "a"; format = "int"; value = 2 }, @{uri = "b"; format = "string"; value = "test" }, @{uri = "c"; format = "boolean"; value = "true" }, @{uri = "d"; format = "float"; value = "2.5" }, @{uri = "e"; format = "xml"; value = "<test>test</test>" }, @{uri = "f"; format = "base64"; value = "dGVzdA==" })
@@ -546,7 +546,7 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
         }
     }
     # Test for URIList - Custom Windows MDM OMA Policy
-    Context ''
+    # Context ''
 
     Context 'Manual Test Cases' -Skip {
         # These test cases should be executed locally; Each manual task should be executed when prompted to edit the policy

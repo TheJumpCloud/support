@@ -131,17 +131,21 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
                 'value'  = "VGhpcyBpcyBhIHRlc3Q="
             }
             # add values to list
-            $policyValueList.add($policyValue)
-            $policyValueList.add($policyValue2)
+            $policyValueList.add($policyValue) | Out-Null # int type
+            $policyValueList.add($policyValue2) | Out-Null # boolean type
+            $policyValueList.Add($policyValue3) | Out-Null # string type
+            $policyValueList.Add($policyValue4) | Out-Null # float type
+            $policyValueList.Add($policyValue5) | Out-Null # xml type
+            $policyValueList.Add($policyValue6) | Out-Null # base64 type
 
             $uriListPolicy = New-JCPolicy -Name "Pester - URIList1" -templateID $templateId -uriList $policyValueList
             # Should not be null
             $uriListPolicy.values.value.count | Should -Be 2
             $uriListPolicy.values.value[0].format | Should -Be "int"
             $uriListPolicy.values.value[0].value | Should -Be "600"
-            $uriListPolicy.values.value[1].format | Should -Be "boolean"
+            $uriListPolicy.values.value[1].format | Should -Be "bool"
             $uriListPolicy.values.value[1].value | Should -Be "true"
-            $uriListPolicy.values.value[2].format | Should -Be "string"
+            $uriListPolicy.values.value[2].format | Should -Be "chr"
             $uriListPolicy.values.value[2].value | Should -Be "testString"
             $uriListPolicy.values.value[3].format | Should -Be "float"
             $uriListPolicy.values.value[3].value | Should -Be "2.5"
@@ -353,18 +357,18 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             )
             $uriListPolicy = New-JCPolicy -Name "Pester - URIList1" -templateID $templateId -uriList $uriList
             # Should not be null
-            $uriListPolicy.values.value.count | Should -Be 5
-            $uriListPolicy.values.value[0].format | Should -Be "string"
+            $uriListPolicy.values.value.count | Should -Be 6
+            $uriListPolicy.values.value[0].format | Should -Be "chr"
             $uriListPolicy.values.value[0].value | Should -Be "Test"
             $uriListPolicy.values.value[1].format | Should -Be "int"
             $uriListPolicy.values.value[1].value | Should -Be "555"
-            $uriListPolicy.values.value[2].format | Should -Be "boolean"
+            $uriListPolicy.values.value[2].format | Should -Be "bool"
             $uriListPolicy.values.value[2].value | Should -Be "true"
             $uriListPolicy.values.value[3].format | Should -Be "float"
             $uriListPolicy.values.value[3].value | Should -Be "2.5"
             $uriListPolicy.values.value[4].format | Should -Be "xml"
             $uriListPolicy.values.value[4].value | Should -Be "<xml>Test</xml>"
-            $uriListPolicy.values.value[5].format | Should -Be "base64"
+            $uriListPolicy.values.value[5].format | Should -Be "b64"
             $uriListPolicy.values.value[5].value | Should -Be "VGhpcyBpcyBhIHRlc3Q="
 
             # Cleanup
