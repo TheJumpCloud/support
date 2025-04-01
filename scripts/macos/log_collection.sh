@@ -131,15 +131,6 @@ if [[ $localuser ]]; then
     ## list jumpcloud services currently running on the system
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
 
-    ## list JumpCloud Device Certificate
-    jcDeviceCert=$(sudo -u "$localuser" security find-certificate -c "JumpCloud Device Trust Certificate" -p 2>/dev/null)
-    if [ -n "$jcDeviceCert" ]; then
-        echo "$jcDeviceCert" | openssl x509 -text > $baseDir/systemInfo/deviceCert.txt
-        collectionLog "JumpCloud Device Trust Certificate found and processed"
-    else
-    # Certificate not found
-        echo "A JumpCloud Device Trust Certificate was not found for the user: "$localuser" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
-    fi
 else
     collectionLog "No user is currently logged in. Skipping user-specific information."
 fi
@@ -183,6 +174,16 @@ for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
 
     # report on any user scope configuration profiles
     sudo -u $u profiles -L -o stdout > $baseDir/userLogs/$u/installedProfiles.txt
+
+    ## list JumpCloud Device Certificate
+    jcDeviceCert=$(sudo -u "$u" security find-certificate -c "JumpCloud Device Trust Certificate" -p 2>/dev/null)
+    if [ -n "$jcDeviceCert" ]; then
+        echo "$jcDeviceCert" | openssl x509 -text > $baseDir/userLogs/$u/deviceCert.txt
+        collectionLog "JumpCloud Device Trust Certificate found and processed for $u"
+    else
+    # Certificate not found
+        echo "A JumpCloud Device Trust Certificate was not found for the user: "$u" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/userLogs/$u/deviceCert.txt
+    fi
 
 done
 
