@@ -62,12 +62,12 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $setPolicy = Set-JCPolicy -PolicyID $newPolicy.id -uriList $testUriList
             # Assert statements
             # value count for registry items should be correct
-            $newPolicy.values.value[0].value | Should -Be 100
-            $newPolicy.values.value[1].value | Should -Be "example string"
-            $newPolicy.values.value[2].value | Should -Be $false
-            $newPolicy.values.value[3].value | Should -Be 3.14159
-            $newPolicy.values.value[4].value | Should -Be "<data><item>test data</item></data>"
-            $newPolicy.values.value[5].value | Should -Be "SGVsbG8gV29ybGQh"
+            $setPolicy.values.value[0].value | Should -Be 100
+            $setPolicy.values.value[1].value | Should -Be "example string"
+            $setPolicy.values.value[2].value | Should -Be $false
+            $setPolicy.values.value[3].value | Should -Be 3.14159
+            $setPolicy.values.value[4].value | Should -Be "<data><item>test data</item></data>"
+            $setPolicy.values.value[5].value | Should -Be "SGVsbG8gV29ybGQh"
 
 
         }

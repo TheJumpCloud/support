@@ -140,7 +140,7 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
 
             $uriListPolicy = New-JCPolicy -Name "Pester - URIList1" -templateID $templateId -uriList $policyValueList
             # Should not be null
-            $uriListPolicy.values.value.count | Should -Be 2
+            $uriListPolicy.values.value.count | Should -Be 6
             $uriListPolicy.values.value[0].format | Should -Be "int"
             $uriListPolicy.values.value[0].value | Should -Be "600"
             $uriListPolicy.values.value[1].format | Should -Be "bool"
@@ -151,7 +151,7 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $uriListPolicy.values.value[3].value | Should -Be "2.5"
             $uriListPolicy.values.value[4].format | Should -Be "xml"
             $uriListPolicy.values.value[4].value | Should -Be "<xml>Test</xml>"
-            $uriListPolicy.values.value[5].format | Should -Be "base64"
+            $uriListPolicy.values.value[5].format | Should -Be "b64"
             $uriListPolicy.values.value[5].value | Should -Be "VGhpcyBpcyBhIHRlc3Q="
 
             # Cleanup
