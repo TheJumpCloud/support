@@ -6,7 +6,7 @@ function Get-JCRConfigFile {
             HelpMessage = 'Returns Config.json with value, copy, write properties'
         )]
         [switch]
-        $raw
+        $asObject
     )
 
     begin {
@@ -18,13 +18,10 @@ function Get-JCRConfigFile {
             # Create new file with default settings
             New-JCRConfigFile
         }
-
-        # # confirm the config file is set with the required settings
-        # Confirm-JCRConfigFile
     }
 
     process {
-        if (-Not $raw) {
+        if (-Not $asObject) {
             $rawConfig = Get-Content -Path $configFilePath | ConvertFrom-Json
             $config = @{}
             foreach ($item in $rawConfig.psobject.Properties) {
@@ -38,7 +35,6 @@ function Get-JCRConfigFile {
         } else {
             # Get Contents
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json
-            $config = $config.globalVars
         }
     }
     end {

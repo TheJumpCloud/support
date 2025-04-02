@@ -205,7 +205,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             # get the RadiusMembers.json before
             # get the user.json file before
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             Start-Sleep 1
             # update the cache forcefully
             Get-JCRGlobalVars -force -skipAssociation -associateManually
@@ -225,7 +225,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             # get the RadiusMembers.json before
             # get the user.json file before
             # add a user to the radius Group
-            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             Start-Sleep 1
             # update the cache forcefully
             Get-JCRGlobalVars -force -skipAssociation -associateManually

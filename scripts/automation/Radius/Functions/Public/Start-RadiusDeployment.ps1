@@ -1,24 +1,12 @@
 function Start-RadiusDeployment {
-
     # Import Global Config:
     Write-Verbose 'Verifying JCAPI Key'
     if ($JCAPIKEY.length -ne 40) {
         Connect-JCOnline -force
     }
-    . "$psscriptroot/Config.ps1"
 
-    ################################################################################
-    # Do not modify below
-    ################################################################################
-    # set script root
-    #TODO: move to global functions
-    # $global:JCScriptRoot = $PSScriptRoot
-
-    # Import the functions
-    # Import-Module "$JCScriptRoot/JumpCloud.Radius.psm1" -DisableNameChecking -Force
-
-    # Check for Module Updates
-    # Update-JCRModule
+    # validate the setting from the module have been set
+    Confirm-JCRConfigFile -ErrorAction stop
 
     # Show user selection
     do {

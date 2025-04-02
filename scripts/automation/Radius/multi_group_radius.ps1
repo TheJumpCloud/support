@@ -86,7 +86,7 @@ foreach ($radiusGroup in $radiusUserGroups) {
     # set the contents of the config for each user groupID
     $configContent = Get-Content -path $configPath
     # Update the userGroupID:
-    $configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GROUP = `"$($radiusGroup.values)`"") | Set-Content -Path $configPath
+    Set-JCRConfigFile -userGroup $radiusGroup.values
     # remove the radius members data file:
     if (Test-Path -Path $dataFilePath) {
         Remove-Item $dataFilePath -Force

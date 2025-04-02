@@ -21,12 +21,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
             $CA_subject = $CA_subject.split("subject=").split(",")
-            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.countryCode
-            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.stateCode
-            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Locality
-            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
-            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
-            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCountryCode'].value
+            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderStateCode'].value
+            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderLocality'].value
+            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganization'].value
+            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganizationUnit'].value
+            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCommonName'].value
         }
     }
 
@@ -57,12 +57,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
             $CA_subject = $CA_subject.split("subject=").split(",")
-            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.countryCode
-            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.stateCode
-            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Locality
-            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
-            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
-            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCountryCode'].value
+            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderStateCode'].value
+            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderLocality'].value
+            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganization'].value
+            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganizationUnit'].value
+            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCommonName'].value
         }
     }
 
@@ -91,12 +91,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
             $CA_subject = $CA_subject.split("subject=").split(",")
-            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.countryCode
-            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.stateCode
-            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Locality
-            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
-            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
-            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCountryCode'].value
+            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderStateCode'].value
+            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderLocality'].value
+            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganization'].value
+            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganizationUnit'].value
+            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCommonName'].value
         }
 
     }
@@ -125,12 +125,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$JCR_OPENSSL x509 -noout -in $JCScriptRoot/Cert/radius_ca_cert.pem -subject"
             $CA_subject = $CA_subject.split("subject=").split(",")
-            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.countryCode
-            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.stateCode
-            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Locality
-            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.Organization
-            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.OrganizationUnit
-            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $Global:JCR_SUBJECT_HEADERS.CommonName
+            ($CA_subject | Where-Object { $_ -match "C=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCountryCode'].value
+            ($CA_subject | Where-Object { $_ -match "ST=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderStateCode'].value
+            ($CA_subject | Where-Object { $_ -match "L=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderLocality'].value
+            ($CA_subject | Where-Object { $_ -match "O=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganization'].value
+            ($CA_subject | Where-Object { $_ -match "OU=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderOrganizationUnit'].value
+            ($CA_subject | Where-Object { $_ -match "CN=" }) | Should -Match $module.PrivateData.config['certSubjectHeaderCommonName'].value
         }
 
     }
