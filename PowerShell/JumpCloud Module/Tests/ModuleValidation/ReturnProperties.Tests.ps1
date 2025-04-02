@@ -54,5 +54,5 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
             }
             $missing.InputObject | should -BeNullOrEmpty
         }
-    } -Skip
+    }
 }
