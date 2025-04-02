@@ -1,6 +1,6 @@
 ## 2.18.0
 
-Release Date: April 1, 2025
+Release Date: April 2, 2025
 
 #### RELEASE NOTES
 
@@ -10,8 +10,9 @@ This release adds support for Windows MDM OMA Custom policy (Custom MDM (OMA-URI
 
 #### FEATURES:
 
-- Introduces support for passing list of objects (uriList) for Custom MDM (OMA-URI) policy
-  - Menu for Set-JCPolicy to edit uriList - create/update/add/remove
+- Introduces support for passing list of objects (uriList) for Custom MDM (OMA-URI) policy with New/Set-JCPolicy
+  - Dynamic param added `-uriList`
+  - Menu for `Set-JCPolicy` to edit uriList - create/update/add/remove
 
 ## 2.17.0
 
