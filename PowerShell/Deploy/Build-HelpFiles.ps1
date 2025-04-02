@@ -2,9 +2,59 @@ Param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud'
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Path to module root')][ValidateNotNullOrEmpty()][System.String]$ModulePath = './PowerShell/JumpCloud Module' # $PSScriptRoot
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Which parameter set to be used for New-MarkdownHelp')][ValidateNotNullOrEmpty()][ValidateSet('FromCommand', 'FromModule')][System.String]$NewMarkdownHelpParamSet = 'FromCommand'
-    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Language locale')][ValidateNotNullOrEmpty()][System.String]$Locale = 'en-US'
+    , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Language locale')][ValidateNotNullOrEmpty()][System.String]$Locale = 'en-Us'
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'For adding comment based help')][ValidateNotNullOrEmpty()][System.Boolean]$AddCommentBasedHelp = $false
 )
+# modified from source: https://github.com/PowerShell/platyPS/issues/595#issuecomment-1820971702
+function Remove-CommonParameterFromMarkdown {
+    <#
+        .SYNOPSIS
+            Remove a PlatyPS generated parameter block.
+
+        .DESCRIPTION
+            Removes parameter block for the provided parameter name from the markdown file provided.
+
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [string[]]
+        $Path,
+
+        [Parameter(Mandatory = $false)]
+        [string[]]
+        $ParameterName = @('ProgressAction')
+    )
+    $ErrorActionPreference = 'Stop'
+    $Docs = Get-ChildItem -Path $Path -Recurse
+    foreach ($p in $Docs) {
+        Write-Host "[status]Removing ProgressAction from $p"
+        $content = (Get-Content -Path $p -Raw).TrimEnd()
+        $updateFile = $false
+        foreach ($param in $ParameterName) {
+            if (-not ($Param.StartsWith('-'))) {
+                $param = "-$($param)"
+            }
+            # Remove the parameter block
+            $pattern = "(?m)^### $param\r?\n[\S\s]*?(?=#{2,3}?)"
+            $newContent = $content -replace $pattern, ''
+            # Remove the parameter from the syntax block
+            $pattern = " \[$param\s?.*?]"
+            $newContent = $newContent -replace $pattern, ''
+            if ($null -ne (Compare-Object -ReferenceObject $content -DifferenceObject $newContent)) {
+                Write-Verbose "Added $param to $p"
+                # Update file content
+                $content = $newContent
+                $updateFile = $true
+            }
+        }
+        # Save file if content has changed
+        if ($updateFile) {
+            $newContent | Out-File -Encoding utf8 -FilePath $p
+            Write-Verbose "Updated file: $p"
+        }
+    }
+    return
+}
 # Define misc. vars
 $FilePath_Psd1 = "$ModulePath/$ModuleName.psd1"
 $FolderPath_Docs = "$ModulePath/Docs"
@@ -140,6 +190,38 @@ Try {
     # Creating: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt
     Write-Host ("[status]Creating: .\en-Us\$ModuleName-help.xml and .\en-Us\about_$ModuleName.help.txt")
     New-ExternalHelp -Path:($FolderPath_Docs) -OutputPath:($FolderPath_enUS) -Force # -ApplicableTag <String> -Encoding <Encoding> -MaxAboutWidth <Int32> -ErrorLogFile <String> -ShowProgress
+    # Remove ProgressAction from Doc files (PowerShell 7.4.1 with PlatyPS)
+    Remove-CommonParameterFromMarkdown -Path:($FolderPath_Docs)
+    $ProgressActionXML1 = @"
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
+        <maml:name>ProgressAction</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ProgressAction Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.ActionPreference</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.ActionPreference</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+"@
+    $ProgressActionXML2 = @"
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
+          <maml:name>ProgressAction</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ProgressAction Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.ActionPreference</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Management.Automation.ActionPreference</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+"@
+    (Get-Content -Path "$FolderPath_enUS/JumpCloud-help.xml" -Raw).Replace($ProgressActionXML1, '') | Set-Content "$FolderPath_enUS/JumpCloud-help.xml"
+    (Get-Content -Path "$FolderPath_enUS/JumpCloud-help.xml" -Raw).Replace($ProgressActionXML2, '') | Set-Content "$FolderPath_enUS/JumpCloud-help.xml"
 } Catch {
     Write-Error ($_)
 }
