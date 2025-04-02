@@ -75,6 +75,7 @@ Function New-JCDeviceUpdateTemplate {
                 allowMultiFactorAuthentication = $null
                 allowPublicKeyAuthentication   = $null
                 systemInsights                 = $null
+                primarySystemUser              = $null
 
             }
             $fileName = 'JCDeviceUpdateImport_' + $date + '.csv'
@@ -97,7 +98,7 @@ Function New-JCDeviceUpdateTemplate {
             $CSV = [ordered]@{
                 DeviceID    = $null
                 displayname = $null
-                hostname = $null
+                hostname    = $null
             }
 
             Write-Host "`nWould you like to populate this update template with all of your existing systems?"
@@ -196,6 +197,19 @@ Function New-JCDeviceUpdateTemplate {
             }
 
             elseif ($ConfirmSystemInsights -eq 'N') {
+            }
+
+            Write-Host "`nWould you like to set a primary system user?"
+
+            while ($ConfirmPrimarySystemUser -ne 'Y' -and $ConfirmPrimarySystemUser -ne 'N') {
+                $ConfirmPrimarySystemUser = Read-Host  "Enter Y for Yes or N for No"
+            }
+
+            if ($ConfirmPrimarySystemUser -eq 'Y') {
+                $CSV.add('primarySystemUser', $null)
+            }
+
+            elseif ($ConfirmPrimarySystemUser -eq 'N') {
             }
 
             $CSVheader = New-Object psobject -Property $Csv

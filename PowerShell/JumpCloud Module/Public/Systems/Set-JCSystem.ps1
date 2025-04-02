@@ -35,14 +35,17 @@ Function Set-JCSystem () {
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.')]
         [bool]
-        $systemInsights
+        $systemInsights,
+
+        [Parameter(ValueFromPipelineByPropertyName = $false, HelpMessage = 'A value indicating a JumpCloud users email, username or userID. This will add the user to the device associations')]
+        $primarySystemUser
     )
 
     begin {
 
         Write-Debug 'Verifying JCAPI Key'
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         $hdrs = @{
@@ -63,15 +66,12 @@ Function Set-JCSystem () {
         $body = @{ }
 
         foreach ($param in $PSBoundParameters.GetEnumerator()) {
-
             if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
                 continue
             }
-
             if ($param.key -eq 'SystemID', 'JCAPIKey') {
                 continue
             }
-
             if ($param.key -eq 'systemInsights') {
                 $state = switch ($systemInsights) {
                     true {
@@ -84,27 +84,33 @@ Function Set-JCSystem () {
                 $body.add('systemInsights', @{'state' = $state })
                 continue
             }
-
+            if ($param.key -eq "primarySystemUser") {
+                $userInfo = $param.value
+                if ($param.Value -eq $null -or $param.Value -eq "") {
+                    $body.add($param.Key, $null)
+                    continue
+                } else {
+                    try {
+                        $primarySystemUserValue = Convert-JCUserToID -UserIdentifier $userInfo
+                        $body.add("primarySystemUser.id", $primarySystemUserValue)
+                    } catch {
+                        Write-Warning "Could not validate $userinfo. Please ensure the user information is correct"
+                    }
+                    continue
+                }
+            }
             $body.add($param.Key, $param.Value)
-
         }
 
         $jsonbody = $body | ConvertTo-Json
-
         Write-Debug $jsonbody
-
         $URL = "$JCUrlBasePath/api/systems/$SystemID"
-
         Write-Debug $URL
-
         $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $UpdatedSystems += $System
     }
-
     end {
         return $UpdatedSystems
-
     }
-
 }
