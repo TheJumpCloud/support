@@ -12,9 +12,6 @@ function Get-CertInfo {
         $username
     )
     begin {
-        # Import the Config.ps1 variables
-        . "$JCScriptRoot/Config.ps1"
-
         if ($RootCA) {
             # Find the RootCA Path
             $foundCerts = Resolve-Path -Path "$JCScriptRoot/Cert/*cert*.pem" -ErrorAction SilentlyContinue
@@ -23,12 +20,12 @@ function Get-CertInfo {
         if ($UserCerts) {
             # Find all userCert paths
             if ($username) {
-                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-$($Global:JCR_CERT_TYPE)*.crt" -ErrorAction SilentlyContinue
+                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-$($module.PrivateData.config['certType'].value)*.crt" -ErrorAction SilentlyContinue
 
             } else {
                 $foundCerts = New-Object System.Collections.ArrayList
                 $global:JCRRadiusMembers.username | ForEach-Object {
-                    $foundCert = Resolve-Path -Path "$JCScriptRoot/UserCerts/$_-$($Global:JCR_CERT_TYPE)*.crt" -ErrorAction SilentlyContinue
+                    $foundCert = Resolve-Path -Path "$JCScriptRoot/UserCerts/$_-$($module.PrivateData.config['certType'].value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
                         $foundCerts.Add($foundCert) | Out-Null
                     }
@@ -111,7 +108,7 @@ function Get-CertInfo {
                     $certFile = Get-Item $($cert.Path)
                     if (('username' -notin $MyInvocation.BoundParameters) -AND (-Not [System.String]::IsNullOrEmpty($certFile.name))) {
                         # Write-Host "Attempting to parse username from string: $($certFile.name)"
-                        $matchNames = $certFile.name | Select-String -Pattern "(.*)-$($Global:JCR_CERT_TYPE).*"
+                        $matchNames = $certFile.name | Select-String -Pattern "(.*)-$($module.PrivateData.config['certType'].value).*"
                         if ($matchNames.Matches.groups) {
                             $username = $matchNames.Matches.groups[1].value
                         }

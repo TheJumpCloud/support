@@ -42,7 +42,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # create a new user
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # wait one moment
@@ -67,7 +67,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $UserCerts.fullname | Where-Object { $_ -match ".crt" } | Should -Exist
             $UserCerts.fullname | Where-Object { $_ -match ".key" } | Should -Exist
             # cleanup
-            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
             # wait just one moment before testing membership since we are writing a file
@@ -86,7 +86,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -Path $configPath
             # set the user cert validity to just 10 days
-            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath
+            Set-JCRConfigFile -caCertValidityDays 10
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
@@ -101,7 +101,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $userCertInfo = Get-CertInfo -UserCerts
             # Determine cut off date for expiring certs
             # Find all certs that will expire between current date and cut off date
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $module.PrivateData.config['certExpirationWarningDays'].value
 
         }
         It 'Certs that are set to expire soon can be updated programmatically' {
@@ -110,7 +110,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # reset the validity counter
             $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
-            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
+            Set-JCRConfigFile -caCertValidityDays 90
             # Get the certs before generation minus the .zip if it exists
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # get the date before
@@ -120,7 +120,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             Start-GenerateUserCerts -type ExpiringSoon -forceReplaceCerts
             # Update Global Expiring list:
             $userCertInfo = Get-CertInfo -UserCerts
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $module.PrivateData.config['certExpirationWarningDays'].value
             # there should be no more certs left in the expiring cert var
             $Global:expiringCerts | Should -BeNullOrEmpty
             # Get the certs after generation minus the .zip if it exists
@@ -142,7 +142,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # reset the validity counter
             $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
-            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
+            Set-JCRConfigFile -caCertValidityDays 90
         }
 
 
@@ -167,7 +167,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # update the user
             $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/systemusers/$($user.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # wait one moment
@@ -199,7 +199,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # manually update the user with a hyphen in their username
             $user = Set-JcSdkUser -Id $($user.id) -Username "$($user.username)-$($user.username)"
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             # Get the certs before
             $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
             # wait one moment
@@ -227,7 +227,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
         AfterEach {
             # cleanup
-            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
             # wait just one moment before testing membership since we are writing a file
@@ -241,16 +241,16 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     Context 'Certs generated when userGroup only contains 1 user' {
         BeforeAll {
             # Save users in userGroup to variable for later
-            $RadiusMembers = Get-JCUserGroupMember -ByID $Global:JCR_USER_GROUP
+            $RadiusMembers = Get-JCUserGroupMember -ByID $module.PrivateData.config['userGroup'].value
 
             # Remove all members from UserGroup
             $RadiusMembers | ForEach-Object {
-                $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID
+                $userRemoval = Remove-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $_.UserID
             }
 
             # Add One Member back to the Group
             $SingleUser = $RadiusMembers | Select-Object -First 1
-            $userAdd = Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
+            $userAdd = Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $SingleUser.UserID
         }
         It "When the Radius UserGroup only contains 1 user, the generation functions will not error" {
             # update the cache
@@ -270,10 +270,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
         AfterAll {
             # Remove the single User
-            $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
+            $userRemoval = Remove-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $SingleUser.UserID
 
             # Add original members back to the UserGroup
-            $userAdd = $RadiusMembers | ForEach-Object { Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID }
+            $userAdd = $RadiusMembers | ForEach-Object { Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $_.UserID }
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation

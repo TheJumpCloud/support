@@ -188,7 +188,7 @@ function Start-GenerateUserCerts {
                 # recalculate expiring certs:
                 $userCertInfo = Get-CertInfo -UserCerts
                 # Get expiring certs:
-                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $module.PrivateData.config['certExpirationWarningDays'].value
                 for ($i = 0; $i -lt $ExpiringCerts.Count; $i++) {
                     $userCert = $ExpiringCerts[$i]
                     <# Action that will repeat until the condition is met #>
@@ -200,7 +200,7 @@ function Start-GenerateUserCerts {
                     # recalculate expiring certs:
                     $userCertInfo = Get-CertInfo -UserCerts
                 }
-                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $module.PrivateData.config['certExpirationWarningDays'].value
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
                         Show-StatusMessage -Message "Finished Generating Certificates"

@@ -95,6 +95,6 @@ function Set-JCRSettingsFile {
         # Write out the new settings
         $config | ConvertTo-Json | Out-File -FilePath $configFilePath
         # Update Global Variable
-        $global:JCRConfig = Get-JCRSettingsFile
+        $global:JCRConfig = Get-JCRConfigFile
     }
 }
