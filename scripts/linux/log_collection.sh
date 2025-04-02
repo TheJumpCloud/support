@@ -42,7 +42,7 @@ then
 - System logs, including syslog or messages, auth.log or secure, and dmsg log files.
 - Usernames of JumpCloud managed users.
 - General system information (distribution, hostname, hardware architecture, kernel version)
-If you agree to this, enter 'Y', or any other key to cancel." -n 1 -r
+If you agree to this, enter 'Y', or any other key to cancel: " -n 1 -r
     echo    # move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
@@ -74,6 +74,9 @@ LOGS=(
     "dmsg"
     "messages"
     "secure"
+    "apt/term.log"
+    "apt/history.log"
+    "dpkg.log"
 )
 
 echo "Collecting system logs"

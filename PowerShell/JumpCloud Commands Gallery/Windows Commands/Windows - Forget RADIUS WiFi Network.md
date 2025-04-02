@@ -1,7 +1,6 @@
 #### Name
 
-Windows - Forget RADIUS WiFi Network | v2.0 JCCG
-
+Windows - Forget RADIUS WiFi Network | v2.0.1 JCCG
 
 #### commandType
 
@@ -140,7 +139,7 @@ function Distribute-JCScheduledTask {
   </Settings>
   <Triggers>
     <EventTrigger>
-      <Subscription>&lt;QueryList&gt;&lt;Query Id="0" Path="Microsoft-Windows-WLAN-AutoConfig/Operational"&gt;&lt;Select Path="Microsoft-Windows-WLAN-AutoConfig/Operational"&gt;*[System[Provider[@Name='Microsoft-Windows-WLAN-AutoConfig'] and Task = 24010 and (EventID=8002)]]&lt;/Select&gt;&lt;/Query&gt;&lt;/QueryList&gt;</Subscription>
+      <Subscription>&lt;QueryList&gt;&lt;Query Id="0" Path="Microsoft-Windows-WLAN-AutoConfig/Operational"&gt;&lt;Select Path="Microsoft-Windows-WLAN-AutoConfig/Operational"&gt;*[System[Provider[@Name='Microsoft-Windows-WLAN-AutoConfig'] and Task = 24010 and (EventID=8002)]] and *[EventData[Data[@Name='SSID']="$RadiusSSID"]]&lt;/Select&gt;&lt;/Query&gt;&lt;/QueryList&gt;</Subscription>
     </EventTrigger>
   </Triggers>
   <Actions Context="Author">
@@ -187,10 +186,10 @@ The purpose of this script is to resolve an issue when a user changes their Jump
 
 In order to accomplish this, the command will create a scheduled task on the workstation that looks for 8002 errors when attempting to connect to the specified Radius SSID. If an error is detected, a PowerShell script will be initiated that will forget the network for the user which will allow them to attempt to connect again and prompt for their updated credentials
 
-
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
 Import-JCCommand -URL "https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Windows%20Commands/Windows%20-%20Forget%20RADIUS%20WiFi%20Network.md"
+```

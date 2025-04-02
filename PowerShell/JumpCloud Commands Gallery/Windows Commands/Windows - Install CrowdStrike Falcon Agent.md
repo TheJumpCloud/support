@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Install CrowdStrike Falcon Agent | v2.1 JCCG
+Windows - Install CrowdStrike Falcon Agent | v2.2 JCCG
 
 #### commandType
 
@@ -97,7 +97,7 @@ function Get-CrowdStrikeSensorInstaller {
         }
     }
     process {
-        $Response = Invoke-WebRequest -Uri "$CSBaseAddress/sensors/combined/installers/v1" -method Get -Headers $CrowdStrikeAuthHeader -UseBasicParsing
+        $Response = Invoke-WebRequest -Uri "$CSBaseAddress/sensors/combined/installers/v1?filter=platform:%27windows%27" -method Get -Headers $CrowdStrikeAuthHeader -UseBasicParsing
 
         if ($Response.headers."X-Ratelimit-Remaining" -le 0) {
             Write-Host "Too many requests are being made to CrowdStrike services..."
@@ -105,12 +105,11 @@ function Get-CrowdStrikeSensorInstaller {
         }
 
         $Installers = $Response.Content | ConvertFrom-Json
-        $Installers = $Installers.Resources | Group-Object platform
 
         switch ($operatingSystem) {
             windows {
-                $WindowsInstallers = $Installers | Where-Object Name -eq 'windows'
-                $SortedInstallers = $WindowsInstallers.Group | Sort-Object version -Descending
+                $WindowsInstallers = $Installers.resources
+                $SortedInstallers = $WindowsInstallers | Sort-Object version -Descending
             }
         }
         if ($Windows7Sensor -eq $true) {

@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2
+version=1.2.1
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -29,9 +29,9 @@ then
 - JumpCloud logging recorded in the macOS system logs for the past ${days} days
 - Currently installed configuration profiles
 - MDM triggered software installations for the past ${days} days (Appstore, VPP and Custom Software)
-- Filevault and secure token information (no passwords or secrets are collected)
+- FileVault and secure token information (no passwords or secrets are collected)
 - Usernames of JumpCloud managed users
-If you agree to this, enter 'Y', or any other key to cancel." -n 1 -r
+If you agree to this, enter 'Y', or any other key to cancel: " -n 1 -r
     echo    # move to a new line
     if [[ ! $REPLY =~ ^[Yy]$ ]]
     then
@@ -49,6 +49,7 @@ sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$
 
 if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
     localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
+    echo "User $localuser is currently logged in."
     archiveTargetDir="/Users/${localuser}/Documents/"
 else
     archiveTargetDir="/private/var/tmp/"
@@ -113,10 +114,27 @@ fi
 
 ## Only run if a user is actually logged in
 if [[ $localuser ]]; then
+
+    ## pull additional patch management information
     sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com.github.macadmins.Nudge.plist 2>&1
+
+    ## list jumpcloud services currently running on the system
+    sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
+
+    ## list JumpCloud Device Certificate
+    jcDeviceCert=$(sudo -u "$localuser" security find-certificate -c "JumpCloud Device Trust Certificate" -p 2>/dev/null)
+    if [ -n "$jcDeviceCert" ]; then
+        echo "$jcDeviceCert" | openssl x509 -text > $baseDir/systemInfo/deviceCert.txt
+        echo "JumpCloud Device Trust Certificate found and processed"
+    else
+    # Certificate not found
+        echo "A JumpCloud Device Trust Certificate was not found for the user: "$localuser" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/systemInfo/deviceCert.txt
+    fi
+else
+    echo "No user is currently logged in. Skipping user-specific information."
 fi
 
-## gather relevent system logs for software installs
+## gather relevant system logs for software installs
 echo "Gathering software installation logs"
 log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDir/systemLogs/appstored.log
 cp /var/log/install.log* $baseDir/systemLogs/
@@ -147,10 +165,12 @@ for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
         cp -r /Users/$u/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/$u/
     fi
 
+    if [ -d /Users/$u/Library/Logs/JumpCloud ]; then
+        cp -r /Users/$u/Library/Logs/JumpCloud $baseDir/userLogs/$u/
+    fi
+
     # report on any user scope configuration profiles
     sudo -u $u profiles -L -o stdout > $baseDir/userLogs/$u/installedProfiles.txt
-
-    cp -r /Users/$u/Library/Logs/JumpCloud $baseDir/userLogs/$u/
 
 done
 
