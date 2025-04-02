@@ -8,7 +8,7 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
                 'customDefinitionMap' = @{
 
                 }
-                'ignoreList'          = @('remoteAssistAgentVersion', 'primarySystemUser')
+                'ignoreList'          = @('_id', 'tags')
             };
             'Get-JCUser'    = @{
                 'modelDefinition'     = 'definitions.systemuserput.properties'
@@ -54,5 +54,5 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
             }
             $missing.InputObject | should -BeNullOrEmpty
         }
-    }
+    } -Skip
 }

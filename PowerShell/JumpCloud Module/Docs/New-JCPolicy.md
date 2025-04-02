@@ -90,7 +90,6 @@ PS C:\>  New-JCPolicy -TemplateName custom_oma_uri_mdm_windows -Name "Windows - 
 
 This command creates a JumpCloud policy named "Windows - Custom OMA MDM Policy" using the custom_oma_uri_mdm_windows template. It defines two OMA-URI configurations: a string value for EnforceLockScreenAndLogonImage and an integer value for AccountLockoutPolicy.
 
-
 ## PARAMETERS
 
 ### -Name
