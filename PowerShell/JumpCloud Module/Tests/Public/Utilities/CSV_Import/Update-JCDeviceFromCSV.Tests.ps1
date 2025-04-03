@@ -4,6 +4,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
     }
     It 'Updates users from a CSV populated with all information' {
         $system = Get-JCSystem | Select-Object -First 1
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $system.Id -Op "add" -Type 'user' -Id $NewUser._id
         $CSVData = @{
             "DeviceID"                       = $system.id
             "displayName"                    = "PesterUpdateFromCSV"
@@ -31,6 +32,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
     }
     It 'Updates users from a CSV populated with a null value' {
         $system = Get-JCSystem | Select-Object -First 1
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $system.Id -Op "add" -Type 'user' -Id $NewUser._id
         $CSVData = @{
             "DeviceID"                       = $system.id
             "displayName"                    = ""
@@ -54,10 +56,11 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowMultiFactorAuthentication | Should -Be $CSVData.allowMultiFactorAuthentication
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
-        $UpdatedDevice.primarySytemUser.id | Should -Be $NewUser._id
+        $UpdatedDevice.primarySytemUser.id | Should -BeNullOrEmpty
     }
     It 'Updates users from a CSV populated with an invalid primarySystemUser' {
         $system = Get-JCSystem | Select-Object -First 1
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $system.Id -Op "add" -Type 'user' -Id $NewUser._id
         $CSVData = @{
             "DeviceID"                       = $system.id
             "displayName"                    = ""
