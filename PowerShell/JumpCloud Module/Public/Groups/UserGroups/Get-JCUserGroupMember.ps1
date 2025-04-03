@@ -6,13 +6,13 @@ Function Get-JCUserGroupMember () {
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByGroup', Position = 0, HelpMessage = 'The name of the JumpCloud User Group you want to return the members of.')]
         [Alias('name')][String]$GroupName,
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'ByID', HelpMessage = 'If searching for a User Group using the GroupID populate the GroupID in the -ByID field.')]
-        [String]$ByID
+        [Alias('GroupID')][String]$ByID
     )
 
     begin {
         Write-Debug 'Verifying JCAPI Key'
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         $Parallel = $JCConfig.parallel.Calculated

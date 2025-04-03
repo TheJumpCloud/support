@@ -56,7 +56,7 @@ If searching for a User Group using the GroupID populate the GroupID in the -ByI
 ```yaml
 Type: System.String
 Parameter Sets: ByID
-Aliases:
+Aliases: GroupID
 
 Required: True
 Position: Named

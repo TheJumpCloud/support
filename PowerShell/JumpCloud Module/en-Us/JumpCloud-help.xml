@@ -8552,7 +8552,9 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
             <command:parameterValue required="false" command:variableLength="false">organization</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">os</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">osFamily</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">primarySystemUser</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">provisionMetadata</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">remoteAssistAgentVersion</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">remoteIP</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">serialNumber</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">serviceAccountState</command:parameterValue>
@@ -20489,6 +20491,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>primarySystemUser</maml:name>
+          <maml:description>
+            <maml:para>A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
 
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>systemInsights</maml:name>
@@ -20573,6 +20587,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
           <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>primarySystemUser</maml:name>
+        <maml:description>
+          <maml:para>A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
