@@ -83,52 +83,57 @@ Describe -Tag:('JCSystem') "Get-JCSystem 2.1.0 & 2.1.2" {
 Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
     It "Sets a primarySystemUser by UserID" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Op "add" -Type 'user' -Id $NewUser._id
+        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
+        $NewUser._id | Should -BeIn $systemAssociations.ToId
+
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser._id
         $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
         $primarySystemUserCheck.primarySystemUser.id | Should -Be $NewUser._id
-
-        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
-        $NewUser._id | Should -BeIn $systemAssociations.ToId
 
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Sets a primarySystemUser by Username" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Op "add" -Type 'user' -Id $NewUser._id
+        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
+        $NewUser._id | Should -BeIn $systemAssociations.ToId
+
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.username
         $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
         $primarySystemUserCheck.primarySystemUser.id | Should -Be $NewUser._id
-
-        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
-        $NewUser._id | Should -BeIn $systemAssociations.ToId
 
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Sets a primarySystemUser by Email" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Op "add" -Type 'user' -Id $NewUser._id
+        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
+        $NewUser._id | Should -BeIn $systemAssociations.ToId
+
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.email
         $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
         $primarySystemUserCheck.primarySystemUser.id | Should -Be $NewUser._id
-
-        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
-        $NewUser._id | Should -BeIn $systemAssociations.ToId
 
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
     It "Sets a primarySystemUser to null" {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+
+        $addUserAssociation = Set-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Op "add" -Type 'user' -Id $NewUser._id
+        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
+        $NewUser._id | Should -BeIn $systemAssociations.ToId
+
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.email
         $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
         $primarySystemUserCheck.primarySystemUser.id | Should -Be $NewUser._id
 
-        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
-        $NewUser._id | Should -BeIn $systemAssociations.ToId
-
         $removePrimarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $null
         $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
         $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
-
-        $systemAssociations = Get-JcSdkSystemAssociation -SystemId $($PesterParams_SystemWindows._id) -Targets 'user'
-        $NewUser._id | Should -Not -BeIn $systemAssociations.ToId
 
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
@@ -137,5 +142,12 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
         $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser "RandomUserThatDoesntExist"
         $primarySystemUserCheck = Get-JCSystem -SystemID $($PesterParams_SystemWindows._id)
         $primarySystemUserCheck.primarySystemUser.id | Should -BeNullOrEmpty
+    }
+    It "Try to set a primarySystemUser that is not associated with the device" {
+        $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+
+        { $primarySystemUser = Set-JCSystem -SystemID $($PesterParams_SystemWindows._id) -primarySystemUser $NewUser.email } | Should -Throw
+
+        Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
