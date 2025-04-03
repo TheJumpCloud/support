@@ -87,7 +87,7 @@ Function Set-JCSystem () {
             if ($param.key -eq "primarySystemUser") {
                 $userInfo = $param.value
                 if ($param.Value -eq $null -or $param.Value -eq "") {
-                    $body.add($param.Key, $null)
+                    $body.add("primarySystemUser.id", $null)
                     continue
                 } else {
                     try {
