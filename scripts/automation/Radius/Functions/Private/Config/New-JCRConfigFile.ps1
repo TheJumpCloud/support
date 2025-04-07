@@ -10,12 +10,12 @@ function New-JCRConfigFile {
 
     begin {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
-        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'config.json'
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
         $date = (Get-Date).ToUniversalTime()
     }
     process {
         # Define Default Settings for the Config file
-        $config = $module.privateData.config
+        $config = $script:configTemplate
     }
     end {
         if ((Test-Path -Path $configFilePath) -And ($force)) {

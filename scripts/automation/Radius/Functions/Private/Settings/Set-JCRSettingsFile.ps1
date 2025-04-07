@@ -52,9 +52,6 @@ function Set-JCRSettingsFile {
         }
     }
     begin {
-        if ($JCAPIKEY.length -ne 40) {
-            Connect-JCOnline -Force | Out-Null
-        }
 
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($JCScriptRoot))

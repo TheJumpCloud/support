@@ -34,13 +34,11 @@ if (-Not (Test-Path -Path "$JCScriptRoot/UserCerts" -PathType Container)) {
     New-Item -Path "$JCScriptRoot/UserCerts" -ItemType Directory
 }
 
-# # Get global variables or update if necessary
-# Get-JCRGlobalVars
 # Export module member
 Export-ModuleMember -Function $Public.BaseName -Alias *
 
 # Set the module config
-$Module.PrivateData.config = @{
+$script:configTemplate = @{
     'userGroup'                         = @{
         value       = $null;
         write       = $true;
@@ -163,18 +161,16 @@ $Module.PrivateData.config = @{
     }
 }
 
-# Set the module non-configurable settings
-$Module.PrivateData.settings = @{
+# # Set the module non-configurable settings
+$script:settings = @{
     'userAgent' = Get-JCRUserAgent
 }
 
-# From the saved config file, get the settings and set them in the module
-Get-JCRConfig -FilePath "$JCScriptRoot/Config.json"
+# From the saved config file, get the settings and set them in the module as $config
+$global:JCRConfig = Get-JCRConfigFile -asObject
+# Get-JCRConfig
 
-# validate the config settings
+# validate the config settings (skip throw on first load with 'loadModule' param)
 Confirm-JCRConfigFile -loadModule
 
-# print the config:
-# foreach ($item in $module.PrivateData.config.keys) {
-#     write-host "$item | $($module.PrivateData.config[$($item)].value)"
-# }
+# TODO: Check the OpenSSL version

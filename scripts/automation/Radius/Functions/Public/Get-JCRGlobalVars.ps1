@@ -115,7 +115,7 @@ function Get-JCRGlobalVars {
                 $users = Get-DynamicHash -Object User -returnProperties email, employeeIdentifier, department, suspended, location, Addresses, manager, sudo, Displayname, username, systemUsername
                 # $users | ForEach-Object { $_ | Add-Member -name "userId" -value $_ -Type NoteProperty -force }
                 # Get Radius membership list:
-                $radiusMembers = Get-JcSdkUserGroupMember -GroupId $module.PrivateData.config['userGroup'].value
+                $radiusMembers = Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.userGroup.value
                 # add the username to the membership hash
                 $radiusMemberList = New-Object System.Collections.ArrayList
                 foreach ($member in $radiusMembers) {

@@ -53,11 +53,8 @@ $env:certKeyPassword = "testCertificate123!@#"
 # update config:
 Write-Warning "Updating Config File"
 
-$configPath = Resolve-Path -Path "$PSScriptRoot/../Config.ps1"
-write-warning $configPath
-$configContent = Get-Content -path $configPath
 # Update the userGroupID:
-$configContent -replace ('\$module.PrivateData.config['userGroup'].value = *.+', "`$module.PrivateData.config['userGroup'].value = `"$($radiusUserGroup.id)`"") | Set-Content -Path $configPath
+Set-JCRConfigFile -userGroup $radiusUserGroup.id
 # update the openSSL path:
 if ($IsMacOS) {
     $brewList = brew list openssl@3
@@ -75,8 +72,6 @@ if ($IsMacOS) {
     $opensslVersion = $regmatch.matches.groups[1].value
 
     Write-Warning "OpenSSL Version: $opensslVersion is installed via homebrew on this system; updating config:"
-    $configContent = Get-Content -path $configPath
-    $configContent -replace ('\$Global:JCR_OPENSSL = *.+', "`$Global:JCR_OPENSSL = `"$($brewListBinary)`"") | Set-Content -Path $configPath
 }
 
 $env:certKeyPassword = "TestCertificate123!@#"

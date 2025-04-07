@@ -20,5 +20,6 @@ function Get-JCRConfig {
         }
     } else {
         Write-Warning "Config file '$FilePath' not found. Using default configuration."
+        New-JCRConfigFile -Force
     }
 }

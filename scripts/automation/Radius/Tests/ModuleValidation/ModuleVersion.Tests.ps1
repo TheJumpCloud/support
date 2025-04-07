@@ -26,7 +26,7 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
             # Check that the config file does not exist
             Test-Path -Path $configPath | Should -Be $false
             # Check that the module config is set to the default values
-            $module.PrivateData.config['userGroup'].value | Should -Be $null
+            $Global:JCRConfig.userGroup.value | Should -Be $null
         }
         It "Setting the settings to some series of values should not throw an error" {
             $settings = @{

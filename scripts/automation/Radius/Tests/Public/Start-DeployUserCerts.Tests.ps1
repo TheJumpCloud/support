@@ -58,9 +58,9 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             Write-Warning "$($user.username) created with id: $($user.id))"
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
 
-            Write-Warning "Add $($user.username) to radius Group with id: $($module.PrivateData.config['userGroup'].value)"
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
-            $userMembers = Get-jcusergroupmember -byid $module.PrivateData.config['userGroup'].value
+            Write-Warning "Add $($user.username) to radius Group with id: $($global:JCRConfig.userGroup.value)"
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
+            $userMembers = Get-jcusergroupmember -byid $global:JCRConfig.userGroup.value
 
             foreach ($member in $userMembers) {
                 Write-Warning "$($member.username) is in the $($member.GroupName) Group"
@@ -134,7 +134,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # get random system
             $system = Get-JCSystem -os windows | Get-Random -Count 1
             Add-JCSystemUser -UserID $user.id -SystemID $system.id
@@ -163,7 +163,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # get random system
             $system = Get-JCSystem -os windows | Get-Random -Count 1
             Add-JCSystemUser -UserID $user.id -SystemID $system.id
@@ -323,7 +323,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # get random system
             $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
             $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
@@ -576,7 +576,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # get random system
             $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
             $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
@@ -718,7 +718,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # get the before date
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # get random system
             $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
             $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
@@ -758,7 +758,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             # get the before date
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             # add user to membership group
-            Add-JCUserGroupMember -GroupID $module.PrivateData.config['userGroup'].value -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # get random system
             $windowsSystem = Get-JCSystem -os windows | Get-Random -Count 1
             $macSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1

@@ -20,12 +20,12 @@ function Get-CertInfo {
         if ($UserCerts) {
             # Find all userCert paths
             if ($username) {
-                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-$($module.PrivateData.config['certType'].value)*.crt" -ErrorAction SilentlyContinue
+                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
 
             } else {
                 $foundCerts = New-Object System.Collections.ArrayList
                 $global:JCRRadiusMembers.username | ForEach-Object {
-                    $foundCert = Resolve-Path -Path "$JCScriptRoot/UserCerts/$_-$($module.PrivateData.config['certType'].value)*.crt" -ErrorAction SilentlyContinue
+                    $foundCert = Resolve-Path -Path "$JCScriptRoot/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
                         $foundCerts.Add($foundCert) | Out-Null
                     }
@@ -108,7 +108,7 @@ function Get-CertInfo {
                     $certFile = Get-Item $($cert.Path)
                     if (('username' -notin $MyInvocation.BoundParameters) -AND (-Not [System.String]::IsNullOrEmpty($certFile.name))) {
                         # Write-Host "Attempting to parse username from string: $($certFile.name)"
-                        $matchNames = $certFile.name | Select-String -Pattern "(.*)-$($module.PrivateData.config['certType'].value).*"
+                        $matchNames = $certFile.name | Select-String -Pattern "(.*)-$($global:JCRConfig.certType.value).*"
                         if ($matchNames.Matches.groups) {
                             $username = $matchNames.Matches.groups[1].value
                         }

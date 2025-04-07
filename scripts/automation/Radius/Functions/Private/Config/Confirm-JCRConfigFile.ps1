@@ -8,23 +8,21 @@ function Confirm-JCRConfigFile {
         [switch]$loadModule
     )
     begin {
-        if ($JCAPIKEY.length -ne 40) {
-            Connect-JCOnline -force | Out-Null
+        if (-not $global:JCRConfig) {
+            $global:JCRConfig = Get-JCRConfigFile -asObject
         }
-        $config = $module.privateData.config
         $requiredAttributesNotSet = @{}
     }
 
     process {
         # validate config settings
-        foreach ($item in $config.keys) {
-            $setting = $config[$item]
-
+        foreach ($setting in $global:JCRConfig.PSObject.Properties) {
+            $settingName = $setting.Name
+            $settingValue = $setting.Value
             # check to see if the key is required and if the value is null
-            if ($setting.required -eq $true -and $setting.value -eq $null) {
-                $requiredAttributesNotSet += @{ $item = $setting.placeholder }
+            if ($settingValue.required -eq $true -and $settingValue.value -eq $null) {
+                $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
             }
-
         }
     }
     end {
