@@ -56,7 +56,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowMultiFactorAuthentication | Should -Be $CSVData.allowMultiFactorAuthentication
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
-        $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser
+        $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser.id
     }
     It 'Updates users from a CSV populated with an invalid primarySystemUser' {
         $system = Get-JCSystem | Select-Object -First 1
@@ -84,7 +84,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowMultiFactorAuthentication | Should -Be $CSVData.allowMultiFactorAuthentication
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
-        $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser
+        $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser.id
     }
     AfterEach {
         Remove-JCUser -UserID $NewUser._id -force
