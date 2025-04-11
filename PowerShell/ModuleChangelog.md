@@ -1,6 +1,29 @@
+## 2.18.0
+
+Release Date: April 11, 2025
+
+#### RELEASE NOTES
+
+```
+This release adds support for Windows MDM OMA Custom policy (Custom MDM (OMA-URI)) with New/Set-JCPolicy
+Introduces the primarySystemUser parameter to Set-JCSystem and Update-JCDeviceFromCSV functions. This parameter will allow you associate a user to the specified device
+
+```
+
+#### FEATURES:
+- Introduces support for passing list of objects (uriList) for Custom MDM (OMA-URI) policy with New/Set-JCPolicy
+  - Dynamic param added `-uriList`
+  - Menu for `Set-JCPolicy` to edit uriList - create/update/add/remove
+* Added the primarySystemUser parameter to Set-JCSystem
+* Update-JCDeviceFromCSV supports the primarySystemUser param that was added to Set-JCSystem
+
+#### BUG FIXES:
+
+* Added an Alias of GroupID to the ByID parameter for Get-JCUserGroupMember
+
 ## 2.17.0
 
-Release Date: January 3, 2025
+Release Date: January 30, 2025
 
 #### RELEASE NOTES
 
