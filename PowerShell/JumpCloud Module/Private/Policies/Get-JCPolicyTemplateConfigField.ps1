@@ -22,6 +22,7 @@ function Get-JCPolicyTemplateConfigField {
             file           = 'file'
             select         = 'multi'
             number         = 'int'
+            multiList      = 'multilist'
         }
     }
     process {
