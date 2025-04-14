@@ -58,12 +58,7 @@ jobs:
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
-          If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
-              Write-Host ('[status]Installing package provider NuGet');
-              Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
-          } else {
-              Write-Host ('[status]Package provider NuGet already installed');
-          }
+          Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
