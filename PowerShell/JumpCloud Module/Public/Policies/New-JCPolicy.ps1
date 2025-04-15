@@ -87,9 +87,6 @@ function New-JCPolicy {
                     'exclude' {
                         Continue
                     }
-                    'multilist' {
-                        $paramType = [system.object[]]
-                    }
                     Default {
                         $paramType = 'string'
                     }
@@ -158,6 +155,7 @@ function New-JCPolicy {
                 if ($templateObject.objectMap[$i].configFieldName -in $params.keys) {
                     $keyName = $params.keys | Where-Object { $_ -eq $templateObject.objectMap[$i].configFieldName }
                     $keyValue = $params.$KeyName
+                    # write-host "Setting value from $($keyName) $($KeyValue)"
                     switch ($templateObject.objectMap[$i].type) {
                         'multi' {
                             $templateObject.objectMap[$i].value = $(($templateObject.objectMap[$i].validation | Where-Object { $_.Values -eq $keyValue }).keys)
@@ -215,89 +213,6 @@ function New-JCPolicy {
                             }
                             $templateObject.objectMap[$i].value = $regRows
                         }
-                        'multilist' {
-                            if ($templateObject.objectMap[$i].configFieldName -eq "uriList") {
-                                for ($j = 0; $j -lt $keyValue.Count; $j++) {
-                                    $item = $keyValue[$j]
-                                    # If uri, format, or value is null or empty, throw an error
-                                    if (!$item.uri -or !$item.format -or !$item.value) {
-                                        throw "Invalid value at index $j : uri, format, and value cannot be null or empty."
-                                    } else {
-                                        switch ($item.format) {
-                                            "base64" {
-                                                try {
-                                                    $validateBase64 = [Convert]::FromBase64String($item.value) | Out-Null
-                                                    $item.format = "b64" # API expects "b64" for base64 format
-                                                } catch {
-                                                    throw "Invalid Base64 value at index $j : $($item.value)"
-                                                }
-                                            }
-                                            "b64" {
-                                                # Do nothing, already set to b64
-                                                try {
-                                                    $validateBase64 = [Convert]::FromBase64String($item.value) | Out-Null
-                                                } catch {
-                                                    throw "Invalid Base64 value at index $j : $($item.value)"
-                                                }
-                                            }
-                                            "string" {
-                                                $item.format = "chr" # API expects "chr" for string format
-                                            }
-                                            "chr" {
-                                                # Do nothing, already set to chr
-                                            }
-                                            "boolean" {
-                                                try {
-                                                    $validateBoolean = [System.Convert]::ToBoolean($item.value) | Out-Null
-                                                    $item.format = "bool" # API expects "bool" for boolean format
-                                                } catch {
-                                                    # Handle the case where the string is not a valid boolean
-                                                    throw "Invalid boolean value at index $j : $($item.value). Please enter 'true' or 'false'."
-                                                }
-                                            }
-                                            "bool" {
-                                                # Do nothing, already set to bool
-                                                try {
-                                                    $validateBoolean = [System.Convert]::ToBoolean($item.value) | Out-Null
-                                                } catch {
-                                                    # Handle the case where the string is not a valid boolean
-                                                    throw "Invalid boolean value at index $j : $($item.value). Please enter 'true' or 'false'."
-                                                }
-                                            }
-                                            "float" {
-                                                try {
-                                                    $validateFloat = [float]$item.value
-                                                } catch {
-                                                    throw "Invalid float value at index $j : $($item.value)"
-                                                }
-                                            }
-                                            "int" {
-                                                try {
-                                                    $validateInt = [int]$item.value | Out-Null
-                                                } catch {
-                                                    throw "Invalid int value at index $j : $($item.value)"
-                                                }
-                                            }
-                                            "xml" {
-                                                try {
-                                                    $validateXml = [xml]$item.value
-                                                } catch {
-                                                    throw "Invalid xml value at index $j : $($item.value)"
-                                                }
-                                            }
-                                            default {
-                                                throw "Unsupported format '$($item.format)' at index $j. No conversion performed."
-                                            }
-                                        }
-                                    }
-                                    $keyValue[$j] = $item
-                                }
-                                $templateObject.objectMap[$i].value = $keyValue
-                            } else {
-                                # For other multilist types, just pass the array
-                                $templateObject.objectMap[$i].value = $keyValue
-                            }
-                        }
                         Default {
                             $templateObject.objectMap[$i].value = $($keyValue)
                         }
@@ -344,6 +259,7 @@ function New-JCPolicy {
                 $updatedPolicyObject = $updatedPolicyObject | Select-Object configFieldID, configFieldName, value
             }
         }
+
         # Validate PolicyObject
         if ($updatedPolicyObject) {
             $updatedPolicyObject | ForEach-Object {
@@ -367,6 +283,7 @@ function New-JCPolicy {
             } | ConvertTo-Json -Depth 99
 
         }
+
         $headers = @{
             'x-api-key'    = $env:JCApiKey
             'x-org-id'     = $env:JCOrgId

@@ -82,14 +82,6 @@ PS C:\>  New-JCPolicy -TemplateName windows_Advanced:_Custom_Registry_Keys -Name
 
 This command would create a new Windows Custom Registry Policy named "Windows - Imported Custom Registry Settings" and populate the values from a registry file. .Reg registry files can be passed into New-JCPolicy as long as the TemplateName is specified with the corresponding "windows_Advanced:\_Custom_Registry_Keys" template. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
 
-### Example 6
-
-```PowerShell
-PS C:\>  New-JCPolicy -TemplateName custom_oma_uri_mdm_windows -Name "Windows - Custom OMA MDM Policy" -uriList '(@( @{format = "string"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage; value = "pathToImage" }, @{format = "int"; uri = "./Device/Vendor/MSFT/Policy/Config/DeviceLock/AccountLockoutPolicy"; value = "1" } ))'
-```
-
-This command creates a JumpCloud policy named "Windows - Custom OMA MDM Policy" using the custom_oma_uri_mdm_windows template. It defines two OMA-URI configurations: a string value for EnforceLockScreenAndLogonImage and an integer value for AccountLockoutPolicy.
-
 ## PARAMETERS
 
 ### -Name
