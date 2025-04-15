@@ -44,6 +44,7 @@ function Show-JCPolicyValues {
             $policyArray.Add($policyValue) | Out-Null
             $counter++
         }
+
         # If the policy is a registry policy, do not display value table
         if ($policyObject.configFieldName -notcontains "customRegTable") {
             # Display policy object array

@@ -49,7 +49,7 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
             $missing = $inSwaggerNotFunction | where-object { $_.InputObject -notin $functionHash[$item].ignoreList }
             # there should not be any missing items
             if ($missing.InputObject) {
-                Write-Warning "The following properties are defined in swagger for the $item function but not the module, either add them to the function validate set or add them to the ignore list in this test"
+                Write-Warning "The folling properties are defined in swagger for the $item function but not the module, either add them to the function validate set or add them to the ignore list in this test"
                 Write-host $missing.InputObject
             }
             $missing.InputObject | should -BeNullOrEmpty

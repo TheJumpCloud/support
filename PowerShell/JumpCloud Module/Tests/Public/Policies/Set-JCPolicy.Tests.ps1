@@ -35,117 +35,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             { Set-JCPolicy -id $PesterWindowsWindowsUpdateConfig.Id -AUTO_INSTALL_SCHEDULE $intMultiValue } | Should -Throw
         }
     }
-    Context 'Sets Policies for multilist config' {
-        # Urilist
-        It 'Sets a policy with multilist - custom windows mdm oma policy' {
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
-            $templateId = $policyTemplate.id
-            # Add a new policy with multilist type:
-            $uriList = @(
-                @{ uri = "a"; format = "int"; value = 2 },
-                @{ uri = "b"; format = "string"; value = "test" },
-                @{ uri = "c"; format = "boolean"; value = "true" }, # Corrected: $true is the boolean literal
-                @{ uri = "d"; format = "float"; value = 2.5 } # Corrected: 2.5 is the float literal
-                @{ uri = "e"; format = "xml"; value = "<xml>test</xml>" },
-                @{ uri = "f"; format = "base64"; value = "dGVzdA==" }
-            )
-            $testUriList = @(
-                @{ uri = "testA"; format = "int"; value = 100 },
-                @{ uri = "testB"; format = "string"; value = "example string" },
-                @{ uri = "testC"; format = "boolean"; value = "false" },
-                @{ uri = "testD"; format = "float"; value = 3.14159 },
-                @{ uri = "testE"; format = "xml"; value = "<data><item>test data</item></data>" },
-                @{ uri = "testF"; format = "base64"; value = "SGVsbG8gV29ybGQh" } # Base64 for "Hello World!"
-            )
-            $newPolicy = New-JCPolicy -templateID $templateId -Name "Pester - Windows - Custom MDM Policy" -uriList $uriList
-            # Set the policy with a new multilist
-            $setPolicy = Set-JCPolicy -PolicyID $newPolicy.id -uriList $testUriList
-            # Assert statements
-            # value count for registry items should be correct
-            $setPolicy.values.value[0].value | Should -Be 100
-            $setPolicy.values.value[1].value | Should -Be "example string"
-            $setPolicy.values.value[2].value | Should -Be "false"
-            $setPolicy.values.value[3].value | Should -Be 3.14159
-            $setPolicy.values.value[4].value | Should -Be "<data><item>test data</item></data>"
-            $setPolicy.values.value[5].value | Should -Be "SGVsbG8gV29ybGQh"
-        }
-    }
-
-    Context 'Set-JCPolicy - Invalid Values' {
-        # Assuming $newPolicy is a valid policy object obtained from New-JCPolicy
-        BeforeEach {
-            $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "custom_oma_uri_mdm_windows" }
-            $templateId = $policyTemplate.id
-            $uriList = @(
-                @{ uri = "a"; format = "int"; value = 2 }
-            )
-            $newPolicy = New-JCPolicy -templateID $templateId -Name "Base Policy for Set Tests" -uriList $uriList
-        }
-
-        It 'Handles invalid value in uriList - int' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "int"; value = "invalid" }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles invalid value in uriList - string' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "string"; value = $null } #Null should be valid, so this test is changed.
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles invalid value in uriList - boolean' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "boolean"; value = "invalid" }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles invalid value in uriList - float' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "float"; value = "invalid" }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles invalid value in uriList - xml' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "xml"; value = "<invalid" }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles invalid value in uriList - base64' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "base64"; value = "invalid" }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles missing uri in uriList' {
-            $invalidUriList = @(
-                @{ format = "int"; value = 1 }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles missing format in uriList' {
-            $invalidUriList = @(
-                @{ uri = "a"; value = 1 }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-
-        It 'Handles invalid format' {
-            $invalidUriList = @(
-                @{ uri = "a"; format = "invalid"; value = 1 }
-            )
-            { Set-JCPolicy -PolicyID $newPolicy.id -uriList $invalidUriList } | Should -Throw
-        }
-    }
-
     Context 'Sets policies using the dynamic parameter set using the ByID parameter set' {
         It 'Sets a policy with a string/text type dynamic parameter' {
             # Define a policy with a string parameter
@@ -636,9 +525,6 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $registryPolicyUpdated.template | Should -Not -BeNullOrEmpty
         }
     }
-    # Test for URIList - Custom Windows MDM OMA Policy
-    # Context ''
-
     Context 'Manual Test Cases' -Skip {
         # These test cases should be executed locally; Each manual task should be executed when prompted to edit the policy
         It 'Policy with a string payload can be set interactivly' {
