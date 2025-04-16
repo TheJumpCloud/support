@@ -63,6 +63,12 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
           sudo apt update
           sudo apt install mono-devel
+
+          if ! command -v nuget >/dev/null 2>&1; then
+            echo "Error: NuGet is not installed."
+            exit 1
+          fi
+          echo "NuGet is installed. Continuing with the tests..."
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
