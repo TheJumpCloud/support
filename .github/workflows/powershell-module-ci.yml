@@ -81,25 +81,18 @@ jobs:
           . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
 
       - name: Install System Dependencies
+        shell: pwsh
         run: |
-          sudo apt install ca-certificates gnupg
-          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-          sudo apt update
-          sudo apt-get install -y mono-complete
-          # Download the latest stable `nuget.exe` to `/usr/local/bin`
-          sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
-          echo 'alias nuget="mono /usr/local/bin/nuget.exe"' >> ~/.bashrc
-          # Create as alias for nuget
-          source ~/.bashrc
-          alias nuget="mono /usr/local/bin/nuget.exe"
-          # Verify that nuget is installed
-          if ! command -v nuget &> /dev/null
+          # Install packageprovider
+
+          # Get packageprovider list
+          $PackageProviders = Get-PackageProvider -ListAvailable
+          Write-Host ('[status]Package Providers: $PackageProviders')
+          Install-Module PowerShellGet -Force
+          Get-PackageProvider | Where-Object {$_.Name -eq "NuGet"} | Install-PackageProvider
+
           nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
-          then
-              echo "nuget could not be found"
-              exit 1
-          fi
+
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
