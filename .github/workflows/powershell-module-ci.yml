@@ -74,24 +74,17 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
+      - uses: nuget/setup-nuget@v2
       - name: Install System Dependencies
-        if: steps.cacher.outputs.cache-hit != 'true'
+        #  Add your system dependencies installation commands here
         shell: pwsh
         run: |
-          # Update PowerShellGet first
-          Install-Module -Name PowerShellGet -Force -AllowClobber -Repository PSGallery
-
-          # Then try to install NuGet
-          Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
-
-          # Check if NuGet is installed
-          if (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
+          # Check if nuget is installed
+          if (-not (Get-PackageProvider -Name NuGet -ListAvailable -ErrorAction SilentlyContinue)) {
               Write-Host ('[status]Installing package provider NuGet');
               Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
-              # Test if nuget is working ran
-          } else {
-              Write-Host ('[status]Package provider NuGet already installed');
           }
+
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
