@@ -54,11 +54,15 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
+      - uses: nuget/setup-nuget@v2
       - name: Install System Dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
-        shell: pwsh
         run: |
-          Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
+          sudo apt install ca-certificates gnupg
+          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt install mono-devel
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
@@ -106,7 +110,7 @@ jobs:
       - name: Pack nuspec
         shell: pwsh
         run: |
-          dotnet nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
+          nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
       - name: Validate NuPkg File
         shell: pwsh
         run: |
