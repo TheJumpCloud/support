@@ -74,11 +74,16 @@ jobs:
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
+      - name: Build Nuspec
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
       - name: Install System Dependencies
         #  Add your system dependencies installation commands here
         shell: pwsh
         run: |
-          dotnet pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
+          dotnet pack --nuspec "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -p:NoWarn=NU5111,NU5110
 
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
