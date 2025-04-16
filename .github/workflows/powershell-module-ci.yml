@@ -79,12 +79,27 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
-      - name: Install System Dependencies
-        #  Add your system dependencies installation commands here
-        shell: pwsh
-        run: |
-          dotnet pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -p:NoWarn=NU5111;NU5110
 
+      - name: Install System Dependencies
+        if: steps.cacher.outputs.cache-hit != 'true'
+        run: |
+          sudo apt install ca-certificates gnupg
+          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt update
+          sudo apt-get install -y mono-complete
+          curl -sSL https://dist.nuget.org/win-x86-commandline/v6.8.0/nuget.exe -o /usr/local/bin/nuget
+          chmod +x /usr/local/bin/nuget
+          source ~/.bashrc
+          # Create as alias for nuget
+          alias nuget="mono /usr/local/bin/nuget.exe"
+          # Verify that nuget is installed
+          if ! command -v nuget &> /dev/null
+          nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
+          then
+              echo "nuget could not be found"
+              exit 1
+          fi
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
