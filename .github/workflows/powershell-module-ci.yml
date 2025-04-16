@@ -87,10 +87,11 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
           sudo apt update
           sudo apt-get install -y mono-complete
-          curl -sSL https://dist.nuget.org/win-x86-commandline/v6.8.0/nuget.exe -o /usr/local/bin/nuget
-          chmod +x /usr/local/bin/nuget
-          source ~/.bashrc
+          # Download the latest stable `nuget.exe` to `/usr/local/bin`
+          sudo curl -o /usr/local/bin/nuget.exe https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+          echo 'alias nuget="mono /usr/local/bin/nuget.exe"' >> ~/.bashrc
           # Create as alias for nuget
+          source ~/.bashrc
           alias nuget="mono /usr/local/bin/nuget.exe"
           # Verify that nuget is installed
           if ! command -v nuget &> /dev/null
