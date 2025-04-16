@@ -78,7 +78,7 @@ jobs:
         #  Add your system dependencies installation commands here
         shell: pwsh
         run: |
-          dotnet nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
+          dotnet pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
 
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
