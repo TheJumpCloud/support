@@ -87,12 +87,15 @@ jobs:
           # define dependencies for this ci workflow:
           $PSDependencies = @{
               'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
-              'ps2exe'                                = @{Repository = 'PSGallery'; RequiredVersion = '1.0.13' }
+              'PackageManagement'                     = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
+              'PSScriptAnalyzer'                      = @{Repository = 'PSGallery'; RequiredVersion = '1.19.1' }
               'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
+              'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
+              'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
               'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
               'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
               'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
-              'JumpCloud'                             = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'powershell-yaml'                       = @{Repository = 'PSGallery'; RequiredVersion = '0.4.7'}
           }
           foreach ($RequiredModule in $PSDependencies.Keys) {
               If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
@@ -112,7 +115,7 @@ jobs:
           }
   Validate-Module:
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -120,7 +123,7 @@ jobs:
           sparse-checkout: |
             PowerShell
             .github
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependencies
