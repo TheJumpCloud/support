@@ -132,9 +132,8 @@ jobs:
           # Explicitly import required modules for powershell shell:
           $requiredModules = ('ps2exe', 'JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2', 'JumpCloud')
           foreach ($module in $requiredModules){
-              $modulePSD1 = Get-ChildItem "C:\Users\runneradmin\Documents\PowerShell\Modules\$module" -Recurse -filter "*.psd1"
-              Write-Host "[status] Importing: $module at path $($modulePSD1.Name)"
-              Import-Module "$($modulePSD1.Name)" -force -AllowClobber
+              Write-Host "[status] Importing: $module at path $($module)"
+              Import-Module "$($module)" -force
           }
           . "./jumpcloud-ADMU/Powershell/InvokePester.ps1" -ModuleValidation
   Build-Nuspec-Nupkg:
