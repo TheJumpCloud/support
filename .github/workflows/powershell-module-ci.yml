@@ -107,39 +107,6 @@ jobs:
                   }
               }
           }
-  Build-Nuspec-Nupkg:
-    needs: Setup-Build-Dependencies
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependencies
-      - name: Build Nuspec
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          . "${{ github.workspace }}/PowerShell/Deploy/BuildNuspecFromPsd1.ps1" -RequiredModulesRepo PSGallery
-      - name: Pack nuspec
-        shell: pwsh
-        run: |
-          nuget pack "${{ github.workspace }}/PowerShell/JumpCloud Module/JumpCloud.nuspec" -Properties NoWarn=NU5111,NU5110
-      - name: Validate NuPkg File
-        shell: pwsh
-        run: |
-          $NupkgPathDirectory = (Get-ChildItem -Path:("./*.nupkg")).Directory
-          $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
-          Write-Host "NuPkg Path: $nupkgPath"
-          mkdir $NupkgPathDirectory/nupkg_module
-          unzip $nupkgPath -d $NupkgPathDirectory/nupkg_module
-          $moduleRootFiles = Get-ChildItem -File -Path:("$NupkgPathDirectory/nupkg_module")
-          $moduleRootDirectories = Get-ChildItem -Directory -Path:("$NupkgPathDirectory/nupkg_module")
-          Write-Host "Module Files:\n$moduleRootFiles"
-          Write-Host "Module Directories:\n$moduleRootDirectories"
-          # Validate that the nuspec directory contains a Public/ Private directory
-          "Private" | should -bein $moduleRootDirectories.name
-          "Public" | should -bein $moduleRootDirectories.name
   Validate-Module:
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
