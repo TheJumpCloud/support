@@ -130,7 +130,7 @@ jobs:
           Write-Host "[status] InstalledModules:"
           $installedModules
           # Explicitly import required modules for powershell shell:
-          $requiredModules = ('JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2', 'JumpCloud')
+          $requiredModules = ('JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2')
           foreach ($module in $requiredModules){
               Write-Host "[status] Importing: $module at path $($module)"
               Import-Module "$($module)" -force
