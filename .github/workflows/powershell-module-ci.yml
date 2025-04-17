@@ -146,7 +146,7 @@ jobs:
         uses: ./.github/actions/upload-secure-artifact
         with:
           name: jumpcloud-module-nupkg
-          path: ${{ github.workspace }}/JumpCloud.*.nupkg
+          path: ${{ github.workspace }}/support/JumpCloud.*.nupkg
           retention-days: 1
   Deploy-Nupkg:
     needs: [Build-Nuspec-Nupkg]
