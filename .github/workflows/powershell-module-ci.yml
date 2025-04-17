@@ -127,7 +127,7 @@ jobs:
                   }
               }
           }
-Build-Nuspec-Nupkg:
+  Build-Nuspec-Nupkg:
     needs: Setup-Build-Dependancies
     runs-on: windows-latest
     steps:
