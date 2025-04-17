@@ -62,7 +62,7 @@ jobs:
         run: |
           # validate release type variables
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
-  Setup-Build-Dependancies:
+  Setup-Build-Dependencies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
     runs-on: windows-latest
     timeout-minutes: 10
@@ -70,11 +70,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup PowerShell Module Cache
         id: cacher
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
-      - name: Install dependencies
+          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
+          key: PS-Dependencies
+      - name: Install Dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
         env:
@@ -112,14 +112,14 @@ jobs:
               }
           }
   Build-Nuspec-Nupkg:
-    needs: Setup-Build-Dependancies
+    needs: Setup-Build-Dependencies
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Dependencies
       - name: Build Nuspec
         shell: pwsh
         run: |
