@@ -129,11 +129,12 @@ jobs:
           $installedModules = Get-ChildItem "C:\Users\runneradmin\Documents\PowerShell\Modules\"
           Write-Host "[status] InstalledModules:"
           $installedModules
-          # Explicitly import required modules for powershell shell:
+          # Explicitly import required modules for powershell shell validation:
           $requiredModules = ('JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2')
           foreach ($module in $requiredModules){
               Write-Host "[status] Importing: $module at path $($module)"
               Import-Module "$($module)" -force
+
           }
           . "./jumpcloud-ADMU/Powershell/InvokePester.ps1" -ModuleValidation
   Build-Nuspec-Nupkg:
