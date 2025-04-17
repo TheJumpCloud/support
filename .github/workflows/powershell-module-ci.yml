@@ -64,7 +64,7 @@ jobs:
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
   Setup-Build-Dependancies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -104,7 +104,9 @@ jobs:
           foreach ($RequiredModule in $PSDependencies.Keys) {
               If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
                   Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
-                  if ($($PSDependencies[$RequiredModule].RequiredVersion) -eq "latest"){
+                  if ($RequireModule -eq "AWS.Tools.Common" -or $RequireModule -eq "AWS.Tools.CodeArtifact") {
+                    Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -AllowPrerelease -Force
+                  } elseif ($($PSDependencies[$RequiredModule].RequiredVersion) -eq "latest"){
                     Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -AllowPrerelease -Force
                   } else {
                     Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
