@@ -82,8 +82,6 @@ jobs:
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-
           If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
               Write-Host ('[status]Installing package provider NuGet');
               Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
