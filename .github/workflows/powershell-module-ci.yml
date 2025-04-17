@@ -43,7 +43,6 @@ jobs:
                   $RELEASE_TYPE = $item
               }
           }
-
           if ($typeCount -eq 1) {
               echo "RELEASE_TYPE=$RELEASE_TYPE" >> $env:GITHUB_OUTPUT
           } else {
@@ -63,8 +62,8 @@ jobs:
           # validate release type variables
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
   Setup-Build-Dependencies:
-    runs-on: windows-latest
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
+    runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
@@ -74,17 +73,19 @@ jobs:
         with:
           path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
           key: PS-Dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
+        env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
+          PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
         run: |
-          Set-PSRepository PSGallery -InstallationPolicy Trusted
-
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
           If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
               Write-Host ('[status]Installing package provider NuGet');
               Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
           }
-          # define dependencies for this ci workflow:
           $PSDependencies = @{
               'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
               'PackageManagement'                     = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
@@ -107,39 +108,9 @@ jobs:
                   }
               }
           }
-  Validate-Module:
-    needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
-    runs-on: windows-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            PowerShell
-            .github
-      - uses: actions/cache@v4
-        with:
-          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
-          key: PS-Dependencies
-      - env:
-          RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
-        shell: pwsh
-        run: |
-          # build before test
-          $installedModules = Get-ChildItem "C:\Users\runneradmin\Documents\PowerShell\Modules\"
-          Write-Host "[status] InstalledModules:"
-          $installedModules
-          # Explicitly import required modules for powershell shell validation:
-          $requiredModules = ('JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2')
-          foreach ($module in $requiredModules){
-              Write-Host "[status] Importing: $module at path $($module)"
-              Import-Module "$($module)" -force
-
-          }
-          . "./jumpcloud-ADMU/Powershell/InvokePester.ps1" -ModuleValidation
   Build-Nuspec-Nupkg:
+    needs: Setup-Build-Dependencies
     runs-on: windows-latest
-    needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Validate-Module"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -170,6 +141,25 @@ jobs:
           # Validate that the nuspec directory contains a Public/ Private directory
           "Private" | should -bein $moduleRootDirectories.name
           "Public" | should -bein $moduleRootDirectories.name
+  Validate-Module:
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            PowerShell
+            .github
+      - uses: actions/cache@v4
+        with:
+          path: "/home/runner/.local/share/powershell/Modules/"
+          key: PS-Dependancies
+      - env:
+          RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
+        shell: pwsh
+        run: |
+          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
   Setup-Org:
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
@@ -183,7 +173,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependencies
+          key: PS-Dependancies
       - name: Setup Org Variables
         shell: pwsh
         env:
@@ -220,7 +210,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependencies
+          key: PS-Dependancies
       - uses: actions/download-artifact@v4
         with:
           name: jumpcloud-vars
@@ -242,13 +232,10 @@ jobs:
             }
           }
           Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
-
           # Import JC Module
           Import-Module "${{github.workspace}}/PowerShell/JumpCloud Module/JumpCloud.psd1"
-
           # Authenticate to JC Org
           Connect-JCOnline -JumpCloudApiKey:("$env:PESTER_APIKEY") -force | Out-Null
-
           # Invoke Pester
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
@@ -264,7 +251,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependencies
+          key: PS-Dependancies
       - shell: pwsh
         env:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
@@ -273,5 +260,4 @@ jobs:
           PESTER_PROVIDER_ID: ${{ secrets.PESTER_PROVIDER_ID }}
         run: |
           Set-Variable -Name PesterParams_ApiKeyMsp -Value "$env:PESTER_MSP_APIKEY" -Scope Global
-
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY" -JumpCloudMspOrg "$env:PESTER_ORGID" -ProviderID "$env:PESTER_PROVIDER_ID" -RequiredModulesRepo "PSGallery" -MSP
