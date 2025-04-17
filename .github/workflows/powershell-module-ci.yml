@@ -144,12 +144,6 @@ jobs:
           # Validate that the nuspec directory contains a Public/ Private directory
           "Private" | should -bein $moduleRootDirectories.name
           "Public" | should -bein $moduleRootDirectories.name
-      - name: Upload Nupkg
-        uses: ./.github/actions/upload-secure-artifact
-        with:
-          name: jumpcloud-module-nupkg
-          path: /home/runner/work/support/support/JumpCloud.*.nupkg
-          retention-days: 1
   Validate-Module:
     needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
