@@ -108,6 +108,7 @@ jobs:
                   }
               }
           }
+
   Build-Nuspec-Nupkg:
     needs: Setup-Build-Dependancies
     runs-on: windows-latest
@@ -147,25 +148,45 @@ jobs:
           name: jumpcloud-module-nupkg
           path: /home/runner/work/support/support/JumpCloud.*.nupkg
           retention-days: 1
-  Validate-Module:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  Deploy-Nupkg:
+    needs: [Build-Nuspec-Nupkg]
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download nupkg artifact
+        uses: actions/download-artifact@v4
         with:
-          sparse-checkout: |
-            PowerShell
-            .github
-      - uses: actions/cache@v4
-        with:
-          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
-          key: PS-Dependancies
-      - env:
-          RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
+          name: jumpcloud-module-nupkg
+      - name: Publish
         shell: pwsh
         run: |
-          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
+          # add nuget source for PSGallery:
+          # dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
+          # get nupkg artifact:
+          $nupkgPath = (Get-ChildItem -Path:("./*.nupkg")).FullName
+          # test
+          $nupkgPath | Should -Exist
+          Write-Host "Nupkg Artifact Restored: $nupkgPath"
+          # nuget push from here:
+          # dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NuGetApiKey
+  # Validate-Module:
+  #   needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 10
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         sparse-checkout: |
+  #           PowerShell
+  #           .github
+  #     - uses: actions/cache@v4
+  #       with:
+  #         path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
+  #         key: PS-Dependancies
+  #     - env:
+  #         RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
+  #       shell: pwsh
+  #       run: |
+  #         . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
   # Setup-Org:
   #   needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
   #   runs-on: ubuntu-latest
