@@ -44,42 +44,25 @@ jobs:
 
   Setup-Build-Dependancies:
     needs: ["Filter-Branch", "Check-PR-Labels"]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Setup PowerShell Module Cache
         id: cacher
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: "/home/runner/.local/share/powershell/Modules/"
+          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
           key: PS-Dependancies
-      - uses: nuget/setup-nuget@v2
-      - name: Install System Dependencies
-        if: steps.cacher.outputs.cache-hit != 'true'
-        run: |
-          sudo apt install ca-certificates gnupg
-          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
-          sudo apt update
-          sudo apt install mono-devel
-
-          if ! command -v nuget >/dev/null 2>&1; then
-            echo "Error: NuGet is not installed."
-            exit 1
-          fi
-          echo "NuGet is installed. Continuing with the tests..."
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-
           If (!(Get-PackageProvider -Name:('NuGet') -ListAvailable -ErrorAction:('SilentlyContinue'))) {
               Write-Host ('[status]Installing package provider NuGet');
               Install-PackageProvider -Name:('NuGet') -Scope:('CurrentUser') -Force
           }
-
           $PSDependencies = @{
               'PowerShellGet'                         = @{Repository = 'PSGallery'; RequiredVersion = '3.0.12-beta' }
               'PackageManagement'                     = @{Repository = 'PSGallery'; RequiredVersion = '1.4.8.1' }
@@ -87,26 +70,30 @@ jobs:
               'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
               'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
               'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
-              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.35'}
-              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.39'}
-              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = '0.0.23'}
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'powershell-yaml'                       = @{Repository = 'PSGallery'; RequiredVersion = '0.4.7'}
           }
-
           foreach ($RequiredModule in $PSDependencies.Keys) {
               If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
                   Write-Host("[status]Installing module: '$RequiredModule'; version: $($PSDependencies[$RequiredModule].RequiredVersion) from $($PSDependencies[$RequiredModule].Repository)")
-                  Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force
+                  if ($($PSDependencies[$RequiredModule].RequiredVersion) -eq "latest"){
+                    Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -AllowPrerelease -Force
+                  } else {
+                    Install-Module -Name $RequiredModule -Repository:($($PSDependencies[$RequiredModule].Repository)) -RequiredVersion:($($PSDependencies[$RequiredModule].RequiredVersion)) -AllowPrerelease -Force -AllowClobber
+                  }
               }
           }
 
   Build-Nuspec-Nupkg:
     needs: Setup-Build-Dependancies
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
-          path: "/home/runner/.local/share/powershell/Modules/"
+          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
           key: PS-Dependancies
       - name: Build Nuspec
         shell: pwsh
@@ -136,7 +123,8 @@ jobs:
         uses: ./.github/actions/upload-secure-artifact
         with:
           name: jumpcloud-module-nupkg
-          path: /home/runner/work/support/support/JumpCloud.*.nupkg
+          path: |
+            ${{ github.workspace }}/JumpCloud.*.nupkg
           retention-days: 1
 
   Manual-Approval-Release:
@@ -166,7 +154,7 @@ jobs:
 
   Deploy-Nupkg:
     needs: [Manual-Approval-Release, Build-Nuspec-Nupkg]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Download nupkg artifact
         uses: actions/download-artifact@v4
