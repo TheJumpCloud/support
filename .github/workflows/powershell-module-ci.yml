@@ -125,13 +125,24 @@ jobs:
             .github
       - uses: actions/cache@v4
         with:
-          path: "/home/runner/.local/share/powershell/Modules/"
+          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
           key: PS-Dependencies
       - env:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
-          . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
+          # build before test
+          $installedModules = Get-ChildItem "C:\Users\runneradmin\Documents\PowerShell\Modules\"
+          Write-Host "[status] InstalledModules:"
+          $installedModules
+          # Explicitly import required modules for powershell shell:
+          $requiredModules = ('ps2exe', 'JumpCloud.SDK.DirectoryInsights', 'JumpCloud.SDK.V1', 'JumpCloud.SDK.V2', 'JumpCloud')
+          foreach ($module in $requiredModules){
+              $modulePSD1 = Get-ChildItem "C:\Users\runneradmin\Documents\PowerShell\Modules\$module" -Recurse -filter "*.psd1"
+              Write-Host "[status] Importing: $module at path $($modulePSD1.fullname)"
+              Import-Module "$($modulePSD1.fullname)" -force
+          }
+          . "./jumpcloud-ADMU/Powershell/InvokePester.ps1" -ModuleValidation
   Build-Nuspec-Nupkg:
     runs-on: windows-latest
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Validate-Module"]
