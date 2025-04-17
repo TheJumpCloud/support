@@ -74,7 +74,6 @@ jobs:
           path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
           key: PS-Dependencies
       - name: Install Dependencies
-        if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
         env:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
