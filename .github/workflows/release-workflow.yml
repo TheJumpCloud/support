@@ -70,10 +70,9 @@ jobs:
               'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
               'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
               'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
-              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
-              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
-              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
-              'powershell-yaml'                       = @{Repository = 'PSGallery'; RequiredVersion = '0.4.7'}
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.35'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.39'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = '0.0.23'}
           }
           foreach ($RequiredModule in $PSDependencies.Keys) {
               If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
@@ -123,8 +122,7 @@ jobs:
         uses: ./.github/actions/upload-secure-artifact
         with:
           name: jumpcloud-module-nupkg
-          path: |
-            ${{ github.workspace }}/JumpCloud.*.nupkg
+          path: D:/a/support/support/JumpCloud.*.nupkg
           retention-days: 1
 
   Manual-Approval-Release:

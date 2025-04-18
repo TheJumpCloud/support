@@ -1,6 +1,6 @@
 ## 2.18.0
 
-Release Date: April 17, 2025
+Release Date: April 18, 2025
 
 #### RELEASE NOTES
 
