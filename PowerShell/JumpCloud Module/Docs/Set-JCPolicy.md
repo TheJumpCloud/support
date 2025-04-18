@@ -90,6 +90,14 @@ PS C:\>  Set-JCPolicy -PolicyName "Windows - Imported Custom Registry Settings" 
 
 This command would overwrite the registry policy's existing values with the imported set of .Reg keys specified by the "RegistryFile" parameter. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
 
+### Example 7
+
+```powershell
+PS C:\>  Set-JCPolicy -PolicyName "Windows - Custom OMA MDM Policy" -uriList '(@( @{format = "string"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage; value = "pathToImage" }, @{format = "int"; uri = "./Device/Vendor/MSFT/Policy/Config/DeviceLock/AccountLockoutPolicy"; value = "2" } ))'
+```
+
+This command modifies the existing JumpCloud policy named "Windows - Custom OMA MDM Policy". It updates the policy's OMA-URI settings using the -uriList parameter. The EnforceLockScreenAndLogonImage setting, a string, remains set to "pathToImage". The AccountLockoutPolicy setting, an integer, is updated from its previous value to "2", effectively changing the account lockout policy configuration.
+
 ## PARAMETERS
 
 ### -NewName
