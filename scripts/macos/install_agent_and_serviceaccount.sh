@@ -183,10 +183,14 @@ else
     exit 1
   fi
 
-  # check connect key length
-  if [ ${#YOUR_CONNECT_KEY} != 40 ]; then
-    echo 'Connect key is not 40 characters. Please provide a valid connect key in the script or via the -k parameter'
-    exit 1
+  # Validate the connect key
+  tenantConnectKeyPattern="^jcc_([0-9a-zA-Z+/]{4,}={0,3})$"
+
+  if [[ ${#YOUR_CONNECT_KEY} -ne 40 ]]; then
+    if [[ ! $YOUR_CONNECT_KEY =~ $tenantConnectKeyPattern ]]; then
+      echo 'Connect key is invalid. It must either be 40 characters long or match the pattern "^jcc_([0-9a-zA-Z+/]{4,}={0,3})$". Please confirm that it was copied correctly and completely.'
+      exit 1
+    fi
   fi
 
   # FDA is only needed on Monterey and later
