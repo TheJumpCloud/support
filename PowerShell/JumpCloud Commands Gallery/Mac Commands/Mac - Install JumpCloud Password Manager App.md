@@ -11,6 +11,8 @@ mac
 ```
 #!/bin/bash
 # This script will install password manager in Users/$user/Applications for all user accounts based on their architecture (x64 or arm64)
+# Set LaunchAfterInstall to true ON LINE 4 if you wish to launch the password manager after installation
+LaunchAfterInstall=false
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
 
 # Detect device architecture
@@ -170,7 +172,9 @@ do
 
         userInstall=true
         echo "Copied $DMGAppPath to /Users/$user/Applications"
-
+        if [ "$LaunchAfterInstall" = true ]; then
+            sudo -u $user open -a "/Users/$user/Applications/JumpCloud Password Manager.app"
+        fi
         # Create an alias on desktop
         ln -s /Users/$user/Applications/JumpCloud\ Password\ Manager.app /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
     fi
