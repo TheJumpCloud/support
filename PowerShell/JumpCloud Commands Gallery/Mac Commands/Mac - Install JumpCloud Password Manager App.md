@@ -11,8 +11,6 @@ mac
 ```
 #!/bin/bash
 # This script will install password manager in Users/$user/Applications for all user accounts based on their architecture (x64 or arm64)
-# Set LaunchAfterInstall to true ON LINE 4 if you wish to launch the password manager after installation
-LaunchAfterInstall=false
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
 
 # Detect device architecture
@@ -200,21 +198,6 @@ rm -r /tmp/$TempFolder
 
 echo "Deleted /tmp/$TempFolder"
 
-if [ "$LaunchAfterInstall" = true ]; then
-    # Get the currently logged-in user since running the script as root would always provide "root" when using other methods..
-    logged_in_user=$(who | awk '/console/{print $1}')
-    if [ -n "$logged_in_user" ]; then
-        application_path="/Users/$logged_in_user/Applications/JumpCloud Password Manager.app"
-        if [[ -d "$application_path" ]]; then
-            open "$application_path"
-            echo "Launched JumpCloud Password Manager"
-        else
-            echo "Failed to Launch JumpCloud Password Manager"
-        fi
-    else
-        echo "No logged-in user found."
-    fi
-fi
 
 exit
 ```
