@@ -8,17 +8,17 @@ function Show-RadiusMainMenu {
 
     # Find all certs that will expire between current date and cut off date
     try {
-        $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+        $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
     } catch {
         Write-Debug "No user certs exist, there are no user certs which will expire soon"
     }
 
     # Get UserGroup information from Config.ps1
-    $radiusUserGroup = Get-JcSdkUserGroup -Id $Global:JCR_USER_GROUP | Select-Object Name
-    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $Global:JCR_USER_GROUP).Count
+    $radiusUserGroup = Get-JcSdkUserGroup -Id $global:JCRConfig.userGroup.value | Select-Object Name
+    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.PrivateData.userGroup.value).Count
 
     # Get SSID information from Config.ps1
-    $radiusSSID = $Global:JCR_NETWORKSSID.replace(';', ' ')
+    $radiusSSID = ($global:JCRConfig.networkSSID.value).replace(';', ' ')
 
     # Output for Users
     Clear-Host
@@ -47,9 +47,9 @@ function Show-RadiusMainMenu {
     Write-Host $(PadCenter -string "Total Radius Users: $($radiusUserGroupMemberCount)" -char " ") -ForegroundColor Green
     Write-Host $(PadCenter -string "Radius SSID(s): $radiusSSID" -char " ") -ForegroundColor Green
     if ($IsMacOS) {
-        Write-Host $(PadCenter -string "Last Updated User/System Data: $($Global:JCRConfig.globalVars.lastupdate)" -char " ") -ForegroundColor Green
+        Write-Host $(PadCenter -string "Last Updated User/System Data: $($global:JCRConfig.lastUpdate.value)" -char " ") -ForegroundColor Green
     } If ($isWindows) {
-        Write-Host $(PadCenter -string "Last Updated User/System Data: $($Global:JCRConfig.globalVars.lastupdate.value)" -char " ") -ForegroundColor Green
+        Write-Host $(PadCenter -string "Last Updated User/System Data: $($global:JCRConfig.lastUpdate.value)" -char " ") -ForegroundColor Green
     }
 
     Write-Host $(PadCenter -string "-" -char '-')

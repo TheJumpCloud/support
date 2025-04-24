@@ -21,16 +21,16 @@ function Get-JCRGlobalVars {
             New-Item -ItemType Directory -Path "$JCScriptRoot/data"
         }
 
-        if (-Not $global:JCRConfig) {
-            $global:JCRConfig = Get-JCRSettingsFile
+        if (-Not $Script:JCRConfig) {
+            $Script:JCRConfig = Get-JCRConfigFile
         }
 
         # get settings file
         if ($IsMacOS) {
-            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -End (Get-Date)
+            $lastUpdateTimespan = New-TimeSpan -Start $script:JCRConfig.globalvars.lastupdate -End (Get-Date)
         }
         if ($ifWindows) {
-            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -End (Get-Date)
+            $lastUpdateTimespan = New-TimeSpan -Start $script:JCRConfig.globalvars.lastupdate.value -End (Get-Date)
         }
         if ($lastUpdateTimespan.TotalHours -gt 24) {
             $update = $true
@@ -115,7 +115,7 @@ function Get-JCRGlobalVars {
                 $users = Get-DynamicHash -Object User -returnProperties email, employeeIdentifier, department, suspended, location, Addresses, manager, sudo, Displayname, username, systemUsername
                 # $users | ForEach-Object { $_ | Add-Member -name "userId" -value $_ -Type NoteProperty -force }
                 # Get Radius membership list:
-                $radiusMembers = Get-JcSdkUserGroupMember -GroupId $Global:JCR_USER_GROUP
+                $radiusMembers = Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.userGroup.value
                 # add the username to the membership hash
                 $radiusMemberList = New-Object System.Collections.ArrayList
                 foreach ($member in $radiusMembers) {
@@ -247,7 +247,7 @@ function Get-JCRGlobalVars {
                 [array]$Global:JCRRadiusMembers = $radiusMemberList
                 $Global:JCRCertHash = $certHash
                 # update the settings date
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Set-JCRConfigFile - (Get-Date)
                 # update users.json
                 Update-JCRUsersJson
             }
