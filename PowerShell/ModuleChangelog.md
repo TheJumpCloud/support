@@ -1,3 +1,17 @@
+## 2.18.1
+
+Release Date: April 25, 2025
+
+#### RELEASE NOTES
+
+```
+Implements fix for errors in module directory path resolution
+```
+
+#### BUG FIXES:
+
+Addresses a bug that impacted module directory paths.
+
 ## 2.18.0
 
 Release Date: April 18, 2025
