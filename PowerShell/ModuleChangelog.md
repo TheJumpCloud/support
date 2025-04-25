@@ -10,7 +10,7 @@ Implements fix for errors in module directory path resolution
 
 #### BUG FIXES:
 
-Addresses a bug that impacted module directory paths.
+* Addresses a bug that impacted module directory paths.
 
 ## 2.18.0
 
