@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.5 JCCG
+Mac - Install JumpCloud Password Manager App | v1.5.1 JCCG
 
 #### commandType
 
@@ -10,8 +10,9 @@ mac
 
 ```
 #!/bin/bash
-
 # This script will install password manager in Users/$user/Applications for all user accounts based on their architecture (x64 or arm64)
+# Set LaunchAfterInstall to true ON LINE 4 if you wish to launch the password manager after installation
+LaunchAfterInstall=false
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
 
 # Detect device architecture
@@ -22,6 +23,8 @@ if [ "$DeviceArchitecture" = "arm64" ]; then
     DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/arm64/JumpCloud-Password-Manager-latest.dmg"
 fi
 
+# Kill any existing JumpCloud Password Manager processes
+killall "JumpCloud Password Manager"
 
 regex='^https.*.dmg$'
 if [[ $DownloadUrl =~ $regex ]]; then
@@ -169,7 +172,9 @@ do
 
         userInstall=true
         echo "Copied $DMGAppPath to /Users/$user/Applications"
-
+        if [ "$LaunchAfterInstall" = true ]; then
+            sudo -u $user open -a "/Users/$user/Applications/JumpCloud Password Manager.app"
+        fi
         # Create an alias on desktop
         ln -s /Users/$user/Applications/JumpCloud\ Password\ Manager.app /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
     fi
@@ -196,6 +201,7 @@ fi
 rm -r /tmp/$TempFolder
 
 echo "Deleted /tmp/$TempFolder"
+
 
 exit
 ```

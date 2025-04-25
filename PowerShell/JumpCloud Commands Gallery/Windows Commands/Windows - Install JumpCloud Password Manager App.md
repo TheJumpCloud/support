@@ -1,7 +1,7 @@
 #### Name
 
 
-Windows - Install JumpCloud Password Manager App | v1.3 JCCG
+Windows - Install JumpCloud Password Manager App | v1.3.1 JCCG
 
 
 #### commandType
@@ -12,7 +12,7 @@ windows
 
 ```
 
-# Set $LaunchPasswordManager to $false  ON LINE 69 if you do not wish to launch the password manger after installation
+# Set $LaunchPasswordManager to $false  ON LINE 70 if you do not wish to launch the password manger after installation
 
 # Get the current logged on User
 $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
@@ -38,6 +38,12 @@ else {
     Exit 1
 }
 
+Write-Output "Ensuring a fresh installer download..."
+# Remove existing installer file to ensure fresh download
+if (Test-Path -Path $installerTempLocation) {
+    Remove-Item -Path $installerTempLocation -Force
+}
+
 Write-Output 'Testing if Password Manager installer is downloaded'
 
 if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
@@ -53,6 +59,15 @@ if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
     } catch {
         throw $_.Exception.Message
     }
+}
+
+Write-Output "Checking if JumpCloud Password Manager is running."
+$process = Get-Process | Where-Object { $_.ProcessName -like "*JumpCloud Password Manager*" }
+if ($process) {
+    Write-Output "JumpCloud Password Manager is running. Terminating process before installation."
+    Stop-Process -Name $process.ProcessName -Force
+    # Clean the process
+    Start-Sleep -Seconds 5
 }
 
 Write-Output 'Installing Password Manager now, this may take a few minutes.'
