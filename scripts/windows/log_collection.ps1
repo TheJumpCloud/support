@@ -98,9 +98,7 @@ function Gather-Logs {
                 "C:\Windows\System32\config\systemprofile\AppData\Roaming\JumpCloud-Remote-Assist\logs\*.log",
                 "C:\Windows\Temp\jc_raasvc.log"
             )
-            "PasswordManagerLogs" = @(
-                # Placeholder, Actual Value Will be Set Based on User Input
-            )
+
             "ChocolateyLogs"      = @(
                 "C:\ProgramData\chocolatey\logs\choco.summary.log",
                 "C:\ProgramData\chocolatey\logs\chocolatey.log",
@@ -198,7 +196,10 @@ function Gather-Logs {
                             $passwordManagerLogPath = "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log"
                             $files += $passwordManagerLogPath
                         }
-
+                        if (Test-Path -Path "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log") {
+                            $passwordManagerLogPath = "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
+                            $files += $passwordManagerLogPath
+                            }
                     }
                 }
                 "MDM Enrollment and Hosted Software Management" {
@@ -327,16 +328,16 @@ if ($automate) {
 
     # Prompt the User to Select the Sections to Gather Logs From
     $sections = @(
-        "All Logs",
-        "Agent Logs",
+        "All Logs (No Active Directory)",
+        "JumpCloud Agent Logs",
         "Remote Assist logs",
         "Password Manager Logs",
-        "MDM Enrollment and Hosted Software Management",
+        "MDM Enrollment, CSP Policies, and Hosted Software Management",
         "Bitlocker",
         "Software Management: Chocolatey",
-        "Software Management: Windows Store",
-        "Policies",
-        "Active Directory Logs"
+        "Software Management: Windows Store and App Catalog",
+        "Device Policies",
+        "Active Directory Integration Logs"
     )
 
     $selectionPrompt = "Please select the sections to gather logs from:`n"
