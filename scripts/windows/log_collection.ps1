@@ -1,4 +1,4 @@
-##################### Do Not Modify Below ######################
+ ##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
 $automate = $false
 
@@ -39,15 +39,15 @@ function Gather-Logs {
     [CmdletBinding()]
     param (
         [Parameter(ParameterSetName = 'SearchFilter')]
-        [ValidateSet( "Agent Logs",
+        [ValidateSet( "JumpCloud Agent Logs",
             "Remote Assist logs",
             "Password Manager Logs",
-            "MDM Enrollment and Hosted Software Management",
+            "MDM Enrollment, CSP Policies, and Hosted Software Management",
             "Bitlocker",
             "Software Management: Chocolatey",
-            "Software Management: Windows Store",
-            "Policies",
-            "Active Directory Logs")]
+            "Software Management: Windows Store and App Catalog",
+            "Device Policies",
+            "Active Directory Integration Logs")]
         [String[]]
         $selections,
         [Parameter(ParameterSetName = 'All Logs')]
@@ -135,14 +135,14 @@ function Gather-Logs {
             $selectedSections = $selections
         } elseif ($PSCmdlet.ParameterSetName -eq 'All Logs') {
             # "Active Directory Logs" are not returned with "All Logs"
-            $selectedSections = @("Agent Logs",
+            $selectedSections = @("JumpCloud Agent Logs",
                 "Remote Assist logs",
                 "Password Manager Logs",
                 "MDM Enrollment and Hosted Software Management",
                 "Bitlocker",
                 "Software Management: Chocolatey",
-                "Software Management: Windows Store",
-                "Policies")
+                "Software Management: Windows Store and App Catalog",
+                "Device Policies")
         }
     }
 
@@ -153,7 +153,7 @@ function Gather-Logs {
 
             Write-Host "Getting $($logType)"
             switch ($logType) {
-                "Agent Logs" {
+                "JumpCloud Agent Logs" {
                     $files += $fileList["AgentLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
                     # Handle jc-user-agent.log and jcupdate.log
@@ -218,11 +218,11 @@ function Gather-Logs {
                     $files += $fileList["ChocolateyLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
                 }
-                "Software Management: Windows Store" {
+                "Software Management: Windows Store and App Catalog" {
                     $eventLogs += $eventLogList["EssentialEvents"]
                     $eventLogs += $eventLogList["WindowsStoreEvents"]
                 }
-                "Policies" {
+                "Device Policies" {
                     $files += $fileList["Policies"]
 
                     # Generate RSOP Output
@@ -230,7 +230,7 @@ function Gather-Logs {
                     $rsopCmd = "gpresult /SCOPE COMPUTER /H $rsopOutputPath"
                     Invoke-Expression $rsopCmd
                 }
-                "Active Directory Logs" {
+                "Active Directory Integration Logs" {
                     $files += $fileList["ADLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
                     # Export AD Integration Registry Keys
@@ -355,4 +355,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-}
+} 
