@@ -1,4 +1,4 @@
- ##################### Do Not Modify Below ######################
+##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
 $automate = $false
 
@@ -355,4 +355,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-} 
+}
