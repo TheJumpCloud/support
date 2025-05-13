@@ -14,7 +14,6 @@ Function Write-ToLog {
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)][ValidateNotNullOrEmpty()][Alias("LogContent")][string]$Message
         , [Parameter(Mandatory = $false)][Alias('LogPath')][string]$Path = "$(Get-WindowsDrive)\Windows\Temp\jcMDMCleanup.log"
         , [Parameter(Mandatory = $false)][ValidateSet("Error", "Warn", "Info", "Verbose")][string]$Level = "Info"
-        # Log all messages if $VerbosePreference is set to
     )
     Begin {
         # Set VerbosePreference to Continue so that verbose messages are displayed.
@@ -146,13 +145,15 @@ try {
     # Get deviceId
     $deviceId = $entraStatus | Select-String -Pattern "DeviceId" | ForEach-Object { $_.ToString().Split(":")[1].Trim() }
 
-    Write-ToLog "DeviceId: $deviceId" -Level Verbose
+    if ($deviceId) {
+        Write-ToLog "DeviceId: $deviceId" -Level Verbose
+    } else {
+        Write-ToLog "DeviceId not found in dsregcmd output." -Level Warn
+    }
+
 
     # PowerShell script snippet to check for UPN and ProviderID in MDM enrollments
     # Get MDM Details
-
-
-    ###Get enrollment IDs and perform cleanup###
     Write-ToLog "####### Cleaning up MDM Enrollment in the Registry #######" -Level Verbose
     # Process only direct children that look like GUIDs
     Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Enrollments\" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
