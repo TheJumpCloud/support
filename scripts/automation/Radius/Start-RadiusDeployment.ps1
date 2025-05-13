@@ -1,5 +1,5 @@
 # Import Global Config:
-. "$psscriptroot/config.ps1"
+. "$psscriptroot/Config.ps1"
 Connect-JCOnline $JCAPIKEY -force
 
 ################################################################################
