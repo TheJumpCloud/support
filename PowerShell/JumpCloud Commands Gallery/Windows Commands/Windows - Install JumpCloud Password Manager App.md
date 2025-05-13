@@ -87,6 +87,35 @@ $Command = {
         $env:QUIT_PWM_AFTER_INITIAL_INSTALL="true"
     }
     . $installerTempLocation
+
+    if ($LaunchPasswordManager -eq $false) {
+        # If the user does not want to launch the password manager after installation
+        # no shortcut will be created so we'll have to do it manually.
+        # Wait for the installer to finish before proceeding
+        Write-Output "Waiting for JumpCloud Password Manager installer to finish."
+        Wait-Process -Name "JumpCloud-Password-Manager-latest"
+        Write-Output "Creating shortcut to JumpCloud Password Manager on the Desktop"
+
+        $appDataPath = "$loggedOnUserProfileImagePath\AppData\Local\jcpwm"
+        $appTargetPath = "$appDataPath\JumpCloud Password Manager.exe"
+
+        $shell = New-Object -comObject WScript.Shell
+        $desktopShortcut = $shell.CreateShortcut("$loggedOnUserProfileImagePath\Desktop\JumpCloud Password Manager.lnk")
+        $desktopShortcut.TargetPath = "$appTargetPath"
+        $desktopShortcut.WorkingDirectory = "$appDataPath"
+        $desktopShortcut.Save()
+        Write-Output "Shortcut created on the Desktop."
+        Write-Output "Now Creating Start Menu Shortcut."
+        $startMenuDirectory = "$loggedOnUserProfileImagePath\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\JumpCloud Inc"
+        if (-not(Test-Path -Path $startMenuDirectory)) {
+            New-Item -Path $startMenuDirectory -ItemType Directory
+        }
+        $startMenuShortcut = $shell.CreateShortcut("$startMenuDirectory\JumpCloud Password Manager.lnk")
+        $startMenuShortcut.TargetPath = "$appTargetPath"
+        $startMenuShortcut.WorkingDirectory = "$appDataPath"
+        $startMenuShortcut.Save()
+        Write-Output "Start Menu Shortcut created."
+     }
 }
 
 $Source = @'
