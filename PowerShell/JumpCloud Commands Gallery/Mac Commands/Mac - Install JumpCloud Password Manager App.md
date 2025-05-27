@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v2.0.0 JCCG
+Mac - Install and Update JumpCloud Password Manager App | v2.0.0 JCCG
 
 #### commandType
 

@@ -1,7 +1,7 @@
 #### Name
 
 
-Windows - Install JumpCloud Password Manager App | v2.0.0 JCCG
+Windows - Install and Update JumpCloud Password Manager App | v2.0.0 JCCG
 
 
 #### commandType
