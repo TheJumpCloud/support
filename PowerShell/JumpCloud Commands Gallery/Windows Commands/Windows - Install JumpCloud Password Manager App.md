@@ -17,7 +17,7 @@ windows
 # Set $updateToLatest to $true if you want to update to the latest version of JumpCloud Password Manager
 # Set $updateToLatest to $false if you want to re-install the JumpCloud Password Manager no matter your current version.
 # ********** DISCLAIMER: Setting $updateToLatest to $false will NOT affect any user data **********
-$updateToLatest = $false
+$updateToLatest = $true
 # Get the current logged on User
 $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
 $loggedUser = $loggedUser -replace '.*\\'

@@ -12,12 +12,12 @@ mac
 #!/bin/bash
 # This script will install password manager in Users/$user/Applications for all user accounts based on their architecture (x64 or arm64)
 # Set LaunchAfterInstall to true ON LINE 4 if you wish to launch the password manager after installation
-LaunchAfterInstall=false
+LaunchAfterInstall=true
 
-# Set UpdateToLatest to $true if you want to update to the latest version of JumpCloud Password Manager
-# Set UpdateToLatest to $false if you want to re-install the JumpCloud Password Manager no matter your current version.
+# Set UpdateToLatest to true if you want to update to the latest version of JumpCloud Password Manager
+# Set UpdateToLatest to false if you want to re-install the JumpCloud Password Manager no matter your current version.
 # ********** DISCLAIMER: Setting UpdateToLatest to $false will NOT affect any user data **********
-UpdateToLatest=false
+UpdateToLatest=true
 
 
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
