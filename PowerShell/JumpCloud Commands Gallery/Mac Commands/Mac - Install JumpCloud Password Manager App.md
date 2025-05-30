@@ -80,7 +80,7 @@ mkdir /tmp/$TempFolder
 # Navigate to Temp Folder
 cd /tmp/$TempFolder
 
-if [ -d /Applications/JumpCloud\ Password\ Manager.app ] then
+if [ -d /Applications/JumpCloud\ Password\ Manager.app ]; then
     # If JumpCloud Password Manager exists within this directory, force re-install as it is in the wrong directroy
     # the script will continue and re-install it in the correct directory
     UpdateToLatest=false
