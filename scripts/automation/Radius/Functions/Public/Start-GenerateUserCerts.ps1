@@ -78,7 +78,7 @@ function Start-GenerateUserCerts {
                 # process all users, generate certificates for uses who do not yet have a certificate
                 # Get each RadiusMember User:
                 for ($i = 0; $i -lt $JCRRadiusMembers.count; $i++) {
-                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $JCR_CERT_TYPE
+                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $($global:JCRConfig.certType.value)
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $JCRRadiusMembers.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
                 }
                 switch ($PSCmdlet.ParameterSetName) {
@@ -121,20 +121,20 @@ function Start-GenerateUserCerts {
                         $true {
                             switch ($PSCmdlet.ParameterSetName) {
                                 'gui' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE -forceReplaceCert
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                                 }
                                 'cli' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE -forceReplaceCert
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                                 }
                             }
                         }
                         $false {
                             switch ($PSCmdlet.ParameterSetName) {
                                 'gui' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE -Prompt
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value) -Prompt
                                 }
                                 'cli' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value)
                                 }
                             }
                         }
@@ -171,7 +171,7 @@ function Start-GenerateUserCerts {
                 }
                 # Get each RadiusMember User:
                 for ($i = 0; $i -lt $JCRRadiusMembers.count; $i++) {
-                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $JCR_CERT_TYPE -forceReplaceCert
+                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $JCRRadiusMembers.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
                 }
                 switch ($PSCmdlet.ParameterSetName) {
@@ -194,7 +194,7 @@ function Start-GenerateUserCerts {
                     <# Action that will repeat until the condition is met #>
                     $userArrayIndex = $userArray.username.IndexOf($userCert.username)
                     $IdentifiedUser = $userArray[$userArrayIndex]
-                    $result = Invoke-UserCertProcess -radiusMember $IdentifiedUser -certType $JCR_CERT_TYPE -forceReplaceCert
+                    $result = Invoke-UserCertProcess -radiusMember $IdentifiedUser -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $ExpiringCerts.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
 
                     # recalculate expiring certs:

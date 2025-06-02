@@ -296,7 +296,7 @@ function Deploy-UserCertificate {
 
             if (($workToBeDone.forcegenerateMacOSCommands) -OR ($workToBeDone.forceGenerateWindowsCommands)) {
                 # determine certType
-                switch ($JCR_CERT_TYPE) {
+                switch ($($global:JCRConfig.certType.value)) {
                     'EmailSAN' {
                         # set cert identifier to SAN email of cert
                         $sanID = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in $($userCrt) -ext subjectAltName -noout"
