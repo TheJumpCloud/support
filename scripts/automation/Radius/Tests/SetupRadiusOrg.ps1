@@ -54,7 +54,22 @@ $env:certKeyPassword = "testCertificate123!@#"
 Write-Warning "Updating Config File"
 
 # Update the userGroupID:
-Set-JCRConfigFile -userGroup $radiusUserGroup.id
+$settings = @{
+    certSubjectHeaderCommonName       = "JumpCloud.com"
+    certType                          = "UsernameCn"
+    certSubjectHeaderOrganization     = "JumpCloud"
+    certSecretPass                    = "secret1234!"
+    certSubjectHeaderOrganizationUnit = "Customer_Tools"
+    certSubjectHeaderCountryCode      = "US"
+    certSubjectHeaderStateCode        = "CO"
+    certSubjectHeaderLocality         = "Boulder"
+    radiusDirectory                   = "$PSScriptRoot/../"
+    networkSSID                       = "TP-Link_SSID"
+    userGroup                         = $radiusUserGroup.id
+    openSSLBinary                     = 'openssl'
+}
+
+Set-JCRConfigFile @settings
 # update the openSSL path:
 if ($IsMacOS) {
     $brewList = brew list openssl@3
