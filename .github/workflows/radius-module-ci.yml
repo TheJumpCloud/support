@@ -70,7 +70,7 @@ jobs:
         id: cacher
         uses: actions/cache@v4
         with:
-          path: "/Users/runner/.local/share/powershell/Modules/"
+          path: "~/.local/share/powershell/Modules/"
           key: PS-Radius-Dependencies
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
@@ -118,7 +118,7 @@ jobs:
             scripts
       - uses: actions/cache@v4
         with:
-          path: "/Users/runner/.local/share/powershell/Modules/"
+          path: "~/.local/share/powershell/Modules/"
           key: PS-Radius-Dependencies
       - env:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
@@ -140,7 +140,7 @@ jobs:
             scripts
       - uses: actions/cache@v4
         with:
-          path: "/Users/runner/.local/share/powershell/Modules/"
+          path: "~/.local/share/powershell/Modules/"
           key: PS-Radius-Dependencies
       - name: Test PWSH Radius Module
         shell: pwsh
