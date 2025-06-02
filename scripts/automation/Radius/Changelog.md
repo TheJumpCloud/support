@@ -5,7 +5,7 @@ Release Date: January 30, 2024
 #### RELEASE NOTES
 
 ```
-This release offers a significant overhaul for the Radius Cert Deployment tool, many new underlying functions have been introducted to reduce the number of required API calls. Most notably, the tool will cache data from an organization on load.
+This release offers a significant overhaul for the Radius Cert Deployment tool, many new underlying functions have been introduced to reduce the number of required API calls. Most notably, the tool will cache data from an organization on load.
 ```
 
 #### Features:
@@ -42,7 +42,7 @@ Release Date: December 1, 2023
 #### RELEASE NOTES
 
 ```
-In macOS, it's possible for a user to define their username as `user1234` or `USER1234`. When JumpCloud takes of a user it'll perform a case insensive string comparison and take over the account that matches the username from JumpCloud.
+In macOS, it's possible for a user to define their username as `user1234` or `USER1234`. When JumpCloud takes of a user it'll perform a case insensitive string comparison and take over the account that matches the username from JumpCloud.
 
 Commands executed by JumpCloud in macOS run as shell scripts `/bin/bash` by default, this shell does not perform case-insensitive string comparisons. This patch version of the Radius Certificate Utility addresses this limitation by explicitly changing the `bash` match patterns to be case-insensitive.
 ```
@@ -146,7 +146,7 @@ Release Date: March 21, 2023
 #### RELEASE NOTES
 
 ```
-Iniital release of the Passwordless Radius User Certificate Generation automation scritps
+Initial release of the Passwordless Radius User Certificate Generation automation scripts
 ```
 
 #### FEATURES:
