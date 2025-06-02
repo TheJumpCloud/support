@@ -60,7 +60,7 @@ jobs:
         run: |
           # validate release type variables
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
-  Setup-Build-Dependancies:
+  Setup-Build-Dependencies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -71,7 +71,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: "/Users/runner/.local/share/powershell/Modules/"
-          key: PS-Radius-Dependancies
+          key: PS-Radius-Dependencies
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
@@ -108,7 +108,7 @@ jobs:
           }
 
   Validate-Module:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -119,14 +119,14 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: "/Users/runner/.local/share/powershell/Modules/"
-          key: PS-Radius-Dependancies
+          key: PS-Radius-Dependencies
       - env:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
   Test-Module:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Validate-Module"]
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Validate-Module"]
     runs-on: ubuntu-latest
     # environment: Test Radius CI
     timeout-minutes: 75
@@ -141,7 +141,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: "/Users/runner/.local/share/powershell/Modules/"
-          key: PS-Radius-Dependancies
+          key: PS-Radius-Dependencies
       - name: Test PWSH Radius Module
         shell: pwsh
         env:
