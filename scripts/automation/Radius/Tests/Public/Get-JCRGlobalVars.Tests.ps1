@@ -49,12 +49,12 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         It "Data should not be refreshed when running Get-JCRGlobalVars if it's been less than 24 hours since last update" {
             # Get the settings data
             $settingsData = Get-JCRConfigFile
-            $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
-            # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+            $timeSpan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $($global:JCRConfig.lastUpdate.value)
+            # Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             # get files before
             $filesBefore = Get-ChildItem -Path $dataPath
             # check the settings time the files were last written
-            if ($timespan.TotalHours -lt 24) {
+            if ($timeSpan.TotalHours -lt 24) {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
@@ -80,20 +80,20 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         It "Data should refresh when running Get-JCRGlobalVars if it's been more than 24 hours since last update" {
             # Get the settings data
             $settingsData = Get-JCRConfigFile
-            $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
-            # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+            $timeSpan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $($global:JCRConfig.lastUpdate.value)
+            # Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             # get files before
             $filesBefore = Get-ChildItem -Path $dataPath
             # check the settings time the files were last written
-            if ($timespan.TotalHours -gt 24) {
+            if ($timeSpan.TotalHours -gt 24) {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
                 Set-JCRConfigFile -lastUpdate (Get-Date).AddHours(-25)
                 Start-Sleep 2
                 $settingsData = Get-JCRConfigFile
-                $timespan = New-TimeSpan -Start  $settingsData.globalVars.lastupdate -End (Get-Date).AddHours(-24)
-                Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+                $timeSpan = New-TimeSpan -Start  $($global:JCRConfig.lastUpdate.value) -End (Get-Date).AddHours(-24)
+                Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             }
             # run Get-JCRGlobalVars
             Get-JCRGlobalVars -Force -associateManually
