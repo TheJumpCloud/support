@@ -37,6 +37,11 @@ $IncludeTags = If ($IncludeTagList) {
 If ($PesterRunPaths) {
     Clear-Variable -Name PesterRunPaths
 }
+# Load private functions
+Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Functions/Private/*.ps1")
+Write-Host ('[status]Load public functions: ' + "$PSScriptRoot/../Functions/Public/*.ps1")
+Get-ChildItem -Path:("$PSScriptRoot/../Functions/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
+
 # Determine the parameter set path
 if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     $IncludeTags = "ModuleValidation"
@@ -50,16 +55,11 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     . "$PSScriptRoot/SetupRadiusOrg.ps1"
 }
 
-
 if (-Not $PesterRunPaths) {
     $PesterRunPaths = @(
         "$PSScriptRoot"
     )
 }
-# Load private functions
-Write-Host ('[status]Load private functions: ' + "$PSScriptRoot/../Functions/Private/*.ps1")
-Write-Host ('[status]Load public functions: ' + "$PSScriptRoot/../Functions/Public/*.ps1")
-Get-ChildItem -Path:("$PSScriptRoot/../Functions/Private/*.ps1") -Recurse | ForEach-Object { . $_.FullName }
 
 # Set the test result directory:
 $PesterResultsFileXmldir = "$PSScriptRoot/test_results/"
