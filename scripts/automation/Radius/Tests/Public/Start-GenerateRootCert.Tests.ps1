@@ -1,7 +1,7 @@
 Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
     BeforeEach {
         # If the /Cert/ folder is not empty, clear the directory
-        $items = Get-ChildItem "$($global:JCRConfig.radiusDirectory.value)/Cert"
+        $items = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
         if ($items) {
             foreach ($item in $items) {
                 # If the item is the 'backup' folder, process its contents separately
@@ -14,7 +14,7 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             Start-GenerateRootCert -certKeyPassword "testCertificate123!@#" -generateType "new" -force
 
             # both the key and the cert should be generated
-            $itemsAfter = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert
+            $itemsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_key"
 
@@ -45,12 +45,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
             $origSN | Should -Not -Be $newSN
             # both the key and the cert should be generated
-            $itemsAfter = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert
+            $itemsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_key"
 
             # Validate that the backup zip file was created
-            $backupFiles = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert/Backups
+            $backupFiles = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/Backups"
             # Should contain a zip file
             $backupFiles.Extension | Should -Contain ".zip"
 
@@ -79,12 +79,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
             $origSN | Should -Not -Be $newSN
             # both the key and the cert should be generated
-            $itemsAfter = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert
+            $itemsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_key"
 
             # Validate that the backup zip file was created
-            $backupFiles = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert/Backups
+            $backupFiles = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/Backups"
             # Should contain a zip file
             $backupFiles.Extension | Should -Contain ".zip"
 
@@ -113,12 +113,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             # the serial numbers of the cert should not be the same, i.e. a new cert has replaced the existing one
             $origSN | Should -Be $newSN
             # both the key and the cert should be generated
-            $itemsAfter = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert
+            $itemsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_cert"
             $itemsAfter.BaseName | Should -Contain "radius_ca_key"
 
             # Validate that the backup zip file was created
-            $backupFiles = Get-ChildItem $($global:JCRConfig.radiusDirectory.value)/Cert/Backups
+            $backupFiles = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/Backups"
             # Should contain a zip file
             $backupFiles.Extension | Should -Contain ".zip"
 
