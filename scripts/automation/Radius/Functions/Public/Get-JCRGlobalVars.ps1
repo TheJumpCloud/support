@@ -27,10 +27,24 @@ function Get-JCRGlobalVars {
 
         # get settings file
         if ($IsMacOS) {
-            $lastUpdateTimeSpan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -End (Get-Date)
+            try {
+                $lastUpdateTimeSpan = New-TimeSpan -Start $($global:JCRConfig.lastUpdate.value) -End (Get-Date)
+            } catch {
+                Write-Host "[status] lastUpdate value is null, updating global variables"
+                $update = $true
+                $updateAssociation = $true
+                Set-JCRConfigFile -lastUpdate (Get-Date)
+            }
         }
         if ($ifWindows) {
-            $lastUpdateTimeSpan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -End (Get-Date)
+            try {
+                $lastUpdateTimeSpan = New-TimeSpan -Start $($global:JCRConfig.lastUpdate.value) -End (Get-Date)
+            } catch {
+                Write-Host "[status] lastUpdate value is null, updating global variables"
+                $update = $true
+                $updateAssociation = $true
+                Set-JCRConfigFile -lastUpdate (Get-Date)
+            }
         }
         if ($lastUpdateTimeSpan.TotalHours -gt 24) {
             $update = $true
