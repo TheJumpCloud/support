@@ -21,7 +21,7 @@ function Start-GenerateUserCerts {
     if ($env:certKeyPassword) {
         Write-Host "Found CA-Key password in env"
         # Check if the key.pem works with the password
-        $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
+        $foundKeyPem = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*key.pem"
         $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($env:certKeyPassword) 2>&1
         if ($checkKey -match "RSA key ok") {
             Write-Debug "ENV CA-Key password is works with the current key"
@@ -39,11 +39,11 @@ function Start-GenerateUserCerts {
     $userArray = Get-UserJsonData
 
     # Create UserCerts dir
-    if (Test-Path "$JCScriptRoot/UserCerts") {
+    if (Test-Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts") {
         Write-Host "[status] User Cert Directory Exists"
     } else {
         Write-Host "[status] Creating User Cert Directory"
-        New-Item -ItemType Directory -Path "$JCScriptRoot/UserCerts"
+        New-Item -ItemType Directory -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
     }
     #### end function setup
 
@@ -64,10 +64,10 @@ function Start-GenerateUserCerts {
                 # if force invoke is set, invoke the commands after generation:
                 switch ($forceReplaceCerts) {
                     $true {
-                        $replcaeCerts = $true
+                        $replaceCerts = $true
                     }
                     $false {
-                        $replcaeCerts = $false
+                        $replaceCerts = $false
                     }
                 }
             }
@@ -188,7 +188,7 @@ function Start-GenerateUserCerts {
                 # recalculate expiring certs:
                 $userCertInfo = Get-CertInfo -UserCerts
                 # Get expiring certs:
-                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCRConfig.certExpirationWarningDays.value
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
                 for ($i = 0; $i -lt $ExpiringCerts.Count; $i++) {
                     $userCert = $ExpiringCerts[$i]
                     <# Action that will repeat until the condition is met #>
@@ -200,7 +200,7 @@ function Start-GenerateUserCerts {
                     # recalculate expiring certs:
                     $userCertInfo = Get-CertInfo -UserCerts
                 }
-                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCRConfig.certExpirationWarningDays.value
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
                         Show-StatusMessage -Message "Finished Generating Certificates"

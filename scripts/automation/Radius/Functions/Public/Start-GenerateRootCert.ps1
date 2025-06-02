@@ -17,41 +17,43 @@ Function Start-GenerateRootCert {
 
     )
 
-    $CertPath = Resolve-Path "$JCScriptRoot/Cert"
-    $outKey = "$CertPath/radius_ca_key.pem"
-    $outCA = "$CertPath/radius_ca_cert.pem"
-    $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+
     # this script will generate a Self Signed CA (root cert) to be imported on the
     # Radius CBA-BYO Authentication UI
 
     # Edit the variables in Config.ps1 before running this script
-    . "$JCScriptRoot/Config.ps1"
+    # . "$JCScriptRoot/Config.ps1"
 
-    if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
-        throw "OrganizationID not specified, please update Config.ps1"
-    }
+    # if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
+    #     throw "OrganizationID not specified, please update Config.ps1"
+    # }
 
     ################################################################################
     # Do Not Edit Below:
     ################################################################################
-    Set-Location $JCScriptRoot
+    # Set-Location $JCScriptRoot
 
     # REM Generate Root Server Private Key and server certificate (self signed as CA)
     Write-Host "Generating Self Signed Root CA Certificate"
-    if (Test-Path -Path "$JCScriptRoot/Cert") {
+    if (Test-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert") {
         Write-Host "Cert Path Exists"
     } else {
         Write-Host "Creating Cert Path"
-        New-Item -ItemType Directory -Path "$JCScriptRoot/Cert"
+        New-Item -ItemType Directory -Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
     }
 
     # If cert backup folder does not exist, create it
-    if (Test-Path -Path "$JCScriptRoot/Cert/Backups") {
+    if (Test-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/Backups") {
         Write-Host "Backup Path Exists"
     } else {
         Write-Host "Creating Backup Path"
-        New-Item -ItemType Directory -Path "$JCScriptRoot/Cert/Backups"
+        New-Item -ItemType Directory -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/Backups"
     }
+
+    $CertPath = Resolve-Path "$($global:JCRConfig.radiusDirectory.value)/Cert"
+    $outKey = "$CertPath/radius_ca_key.pem"
+    $outCA = "$CertPath/radius_ca_cert.pem"
+    $timestamp = Get-Date -Format "yyyyMMddHHmmss"
 
     # If parameterSetname is CLI
     if ($PSCmdlet.ParameterSetName -eq 'cli') {
@@ -77,7 +79,7 @@ Function Start-GenerateRootCert {
     switch ($selection) {
         # Generate new root certificate
         '1' {
-            if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
+            if (Test-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem") {
                 Write-Host "Root Cert already exists"
                 # If the force switch is set, force the generation of a new root certificate
                 if (!$force) {
@@ -142,9 +144,9 @@ Function Start-GenerateRootCert {
                         }
                         # Save the pass phrase in the env:
                         $env:certKeyPassword = $certKeyPass
-                        Invoke-Expression "$JCR_OPENSSL req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
+                        Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
                         # REM PEM pass phrase: myorgpass
-                        Invoke-Expression "$JCR_OPENSSL x509 -in `"$outCA`" -noout -text"
+                        Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                         # openssl x509 -in ca-cert.pem -noout -text
                         # Update Extensions Distinguished Names:
                         $exts = Get-ChildItem -Path "$JCScriptRoot/Extensions"
@@ -207,9 +209,9 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                 }
                 # Save the pass phrase in the env:
                 $env:certKeyPassword = $certKeyPass
-                Invoke-Expression "$JCR_OPENSSL req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
+                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
                 # REM PEM pass phrase: myorgpass
-                Invoke-Expression "$JCR_OPENSSL x509 -in `"$outCA`" -noout -text"
+                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                 # openssl x509 -in ca-cert.pem -noout -text
                 # Update Extensions Distinguished Names:
                 $exts = Get-ChildItem -Path "$JCScriptRoot/Extensions"
@@ -235,7 +237,7 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
         '2' {
             $env:certKeyPassword = $certKeyPass
             # Check if there is a current CA cert
-            if (Test-Path -Path "$JCScriptRoot/Cert/radius_ca_cert.pem") {
+            if (Test-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem") {
 
                 if (!$force) {
                     if ($PSCmdlet.ParameterSetName -eq 'cli') {
@@ -257,7 +259,7 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                                 $secureCertKeyPass = Read-Host -Prompt "Enter the current password for the certificate key" -AsSecureString
                                 $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                                 do {
-                                    $result = Invoke-Expression "$JCR_OPENSSL rsa -in `"$outKey`" -passin pass:$($certKeyPass) -check"
+                                    $result = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) rsa -in `"$outKey`" -passin pass:$($certKeyPass) -check"
                                     if ($result -match "RSA key ok") {
                                         Write-Host "Password validated! Proceeding..."
                                         $env:certKeyPassword = $certKeyPass
@@ -275,7 +277,7 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                                 # Validate that the password works with the old CA cert
                                 # Attempt to read the private key with the password
                                 do {
-                                    $result = Invoke-Expression "$JCR_OPENSSL rsa -in `"$outKey`" -passin pass:$($certKeyPass) -check"
+                                    $result = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) rsa -in `"$outKey`" -passin pass:$($certKeyPass) -check"
 
                                     if ($result -match "RSA key ok") {
                                         Write-Host "Password validated! Proceeding..."
@@ -309,14 +311,14 @@ CN = $($JCR_SUBJECT_HEADERS.CommonName)
                         }
                         $certConfPath = "$CertPath/radius_ca_cert2.conf"
                         $csrOutPath = "$CertPath/radius_ca_cert.csr"
-                        $select = Invoke-Expression "$JCR_OPENSSL x509 -in `"$($outCA)`" -serial -noout"
+                        $select = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$($outCA)`" -serial -noout"
                         $serial = $select -replace "serial=", ""
 
                         # Validate that the password works with the old CA cert
                         # Attempt to read the private key with the password
 
                         try {
-                            Invoke-Expression "$JCR_OPENSSL x509 -x509toreq  -in $($outCA) -signkey $($outKey)  -out $csrOutPath -passin pass:$($env:certKeyPassword)"
+                            Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -x509toreq  -in $($outCA) -signkey $($outKey)  -out $csrOutPath -passin pass:$($env:certKeyPassword)"
 
                         } catch {
                             # Exit
@@ -332,9 +334,9 @@ authorityKeyIdentifier= keyid:always,issuer:always
 "@ | Out-File "$certConfPath"
 
                         try {
-                            Invoke-Expression "$JCR_OPENSSL req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
+                            Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $JCR_ROOT_CERT_VALIDITY_DAYS -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($JCR_SUBJECT_HEADERS.countryCode)/ST=$($JCR_SUBJECT_HEADERS.stateCode)/L=$($JCR_SUBJECT_HEADERS.Locality)/O=$($JCR_SUBJECT_HEADERS.Organization)/OU=$($JCR_SUBJECT_HEADERS.OrganizationUnit)/CN=$($JCR_SUBJECT_HEADERS.CommonName)"
 
-                            Invoke-Expression "$JCR_OPENSSL x509 -req -days $JCR_ROOT_CERT_VALIDITY_DAYS -in $csrOutPath -set_serial `"0x$serial`" -signkey `"$outKey`" -out `"$outCA`" -extfile $certConfPath -extensions v3_ca -passin pass:$($env:certKeyPassword)"
+                            Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -req -days $JCR_ROOT_CERT_VALIDITY_DAYS -in $csrOutPath -set_serial `"0x$serial`" -signkey `"$outKey`" -out `"$outCA`" -extfile $certConfPath -extensions v3_ca -passin pass:$($env:certKeyPassword)"
 
                             # Message of success
                             Write-Host "Root Certificate Renewed Successfully!" -ForegroundColor Yellow
@@ -345,7 +347,7 @@ authorityKeyIdentifier= keyid:always,issuer:always
                             # Error replacing the certificate
                             Write-Error "Error replacing the certificate. $($_.Exception.Message)"
                         }
-                        Invoke-Expression "$JCR_OPENSSL x509 -in `"$outCA`" -enddate -serial -noout "
+                        Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -enddate -serial -noout "
                     }
                     $false {
                         return

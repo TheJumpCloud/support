@@ -25,20 +25,13 @@ $global:JCScriptRoot = "$PSScriptRoot"
 
 # from the settings file we should have a location for the certs and user certs
 
-# if the Certs / UserCerts directories do not exist, create them
-if (-Not (Test-Path -Path "$JCScriptRoot/Cert" -PathType Container)) {
-    New-Item -Path "$JCScriptRoot/Cert" -ItemType Directory
-    New-Item -Path "$JCScriptRoot/Cert/Backups" -ItemType Directory
-}
-if (-Not (Test-Path -Path "$JCScriptRoot/UserCerts" -PathType Container)) {
-    New-Item -Path "$JCScriptRoot/UserCerts" -ItemType Directory
-}
+
 
 # Export module member
 Export-ModuleMember -Function $Public.BaseName -Alias *
 
 # Set the module config
-$script:configTemplate = @{
+$global:JCRConfigTemplate = @{
     'userGroup'                         = @{
         value       = $null;
         write       = $true;
@@ -159,10 +152,18 @@ $script:configTemplate = @{
         placeholder = $null;
         type        = 'string'
     }
+    'openSSLBinary'                     = @{
+        value       = $null;
+        write       = $true;
+        copy        = $true;
+        required    = $true;
+        placeholder = '<Path/To/OpenSSL>';
+        type        = 'string'
+    }
 }
 
 # # Set the module non-configurable settings
-$script:settings = @{
+$global:JCRSettings = @{
     'userAgent' = Get-JCRUserAgent
 }
 
@@ -174,3 +175,4 @@ $global:JCRConfig = Get-JCRConfigFile -asObject
 Confirm-JCRConfigFile -loadModule
 
 # TODO: Check the OpenSSL version
+# Get-OpenSSLVersion -opensslBinary $global:JCRConfig.openSSLBinary.value

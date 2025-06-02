@@ -93,12 +93,12 @@ function Deploy-UserCertificate {
 
             # Get the users certificate Details:
             # Get certificate and zip to upload to Commands
-            $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)-*"
+            $userCertFiles = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($user.userName)-*"
             # set crt and pfx filepaths
             $userCrt = ($userCertFiles | Where-Object { $_.Name -match "crt" }).FullName
             $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
             # define .zip name
-            $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
+            $userPfxZip = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.userName)-client-signed.zip"
             # get certInfo for commands:
             $certInfo = Get-CertInfo -UserCerts -username $user.username
             # Determine if the commands have matching SHA1 values:
@@ -299,7 +299,7 @@ function Deploy-UserCertificate {
                 switch ($JCR_CERT_TYPE) {
                     'EmailSAN' {
                         # set cert identifier to SAN email of cert
-                        $sanID = Invoke-Expression "$JCR_OPENSSL x509 -in $($userCrt) -ext subjectAltName -noout"
+                        $sanID = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in $($userCrt) -ext subjectAltName -noout"
                         $regex = 'email:(.*?)$'
                         $JCR_SUBJECT_HEADERSMatch = Select-String -InputObject "$($sanID)" -Pattern $regex
                         $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value

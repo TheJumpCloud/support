@@ -14,18 +14,18 @@ function Get-CertInfo {
     begin {
         if ($RootCA) {
             # Find the RootCA Path
-            $foundCerts = Resolve-Path -Path "$JCScriptRoot/Cert/*cert*.pem" -ErrorAction SilentlyContinue
+            $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*cert*.pem" -ErrorAction SilentlyContinue
         }
 
         if ($UserCerts) {
             # Find all userCert paths
             if ($username) {
-                $foundCerts = Resolve-Path -Path "$JCScriptRoot/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
+                $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
 
             } else {
                 $foundCerts = New-Object System.Collections.ArrayList
                 $global:JCRRadiusMembers.username | ForEach-Object {
-                    $foundCert = Resolve-Path -Path "$JCScriptRoot/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
+                    $foundCert = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
                         $foundCerts.Add($foundCert) | Out-Null
                     }
@@ -45,10 +45,10 @@ function Get-CertInfo {
                 # Check if cert and key name is radius_ca_cert.pem and radius_ca_key.pem if not, rename it
                 if ($foundCerts.Name -notmatch "radius_ca_cert.pem") {
                     Rename-Item -Path $foundCerts -NewName "radius_ca_cert.pem"
-                    $foundCerts = Resolve-Path -Path "$JCScriptRoot/Cert/*cert*.pem" -ErrorAction SilentlyContinue
+                    $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*cert*.pem" -ErrorAction SilentlyContinue
                 }
                 # Get the key path and rename it if needed
-                $foundKey = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem" -ErrorAction SilentlyContinue
+                $foundKey = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*key.pem" -ErrorAction SilentlyContinue
                 if ($foundKey.Name -notmatch "radius_ca_key.pem") {
                     Rename-Item -Path $foundKey -NewName "radius_ca_key.pem"
                 }
@@ -57,7 +57,7 @@ function Get-CertInfo {
                 # TODO: pscustomobject instead of hash
                 $certHash = @{}
                 # Use openssl to gather serial, subject, issuer, and enddate information
-                $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in `"$($foundCerts.Path)`" -enddate -serial -subject -issuer -noout"
+                $certInfo = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$($foundCerts.Path)`" -enddate -serial -subject -issuer -noout"
 
                 # Convert string data into a key/value pair
                 $certInfo | ForEach-Object {
@@ -82,7 +82,7 @@ function Get-CertInfo {
                     # Create hashtable to contain cert info
                     $certHash = [PSCustomObject]@{}
                     # Use openssl to gather serial, subject, issuer and enddate information
-                    $certInfo = Invoke-Expression "$JCR_OPENSSL x509 -in `"$($cert.Path)`" -enddate -serial -subject -issuer -fingerprint -sha1 -noout"
+                    $certInfo = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$($cert.Path)`" -enddate -serial -subject -issuer -fingerprint -sha1 -noout"
                     # Convert string data into a key/value pair
                     $certInfo | ForEach-Object {
                         $property = $_ | ConvertFrom-StringData

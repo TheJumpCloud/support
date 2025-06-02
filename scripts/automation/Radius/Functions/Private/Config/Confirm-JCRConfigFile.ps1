@@ -23,6 +23,14 @@ function Confirm-JCRConfigFile {
             if ($settingValue.required -eq $true -and $settingValue.value -eq $null) {
                 $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
             }
+            # specifically for the openssl binary, check if the path exists
+            if ($settingName -eq 'openSSLBinary' -and $settingValue.value -ne $null) {
+                Get-OpenSSLVersion -opensslBinary $settingValue.value
+                # if (-not (Test-Path -Path $settingValue.value)) {
+
+                #     Write-Warning "The OpenSSL binary path '$($settingValue.value)' does not exist. Please set it with Set-JCRConfigFile."
+                # }
+            }
         }
     }
     end {

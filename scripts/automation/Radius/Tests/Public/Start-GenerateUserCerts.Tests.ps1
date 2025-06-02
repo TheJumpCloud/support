@@ -44,7 +44,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # add a user to the radius Group
             Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # Get the certs before
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # wait one moment
             Start-Sleep 1
             # update the cache
@@ -57,7 +57,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # filter by username
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist
@@ -112,7 +112,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # set the user cert validity to 90 days
             Set-JCRConfigFile -caCertValidityDays 90
             # Get the certs before generation minus the .zip if it exists
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # get the date before
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             Start-Sleep 1
@@ -124,7 +124,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # there should be no more certs left in the expiring cert var
             $Global:expiringCerts | Should -BeNullOrEmpty
             # Get the certs after generation minus the .zip if it exists
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # test each file, it should have been written
             foreach ($cert in $certsAfter) {
                 Write-Host "$($cert.Name)"
@@ -169,7 +169,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # add a user to the radius Group
             Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # Get the certs before
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # wait one moment
             Start-Sleep 1
             # update the cache
@@ -182,7 +182,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # filter by username
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist
@@ -201,7 +201,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # add a user to the radius Group
             Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # Get the certs before
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # wait one moment
             Start-Sleep 1
             # update the cache
@@ -214,7 +214,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # filter by username
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist

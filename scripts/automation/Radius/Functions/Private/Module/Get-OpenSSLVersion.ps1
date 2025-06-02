@@ -10,7 +10,7 @@ function Get-OpenSSLVersion {
         try {
             $version = Invoke-Expression "& '$opensslBinary' version"
         } catch {
-            Write-Error "Something went wrong... Could not find openssl or the path is incorrect. Please update the `$JCR_OPENSSL variable in the config.ps1 file to the correct path"
+            Write-Warning "OpenSSL Not Found`nThe module could not find 'openssl' or the path is incorrect. Please update the 'OpenSSLBinary' setting for this module with the Set-JCRConfigFile cmdlet:`nWindows: Set-JCRConfigFile -openSSLBinary 'C:\Path\To\OpenSSL\bin\openssl.exe'`nMacOS/Linux: Set-JCRConfigFile -openSSLBinary '/opt/homebrew/bin/openssl'"
             $conditionsNotMet = $true
         }
 
@@ -45,7 +45,7 @@ function Get-OpenSSLVersion {
     }
     process {
         if ($version -lt $OpenSSLVersion) {
-            Write-Error "The installed version of OpenSSL: OpenSSL $Version, does not meet the requirements of this application, please install a later version of at least $Type $Version"
+            Write-Warning "The installed version of OpenSSL: OpenSSL $Version, does not meet the requirements of this application, please install a later version of at least $Type $Version"
             $conditionsNotMet = $true
         }
     }

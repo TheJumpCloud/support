@@ -15,7 +15,7 @@ function Show-RadiusMainMenu {
 
     # Get UserGroup information from Config.ps1
     $radiusUserGroup = Get-JcSdkUserGroup -Id $global:JCRConfig.userGroup.value | Select-Object Name
-    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.PrivateData.userGroup.value).Count
+    $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.userGroup.value).Count
 
     # Get SSID information from Config.ps1
     $radiusSSID = ($global:JCRConfig.networkSSID.value).replace(';', ' ')

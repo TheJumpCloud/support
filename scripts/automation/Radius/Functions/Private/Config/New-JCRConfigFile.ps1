@@ -15,7 +15,7 @@ function New-JCRConfigFile {
     }
     process {
         # Define Default Settings for the Config file
-        $config = $script:configTemplate
+        $config = $global:JCRConfigTemplate
     }
     end {
         if ((Test-Path -Path $configFilePath) -And ($force)) {

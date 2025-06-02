@@ -1,6 +1,6 @@
 function Get-CertKeyPass {
     #TODO: params required to test if a CA password is correct
-    $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
+    $foundKeyPem = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*key.pem"
     Write-Host "Found key: $($foundKeyPem)"
 
     if ($foundKeyPem -match "ca_key") {

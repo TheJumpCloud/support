@@ -22,7 +22,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
     Context 'Distribute all certificates for all users forcibly' {
         BeforeAll {
             # clear certs:
-            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certs = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             foreach ($cert in $certs) {
                 Remove-Item -Path $cert.FullName
             }
@@ -84,7 +84,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
     Context 'Distribute all certificates for all users without invoking' {
         BeforeAll {
             # clear certs:
-            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certs = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             foreach ($cert in $certs) {
                 Remove-Item -Path $cert.FullName
             }
@@ -122,7 +122,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
     Context 'Distribute new certificates for new users forcibly' {
         BeforeAll {
             # clear certs:
-            $certs = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certs = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             foreach ($cert in $certs) {
                 Remove-Item -Path $cert.FullName
             }
@@ -228,9 +228,9 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $CertInfoAfter = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Cert Subject headers should be contain required EmailSAN identifier:
             $CertInfoBefore.subject | Should -Not -Be $CertInfoAfter
-            $foundCert = Get-ChildItem -path "$JCScriptRoot/UserCerts/$($certTypeUser.username)-EmailSAN*.crt"
+            $foundCert = Get-ChildItem -path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($certTypeUser.username)-EmailSAN*.crt"
             $foundCert.count | Should -Be 1
-            $CertSANInfo = Invoke-Expression "$JCR_OPENSSL x509 -in $($foundCert.fullname) -ext subjectAltName -noout"
+            $CertSANInfo = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in $($foundCert.fullname) -ext subjectAltName -noout"
             # The cert info should contain the subject alternative name of the user's email
             $CertSANInfo -match "email:" | Should -match "email:$($Global:JCRUsers[$($certTypeUser.userID)].email)"
             # Create the new commands
