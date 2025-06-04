@@ -124,7 +124,7 @@ jobs:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
-          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Validate-Module"]
     runs-on: ubuntu-latest

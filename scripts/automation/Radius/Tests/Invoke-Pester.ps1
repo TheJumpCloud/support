@@ -49,6 +49,8 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     $PesterRunPaths = @(
         "$PSScriptRoot/ModuleValidation/"
     )
+    $env:JCAPIKEY = $JumpCloudApiKey
+    Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
 } else {
     $env:JCAPIKEY = $JumpCloudApiKey
     Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
