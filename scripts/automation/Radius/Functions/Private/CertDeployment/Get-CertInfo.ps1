@@ -38,6 +38,10 @@ function Get-CertInfo {
                     $foundCert = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
                         $foundCerts.Add($foundCert) | Out-Null
+                    } else {
+
+                        Write-Warning "No Radius Member certificate found for user: $_"
+                        Write-Warning "location: $($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt"
                     }
 
                 }
@@ -49,6 +53,7 @@ function Get-CertInfo {
     process {
         # If no cert is found, return null
         if (!$foundCerts) {
+            Write-Warning "No certificates found in $($global:JCRConfig.radiusDirectory.value)/Cert or $($global:JCRConfig.radiusDirectory.value)/UserCerts"
             $certHash = $null
         } else {
             if ($RootCA) {
