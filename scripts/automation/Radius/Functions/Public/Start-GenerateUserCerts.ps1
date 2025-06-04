@@ -21,6 +21,8 @@ function Start-GenerateUserCerts {
         Get-JCRGlobalVars
         $Global:JCRSettings.sessionImport = $true
     }
+    Write-Host "[status] Starting User Certificate Generation"
+    Write-Host "[status] Using Radius Directory: $($global:JCRConfig.radiusDirectory.value)"
     #### begin function setup:
     # Check if CA-Key is saved in env
     if ($env:certKeyPassword) {
