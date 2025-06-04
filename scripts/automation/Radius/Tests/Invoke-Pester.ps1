@@ -52,6 +52,8 @@ if ($PSCmdlet.ParameterSetName -eq 'ModuleValidation') {
     $PesterRunPaths = @(
         "$PSScriptRoot/ModuleValidation/"
     )
+    Write-Host "Begin Org Setup Before Tests:"
+    . "$PSScriptRoot/SetupRadiusOrg.ps1"
     $env:JCAPIKEY = $JumpCloudApiKey
     Connect-JCOnline -JumpCloudApiKey:($env:JCAPIKEY) -force
 } else {
