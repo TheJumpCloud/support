@@ -93,7 +93,7 @@ function Deploy-UserCertificate {
 
             # Get the users certificate Details:
             # Get certificate and zip to upload to Commands
-            $userCertFiles = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($user.userName)-*"
+            $userCertFiles = Get-ChildItem -Path (Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($user.userName)-*")
             # set crt and pfx filepaths
             $userCrt = ($userCertFiles | Where-Object { $_.Name -match "crt" }).FullName
             $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
