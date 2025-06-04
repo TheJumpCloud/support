@@ -33,7 +33,7 @@ function Generate-UserCert {
     }
     process {
         # Set Extension Path
-        $ExtensionPath = "$JCScriptRoot/Extensions/extensions-$($certType).cnf"
+        $ExtensionPath = "$($global:JCRConfig.radiusDirectory.value)/Extensions/extensions-$($certType).cnf"
         # User Certificate Signing Request:
         $userCSR = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-cert-req.csr"
         # Set key, crt, pfx variables:
