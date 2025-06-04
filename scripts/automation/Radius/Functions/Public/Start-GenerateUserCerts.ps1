@@ -49,6 +49,7 @@ function Start-GenerateUserCerts {
     } else {
         Write-Host "[status] Creating User Cert Directory"
         New-Item -ItemType Directory -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
+        Write-Host "[status] User Cert Directory Created at: $($global:JCRConfig.radiusDirectory.value)/UserCerts"
     }
     #### end function setup
 
