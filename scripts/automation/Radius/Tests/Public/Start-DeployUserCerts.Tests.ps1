@@ -27,7 +27,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 Remove-Item -Path $cert.FullName
             }
             #remove existing users
-            $usersToRemove = Get-JCuser -email "*pesterRadius*" | Remove-JCUser -force
+            $usersToRemove = Get-JCUser -email "*pesterRadius*" | Remove-JCUser -force
             Get-JCRGlobalVars -force -skipAssociation
         }
         it 'users with system associations will have deployed certs' {

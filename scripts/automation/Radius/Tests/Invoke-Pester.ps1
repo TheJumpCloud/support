@@ -81,6 +81,12 @@ $configuration.Filter.ExcludeTag = $ExcludeTagList
 $configuration.CodeCoverage.OutputPath = ($PesterResultsFileXmldir + 'coverage.xml')
 $configuration.testresult.OutputPath = ($PesterResultsFileXmldir + 'results.xml')
 
+Write-Host "-----------------------"
+Write-Host "[Status] JCRConfig Settings:"
+foreach ($setting in $global:JCRConfig.PSObject.Properties) {
+    Write-Host ("$($setting.Name): $($setting.Value.value)")
+}
+Write-Host "-----------------------"
 
 Write-Host ("[RUN COMMAND] Invoke-Pester -Path:('$PesterRunPaths') -TagFilter:('$($IncludeTags -join "','")') -ExcludeTagFilter:('$($ExcludeTagList -join "','")') -PassThru") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
 # Run Pester tests
