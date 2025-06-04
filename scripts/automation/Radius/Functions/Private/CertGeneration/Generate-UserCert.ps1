@@ -33,13 +33,13 @@ function Generate-UserCert {
     }
     process {
         # Set Extension Path
-        $ExtensionPath = "$($global:JCRConfig.radiusDirectory.value)/Extensions/extensions-$($certType).cnf"
+        $ExtensionPath = Resolve-Path -path ("$($global:JCRConfig.radiusDirectory.value)/Extensions/extensions-$($certType).cnf")
         # User Certificate Signing Request:
-        $userCSR = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-cert-req.csr"
+        $userCSR = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-cert-req.csr")
         # Set key, crt, pfx variables:
-        $userKey = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed.key"
-        $userCert = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed-cert.crt"
-        $userPfx = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-client-signed.pfx"
+        $userKey = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed.key")
+        $userCert = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed-cert.crt")
+        $userPfx = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-client-signed.pfx")
 
         switch ($certType) {
             'EmailSAN' {
