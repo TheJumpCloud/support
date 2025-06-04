@@ -30,16 +30,17 @@ function Generate-UserCert {
             Throw "RootCA could not be found in project directory, have you run Generate-Cert.ps1?"
             exit 1
         }
-        # hack for linux:
-        # if the first character of the $certType is uppercase, convert it to lowercase
-        if ($certType -match '^[A-Z]') {
-            $certType = $certType.ToLower()
-        }
     }
     process {
         # Set Extension Path
-        $ExtensionPath = Resolve-Path -path ("$($global:JCRConfig.radiusDirectory.value)/Extensions/extensions-$($certType).cnf")
-        # User Certificate Signing Request:
+        $extensionsDir = Join-Path $global:JCRConfig.radiusDirectory.value "Extensions"
+        $expectedFile = "extensions-$certType.cnf"
+        $ExtensionPath = Get-ChildItem -Path $extensionsDir -Filter "extensions-*.cnf" | Where-Object { $_.Name -ieq $expectedFile } | Select-Object -First 1
+
+        if (-not $ExtensionPath) {
+            Throw "Extension file '$expectedFile' not found in '$extensionsDir'."
+        }
+        $ExtensionPath = $ExtensionPath.FullName        # User Certificate Signing Request:
         $userCSR = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-cert-req.csr")
         # Set key, crt, pfx variables:
         $userKey = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed.key")
