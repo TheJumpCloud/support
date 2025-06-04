@@ -121,6 +121,8 @@ jobs:
           path: "~/.local/share/powershell/Modules/"
           key: PS-Radius-Dependencies
       - env:
+          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
+          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
