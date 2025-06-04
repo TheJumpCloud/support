@@ -174,5 +174,9 @@ $global:JCRConfig = Get-JCRConfigFile -asObject
 # validate the config settings (skip throw on first load with 'loadModule' param)
 Confirm-JCRConfigFile -loadModule
 
+
+# Update the global variables required for the module
+Get-JCRGlobalVars -skipAssociation
+
 # TODO: Check the OpenSSL version
 # Get-OpenSSLVersion -opensslBinary $global:JCRConfig.openSSLBinary.value
