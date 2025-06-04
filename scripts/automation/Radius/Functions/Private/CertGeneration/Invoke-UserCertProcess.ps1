@@ -85,7 +85,7 @@ Function Invoke-UserCertProcess {
             #TODO: cert should be written with $($global:JCRConfig.certType.value), if other certs exist, remove them.
             $CertInfo = Get-CertInfo -UserCerts -username $MatchedUser.username
             if ($CertInfo.count -gt 1) {
-                $foundCerts = Get-ChildItem -path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($MatchedUser.username)-*.crt"
+                $foundCerts = Get-ChildItem -path (Resolve-Path -path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($MatchedUser.username)-*.crt")
                 $orderedCerts = $foundCerts | Sort-Object -Property LastWriteTime -Descending | select -Skip 1
                 foreach ($cert in $orderedCerts) {
                     Remove-Item $cert.FullName
@@ -111,9 +111,9 @@ Function Invoke-UserCertProcess {
     end {
         #TODO: eventually add message if we fail to generate a command
         $resultTable = [ordered]@{
-            'Username'       = $MatchedUser.username;
+            'Username'       = $($MatchedUser.username);
             'Cert Action'    = $cert_action;
-            'Generated Date' = $certInfo.generated;
+            'Generated Date' = $($certInfo.generated);
         }
 
         return $resultTable

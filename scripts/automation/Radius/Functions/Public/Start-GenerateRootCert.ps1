@@ -154,7 +154,7 @@ Function Start-GenerateRootCert {
                         Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                         # openssl x509 -in ca-cert.pem -noout -text
                         # Update Extensions Distinguished Names:
-                        $exts = Get-ChildItem -Path "$JCScriptRoot/Extensions"
+                        $exts = Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Extensions")
                         foreach ($ext in $exts) {
                             Write-Host "Updating Subject Headers for $($ext.Name)"
                             $extContent = Get-Content -Path $ext.FullName -Raw
@@ -219,7 +219,7 @@ CN = $($($global:JCRConfig.certSubjectHeaderCommonName.value))
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                 # openssl x509 -in ca-cert.pem -noout -text
                 # Update Extensions Distinguished Names:
-                $exts = Get-ChildItem -Path "$JCScriptRoot/Extensions"
+                $exts = Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Extensions")
                 foreach ($ext in $exts) {
                     Write-Host "Updating Subject Headers for $($ext.Name)"
                     $extContent = Get-Content -Path $ext.FullName -Raw
