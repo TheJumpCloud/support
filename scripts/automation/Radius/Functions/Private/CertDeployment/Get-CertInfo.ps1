@@ -18,12 +18,21 @@ function Get-CertInfo {
         }
 
         if ($UserCerts) {
+
             # Find all userCert paths
             if ($username) {
                 $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
+                # print the number of Radius Members in the Array
+                if ($foundCerts) {
+                    Write-Host "Found $($foundCerts.Count) Radius Member certificate(s) for user: $username"
+                } else {
+                    Write-Host "No Radius Member certificate found for user: $username"
+                }
 
             } else {
                 $foundCerts = New-Object System.Collections.ArrayList
+                # print the number of Radius Members in the Array
+                Write-Host "Found $($global:JCRRadiusMembers.username.Count) Radius Members in the Array"
                 $global:JCRRadiusMembers.username | ForEach-Object {
                     $foundCert = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
