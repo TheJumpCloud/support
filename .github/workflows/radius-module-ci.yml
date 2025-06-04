@@ -121,12 +121,10 @@ jobs:
           path: "~/.local/share/powershell/Modules/"
           key: PS-Radius-Dependencies
       - env:
-          PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
-          PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
-          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ModuleValidation
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Validate-Module"]
     runs-on: ubuntu-latest
