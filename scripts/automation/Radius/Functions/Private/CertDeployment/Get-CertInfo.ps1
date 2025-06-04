@@ -24,6 +24,13 @@ function Get-CertInfo {
 
             } else {
                 $foundCerts = New-Object System.Collections.ArrayList
+                # if $global:JCRRadiusMembers.username is not defined, update
+
+                if (-not $global:JCRRadiusMembers.username) {
+                    # update global variables
+                    Get-JCRGlobalVars -skipAssociation
+                }
+
                 $global:JCRRadiusMembers.username | ForEach-Object {
                     $foundCert = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
