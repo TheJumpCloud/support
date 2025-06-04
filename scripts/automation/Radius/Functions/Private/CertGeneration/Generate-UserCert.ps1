@@ -40,12 +40,15 @@ function Generate-UserCert {
         if (-not $ExtensionPath) {
             Throw "Extension file '$expectedFile' not found in '$extensionsDir'."
         }
-        $ExtensionPath = $ExtensionPath.FullName        # User Certificate Signing Request:
-        $userCSR = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-cert-req.csr")
-        # Set key, crt, pfx variables:
-        $userKey = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed.key")
-        $userCert = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-$($certType)-client-signed-cert.crt")
-        $userPfx = Resolve-Path -Path  ("$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.username)-client-signed.pfx")
+        $ExtensionPath = $ExtensionPath.FullName
+
+        # User Certificate Signing Request:
+        $userCertsDir = Join-Path $global:JCRConfig.radiusDirectory.value "UserCerts"
+        $userCSR = Get-CaseInsensitiveFile -Directory $userCertsDir -FileName "$($user.username)-cert-req.csr"
+        $userKey = Get-CaseInsensitiveFile -Directory $userCertsDir -FileName "$($user.username)-$($certType)-client-signed.key"
+        $userCert = Get-CaseInsensitiveFile -Directory $userCertsDir -FileName "$($user.username)-$($certType)-client-signed-cert.crt"
+        $userPfx = Get-CaseInsensitiveFile -Directory $userCertsDir -FileName "$($user.username)-client-signed.pfx"
+
 
         switch ($certType) {
             'EmailSAN' {
