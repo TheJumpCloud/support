@@ -26,7 +26,8 @@ function Get-CertInfo {
                 if ($foundCerts) {
                     Write-Host "Found $($foundCerts.Count) Radius Member certificate(s) for user: $username"
                 } else {
-                    Write-Host "No Radius Member certificate found for user: $username"
+                    Write-Warning "No Radius Member certificate found for user: $username"
+                    Write-Warning "location: $($global:JCRConfig.radiusDirectory.value)/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt"
                 }
 
             } else {
