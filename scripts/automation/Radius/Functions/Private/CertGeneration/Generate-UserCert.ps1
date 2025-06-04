@@ -30,6 +30,11 @@ function Generate-UserCert {
             Throw "RootCA could not be found in project directory, have you run Generate-Cert.ps1?"
             exit 1
         }
+        # hack for linux:
+        # if the first character of the $certType is uppercase, convert it to lowercase
+        if ($certType -match '^[A-Z]') {
+            $certType = $certType.ToLower()
+        }
     }
     process {
         # Set Extension Path
