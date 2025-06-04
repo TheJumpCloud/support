@@ -17,6 +17,11 @@ Function Start-GenerateRootCert {
 
     )
 
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
+
 
     # this script will generate a Self Signed CA (root cert) to be imported on the
     # Radius CBA-BYO Authentication UI

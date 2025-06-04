@@ -164,7 +164,8 @@ $global:JCRConfigTemplate = @{
 
 # # Set the module non-configurable settings
 $global:JCRSettings = @{
-    'userAgent' = Get-JCRUserAgent
+    'userAgent'     = Get-JCRUserAgent;
+    'sessionImport' = $false;
 }
 
 # From the saved config file, get the settings and set them in the module as $config
@@ -173,10 +174,6 @@ $global:JCRConfig = Get-JCRConfigFile -asObject
 
 # validate the config settings (skip throw on first load with 'loadModule' param)
 Confirm-JCRConfigFile -loadModule
-
-
-# Update the global variables required for the module
-Get-JCRGlobalVars -skipAssociation
 
 # TODO: Check the OpenSSL version
 # Get-OpenSSLVersion -opensslBinary $global:JCRConfig.openSSLBinary.value

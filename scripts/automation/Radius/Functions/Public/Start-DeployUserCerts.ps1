@@ -21,6 +21,11 @@ function Start-DeployUserCerts {
         $forceGenerateCommands
     )
 
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
+
     # Import the users.json file and convert to PSObject
     $userArray = Get-UserJsonData
     # identify users that need their certs still deployed

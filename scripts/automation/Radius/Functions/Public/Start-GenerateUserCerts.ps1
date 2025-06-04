@@ -16,6 +16,11 @@ function Start-GenerateUserCerts {
         [switch]
         $forceReplaceCerts
     )
+
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
     #### begin function setup:
     # Check if CA-Key is saved in env
     if ($env:certKeyPassword) {

@@ -15,6 +15,10 @@ function Get-JCRGlobalVars {
         $associationUsername
     )
     begin {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline -force
+        }
         # ensure the data directory exists to cache the json files:
         if (-not (Test-Path "$JCScriptRoot/data")) {
             Write-Host "[status] Creating Data Directory"
@@ -122,6 +126,7 @@ function Get-JCRGlobalVars {
         }
     }
     process {
+        Write-Host "begin Get-JCRGlobalVars"
         switch ($update) {
             $true {
                 # update the global variables
