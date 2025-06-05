@@ -100,7 +100,7 @@ function Start-DeployUserCerts {
                     $JCScriptRoot = $using:JCScriptRoot
 
                     # Import the private functions
-                    $Private = @( Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Functions/Private/*.ps1") -Recurse )
+                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse )
                     foreach ($Import in $Private) {
                         Try {
                             . $Import.FullName
@@ -186,7 +186,7 @@ function Start-DeployUserCerts {
                     $workDoneArray = $using:workDoneArray
 
                     # Import the private functions
-                    $Private = @( Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Functions/Private/*.ps1") -Recurse )
+                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse )
                     foreach ($Import in $Private) {
                         Try {
                             . $Import.FullName
