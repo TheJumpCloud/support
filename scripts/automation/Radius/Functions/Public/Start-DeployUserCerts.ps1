@@ -108,16 +108,6 @@ function Start-DeployUserCerts {
                     $resultArray = $using:resultArray
                     $workDoneArray = $using:workDoneArray
 
-                    # import the private functions:
-                    $Private = @( Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Functions/Private/*.ps1") -Recurse)
-                    Foreach ($Import in $Private) {
-                        Try {
-                            . $Import.FullName
-                        } Catch {
-                            Write-Error -Message "Failed to import function $($Import.FullName): $_"
-                        }
-                    }
-
                     # deploy user certs:
                     $result, $workDone = Deploy-UserCertificate -userObject $_ -forceInvokeCommands $using:invokeCommands -forceGenerateCommands $using:generateCommands
                     # keep track of results & work done
