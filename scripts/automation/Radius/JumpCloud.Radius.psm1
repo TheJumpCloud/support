@@ -177,18 +177,3 @@ Confirm-JCRConfigFile -loadModule
 
 # TODO: Check the OpenSSL version
 # Get-OpenSSLVersion -opensslBinary $global:JCRConfig.openSSLBinary.value
-
-# create required cert directories if they do not exist
-# if the radiusDirectory variable is not null, create the directories
-if (-not $global:JCRConfig.radiusDirectory.value) {
-    Write-Warning "The radiusDirectory variable is not set in the configuration file."
-} else {
-    $userCertDir = Join-Path -Path $global:JCRConfig.radiusDirectory.value -ChildPath "UserCerts"
-    if (-not (Test-Path -Path $userCertDir)) {
-        New-Item -Path $userCertDir -ItemType Directory | Out-Null
-    }
-    $caCertDir = Join-Path -Path $global:JCRConfig.radiusDirectory.value -ChildPath "Cert"
-    if (-not (Test-Path -Path $caCertDir)) {
-        New-Item -Path $caCertDir -ItemType Directory | Out-Null
-    }
-}
