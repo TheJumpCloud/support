@@ -14,18 +14,14 @@ function Get-CertInfo {
     begin {
         if ($RootCA) {
             # Find the RootCA Path
-            $certsDir = Join-Path $global:JCRConfig.radiusDirectory.value "Cert"
-            $foundCerts = Get-CaseInsensitiveFile -Directory $certsDir -FileName "*cert*.pem"
-            # $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*cert*.pem" -ErrorAction SilentlyContinue
+            $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*cert*.pem" -ErrorAction SilentlyContinue
         }
 
         if ($UserCerts) {
 
             # Find all userCert paths
-            $userCertsDir = Join-Path $global:JCRConfig.radiusDirectory.value "UserCerts"
             if ($username) {
-                $foundCerts = Get-CaseInsensitiveFile -Directory $userCertsDir -FileName "$username-$($global:JCRConfig.certType.value)*.crt"
-                # $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
+                $foundCerts = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$username-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                 # print the number of Radius Members in the Array
                 if ($foundCerts) {
                     Write-Host "Found $($foundCerts.Count) Radius Member certificate(s) for user: $username"
@@ -39,14 +35,13 @@ function Get-CertInfo {
                 # print the number of Radius Members in the Array
                 Write-Host "Found $($global:JCRRadiusMembers.username.Count) Radius Members in the Array"
                 $global:JCRRadiusMembers.username | ForEach-Object {
-                    $foundCert = Get-CaseInsensitiveFile -Directory $userCertsDir -FileName "$_-$($global:JCRConfig.certType.value)*.crt"
-                    # $foundCert = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
+                    $foundCert = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt" -ErrorAction SilentlyContinue
                     if ($foundCert) {
                         $foundCerts.Add($foundCert) | Out-Null
                     } else {
 
                         Write-Warning "No Radius Member certificate found for user: $_"
-                        Write-Warning "location: $($userCertsDir)/$_-$($global:JCRConfig.certType.value)*.crt"
+                        Write-Warning "location: $($global:JCRConfig.radiusDirectory.value)/UserCerts/$_-$($global:JCRConfig.certType.value)*.crt"
                     }
 
                 }
