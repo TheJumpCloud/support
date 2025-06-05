@@ -30,6 +30,8 @@ function Start-DeployUserCerts {
     $userArray = Get-UserJsonData
     # identify users that need their certs still deployed
     $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
+    # set the script root variable to use for parallel functions:
+    $JCScriptRoot = $Global:JCScriptRoot
 
     do {
         switch ($PSCmdlet.ParameterSetName) {
