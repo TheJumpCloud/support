@@ -97,6 +97,16 @@ function Start-DeployUserCerts {
                     $JCORGID = $using:JCORGID
                     $JCScriptRoot = $using:JCScriptRoot
 
+                    # Import the private functions
+                    $Private = @( Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Functions/Private/*.ps1") -Recurse )
+                    foreach ($Import in $Private) {
+                        Try {
+                            . $Import.FullName
+                        } Catch {
+                            Write-Error -Message "Failed to import function $($Import.FullName): $_"
+                        }
+                    }
+
                     # set the required global variables
                     $Global:JCRUsers = $using:JCRUsers
                     $Global:JCRSystems = $using:JCRSystems
@@ -173,9 +183,9 @@ function Start-DeployUserCerts {
                     $resultArray = $using:resultArray
                     $workDoneArray = $using:workDoneArray
 
-                    # import the private functions:
-                    $Private = @( Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Functions/Private/*.ps1") -Recurse)
-                    Foreach ($Import in $Private) {
+                    # Import the private functions
+                    $Private = @( Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Functions/Private/*.ps1") -Recurse )
+                    foreach ($Import in $Private) {
                         Try {
                             . $Import.FullName
                         } Catch {
