@@ -121,6 +121,9 @@ function Start-DeployUserCerts {
                             value = $using:JCRConfig.openSSLBinary.value
                         }
                     }
+                    $global:JCRSettings = @{
+                        userAgent = $using:JCRSettings.userAgent
+                    }
                     $Global:JCRUsers = $using:JCRUsers
                     $Global:JCRSystems = $using:JCRSystems
                     $Global:JCRAssociations = $using:JCRAssociations
@@ -196,6 +199,9 @@ function Start-DeployUserCerts {
                         'openSSLBinary'   = @{
                             value = $using:JCRConfig.openSSLBinary.value
                         }
+                    }
+                    $global:JCRSettings = @{
+                        userAgent = $using:JCRSettings.userAgent
                     }
                     $Global:JCRUsers = $using:JCRUsers
                     $Global:JCRSystems = $using:JCRSystems
