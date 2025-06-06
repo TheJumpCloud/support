@@ -175,6 +175,17 @@ function Start-DeployUserCerts {
                     $JCScriptRoot = $using:JCScriptRoot
 
                     # set the required global variables
+                    $global:JCRConfig = @{
+                        'radiusDirectory' = @{
+                            value = $using:JCRConfig.radiusDirectory.value
+                        }
+                        'certType'        = @{
+                            value = $using:JCRConfig.certType.value
+                        }
+                        'openSSLBinary'   = @{
+                            value = $using:JCRConfig.openSSLBinary.value
+                        }
+                    }
                     $Global:JCRUsers = $using:JCRUsers
                     $Global:JCRSystems = $using:JCRSystems
                     $Global:JCRAssociations = $using:JCRAssociations
