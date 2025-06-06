@@ -21,10 +21,17 @@ function Start-DeployUserCerts {
         $forceGenerateCommands
     )
 
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
+
     # Import the users.json file and convert to PSObject
     $userArray = Get-UserJsonData
     # identify users that need their certs still deployed
     $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
+    # set the script root variable to use for parallel functions:
+    $JCScriptRoot = $Global:JCScriptRoot
 
     do {
         switch ($PSCmdlet.ParameterSetName) {
@@ -92,7 +99,31 @@ function Start-DeployUserCerts {
                     $JCORGID = $using:JCORGID
                     $JCScriptRoot = $using:JCScriptRoot
 
+                    # Import the private functions
+                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse )
+                    foreach ($Import in $Private) {
+                        Try {
+                            . $Import.FullName
+                        } Catch {
+                            Write-Error -Message "Failed to import function $($Import.FullName): $_"
+                        }
+                    }
+
                     # set the required global variables
+                    $global:JCRConfig = @{
+                        'radiusDirectory' = @{
+                            value = $using:JCRConfig.radiusDirectory.value
+                        }
+                        'certType'        = @{
+                            value = $using:JCRConfig.certType.value
+                        }
+                        'openSSLBinary'   = @{
+                            value = $using:JCRConfig.openSSLBinary.value
+                        }
+                    }
+                    $global:JCRSettings = @{
+                        userAgent = $using:JCRSettings.userAgent
+                    }
                     $Global:JCRUsers = $using:JCRUsers
                     $Global:JCRSystems = $using:JCRSystems
                     $Global:JCRAssociations = $using:JCRAssociations
@@ -102,16 +133,6 @@ function Start-DeployUserCerts {
                     # set the thread safe variables
                     $resultArray = $using:resultArray
                     $workDoneArray = $using:workDoneArray
-
-                    # import the private functions:
-                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
-                    Foreach ($Import in $Private) {
-                        Try {
-                            . $Import.FullName
-                        } Catch {
-                            Write-Error -Message "Failed to import function $($Import.FullName): $_"
-                        }
-                    }
 
                     # deploy user certs:
                     $result, $workDone = Deploy-UserCertificate -userObject $_ -forceInvokeCommands $using:invokeCommands -forceGenerateCommands $using:generateCommands
@@ -168,6 +189,20 @@ function Start-DeployUserCerts {
                     $JCScriptRoot = $using:JCScriptRoot
 
                     # set the required global variables
+                    $global:JCRConfig = @{
+                        'radiusDirectory' = @{
+                            value = $using:JCRConfig.radiusDirectory.value
+                        }
+                        'certType'        = @{
+                            value = $using:JCRConfig.certType.value
+                        }
+                        'openSSLBinary'   = @{
+                            value = $using:JCRConfig.openSSLBinary.value
+                        }
+                    }
+                    $global:JCRSettings = @{
+                        userAgent = $using:JCRSettings.userAgent
+                    }
                     $Global:JCRUsers = $using:JCRUsers
                     $Global:JCRSystems = $using:JCRSystems
                     $Global:JCRAssociations = $using:JCRAssociations
@@ -178,9 +213,9 @@ function Start-DeployUserCerts {
                     $resultArray = $using:resultArray
                     $workDoneArray = $using:workDoneArray
 
-                    # import the private functions:
-                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
-                    Foreach ($Import in $Private) {
+                    # Import the private functions
+                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse )
+                    foreach ($Import in $Private) {
                         Try {
                             . $Import.FullName
                         } Catch {

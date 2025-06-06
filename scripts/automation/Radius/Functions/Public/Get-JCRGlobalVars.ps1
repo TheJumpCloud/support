@@ -15,6 +15,10 @@ function Get-JCRGlobalVars {
         $associationUsername
     )
     begin {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ($JCAPIKEY.length -ne 40) {
+            Connect-JCOnline -force
+        }
         # ensure the data directory exists to cache the json files:
         if (-not (Test-Path "$JCScriptRoot/data")) {
             Write-Host "[status] Creating Data Directory"
@@ -22,17 +26,31 @@ function Get-JCRGlobalVars {
         }
 
         if (-Not $global:JCRConfig) {
-            $global:JCRConfig = Get-JCRSettingsFile
+            $global:JCRConfig = Get-JCRConfigFile
         }
 
         # get settings file
         if ($IsMacOS) {
-            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate -End (Get-Date)
+            try {
+                $lastUpdateTimeSpan = New-TimeSpan -Start $($global:JCRConfig.lastUpdate.value) -End (Get-Date)
+            } catch {
+                Write-Host "[status] lastUpdate value is null, updating global variables"
+                $update = $true
+                $updateAssociation = $true
+                Set-JCRConfigFile -lastUpdate (Get-Date)
+            }
         }
         if ($ifWindows) {
-            $lastUpdateTimespan = New-TimeSpan -Start $global:JCRConfig.globalvars.lastupdate.value -End (Get-Date)
+            try {
+                $lastUpdateTimeSpan = New-TimeSpan -Start $($global:JCRConfig.lastUpdate.value) -End (Get-Date)
+            } catch {
+                Write-Host "[status] lastUpdate value is null, updating global variables"
+                $update = $true
+                $updateAssociation = $true
+                Set-JCRConfigFile -lastUpdate (Get-Date)
+            }
         }
-        if ($lastUpdateTimespan.TotalHours -gt 24) {
+        if ($lastUpdateTimeSpan.TotalHours -gt 24) {
             $update = $true
             $updateAssociation = $true
         } else {
@@ -108,6 +126,7 @@ function Get-JCRGlobalVars {
         }
     }
     process {
+        Write-Host "begin Get-JCRGlobalVars"
         switch ($update) {
             $true {
                 # update the global variables
@@ -115,7 +134,7 @@ function Get-JCRGlobalVars {
                 $users = Get-DynamicHash -Object User -returnProperties email, employeeIdentifier, department, suspended, location, Addresses, manager, sudo, Displayname, username, systemUsername
                 # $users | ForEach-Object { $_ | Add-Member -name "userId" -value $_ -Type NoteProperty -force }
                 # Get Radius membership list:
-                $radiusMembers = Get-JcSdkUserGroupMember -GroupId $Global:JCR_USER_GROUP
+                $radiusMembers = Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.userGroup.value
                 # add the username to the membership hash
                 $radiusMemberList = New-Object System.Collections.ArrayList
                 foreach ($member in $radiusMembers) {
@@ -247,7 +266,7 @@ function Get-JCRGlobalVars {
                 [array]$Global:JCRRadiusMembers = $radiusMemberList
                 $Global:JCRCertHash = $certHash
                 # update the settings date
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Set-JCRConfigFile -lastUpdate (Get-Date)
                 # update users.json
                 Update-JCRUsersJson
             }

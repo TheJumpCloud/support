@@ -13,6 +13,10 @@ function Get-JCRCertReport {
             })]
         [System.IO.FileInfo]$ExportFilePath
     )
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
 
     # Initialize an empty array to store the results
     $reportData = New-Object System.Collections.ArrayList
