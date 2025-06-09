@@ -282,6 +282,7 @@ function Start-DeployUserCerts {
                     $userObject, $userIndex = Get-UserFromTable -userID $confirmUser.id
                     # Add user to a list for processing
                     $UserSelectionArray = $userArray[$userIndex]
+                    write-warning "Selected User: $($UserSelectionArray.username) with userID: $($UserSelectionArray.userID)"
                     # Process existing commands/ Generate new commands/ Deploy new Certificate
                     switch ($PSCmdlet.ParameterSetName) {
                         'gui' {

@@ -14,7 +14,7 @@ function Deploy-UserCertificate {
         [bool]
         $forceGenerateCommands,
         # prompt replace existing certificate
-        [Parameter(HelpMessage = 'When specified, this parameter will prompt for user imput and ask if generated commands should be invoked on associated systems')]
+        [Parameter(HelpMessage = 'When specified, this parameter will prompt for user input and ask if generated commands should be invoked on associated systems')]
         [switch]
         $prompt
     )
@@ -73,6 +73,8 @@ function Deploy-UserCertificate {
     process {
         foreach ($user in $userObject) {
             ## first determine if the local cert sha is the same as the cert sha in the admin console:
+            Write-Warning "processing user: $($user.username)"
+            Write-Warning "user: $user"
 
             # Get the commands for this user:
             $radiusCommandsByUser = Get-CommandByUsername -username $user.username
