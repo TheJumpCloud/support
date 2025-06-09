@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install and Update JumpCloud Password Manager App | v2.0.0 JCCG
+Mac - Install and Update JumpCloud Password Manager App | v2.0.1 JCCG
 
 #### commandType
 
@@ -81,11 +81,19 @@ mkdir /tmp/$TempFolder
 cd /tmp/$TempFolder
 
 if [ -d /Applications/JumpCloud\ Password\ Manager.app ]; then
-    # If JumpCloud Password Manager exists within this directory, force re-install as it is in the wrong directroy
+    # If JumpCloud Password Manager exists within this directory, force re-install as it is in the wrong directory
     # the script will continue and re-install it in the correct directory
     UpdateToLatest=false
 fi
 
+LatestAppVersion=$(curl -s "$DownloadYamlFileUrl" | \
+                grep '^version:' | \
+                sed -E 's/version:\s*//g' | \
+                tr -d '\r' | \
+                xargs)
+
+# Array to track users who need update/reinstall
+users_need_update=()
 if [ "$UpdateToLatest" = true ]; then
     for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
     do
@@ -94,31 +102,35 @@ if [ "$UpdateToLatest" = true ]; then
         if [ -z "$InstalledAppVersion" ]; then
             echo "Could not determine installed app version from '$APP_PATH' for $user."
             echo "User $user will be treated as a re-install."
+            users_need_update+=("$user")
             # Skipping over the current user will prevent unnecessary logic handling.
             continue
         fi
-        LatestAppVersion=$(curl -s "$DownloadYamlFileUrl" | \
-                    grep '^version:' | \
-                    sed -E 's/version:\s*//g' | \
-                    tr -d '\r' | \
-                    xargs)
+
         if [[ "$(printf '%s\n%s\n' "$InstalledAppVersion" "$LatestAppVersion" | sort -V | head -n1)" = "$InstalledAppVersion" && "$InstalledAppVersion" != "$LatestAppVersion" ]]; then
             echo "Installed app ($InstalledAppVersion) is OLDER than the latest available ($LatestAppVersion)."
+            users_need_update+=("$user")
         elif [[ "$(printf '%s\n%s\n' "$InstalledAppVersion" "$LatestAppVersion" | sort -V | tail -n1)" = "$InstalledAppVersion" && "$InstalledAppVersion" != "$LatestAppVersion" ]]; then
             echo "Installed app ($InstalledAppVersion) is NEWER than the latest available ($LatestAppVersion)."
-            echo "This might indicate a beta version, exiting"
-            exit 0
+            echo "This might indicate a beta version."
+            continue
         else
-            echo "Installed app is already the LATEST version ($InstalledAppVersion), exiting."
-            exit 0
+            echo "Installed app is already the LATEST version ($InstalledAppVersion) for $user."
+            continue
         fi
     done
 fi
 
-exit 0
+if [ "$UpdateToLatest" = true ] && [ ${#users_need_update[@]} -eq 0 ]; then
+    echo "All users are up to date, exiting."
+    exit 0
+fi
+
+echo "Downloading JumpCloud Password Manager from $DownloadUrl"
 # Download File into Temp Folder
 curl -s -O "$DownloadUrl"
 
+echo "Download complete."
 # Capture name of Download File
 DownloadFile="$(ls)"
 
@@ -199,8 +211,9 @@ do
         cp -pPR "$DMGAppPath" /Users/$user/Applications/
 
         # Change ownership of the file and Applications folder to the user of this loop iteration
-        chown -v $user /Users/$user/Applications
-        chown -R -v $user $APP_PATH
+        chown -v "$user" /Users/$user/Applications
+        chown -R -v "$user" "$APP_PATH" >/dev/null 2>&1 || true
+        echo "Changed ownership of $APP_PATH and /Users/$user/Applications to $user"
 
         if [[ -d /Users/$user/Desktop/JumpCloud\ Password\ Manager.app ]]; then
             # remove alias on desktop if exists
@@ -220,10 +233,10 @@ do
         userInstall=true
         echo "Copied $DMGAppPath to /Users/$user/Applications"
         if [ "$LaunchAfterInstall" = true ]; then
-            sudo -u $user open -a $APP_PATH
+            sudo -u "$user" open "$APP_PATH" >/dev/null 2>&1 || true
         fi
         # Create an alias on desktop
-        ln -s $APP_PATH /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
+        ln -s "$APP_PATH" "/Users/$user/Desktop/JumpCloud Password Manager.app"
     fi
 done
 
