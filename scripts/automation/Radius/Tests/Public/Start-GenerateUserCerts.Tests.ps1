@@ -86,7 +86,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $configPath = "$JCScriptRoot/Config.ps1"
             $content = Get-Content -Path $configPath
             # set the user cert validity to just 10 days
-            Set-JCRConfigFile -caCertValidityDays 10
+            Set-JCRConfigFile -userCertValidityDays 10
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
@@ -110,7 +110,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # reset the validity counter
             $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
-            Set-JCRConfigFile -caCertValidityDays 90
+            Set-JCRConfigFile -userCertValidityDays 90
             # Get the certs before generation minus the .zip if it exists
             $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # get the date before
@@ -142,7 +142,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # reset the validity counter
             $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
-            Set-JCRConfigFile -caCertValidityDays 90
+            Set-JCRConfigFile -userCertValidityDays 90
         }
 
 
