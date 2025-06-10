@@ -33,6 +33,12 @@ Describe 'Module Update' -Tag "Module" {
             # Populate the local module path with the JumpCloud Module from PS Gallery
             $latestJumpCloudModule = Find-Module -Name "$module" -Repository 'PSGallery' -ErrorAction Stop
 
+            # if the nuget package already exists in the local repo, skip downloading
+            Find-Module -Name "$module" -Repository $localRepoName -ErrorAction SilentlyContinue | Out-Null
+            if ($?) {
+                Write-Host "Module $module already exists in the local repo"
+                continue
+            }
             $content = Invoke-WebRequest -UseBasicParsing -Uri "https://www.powershellgallery.com/api/v2/package/$module/$($latestJumpCloudModule.version)" `
                 -Headers @{
                 "authority"       = "www.powershellgallery.com"
@@ -49,82 +55,86 @@ Describe 'Module Update' -Tag "Module" {
             # Save the binary data to a file
             [System.IO.File]::WriteAllBytes("$($filePath.path)/$module.$($latestJumpCloudModule.version).zip", $binaryData)
             # create a local module path if it does not exist
-            if (-not (Test-Path -Path "$($filePath.Path)/$module")) {
-                New-Item -Path "$($filePath.Path)/$module" -ItemType Directory
+            if (-not (Test-Path -Path "$($filePath.Path)/temp/$module")) {
+                New-Item -Path "$($filePath.Path)/temp/$module" -ItemType Directory
                 # create the version directory within the module path if it does not exist
-                New-Item -Path "$($filePath.Path)/$module/$($latestJumpCloudModule.version)" -ItemType Directory
+                New-Item -Path "$($filePath.Path)/temp/$module/$($latestJumpCloudModule.version)" -ItemType Directory
                 # Unzip the file to the local module path
-                Expand-Archive -Path "$($filePath.path)/$module.$($latestJumpCloudModule.version).zip" -DestinationPath "$localRepoPath/$module/$($latestJumpCloudModule.version)" -Force
+                Expand-Archive -Path "$($filePath.path)/$module.$($latestJumpCloudModule.version).zip" -DestinationPath "$localRepoPath/temp/$module/$($latestJumpCloudModule.version)" -Force
             }
-            publish-module -Path "$($filePath.Path)/$module/$($latestJumpCloudModule.version)" -Repository $localRepoName
+            publish-module -Path "$($filePath.Path)/temp/$module/$($latestJumpCloudModule.version)" -Repository $localRepoName
             # remove the zip file after publishing
             Remove-Item -Path "$($filePath.path)/$module.$($latestJumpCloudModule.version).zip" -Force
             # remove the module from the local module path if it exists
-            Remove-Item -Path "$($filePath.path)/$module" -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item -Path "$($filePath.path)/temp.$module" -Recurse -Force -ErrorAction SilentlyContinue
         }
 
-        # get the local module path:
-        $localModulePath = $env:PSModulePath.split(':')[0]
-        # set the dev module path relative to this test:
+        # # get the local module path:
+        # $localModulePath = $env:PSModulePath.split(':')[0]
+        # # set the dev module path relative to this test:
+        # $devModulePath = "$PSScriptRoot/../../../"
+        # # module name
+        # $moduleName = "JumpCloud.Radius"
+        # # uninstall the module if it exists
+        # $installedModule = Get-InstalledModule -Name $moduleName -AllVersions -ErrorAction SilentlyContinue
+        # foreach ($module in $installedModule) {
+        #     Uninstall-Module -Name $module.Name -Force -RequiredVersion $module.version
+        # }
+        # # remove the modules from the local module path
+        # $localNugetPkgs = Get-ChildItem -Path $localRepoPath -filter "$moduleName*.nupkg"
+        # foreach ($pkg in $localNugetPkgs) {
+        #     Remove-Item -Path $pkg.FullName -Force
+        # }
         $devModulePath = "$PSScriptRoot/../../../"
-        # module name
-        $moduleName = "JumpCloud.Radius"
-        # uninstall the module if it exists
-        $installedModule = Get-InstalledModule -Name $moduleName -AllVersions -ErrorAction SilentlyContinue
-        foreach ($module in $installedModule) {
-            Uninstall-Module -Name $module.Name -Force -RequiredVersion $module.version
-        }
-        # remove the modules from the local module path
-        $localNugetPkgs = Get-ChildItem -Path $localRepoPath -filter "$moduleName*.nupkg"
-        foreach ($pkg in $localNugetPkgs) {
-            Remove-Item -Path $pkg.FullName -Force
-        }
-
-        # module directory
-        $moduleDirectory = Join-Path $localModulePath $moduleName
-        # get the module version from the psd1 file
         $psd1Path = Join-Path $devModulePath "JumpCloud.Radius.psd1"
         $Psd1 = Import-PowerShellDataFile -Path:("$psd1Path")
         $moduleVersion = $Psd1.ModuleVersion
+        $radiusModule = "JumpCloud.Radius"
+        $radiusModuleDirectory = "$($filePath.Path)/temp/$radiusModule"
 
-        # create the module directory within the local module path if it does not exist
-        if (-NOT (Test-Path -Path $moduleDirectory)) {
-            New-Item -Path $moduleDirectory -ItemType Directory
+        # remove the module if it exists
+        if (Test-Path -Path $radiusModuleDirectory) {
+            # remove the module directory if it exists
+            Remove-Item -Path $radiusModuleDirectory -Recurse -Force
         }
-        # create the version directory within the module directory if it does not exist
-        $versionDirectory = Join-Path $moduleDirectory $moduleVersion
-        # create the version directory within the module directory
-        if (-NOT (Test-Path -Path $versionDirectory)) {
-            New-Item -Path $versionDirectory -ItemType Directory
-            # Copy all the contents from the parent folder to the destination folder
-            Copy-Item -Path $devModulePath/* -Destination $versionDirectory -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
-            # Publish the module to the local Repo
-            Publish-Module -Name $moduleName -Repository $localRepoName -Force -RequiredVersion $moduleVersion
-        } else {
-            write-host "JumpCloud.Radius module v$ModuleVersion already exists"
+        # remove the .nupkg if it exists
+        $localNugetPkgs = Get-ChildItem -Path $localRepoPath -Filter "$radiusModule*.nupkg"
+        foreach ($pkg in $localNugetPkgs) {
+            Remove-Item -Path $pkg.FullName -Force
         }
+        New-Item -Path "$radiusModuleDirectory" -ItemType Directory
+        # create the version directory within the module path if it does not exist
+        New-Item -Path "$radiusModuleDirectory/$moduleVersion" -ItemType Directory
+        # Copy all the contents from the parent folder to the destination folder
+        Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$moduleVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
+        Publish-Module -Name "$radiusModuleDirectory/$moduleVersion" -Repository $localRepoName -Force -RequiredVersion $moduleVersion
     }
     Context 'Module can be installed from the local repo' {
+        BeforeAll {
+            # Get installed Radius Modules:
+            $installedModules = Get-InstalledModule -Name $radiusModule -AllVersions -ErrorAction SilentlyContinue
+            # Uninstall the module if it exists
+            foreach ($module in $installedModules) {
+                Uninstall-Module -Name $module.Name -Force -RequiredVersion $module.version
+            }
+        }
         It 'Install Module' {
             # Install the module from the local repo
-            $installModuleSplat = @{
-                Name            = $moduleName
-                Repository      = $localRepoName
-                RequiredVersion = $moduleVersion
-                Force           = $true
-            }
-            Install-Module @installModuleSplat
+            write-host "Installing module $radiusModule from local repo $localRepoName with version $moduleVersion"
+
+            install-Module -Name "JumpCloud.Radius" -Repository $localRepoName -RequiredVersion $moduleVersion
             # check that the module is installed:
-            $installedModule = Get-InstalledModule -Name $moduleName
+            $installedModule = Get-InstalledModule -Name 'JumpCloud.Radius'
             $installedModule | Should -Not -BeNullOrEmpty
             $installedModule.version | Should -Be $moduleVersion
         }
     }
+
     Context 'When a new version of the module is available' {
         BeforeAll {
             # remove the module from the module directory
-            Remove-Item -Path $moduleDirectory -Recurse -Force
-            Install-Module -Name $moduleName -Repository $localRepoName -RequiredVersion $moduleVersion -Force
+            Remove-Item -Path $radiusModuleDirectory -Recurse -Force
+            Install-Module -Name $radiusModule -Repository $localRepoName -RequiredVersion $moduleVersion -Force
 
             # update the module manifest version to simulate a new version
             $newVersion = "$(([version]$moduleVersion).major).$(([version]$moduleVersion).minor).$(([version]$moduleVersion).build + 1)"
@@ -132,23 +142,16 @@ Describe 'Module Update' -Tag "Module" {
 
             # move the module to the local module path and publish it to the local repo
             # create the module directory within the local module path if it does not exist
-            if (-NOT (Test-Path -Path $moduleDirectory)) {
-                New-Item -Path $moduleDirectory -ItemType Directory
-            }
-            # create the version directory within the module directory if it does not exist
-            $versionDirectory = Join-Path $moduleDirectory $newVersion
-            # create the version directory within the module directory
-            if (-NOT (Test-Path -Path $versionDirectory)) {
-                New-Item -Path $versionDirectory -ItemType Directory
+            if (-NOT (Test-Path -Path $radiusModuleDirectory)) {
+                New-Item -Path $radiusModuleDirectory -ItemType Directory
+                # create the version directory within the module path if it does not exist
+                New-Item -Path "$radiusModuleDirectory/$newVersion" -ItemType Directory
                 # Copy all the contents from the parent folder to the destination folder
-                Copy-Item -Path $devModulePath/* -Destination $versionDirectory -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
-                # Publish the module to the local Repo
-                Publish-Module -Name $moduleName -Repository $localRepoName -Force -RequiredVersion $newVersion
-            } else {
-                write-host "JumpCloud.Radius module v$newVersion already exists"
+                Write-Warning "Copying module files from $devModulePath to the local repo for version $newVersion"
+                Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$newVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
+                Publish-Module -Name "$radiusModuleDirectory/$newVersion" -Repository $localRepoName -Force -RequiredVersion $newVersion
             }
-            # import the local module
-            Import-Module $psd1Path -Force
+
         }
         It 'Module can be updated from the local repo' {
             # update the module from the local repo
