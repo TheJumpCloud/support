@@ -1,5 +1,31 @@
 Describe 'Module Update' -Tag "Module" {
     BeforeAll {
+        # Load all functions from private folders
+        Write-host "script root: $($JCScriptRoot)"
+        if (-not (test-path -path $JCScriptRoot -erroraction silentlycontinue)) {
+            write-host "JCScriptRoot not set, setting it to the parent directory of the script root"
+
+            # until we've found the correct parent path traversing up the directory tree
+            do {
+                $JCScriptRoot = Split-Path -Path $PSScriptRoot -Parent
+                # check if the JumpCloud.Radius.psd1 file exists in the parent directory
+                if (Test-Path -Path "$JCScriptRoot/JumpCloud.Radius.psd1") {
+                    break
+                }
+                # if not, traverse up one more level
+                $PSScriptRoot = $JCScriptRoot
+            } while (-not (Test-Path -Path "$JCScriptRoot/JumpCloud.Radius.psd1"))
+
+        }
+        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        Foreach ($Import in $Private) {
+            Try {
+                . $Import.FullName
+            } Catch {
+                Write-Error -Message "Failed to import function $($Import.FullName): $_"
+            }
+        }
+
         # local repo name:
         $localRepoName = 'LocalPSRepo'
         # get the registered repositories:
@@ -81,8 +107,8 @@ Describe 'Module Update' -Tag "Module" {
         }
 
         # Now publish the JumpCloud.Radius module to the local repo
-        $devModulePath = "$PSScriptRoot/../../../"
-        $psd1Path = Join-Path $devModulePath "JumpCloud.Radius.psd1"
+        $devModulePath = "$JCScriptRoot"
+        $psd1Path = Join-Path $JCScriptRoot "JumpCloud.Radius.psd1"
         $Psd1 = Import-PowerShellDataFile -Path:("$psd1Path")
         $moduleVersion = $Psd1.ModuleVersion
         $radiusModule = "JumpCloud.Radius"
@@ -159,6 +185,7 @@ Describe 'Module Update' -Tag "Module" {
         }
         It 'Module can be updated from the local repo' {
             # update the module from the local repo
+            $configFileBefore = Get-JCRConfigFile -asObject
             Update-JCRModule -Force -Repository $localRepoName
             # $updateModuleSplat = @{
             #     Name            = $moduleName
@@ -167,9 +194,16 @@ Describe 'Module Update' -Tag "Module" {
             # }
             # Update-Module @updateModuleSplat -ErrorAction Stop | Out-Null
             # check that the module is updated:
-            $updatedModule = Get-InstalledModule -Name $moduleName
+            $updatedModule = Get-InstalledModule -Name $radiusModule
             $updatedModule | Should -Not -BeNullOrEmpty
             $updatedModule.version | Should -Be $newVersion
+
+            # test that the config.json file contains the data from the previous module version
+            $configFileAfter = Get-JCRConfigFile -asObject
+
+            foreach ($property in $configFileBefore.PSObject.Properties) {
+                $configFileAfter.$($property.Name).value | Should -Be $property.value.value
+            }
         }
     }
     AfterAll {

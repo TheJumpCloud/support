@@ -14,7 +14,7 @@ function Update-JCRConfigFile {
 
         if (test-path -path $configFilePath) {
             # Get Contents
-            $config = Get-JCRConfigFile -Raw
+            $config = Get-JCRConfigFile -asObject
         } else {
             # Create new file with default settings
             New-JCRConfigFile

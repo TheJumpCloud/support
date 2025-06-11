@@ -49,9 +49,9 @@ function Update-JCRModule {
                 Update-Module -Name $ModuleName
 
                 # update the settings file config.json
-                Update-JCRConfigFile -settings $savedJCSettings
+                Update-JCRConfigFile -settings $savedJCRSettings
                 # re-import the settings file variable
-                $global:JCConfig = Get-JCSettingsFile
+                $global:JCRConfig = Get-JCRConfigFile -asObject
             } catch {
                 Write-Error "Failed to update the module: $_"
             }
