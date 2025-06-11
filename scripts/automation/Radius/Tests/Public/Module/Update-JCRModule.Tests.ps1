@@ -40,7 +40,7 @@ Describe 'Module Update' -Tag "Module" {
                 $filesFound = Get-ChildItem -Path $localRepoPath -Filter "$module*.nupkg"
                 #print the file names:
                 foreach ($file in $filesFound) {
-                    Write-Host "Found file: $($file.Name) in local repo: $localRepoPath"
+                    Write-Host "Found file: $($file.FullName) in local repo: $localRepoPath"
                 }
                 continue
             }
