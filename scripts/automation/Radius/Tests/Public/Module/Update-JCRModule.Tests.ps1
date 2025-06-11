@@ -67,24 +67,15 @@ Describe 'Module Update' -Tag "Module" {
             Remove-Item -Path "$($filePath.path)/$module.$($latestJumpCloudModule.version).zip" -Force
             # remove the module from the local module path if it exists
             Remove-Item -Path "$($filePath.path)/temp.$module" -Recurse -Force -ErrorAction SilentlyContinue
+            # Print the LocalPSRepo File Contents:
+            Write-Host "# LocalPSRepo File Contents after $module insert #"
+            Get-ChildItem -Path $localRepoPath | ForEach-Object {
+                # print the file type, name and size
+                Write-Host "$($_.PSObject.TypeNames[0]) | $($_.Name) | $($_.Length) bytes"
+            }
         }
 
-        # # get the local module path:
-        # $localModulePath = $env:PSModulePath.split(':')[0]
-        # # set the dev module path relative to this test:
-        # $devModulePath = "$PSScriptRoot/../../../"
-        # # module name
-        # $moduleName = "JumpCloud.Radius"
-        # # uninstall the module if it exists
-        # $installedModule = Get-InstalledModule -Name $moduleName -AllVersions -ErrorAction SilentlyContinue
-        # foreach ($module in $installedModule) {
-        #     Uninstall-Module -Name $module.Name -Force -RequiredVersion $module.version
-        # }
-        # # remove the modules from the local module path
-        # $localNugetPkgs = Get-ChildItem -Path $localRepoPath -filter "$moduleName*.nupkg"
-        # foreach ($pkg in $localNugetPkgs) {
-        #     Remove-Item -Path $pkg.FullName -Force
-        # }
+        # Now publish the JumpCloud.Radius module to the local repo
         $devModulePath = "$PSScriptRoot/../../../"
         $psd1Path = Join-Path $devModulePath "JumpCloud.Radius.psd1"
         $Psd1 = Import-PowerShellDataFile -Path:("$psd1Path")
@@ -108,6 +99,13 @@ Describe 'Module Update' -Tag "Module" {
         # Copy all the contents from the parent folder to the destination folder
         Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$moduleVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
         Publish-Module -Name "$radiusModuleDirectory/$moduleVersion" -Repository $localRepoName -Force -RequiredVersion $moduleVersion
+
+        # Print the LocalPSRepo File Contents:
+        Write-Host "# LocalPSRepo File Contents #"
+        Get-ChildItem -Path $localRepoPath | ForEach-Object {
+            # print the file type, name and size
+            Write-Host "$($_.PSObject.TypeNames[0]) | $($_.Name) | $($_.Length) bytes"
+        }
     }
     Context 'Module can be installed from the local repo' {
         BeforeAll {
@@ -122,7 +120,7 @@ Describe 'Module Update' -Tag "Module" {
             # Install the module from the local repo
             write-host "Installing module $radiusModule from local repo $localRepoName with version $moduleVersion"
 
-            install-Module -Name "JumpCloud.Radius" -Repository $localRepoName -RequiredVersion $moduleVersion
+            install-Module -Name "JumpCloud.Radius" -Repository $localRepoName -RequiredVersion $moduleVersion -force
             # check that the module is installed:
             $installedModule = Get-InstalledModule -Name 'JumpCloud.Radius'
             $installedModule | Should -Not -BeNullOrEmpty
@@ -170,6 +168,6 @@ Describe 'Module Update' -Tag "Module" {
     }
     AfterAll {
         # reset the module version
-        update-modulemanifest -Path $psd1Path -ModuleVersion $moduleVersion
+        Update-ModuleManifest -Path $psd1Path -ModuleVersion $moduleVersion
     }
 }
