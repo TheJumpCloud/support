@@ -46,10 +46,10 @@ function Update-JCRModule {
 
             # now, attempt to update the module
             try {
-                Update-Module -Name $ModuleName -Force
+                Update-Module -Name $ModuleName
 
                 # update the settings file config.json
-                Update-JCSettingsFile -settings $savedJCSettings
+                Update-JCRConfigFile -settings $savedJCSettings
                 # re-import the settings file variable
                 $global:JCConfig = Get-JCSettingsFile
             } catch {
