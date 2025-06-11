@@ -34,9 +34,14 @@ Describe 'Module Update' -Tag "Module" {
             $latestJumpCloudModule = Find-Module -Name "$module" -Repository 'PSGallery' -ErrorAction Stop
 
             # if the nuget package already exists in the local repo, skip downloading
-            Find-Module -Name "$module" -Repository $localRepoName -ErrorAction SilentlyContinue | Out-Null
-            if ($?) {
-                Write-Host "Module $module already exists in the local repo"
+            $foundModule = Find-Module -Name "$module" -Repository $localRepoName -ErrorAction SilentlyContinue #| Out-Null
+            if ($foundModule.Name -eq $module) {
+                Write-Host "Module $module already exists in the local repo: $localRepoPath"
+                $filesFound = Get-ChildItem -Path $localRepoPath -Filter "$module*.nupkg"
+                #print the file names:
+                foreach ($file in $filesFound) {
+                    Write-Host "Found file: $($file.Name) in local repo: $localRepoPath"
+                }
                 continue
             }
             $content = Invoke-WebRequest -UseBasicParsing -Uri "https://www.powershellgallery.com/api/v2/package/$module/$($latestJumpCloudModule.version)" `
@@ -81,6 +86,7 @@ Describe 'Module Update' -Tag "Module" {
         $Psd1 = Import-PowerShellDataFile -Path:("$psd1Path")
         $moduleVersion = $Psd1.ModuleVersion
         $radiusModule = "JumpCloud.Radius"
+        $filePath = Resolve-Path -Path $localRepoPath
         $radiusModuleDirectory = "$($filePath.Path)/temp/$radiusModule"
 
         # remove the module if it exists
