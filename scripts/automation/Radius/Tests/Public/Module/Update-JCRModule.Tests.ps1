@@ -126,7 +126,7 @@ Describe 'Module Update' -Tag "Module" {
             # Install the module from the local repo
             write-host "Installing module $radiusModule from local repo $localRepoName with version $moduleVersion"
 
-            install-Module -Name "JumpCloud.Radius" -Repository $localRepoName -RequiredVersion $moduleVersion -force
+            install-Module -Name "JumpCloud.Radius" -Repository $localRepoName -RequiredVersion $moduleVersion
             # check that the module is installed:
             $installedModule = Get-InstalledModule -Name 'JumpCloud.Radius'
             $installedModule | Should -Not -BeNullOrEmpty
@@ -138,7 +138,7 @@ Describe 'Module Update' -Tag "Module" {
         BeforeAll {
             # remove the module from the module directory
             Remove-Item -Path $radiusModuleDirectory -Recurse -Force
-            Install-Module -Name $radiusModule -Repository $localRepoName -RequiredVersion $moduleVersion -Force
+            Install-Module -Name $radiusModule -Repository $localRepoName -RequiredVersion $moduleVersion
 
             # update the module manifest version to simulate a new version
             $newVersion = "$(([version]$moduleVersion).major).$(([version]$moduleVersion).minor).$(([version]$moduleVersion).build + 1)"
