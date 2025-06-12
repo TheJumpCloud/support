@@ -3,7 +3,7 @@ function Set-JCRSettingsFile {
     param (
     )
     DynamicParam {
-        $ModuleRoot = (Get-Item -Path:($JCScriptRoot))
+        $ModuleRoot = (Get-Item -Path:($JCRScriptRoot))
         $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
 
 
@@ -54,7 +54,7 @@ function Set-JCRSettingsFile {
     begin {
 
         # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($JCScriptRoot))
+        $ModuleRoot = (Get-Item -Path:($JCRScriptRoot))
         $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
 
         if (test-path -path $configFilePath) {

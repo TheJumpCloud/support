@@ -11,6 +11,6 @@ function Set-UserJsonData {
         $array.add($userArray)
         $userArray = $array
     }
-    $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCScriptRoot/users.json"
+    $userArray | ConvertTo-Json -Depth 6 | Set-Content -Path "$JCRScriptRoot/users.json"
 
 }

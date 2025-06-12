@@ -1,6 +1,6 @@
 Describe "Get Global Variable Data Tests" -Tag "Cache" {
     BeforeAll {
-        $dataPath = "$JCScriptRoot/data/"
+        $dataPath = "$JCRScriptRoot/data/"
         $requiredFiles = @(
             'associationHash.json',
             'radiusMembers.json',
@@ -9,7 +9,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             'certHash.json'
         )
         # explicitly import the settings file functions for these tests:
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -182,8 +182,8 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 )
             }
             # write the mocked certHash to the data file:
-            $certHash | ConvertTo-Json |  Out-File "$JCScriptRoot/data/certHash.json"
-            $Global:JCRCertHash = Get-Content -path "$JCScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
+            $certHash | ConvertTo-Json |  Out-File "$JCRScriptRoot/data/certHash.json"
+            $Global:JCRCertHash = Get-Content -path "$JCRScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
             # update the users json file
             Update-JCRUsersJson
             $userArray = Get-UserJsonData

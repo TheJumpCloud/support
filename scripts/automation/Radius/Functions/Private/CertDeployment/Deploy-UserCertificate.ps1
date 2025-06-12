@@ -380,7 +380,7 @@ chmod 755 /tmp/$($user.userName)-client-signed.pfx
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certInfo.serial)"
-networkSsid="$($JCR_NETWORKSSID)"
+networkSsid="$($global:JCRConfig.networkSSID.value)"
 # store orig case match value
 caseMatchOrigValue=`$(shopt -p nocasematch; true)
 # set to case-insensitive
@@ -435,7 +435,7 @@ else
 fi
 
 if [[ `$import == true ]]; then
-    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $JCR_USER_CERT_PASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
+    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $($global:JCRConfig.certSecretPass.value) -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
     if [[ `$? -eq 0 ]]; then
         echo "Import Success"
         # get the SHA hash of the newly imported cert
@@ -452,8 +452,8 @@ else
     echo "cert already imported"
 fi
 
-# check if the cert secruity preference is set:
-IFS=';' read -ra network <<< "`$JCR_NETWORKSSID"
+# check if the cert security preference is set:
+IFS=';' read -ra network <<< "`$(`$global:JCRConfig.networkSSID.value)"
 for i in "`${network[@]}"; do
     echo "begin setting network SSID: `$i"
     if /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"; then
@@ -644,8 +644,8 @@ If (Test-Path "C:\RadiusCert"){
 }
 # expand archive as root and copy to temp location
 Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\RadiusCert -Force
-`$password = ConvertTo-SecureString -String $JCR_USER_CERT_PASS -AsPlainText -Force
-`$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String $JCR_USER_CERT_PASS -AsPlainText -Force
+`$password = ConvertTo-SecureString -String $($global:JCRConfig.certSecretPass.value) -AsPlainText -Force
+`$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String $($global:JCRConfig.certSecretPass.value) -AsPlainText -Force
 Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
 }
 `$imported = Get-PfxData -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx"

@@ -52,6 +52,8 @@ function Update-JCRModule {
                 Update-JCRConfigFile -settings $savedJCRSettings
                 # re-import the settings file variable
                 $global:JCRConfig = Get-JCRConfigFile -asObject
+
+
             } catch {
                 Write-Error "Failed to update the module: $_"
             }
@@ -77,6 +79,13 @@ function Update-JCRModule {
                 Write-Error "Failed to update the module to the latest version."
             }
             Import-module -Name $ModuleName -Force
+
+            if (-not (Test-JCRExtensionFile)) {
+                Write-Host "Extensions file is not valid, updating it now..."
+                Set-JCRExtensionFile
+            } else {
+                Write-Host "Extensions file is valid, no need to update"
+            }
 
         }
     }

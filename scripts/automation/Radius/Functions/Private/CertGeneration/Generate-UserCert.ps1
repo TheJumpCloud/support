@@ -21,7 +21,7 @@ function Generate-UserCert {
         $user
     )
     begin {
-        # . "$JCScriptRoot/Config.ps1"
+        # . "$JCRScriptRoot/Config.ps1"
         if (-Not (Test-Path -Path $rootCAKey)) {
             Throw "RootCAKey could not be found in project directory, have you run Generate-Cert.ps1?"
             exit 1
@@ -33,7 +33,7 @@ function Generate-UserCert {
     }
     process {
         # Set Extension Path
-        $extensionsDir = Join-Path $global:JCRConfig.radiusDirectory.value "Extensions"
+        $extensionsDir = Join-Path $JCRScriptRoot "Extensions"
         $expectedFile = "extensions-$certType.cnf"
         $ExtensionPath = Get-ChildItem -Path $extensionsDir -Filter "extensions-*.cnf" | Where-Object { $_.Name -ieq $expectedFile } | Select-Object -First 1
 

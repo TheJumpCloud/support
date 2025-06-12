@@ -21,7 +21,7 @@ Foreach ($Import in $Public) {
 # setup:
 # build required users.json file:
 # set script root:
-$global:JCScriptRoot = "$PSScriptRoot"
+$global:JCRScriptRoot = "$PSScriptRoot"
 
 # from the settings file we should have a location for the certs and user certs
 

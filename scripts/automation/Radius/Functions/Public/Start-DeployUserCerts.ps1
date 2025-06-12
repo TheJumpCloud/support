@@ -31,7 +31,7 @@ function Start-DeployUserCerts {
     # identify users that need their certs still deployed
     $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
     # set the script root variable to use for parallel functions:
-    $JCScriptRoot = $Global:JCScriptRoot
+    $JCRScriptRoot = $Global:JCRScriptRoot
 
     do {
         switch ($PSCmdlet.ParameterSetName) {
@@ -97,10 +97,10 @@ function Start-DeployUserCerts {
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
-                    $JCScriptRoot = $using:JCScriptRoot
+                    $JCRScriptRoot = $using:JCRScriptRoot
 
                     # Import the private functions
-                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse )
+                    $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse )
                     foreach ($Import in $Private) {
                         Try {
                             . $Import.FullName
@@ -186,7 +186,7 @@ function Start-DeployUserCerts {
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
-                    $JCScriptRoot = $using:JCScriptRoot
+                    $JCRScriptRoot = $using:JCRScriptRoot
 
                     # set the required global variables
                     $global:JCRConfig = @{
@@ -214,7 +214,7 @@ function Start-DeployUserCerts {
                     $workDoneArray = $using:workDoneArray
 
                     # Import the private functions
-                    $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse )
+                    $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse )
                     foreach ($Import in $Private) {
                         Try {
                             . $Import.FullName

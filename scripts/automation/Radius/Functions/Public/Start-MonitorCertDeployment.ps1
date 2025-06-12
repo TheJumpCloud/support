@@ -5,9 +5,9 @@ Function Start-MonitorCertDeployment {
     # Do not modify below
     ################################################################################
     # Import the functions
-    # Import-Module "$JCScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
+    # Import-Module "$JCRScriptRoot/Functions/JCRadiusCertDeployment.psm1" -DisableNameChecking -Force
     # Define jsonData file
-    $jsonFile = "$JCScriptRoot/users.json"
+    $jsonFile = "$JCRScriptRoot/users.json"
 
 
 

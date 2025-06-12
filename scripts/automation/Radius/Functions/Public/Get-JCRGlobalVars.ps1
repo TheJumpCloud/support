@@ -20,9 +20,9 @@ function Get-JCRGlobalVars {
             Connect-JCOnline -force
         }
         # ensure the data directory exists to cache the json files:
-        if (-not (Test-Path "$JCScriptRoot/data")) {
+        if (-not (Test-Path "$JCRScriptRoot/data")) {
             Write-Host "[status] Creating Data Directory"
-            New-Item -ItemType Directory -Path "$JCScriptRoot/data"
+            New-Item -ItemType Directory -Path "$JCRScriptRoot/data"
         }
 
         if (-Not $global:JCRConfig) {
@@ -82,43 +82,43 @@ function Get-JCRGlobalVars {
         # also validate that the data files are non-null, if they are, force update]
         $requiredHashFiles = @('radiusMembers.json', 'systemHash.json', 'userHash.json', 'certHash.json')
         foreach ($file in $requiredHashFiles) {
-            if (Test-Path -Path "$JCScriptRoot/data/$file") {
-                $fileContents = Get-Content "$JCScriptRoot/data/$file"
+            if (Test-Path -Path "$JCRScriptRoot/data/$file") {
+                $fileContents = Get-Content "$JCRScriptRoot/data/$file"
             } else {
-                Write-Host "[status] $JCScriptRoot/data/$file file does not exist, updating global variables"
+                Write-Host "[status] $JCRScriptRoot/data/$file file does not exist, updating global variables"
                 $update = $true
             }
             # if the file is null force update
             if ([string]::IsNullOrEmpty($fileContents)) {
-                Write-Host "[status] $JCScriptRoot/data/$file file is null, updating global variables"
+                Write-Host "[status] $JCRScriptRoot/data/$file file is null, updating global variables"
                 $update = $true
             }
         }
 
         $requiredAssociationHashFiles = @('associationHash.json')
         foreach ($file in $requiredAssociationHashFiles) {
-            if (Test-Path -Path "$JCScriptRoot/data/$file") {
-                $fileContents = Get-Content "$JCScriptRoot/data/$file"
+            if (Test-Path -Path "$JCRScriptRoot/data/$file") {
+                $fileContents = Get-Content "$JCRScriptRoot/data/$file"
                 switch ($skipAssociation) {
                     $true {
-                        # Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
+                        # Write-Host "[status] $JCRScriptRoot/data/$file will be skipped"
                         $updateAssociation = $false
                     }
                 }
             } else {
-                Write-Host "[status] $JCScriptRoot/data/$file file does not exist, updating global variables"
+                Write-Host "[status] $JCRScriptRoot/data/$file file does not exist, updating global variables"
                 $update = $true
                 $updateAssociation = $true
             }
             # if the file is null force update
             if ([string]::IsNullOrEmpty($fileContents)) {
-                Write-Host "[status] $JCScriptRoot/data/$file file is null, updating global variables"
+                Write-Host "[status] $JCRScriptRoot/data/$file file is null, updating global variables"
                 $update = $true
                 $updateAssociation = $true
             } else {
                 switch ($skipAssociation) {
                     $true {
-                        # Write-Host "[status] $JCScriptRoot/data/$file will be skipped"
+                        # Write-Host "[status] $JCRScriptRoot/data/$file will be skipped"
                         $updateAssociation = $false
                     }
                 }
@@ -164,9 +164,9 @@ function Get-JCRGlobalVars {
                         }
                     }
                     # write out the association hash
-                    $userAssociationList | ConvertTo-Json -Depth 10 | Out-File "$JCScriptRoot/data/associationHash.json"
+                    $userAssociationList | ConvertTo-Json -Depth 10 | Out-File "$JCRScriptRoot/data/associationHash.json"
                 } else {
-                    $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
+                    $userAssociationList = Get-Content -Raw -Path "$JCRScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
 
                 }
                 if ($setAssociations) {
@@ -194,10 +194,10 @@ function Get-JCRGlobalVars {
 
                     }
                     # write out the association hash
-                    $userAssociationList | ConvertTo-Json -Depth 10 | Out-File "$JCScriptRoot/data/associationHash.json"
+                    $userAssociationList | ConvertTo-Json -Depth 10 | Out-File "$JCRScriptRoot/data/associationHash.json"
                 }
                 if ($associationUsername) {
-                    $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
+                    $userAssociationList = Get-Content -Raw -Path "$JCRScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
                     $matchedUser = $radiusMemberList | Where-Object { $_.username -eq $associationUsername }
                     if (-Not $matchedUser) {
                         Write-Warning "user not found"
@@ -239,20 +239,20 @@ function Get-JCRGlobalVars {
                         #
                     }
                     # write out the association hash
-                    $userAssociationList | ConvertTo-Json -Depth 10 | Out-File "$JCScriptRoot/data/associationHash.json"
+                    $userAssociationList | ConvertTo-Json -Depth 10 | Out-File "$JCRScriptRoot/data/associationHash.json"
                 }
                 # update certHash in parallel:
                 $certHash = Get-CertHash
 
                 # finally write out the data to file:
-                $users | ConvertTo-Json -Depth 100 -Compress | Out-File "$JCScriptRoot/data/userHash.json"
-                $systems | ConvertTo-Json -Depth 10 | Out-File "$JCScriptRoot/data/systemHash.json"
-                $radiusMemberList | ConvertTo-Json | Out-File "$JCScriptRoot/data/radiusMembers.json"
-                $certHash | ConvertTo-Json | Out-File "$JCScriptRoot/data/certHash.json"
+                $users | ConvertTo-Json -Depth 100 -Compress | Out-File "$JCRScriptRoot/data/userHash.json"
+                $systems | ConvertTo-Json -Depth 10 | Out-File "$JCRScriptRoot/data/systemHash.json"
+                $radiusMemberList | ConvertTo-Json | Out-File "$JCRScriptRoot/data/radiusMembers.json"
+                $certHash | ConvertTo-Json | Out-File "$JCRScriptRoot/data/certHash.json"
             }
             $false {
                 # write-host "It's been $($lastUpdateTimespan.hours) hours since we last pulled user, system and association data, no need to update"
-                $userAssociationList = Get-Content -Raw -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
+                $userAssociationList = Get-Content -Raw -Path "$JCRScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
             }
         }
     }
@@ -272,11 +272,11 @@ function Get-JCRGlobalVars {
             }
             $false {
                 # set global vars from local cache
-                $Global:JCRUsers = Get-Content -Path "$JCScriptRoot/data/userHash.json" | ConvertFrom-Json -AsHashtable
-                $Global:JCRSystems = Get-Content -Path "$JCScriptRoot/data/systemHash.json" | ConvertFrom-Json -AsHashtable
-                $Global:JCRAssociations = Get-Content -Path "$JCScriptRoot/data/associationHash.json" | ConvertFrom-Json -AsHashtable
-                [array]$Global:JCRRadiusMembers = Get-Content -Path "$JCScriptRoot/data/radiusMembers.json" | ConvertFrom-Json -AsHashtable
-                $Global:JCRCertHash = Get-Content -Path "$JCScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
+                $Global:JCRUsers = Get-Content -Path "$JCRScriptRoot/data/userHash.json" | ConvertFrom-Json -AsHashtable
+                $Global:JCRSystems = Get-Content -Path "$JCRScriptRoot/data/systemHash.json" | ConvertFrom-Json -AsHashtable
+                $Global:JCRAssociations = Get-Content -Path "$JCRScriptRoot/data/associationHash.json" | ConvertFrom-Json -AsHashtable
+                [array]$Global:JCRRadiusMembers = Get-Content -Path "$JCRScriptRoot/data/radiusMembers.json" | ConvertFrom-Json -AsHashtable
+                $Global:JCRCertHash = Get-Content -Path "$JCRScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
                 # update users.json
                 Update-JCRUsersJson
             }

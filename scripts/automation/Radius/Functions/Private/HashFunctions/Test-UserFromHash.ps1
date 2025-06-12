@@ -13,7 +13,7 @@ function Test-UserFromHash {
     begin {
         # Get User Group membership
         if ( -not $Global:JCRUsers ) {
-            $Global:JCRUsers = Get-Content -path "$JCScriptRoot/data/userHash.json" | ConvertFrom-Json -AsHashtable
+            $Global:JCRUsers = Get-Content -path "$JCRScriptRoot/data/userHash.json" | ConvertFrom-Json -AsHashtable
         }
     }
     process {

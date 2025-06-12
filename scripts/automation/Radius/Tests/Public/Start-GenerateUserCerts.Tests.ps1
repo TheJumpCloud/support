@@ -1,7 +1,7 @@
 Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     BeforeAll {
         # Load all functions from private folders
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -80,10 +80,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     Context 'Certs generated for users who have certs that are about set to expire soon' {
         BeforeAll {
             # import necessary functions:
-            . "$JCScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
-            . "$JCScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
+            . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
+            . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
             # Set config
-            $configPath = "$JCScriptRoot/Config.ps1"
+            $configPath = "$JCRScriptRoot/Config.ps1"
             $content = Get-Content -Path $configPath
             # set the user cert validity to just 10 days
             Set-JCRConfigFile -userCertValidityDays 10

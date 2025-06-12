@@ -1,7 +1,7 @@
 Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
     BeforeAll {
         # Load all functions from private folders
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -216,7 +216,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailSAN certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/Config.ps1"
+            $configPath = "$JCRScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             Set-JCRConfigFile -certType "EmailSAN"
@@ -250,7 +250,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailDN certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/Config.ps1"
+            $configPath = "$JCRScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             Set-JCRConfigFile -certType "EmailDN"
@@ -280,7 +280,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'UsernameCn certs are created and command generated with correct identifiers' {
             # Set config
-            $configPath = "$JCScriptRoot/Config.ps1"
+            $configPath = "$JCRScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             Set-JCRConfigFile -certType "usernameCn"
@@ -311,7 +311,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         AfterAll {
             # Set config
-            $configPath = "$JCScriptRoot/Config.ps1"
+            $configPath = "$JCRScriptRoot/Config.ps1"
             $content = Get-Content -path $configPath
             # set the cert type
             Set-JCRConfigFile -certType "usernameCn"

@@ -27,7 +27,7 @@ Function Start-GenerateRootCert {
     # Radius CBA-BYO Authentication UI
 
     # Edit the variables in Config.ps1 before running this script
-    # . "$JCScriptRoot/Config.ps1"
+    # . "$JCRScriptRoot/Config.ps1"
 
     # if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
     #     throw "OrganizationID not specified, please update Config.ps1"
@@ -36,7 +36,7 @@ Function Start-GenerateRootCert {
     ################################################################################
     # Do Not Edit Below:
     ################################################################################
-    # Set-Location $JCScriptRoot
+    # Set-Location $JCRScriptRoot
 
     # REM Generate Root Server Private Key and server certificate (self signed as CA)
     Write-Host "Generating Self Signed Root CA Certificate"
@@ -154,21 +154,11 @@ Function Start-GenerateRootCert {
                         Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                         # openssl x509 -in ca-cert.pem -noout -text
                         # Update Extensions Distinguished Names:
-                        $exts = Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Extensions")
-                        foreach ($ext in $exts) {
-                            Write-Host "Updating Subject Headers for $($ext.Name)"
-                            $extContent = Get-Content -Path $ext.FullName -Raw
-                            $reqDistinguishedName = @"
-[req_distinguished_name]
-C = $($($global:JCRConfig.certSubjectHeaderCountryCode.value))
-ST = $($($global:JCRConfig.certSubjectHeaderStateCode.value))
-L = $($($global:JCRConfig.certSubjectHeaderLocality.value))
-O = $($($global:JCRConfig.certSubjectHeaderOrganization.value))
-OU = $($($global:JCRConfig.certSubjectHeaderOrganizationUnit.value))
-CN = $($($global:JCRConfig.certSubjectHeaderCommonName.value))
-
-"@
-                            $extContent -Replace ("\[req_distinguished_name\][\s\S]*(?=\[v3_req\])", $reqDistinguishedName) | Set-Content -Path $ext.FullName -NoNewline -Force
+                        if (-not (Test-JCRExtensionFile)) {
+                            Write-Host "Extensions file is not valid, updating it now..."
+                            Set-JCRExtensionFile
+                        } else {
+                            Write-Host "Extensions file is valid, no need to update"
                         }
                     }
                     $false {
@@ -219,7 +209,7 @@ CN = $($($global:JCRConfig.certSubjectHeaderCommonName.value))
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                 # openssl x509 -in ca-cert.pem -noout -text
                 # Update Extensions Distinguished Names:
-                $exts = Get-ChildItem -Path (Resolve-Path -path "$JCScriptRoot/Extensions")
+                $exts = Get-ChildItem -Path (Resolve-Path -path "$JCRScriptRoot/Extensions")
                 foreach ($ext in $exts) {
                     Write-Host "Updating Subject Headers for $($ext.Name)"
                     $extContent = Get-Content -Path $ext.FullName -Raw

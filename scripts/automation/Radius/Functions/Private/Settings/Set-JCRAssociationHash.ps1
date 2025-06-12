@@ -7,7 +7,7 @@ function Set-JCRAssociationHash {
     )
     begin {
         # get the data
-        $associationFile = "$JCScriptRoot/data/associationHash.json"
+        $associationFile = "$JCRScriptRoot/data/associationHash.json"
         $associationContent = Get-Content -Path $associationFile | ConvertFrom-Json -depth 6 -AsHashtable
     }
     process {

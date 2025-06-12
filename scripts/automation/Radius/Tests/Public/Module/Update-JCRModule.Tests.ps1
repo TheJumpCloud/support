@@ -1,23 +1,23 @@
 Describe 'Module Update' -Tag "Module" {
     BeforeAll {
         # Load all functions from private folders
-        Write-host "script root: $($JCScriptRoot)"
-        if (-not (test-path -path $JCScriptRoot -erroraction silentlycontinue)) {
-            write-host "JCScriptRoot not set, setting it to the parent directory of the script root"
+        Write-host "script root: $($JCRScriptRoot)"
+        if (-not (test-path -path $JCRScriptRoot -erroraction silentlycontinue)) {
+            write-host "JCRScriptRoot not set, setting it to the parent directory of the script root"
 
             # until we've found the correct parent path traversing up the directory tree
             do {
-                $JCScriptRoot = Split-Path -Path $PSScriptRoot -Parent
+                $JCRScriptRoot = Split-Path -Path $PSScriptRoot -Parent
                 # check if the JumpCloud.Radius.psd1 file exists in the parent directory
-                if (Test-Path -Path "$JCScriptRoot/JumpCloud.Radius.psd1") {
+                if (Test-Path -Path "$JCRScriptRoot/JumpCloud.Radius.psd1") {
                     break
                 }
                 # if not, traverse up one more level
-                $PSScriptRoot = $JCScriptRoot
-            } while (-not (Test-Path -Path "$JCScriptRoot/JumpCloud.Radius.psd1"))
+                $PSScriptRoot = $JCRScriptRoot
+            } while (-not (Test-Path -Path "$JCRScriptRoot/JumpCloud.Radius.psd1"))
 
         }
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -107,8 +107,8 @@ Describe 'Module Update' -Tag "Module" {
         }
 
         # Now publish the JumpCloud.Radius module to the local repo
-        $devModulePath = "$JCScriptRoot"
-        $psd1Path = Join-Path $JCScriptRoot "JumpCloud.Radius.psd1"
+        $devModulePath = "$JCRScriptRoot"
+        $psd1Path = Join-Path $JCRScriptRoot "JumpCloud.Radius.psd1"
         $Psd1 = Import-PowerShellDataFile -Path:("$psd1Path")
         $moduleVersion = $Psd1.ModuleVersion
         $radiusModule = "JumpCloud.Radius"
@@ -204,6 +204,37 @@ Describe 'Module Update' -Tag "Module" {
             foreach ($property in $configFileBefore.PSObject.Properties) {
                 $configFileAfter.$($property.Name).value | Should -Be $property.value.value
             }
+
+            # Validate that the extension files in /Extensions are updated from JCRConfig
+            # print the $JCRScriptRoot
+            Write-Host "JCRScriptRoot: $JCRScriptRoot"
+            $extensionsDir = Join-Path $JCRScriptRoot "Extensions"
+            Write-Host "Extensions Directory: $extensionsDir"
+            # Validate the extension files exist:
+            $extensionsFiles = Get-ChildItem -Path (Resolve-Path -Path $extensionsDir) -Filter "extensions-*.cnf"
+            $extensionsFiles | Should -Not -BeNullOrEmpty
+            foreach ($file in $extensionsFiles) {
+                Write-Host "Found extension file: $($file.FullName)"
+                $fileContent = Get-Content -Path $file.FullName -Raw
+                # Validate that the file contains the expected headers
+                $expectedHeaders = @(
+                    "C = $($global:JCRConfig.certSubjectHeaderCountryCode.value)",
+                    "ST = $($global:JCRConfig.certSubjectHeaderStateCode.value)",
+                    "L = $($global:JCRConfig.certSubjectHeaderLocality.value)",
+                    "O = $($global:JCRConfig.certSubjectHeaderOrganization.value)",
+                    "OU = $($global:JCRConfig.certSubjectHeaderOrganizationUnit.value)",
+                    "CN = $($global:JCRConfig.certSubjectHeaderCommonName.value)"
+                )
+                foreach ($header in $expectedHeaders) {
+                    $fileContent | Should -Match $header
+                }
+            }
+            # Validate that the extensions files are valid with the function
+            $extensionsValid = Test-JCRExtensionFile
+            $extensionsValid | Should -BeTrue
+
+
+
         }
     }
     AfterAll {
