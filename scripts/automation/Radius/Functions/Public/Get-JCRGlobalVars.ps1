@@ -126,7 +126,6 @@ function Get-JCRGlobalVars {
         }
     }
     process {
-        Write-Host "begin Get-JCRGlobalVars"
         switch ($update) {
             $true {
                 # update the global variables
