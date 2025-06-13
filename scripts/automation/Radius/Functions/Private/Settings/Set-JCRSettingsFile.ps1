@@ -3,7 +3,7 @@ function Set-JCRSettingsFile {
     param (
     )
     DynamicParam {
-        $ModuleRoot = (Get-Item -Path:($JCScriptRoot))
+        $ModuleRoot = (Get-Item -Path:($JCRScriptRoot))
         $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
 
 
@@ -52,12 +52,9 @@ function Set-JCRSettingsFile {
         }
     }
     begin {
-        if ($JCAPIKEY.length -ne 40) {
-            Connect-JCOnline -Force | Out-Null
-        }
 
         # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($JCScriptRoot))
+        $ModuleRoot = (Get-Item -Path:($JCRScriptRoot))
         $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
 
         if (test-path -path $configFilePath) {
@@ -95,6 +92,6 @@ function Set-JCRSettingsFile {
         # Write out the new settings
         $config | ConvertTo-Json | Out-File -FilePath $configFilePath
         # Update Global Variable
-        $global:JCRConfig = Get-JCRSettingsFile
+        $global:JCRConfig = Get-JCRConfigFile
     }
 }

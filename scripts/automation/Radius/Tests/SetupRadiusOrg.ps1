@@ -53,11 +53,29 @@ $env:certKeyPassword = "testCertificate123!@#"
 # update config:
 Write-Warning "Updating Config File"
 
-$configPath = Resolve-Path -Path "$PSScriptRoot/../Config.ps1"
-write-warning $configPath
-$configContent = Get-Content -path $configPath
+# Create a new Radius directory
+$radiusDirectory = Join-Path -Path $HOME -ChildPath "RADIUS"
+if (-Not (Test-Path -Path $radiusDirectory)) {
+    New-Item -ItemType Directory -Path $radiusDirectory | Out-Null
+}
+
 # Update the userGroupID:
-$configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GROUP = `"$($radiusUserGroup.id)`"") | Set-Content -Path $configPath
+$settings = @{
+    certSubjectHeaderCommonName       = "JumpCloud.com"
+    certType                          = "UsernameCn"
+    certSubjectHeaderOrganization     = "JumpCloud"
+    certSecretPass                    = "secret1234!"
+    certSubjectHeaderOrganizationUnit = "Customer_Tools"
+    certSubjectHeaderCountryCode      = "US"
+    certSubjectHeaderStateCode        = "CO"
+    certSubjectHeaderLocality         = "Boulder"
+    radiusDirectory                   = "$(Resolve-Path $HOME/RADIUS)"
+    networkSSID                       = "TP-Link_SSID"
+    userGroup                         = $radiusUserGroup.id
+    openSSLBinary                     = 'openssl'
+}
+
+Set-JCRConfigFile @settings
 # update the openSSL path:
 if ($IsMacOS) {
     $brewList = brew list openssl@3
@@ -75,9 +93,7 @@ if ($IsMacOS) {
     $opensslVersion = $regmatch.matches.groups[1].value
 
     Write-Warning "OpenSSL Version: $opensslVersion is installed via homebrew on this system; updating config:"
-    $configContent = Get-Content -path $configPath
-    $configContent -replace ('\$Global:JCR_OPENSSL = *.+', "`$Global:JCR_OPENSSL = `"$($brewListBinary)`"") | Set-Content -Path $configPath
 }
 
 $env:certKeyPassword = "TestCertificate123!@#"
-Import-Module "$psscriptRoot/../JumpCloud-Radius.psd1" -Force
+Import-Module "$psscriptRoot/../JumpCloud.Radius.psd1" -Force

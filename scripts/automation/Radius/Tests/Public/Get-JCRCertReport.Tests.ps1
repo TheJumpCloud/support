@@ -1,7 +1,7 @@
 Describe 'User Cert Report' -Tag "Reports" {
     BeforeAll {
         # Load all functions from private folders
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -23,15 +23,15 @@ Describe 'User Cert Report' -Tag "Reports" {
     Context "Report Generation" {
         It "Generates the Report" {
             # Export the report
-            Get-JCRCertReport -ExportFilePath "$JCScriptRoot/testReport.csv"
-            $report = Import-Csv -Path "$JCScriptRoot/testReport.csv"
+            Get-JCRCertReport -ExportFilePath "$JCRScriptRoot/testReport.csv"
+            $report = Import-Csv -Path "$JCRScriptRoot/testReport.csv"
             $report | Should -Not -BeNullOrEmpty
         }
         It "Checks for invalid Path" {
             # Export the report
-            { Get-JCRCertReport -ExportFilePath "$JCScriptRoot/testReport" } | Should -Throw
+            { Get-JCRCertReport -ExportFilePath "$JCRScriptRoot/testReport" } | Should -Throw
             { Get-JCRCertReport -ExportFilePath "testReport" } | Should -Throw
-            { Get-JCRCertReport -ExportFilePath "$JCScriptRoot/testReport.csv" } | Should -Not -Throw
+            { Get-JCRCertReport -ExportFilePath "$JCRScriptRoot/testReport.csv" } | Should -Not -Throw
         }
     }
 }
