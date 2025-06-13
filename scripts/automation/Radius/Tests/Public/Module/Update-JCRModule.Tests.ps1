@@ -1,8 +1,7 @@
 Describe 'Module Update' -Tag "Module" {
     BeforeAll {
         # Load all functions from private folders
-        Write-host "script root: $($JCRScriptRoot)"
-        if (-not (test-path -path $JCRScriptRoot -erroraction silentlycontinue)) {
+        if (-not (test-path -path $JCRScriptRoot -errorAction silentlyContinue)) {
             write-host "JCRScriptRoot not set, setting it to the parent directory of the script root"
 
             # until we've found the correct parent path traversing up the directory tree

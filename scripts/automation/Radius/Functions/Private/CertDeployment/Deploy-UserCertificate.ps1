@@ -73,8 +73,8 @@ function Deploy-UserCertificate {
     process {
         foreach ($user in $userObject) {
             ## first determine if the local cert sha is the same as the cert sha in the admin console:
-            Write-Warning "processing user: $($user.username)"
-            Write-Warning "user: $user"
+            # Write-Warning "processing user: $($user.username)"
+            # Write-Warning "user: $user"
 
             # Get the commands for this user:
             $radiusCommandsByUser = Get-CommandByUsername -username $user.username
