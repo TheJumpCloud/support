@@ -29,6 +29,11 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
             $global:JCRConfig.userGroup.value | Should -Be $null
         }
         It "Setting the settings to some series of values should not throw an error" {
+            # First create a new radiusDirectory
+            $radiusDirectory = Join-Path -Path $HOME -ChildPath "RADIUS"
+            if (-Not (Test-Path -Path $radiusDirectory)) {
+                New-Item -ItemType Directory -Path $radiusDirectory | Out-Null
+            }
             $settings = @{
                 certSubjectHeaderCommonName       = "JumpCloud.com"
                 certType                          = "UsernameCn"
