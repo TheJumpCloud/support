@@ -53,6 +53,12 @@ $env:certKeyPassword = "testCertificate123!@#"
 # update config:
 Write-Warning "Updating Config File"
 
+# Create a new Radius directory
+$radiusDirectory = Join-Path -Path $HOME -ChildPath "RADIUS"
+if (-Not (Test-Path -Path $radiusDirectory)) {
+    New-Item -ItemType Directory -Path $radiusDirectory | Out-Null
+}
+
 # Update the userGroupID:
 $settings = @{
     certSubjectHeaderCommonName       = "JumpCloud.com"
@@ -63,7 +69,7 @@ $settings = @{
     certSubjectHeaderCountryCode      = "US"
     certSubjectHeaderStateCode        = "CO"
     certSubjectHeaderLocality         = "Boulder"
-    radiusDirectory                   = "$(Resolve-Path $PSScriptRoot/../)"
+    radiusDirectory                   = "$(Resolve-Path $HOME/RADIUS)"
     networkSSID                       = "TP-Link_SSID"
     userGroup                         = $radiusUserGroup.id
     openSSLBinary                     = 'openssl'

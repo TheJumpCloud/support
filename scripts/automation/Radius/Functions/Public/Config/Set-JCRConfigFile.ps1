@@ -59,6 +59,13 @@ function Set-JCRConfigFile {
         $params = $PSBoundParameters
         # update config settings
         foreach ($param in $params.Keys) {
+            # validate the parameters
+            switch ($param) {
+                'radiusDirectory' {
+                    # validate the directory
+                    Test-JCRRadiusDirectory -Path $params[$param]
+                }
+            }
             # set the value of the config setting to the value passed into this function
             $global:JCRConfig.$param.value = $params[$param]
 
