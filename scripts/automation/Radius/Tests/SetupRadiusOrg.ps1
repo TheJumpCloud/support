@@ -61,18 +61,20 @@ if (-Not (Test-Path -Path $radiusDirectory)) {
 
 # Update the userGroupID:
 $settings = @{
-    certSubjectHeaderCommonName       = "JumpCloud.com"
-    certType                          = "UsernameCn"
-    certSubjectHeaderOrganization     = "JumpCloud"
-    certSecretPass                    = "secret1234!"
-    certSubjectHeaderOrganizationUnit = "Customer_Tools"
-    certSubjectHeaderCountryCode      = "US"
-    certSubjectHeaderStateCode        = "CO"
-    certSubjectHeaderLocality         = "Boulder"
-    radiusDirectory                   = "$(Resolve-Path $HOME/RADIUS)"
-    networkSSID                       = "TP-Link_SSID"
-    userGroup                         = $radiusUserGroup.id
-    openSSLBinary                     = 'openssl'
+    certType          = "UsernameCn"
+    certSecretPass    = "secret1234!"
+    radiusDirectory   = "$(Resolve-Path $HOME/RADIUS)"
+    networkSSID       = "TP-Link_SSID"
+    userGroup         = $radiusUserGroup.id
+    openSSLBinary     = 'openssl'
+    certSubjectHeader = @{
+        CountryCode      = "US"
+        StateCode        = "CO"
+        Locality         = "Boulder"
+        Organization     = "JumpCloud"
+        OrganizationUnit = "Customer_Tools"
+        CommonName       = "JumpCloud.com"
+    }
 }
 
 Set-JCRConfigFile @settings
