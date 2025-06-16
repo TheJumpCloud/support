@@ -34,18 +34,20 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
                 New-Item -ItemType Directory -Path $radiusDirectory | Out-Null
             }
             $settings = @{
-                certSubjectHeaderCommonName       = "JumpCloud.com"
-                certType                          = "UsernameCn"
-                certSubjectHeaderOrganization     = "JumpCloud"
-                radiusDirectory                   = "~/RADIUS"
-                certSecretPass                    = "secret1234!"
-                certSubjectHeaderOrganizationUnit = "Customer_Tools"
-                certSubjectHeaderCountryCode      = "US"
-                certSubjectHeaderStateCode        = "CO"
-                certSubjectHeaderLocality         = "Boulder"
-                networkSSID                       = "TP-Link_SSID"
-                userGroup                         = "5f3171a9232e1113939dd6a2"
-                openSSLBinary                     = '/opt/homebrew/bin/openssl'
+                certType          = "UsernameCn"
+                radiusDirectory   = "~/RADIUS"
+                certSecretPass    = "secret1234!"
+                networkSSID       = "TP-Link_SSID"
+                userGroup         = "5f3171a9232e1113939dd6a2"
+                openSSLBinary     = '/opt/homebrew/bin/openssl'
+                certSubjectHeader = @{
+                    CountryCode      = "US"
+                    StateCode        = "CO"
+                    Locality         = "Boulder"
+                    Organization     = "JumpCloud"
+                    OrganizationUnit = "Customer_Tools"
+                    CommonName       = "JumpCloud.com"
+                }
             }
             Set-JCRConfigFile @settings
         }
