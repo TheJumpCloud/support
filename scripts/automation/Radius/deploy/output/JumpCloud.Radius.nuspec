@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>JumpCloud.Radius</id>
+    <version>2.0.0</version>
+    <description>Module for managing JumpCloud Radius user certificates.</description>
+    <authors>JumpCloud Customer Tools Team</authors>
+    <owners>JumpCloud</owners>
+    <releaseNotes>
+    </releaseNotes>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>(c) JumpCloud. All rights reserved.</copyright>
+    <tags>
+    </tags>
+    <dependencies>
+      <dependency id="JumpCloud" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="en-Us/**/*.*" target="en-Us" />
+    <file src="Functions/Public/**/*.*" target="Public" />
+    <file src="Functions/Private/**/*.*" target="Private" />
+    <file src="JumpCloud.Radius.psd1" />
+    <file src="JumpCloud.Radius.psm1" />
+    <file src="LICENSE" />
+  </files>
+</package>
