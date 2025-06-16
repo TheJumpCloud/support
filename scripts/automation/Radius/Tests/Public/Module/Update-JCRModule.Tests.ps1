@@ -217,12 +217,12 @@ Describe 'Module Update' -Tag "Module" {
                 $fileContent = Get-Content -Path $file.FullName -Raw
                 # Validate that the file contains the expected headers
                 $expectedHeaders = @(
-                    "C = $($global:JCRConfig.certSubjectHeaderCountryCode.value)",
-                    "ST = $($global:JCRConfig.certSubjectHeaderStateCode.value)",
-                    "L = $($global:JCRConfig.certSubjectHeaderLocality.value)",
-                    "O = $($global:JCRConfig.certSubjectHeaderOrganization.value)",
-                    "OU = $($global:JCRConfig.certSubjectHeaderOrganizationUnit.value)",
-                    "CN = $($global:JCRConfig.certSubjectHeaderCommonName.value)"
+                    "C = $($global:JCRConfig.certSubjectHeader.Value.CountryCode)",
+                    "ST = $($global:JCRConfig.certSubjectHeader.Value.StateCode)",
+                    "L = $($global:JCRConfig.certSubjectHeader.Value.Locality)",
+                    "O = $($global:JCRConfig.certSubjectHeader.Value.Organization)",
+                    "OU = $($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit)",
+                    "CN = $($global:JCRConfig.certSubjectHeader.Value.CommonName)"
                 )
                 foreach ($header in $expectedHeaders) {
                     $fileContent | Should -Match $header

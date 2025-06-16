@@ -21,12 +21,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -in $($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem -subject"
 
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeaderCountryCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeaderStateCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeaderLocality.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeaderOrganization.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeaderOrganizationUnit.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeaderCommonName.value
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.CountryCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeader.Value.StateCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Locality
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Organization
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeader.Value.OrganizationUnit
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeader.Value.CommonName
         }
     }
 
@@ -57,12 +57,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -in $($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem -subject"
 
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeaderCountryCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeaderStateCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeaderLocality.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeaderOrganization.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeaderOrganizationUnit.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeaderCommonName.value
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.CountryCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeader.Value.StateCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Locality
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Organization
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeader.Value.OrganizationUnit
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeader.Value.CommonName
         }
     }
 
@@ -91,12 +91,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -in $($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem -subject"
 
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeaderCountryCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeaderStateCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeaderLocality.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeaderOrganization.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeaderOrganizationUnit.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeaderCommonName.value
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.CountryCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeader.Value.StateCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Locality
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Organization
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeader.Value.OrganizationUnit
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeader.Value.CommonName
         }
 
     }
@@ -125,12 +125,12 @@ Describe "Generate Root Certificate Tests" -Tag "GenerateRootCert" {
             #validate the subject matches what's defined in config:
             $CA_subject = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -in $($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem -subject"
 
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeaderCountryCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeaderStateCode.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeaderLocality.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeaderOrganization.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeaderOrganizationUnit.value
-            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeaderCommonName.value
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "C")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.CountryCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "ST") | Should -Match $global:JCRConfig.certSubjectHeader.Value.StateCode
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "L")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Locality
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "O")  | Should -Match $global:JCRConfig.certSubjectHeader.Value.Organization
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "OU") | Should -Match $global:JCRConfig.certSubjectHeader.Value.OrganizationUnit
+            (Get-SubjectHeaderValue -SubjectString $CA_subject -Header "CN") | Should -Match $global:JCRConfig.certSubjectHeader.Value.CommonName
         }
 
     }

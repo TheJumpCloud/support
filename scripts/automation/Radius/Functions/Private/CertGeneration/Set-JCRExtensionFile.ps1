@@ -9,12 +9,12 @@ function Set-JCRExtensionFile {
         $extContent = Get-Content -Path $ext.FullName -Raw
         $reqDistinguishedName = @"
 [req_distinguished_name]
-C = $($global:JCRConfig.certSubjectHeaderCountryCode.value)
-ST = $($global:JCRConfig.certSubjectHeaderStateCode.value)
-L = $($global:JCRConfig.certSubjectHeaderLocality.value)
-O = $($global:JCRConfig.certSubjectHeaderOrganization.value)
-OU = $($global:JCRConfig.certSubjectHeaderOrganizationUnit.value)
-CN = $($global:JCRConfig.certSubjectHeaderCommonName.value)
+C = $($global:JCRConfig.certSubjectHeader.Value.CountryCode)
+ST = $($global:JCRConfig.certSubjectHeader.Value.StateCode)
+L = $($global:JCRConfig.certSubjectHeader.Value.Locality)
+O = $($global:JCRConfig.certSubjectHeader.Value.Organization)
+OU = $($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit)
+CN = $($global:JCRConfig.certSubjectHeader.Value.CommonName)
 
 "@
         $updatedContent = $extContent -Replace "(\[req_distinguished_name\][\s\S]*?)(?=\[v3_req\])", $reqDistinguishedName

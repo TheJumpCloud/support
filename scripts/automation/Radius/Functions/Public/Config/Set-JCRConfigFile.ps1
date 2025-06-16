@@ -10,9 +10,9 @@ function Set-JCRConfigFile {
         # Create the dictionary
         $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
         # Foreach key in the supplied config file:
-        foreach ($setting in $global:JCRConfig.PSObject.Properties) {
-            $settingName = $setting.Name
-            $settingValue = $setting.Value
+        foreach ($setting in $global:JCRConfigTemplate.keys) {
+            $settingName = $setting
+            $settingValue = $global:JCRConfigTemplate[$setting]
             # Skip create dynamic params for these not-writable properties:
             if ($settingValue.Write -eq $false) {
                 continue
@@ -67,13 +67,19 @@ function Set-JCRConfigFile {
                 }
             }
             # set the value of the config setting to the value passed into this function
-            $global:JCRConfig.$param.value = $params[$param]
-
+            if ($global:JCRConfig.PSObject.Properties.Name -contains $param) {
+                $global:JCRConfig.$param.value = $params[$param]
+            } else {
+                # Add the property with a hashtable structure (assuming you want to match existing pattern)
+                $global:JCRConfig | Add-Member -MemberType NoteProperty -Name $param -Value $global:JCRConfigTemplate[$param]
+                # now update the value:
+                $global:JCRConfig.$param.value = $params[$param]
+            }
         }
     }
 
     end {
         # Write out the new settings
-        $global:JCRConfig | ConvertTo-Json | Out-File -FilePath $configFilePath
+        $global:JCRConfig | ConvertTo-Json -Depth 10 | Out-File -FilePath $configFilePath
     }
 }

@@ -32,7 +32,7 @@ Export-ModuleMember -Function $Public.BaseName -Alias *
 
 # Set the module config
 $global:JCRConfigTemplate = @{
-    'userGroup'                         = @{
+    'userGroup'                 = @{
         value       = $null;
         write       = $true;
         copy        = $true;
@@ -40,7 +40,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<UserGroupID>';
         type        = 'string'
     }
-    'certSecretPass'                    = @{
+    'certSecretPass'            = @{
         value       = $null;
         write       = $true;
         copy        = $true;
@@ -48,7 +48,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<CertPassword>';
         type        = 'string'
     }
-    'userCertValidityDays'              = @{
+    'userCertValidityDays'      = @{
         value       = 365;
         write       = $true;
         copy        = $true;
@@ -56,7 +56,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<365>';
         type        = 'int'
     }
-    'caCertValidityDays'                = @{
+    'caCertValidityDays'        = @{
         value       = 1095;
         write       = $true;
         copy        = $true;
@@ -64,7 +64,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<1095>';
         type        = 'int'
     }
-    'certExpirationWarningDays'         = @{
+    'certExpirationWarningDays' = @{
         value       = 15;
         write       = $true;
         copy        = $true;
@@ -72,7 +72,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<15>';
         type        = 'int'
     }
-    'networkSSID'                       = @{
+    'networkSSID'               = @{
         value       = $null;
         write       = $true;
         copy        = $true;
@@ -80,55 +80,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<networkSSID>';
         type        = 'string'
     }
-    'certSubjectHeaderCountryCode'      = @{
-        value       = $null;
-        write       = $true;
-        copy        = $true;
-        required    = $true;
-        placeholder = '<US>';
-        type        = 'string'
-    }
-    'certSubjectHeaderStateCode'        = @{
-        value       = $null;
-        write       = $true;
-        copy        = $true;
-        required    = $true;
-        placeholder = '<CO>';
-        type        = 'string'
-    }
-    'certSubjectHeaderLocality'         = @{
-        value       = $null;
-        write       = $true;
-        copy        = $true;
-        required    = $true;
-        placeholder = '<Boulder>';
-        type        = 'string'
-    }
-    'certSubjectHeaderOrganization'     = @{
-        value       = $null;
-        write       = $true;
-        copy        = $true;
-        required    = $true;
-        placeholder = '<JumpCloud>';
-        type        = 'string'
-    }
-    'certSubjectHeaderOrganizationUnit' = @{
-        value       = $null;
-        write       = $true;
-        copy        = $true;
-        required    = $true;
-        placeholder = '<Customer_Tools>';
-        type        = 'string'
-    }
-    'certSubjectHeaderCommonName'       = @{
-        value       = $null;
-        write       = $true;
-        copy        = $true;
-        required    = $true;
-        placeholder = '<JumpCloud.com>';
-        type        = 'string'
-    }
-    'certType'                          = @{
+    'certType'                  = @{
         value       = $null;
         write       = $true;
         copy        = $true;
@@ -136,7 +88,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<EmailSAN/EmailDN/UsernameCn>';
         type        = 'string'
     }
-    'radiusDirectory'                   = @{
+    'radiusDirectory'           = @{
         value       = $null;
         write       = $true;
         copy        = $true;
@@ -144,7 +96,7 @@ $global:JCRConfigTemplate = @{
         placeholder = '<Path/To/radiusDirectory>';
         type        = 'string'
     }
-    'lastUpdate'                        = @{
+    'lastUpdate'                = @{
         value       = $null;
         write       = $true;
         copy        = $true;
@@ -152,13 +104,35 @@ $global:JCRConfigTemplate = @{
         placeholder = $null;
         type        = 'string'
     }
-    'openSSLBinary'                     = @{
+    'openSSLBinary'             = @{
         value       = $null;
         write       = $true;
         copy        = $true;
         required    = $true;
         placeholder = '<Path/To/OpenSSL>';
         type        = 'string'
+    }
+    'certSubjectHeader'         = @{
+        value       = @{
+            CountryCode      = $null
+            StateCode        = $null
+            Locality         = $null
+            Organization     = $null
+            OrganizationUnit = $null
+            CommonName       = $null
+        }
+        write       = $true
+        copy        = $true
+        required    = $true
+        placeholder = '@{
+            CountryCode      = "US"
+            StateCode        = "CO"
+            Locality         = "Boulder"
+            Organization     = "JumpCloud"
+            OrganizationUnit = "Customer_Tools"
+            CommonName       = "JumpCloud.com"
+        }';
+        type        = 'hashtable'
     }
 }
 

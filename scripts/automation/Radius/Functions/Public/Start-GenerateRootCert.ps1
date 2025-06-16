@@ -149,7 +149,7 @@ Function Start-GenerateRootCert {
                         }
                         # Save the pass phrase in the env:
                         $env:certKeyPassword = $certKeyPass
-                        Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $($global:JCRConfig.caCertValidityDays.value) -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($($global:JCRConfig.certSubjectHeaderCountryCode.value))/ST=$($($global:JCRConfig.certSubjectHeaderStateCode.value))/L=$($($global:JCRConfig.certSubjectHeaderLocality.value))/O=$($($global:JCRConfig.certSubjectHeaderOrganization.value))/OU=$($($global:JCRConfig.certSubjectHeaderOrganizationUnit.value))/CN=$($($global:JCRConfig.certSubjectHeaderCommonName.value))"
+                        Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $($global:JCRConfig.caCertValidityDays.value) -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($($global:JCRConfig.certSubjectHeader.Value.Organization))/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=$($($global:JCRConfig.certSubjectHeader.Value.CommonName))"
                         # REM PEM pass phrase: myorgpass
                         Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                         # openssl x509 -in ca-cert.pem -noout -text
@@ -204,7 +204,7 @@ Function Start-GenerateRootCert {
                 }
                 # Save the pass phrase in the env:
                 $env:certKeyPassword = $certKeyPass
-                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $($global:JCRConfig.caCertValidityDays.value) -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($($global:JCRConfig.certSubjectHeaderCountryCode.value))/ST=$($($global:JCRConfig.certSubjectHeaderStateCode.value))/L=$($($global:JCRConfig.certSubjectHeaderLocality.value))/O=$($($global:JCRConfig.certSubjectHeaderOrganization.value))/OU=$($($global:JCRConfig.certSubjectHeaderOrganizationUnit.value))/CN=$($($global:JCRConfig.certSubjectHeaderCommonName.value))"
+                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $($global:JCRConfig.caCertValidityDays.value) -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($($global:JCRConfig.certSubjectHeader.Value.Organization))/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=$($($global:JCRConfig.certSubjectHeader.Value.CommonName))"
                 # REM PEM pass phrase: myorgpass
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                 # openssl x509 -in ca-cert.pem -noout -text
@@ -215,12 +215,12 @@ Function Start-GenerateRootCert {
                     $extContent = Get-Content -Path $ext.FullName -Raw
                     $reqDistinguishedName = @"
     [req_distinguished_name]
-    C = $($($global:JCRConfig.certSubjectHeaderCountryCode.value))
-    ST = $($($global:JCRConfig.certSubjectHeaderStateCode.value))
-    L = $($($global:JCRConfig.certSubjectHeaderLocality.value))
-    O = $($($global:JCRConfig.certSubjectHeaderOrganization.value))
-    OU = $($($global:JCRConfig.certSubjectHeaderOrganizationUnit.value))
-    CN = $($($global:JCRConfig.certSubjectHeaderCommonName.value))
+    C = $($($global:JCRConfig.certSubjectHeader.Value.CountryCode))
+    ST = $($($global:JCRConfig.certSubjectHeader.Value.StateCode))
+    L = $($($global:JCRConfig.certSubjectHeader.Value.Locality))
+    O = $($($global:JCRConfig.certSubjectHeader.Value.Organization))
+    OU = $($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))
+    CN = $($($global:JCRConfig.certSubjectHeader.Value.CommonName))
 
 "@
                     $extContent -Replace ("\[req_distinguished_name\][\s\S]*(?=\[v3_req\])", $reqDistinguishedName) | Set-Content -Path $ext.FullName -NoNewline -Force
@@ -329,7 +329,7 @@ authorityKeyIdentifier= keyid:always,issuer:always
 "@ | Out-File "$certConfPath"
 
                         try {
-                            Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $($global:JCRConfig.caCertValidityDays.value) -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($($global:JCRConfig.certSubjectHeaderCountryCode.value))/ST=$($($global:JCRConfig.certSubjectHeaderStateCode.value))/L=$($($global:JCRConfig.certSubjectHeaderLocality.value))/O=$($($global:JCRConfig.certSubjectHeaderOrganization.value))/OU=$($($global:JCRConfig.certSubjectHeaderOrganizationUnit.value))/CN=$($($global:JCRConfig.certSubjectHeaderCommonName.value))"
+                            Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -x509 -newkey rsa:2048 -days $($global:JCRConfig.caCertValidityDays.value) -keyout `"$outKey`" -out `"$outCA`" -passout pass:$($env:certKeyPassword) -subj /C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($($global:JCRConfig.certSubjectHeader.Value.Organization))/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=$($($global:JCRConfig.certSubjectHeader.Value.CommonName))"
 
                             Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -req -days $($global:JCRConfig.caCertValidityDays.value) -in $csrOutPath -set_serial `"0x$serial`" -signkey `"$outKey`" -out `"$outCA`" -extfile $certConfPath -extensions v3_ca -passin pass:$($env:certKeyPassword)"
 
