@@ -215,9 +215,6 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             }
         }
         It 'EmailSAN certs are created and command generated with correct identifiers' {
-            # Set config
-            $configPath = "$JCRScriptRoot/Config.ps1"
-            $content = Get-Content -path $configPath
             # set the user cert validity to just 10 days
             Set-JCRConfigFile -certType "EmailSAN"
             # Get Cert Before
@@ -249,9 +246,6 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $snWinMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
         }
         It 'EmailDN certs are created and command generated with correct identifiers' {
-            # Set config
-            $configPath = "$JCRScriptRoot/Config.ps1"
-            $content = Get-Content -path $configPath
             # set the cert type
             Set-JCRConfigFile -certType "EmailDN"
             # Get Cert Before
@@ -279,9 +273,6 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
             $snWinMatch.matches.groups[1].value | Should -Be $CertInfoAfter.serial
         }
         It 'UsernameCn certs are created and command generated with correct identifiers' {
-            # Set config
-            $configPath = "$JCRScriptRoot/Config.ps1"
-            $content = Get-Content -path $configPath
             # set the cert type
             Set-JCRConfigFile -certType "usernameCn"
             # Get Cert Before
@@ -310,9 +301,6 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
 
         }
         AfterAll {
-            # Set config
-            $configPath = "$JCRScriptRoot/Config.ps1"
-            $content = Get-Content -path $configPath
             # set the cert type
             Set-JCRConfigFile -certType "usernameCn"
         }

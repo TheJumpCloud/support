@@ -9,7 +9,6 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
     }
 
     It "The userAgent should be set in the module settings" {
-        # Get the PSD1 file and Config.ps1
         $PSD1 = Test-ModuleManifest -Path $psd1Path
         Import-Module $psd1Path -Force
         # the user agent should be set to the module version

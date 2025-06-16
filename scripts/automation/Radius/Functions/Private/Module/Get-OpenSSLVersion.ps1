@@ -27,7 +27,6 @@ function Get-OpenSSLVersion {
 
         # Determine if windows:
         if ([System.Environment]::OSVersion.Platform -match "Win") {
-            # If env variable exists, skip check for subsequent runs of ./config.ps1
             if ($env:OPENSSL_MODULES) {
                 $binItems = Get-ChildItem -Path $env:OPENSSL_MODULES
                 if ("legacy.dll" -notin $binItems.Name) {

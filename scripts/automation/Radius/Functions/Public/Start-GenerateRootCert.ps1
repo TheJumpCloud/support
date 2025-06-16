@@ -26,13 +26,6 @@ Function Start-GenerateRootCert {
     # this script will generate a Self Signed CA (root cert) to be imported on the
     # Radius CBA-BYO Authentication UI
 
-    # Edit the variables in Config.ps1 before running this script
-    # . "$JCRScriptRoot/Config.ps1"
-
-    # if ( ([System.String]::IsNullOrEmpty($JCORGID)) -Or ($JCORGID.Length -ne 24) ) {
-    #     throw "OrganizationID not specified, please update Config.ps1"
-    # }
-
     ################################################################################
     # Do Not Edit Below:
     ################################################################################

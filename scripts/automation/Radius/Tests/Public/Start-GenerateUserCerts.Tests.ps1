@@ -82,9 +82,6 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # import necessary functions:
             . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
             . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
-            # Set config
-            $configPath = "$JCRScriptRoot/Config.ps1"
-            $content = Get-Content -Path $configPath
             # set the user cert validity to just 10 days
             Set-JCRConfigFile -userCertValidityDays 10
 
@@ -107,8 +104,6 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         It 'Certs that are set to expire soon can be updated programmatically' {
             # at this point expiring certs should be populated from beforeAll block
             $Global:expiringCerts | Should -Not -BeNullOrEmpty
-            # reset the validity counter
-            $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
             Set-JCRConfigFile -userCertValidityDays 90
             # Get the certs before generation minus the .zip if it exists
@@ -139,8 +134,6 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $certInfo.generated | Should -BeGreaterThan $dateBefore
         }
         AfterAll {
-            # reset the validity counter
-            $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
             Set-JCRConfigFile -userCertValidityDays 90
         }

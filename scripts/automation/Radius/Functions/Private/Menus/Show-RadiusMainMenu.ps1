@@ -13,11 +13,11 @@ function Show-RadiusMainMenu {
         Write-Debug "No user certs exist, there are no user certs which will expire soon"
     }
 
-    # Get UserGroup information from Config.ps1
+    # Get UserGroup information from Config.json
     $radiusUserGroup = Get-JcSdkUserGroup -Id $global:JCRConfig.userGroup.value | Select-Object Name
     $radiusUserGroupMemberCount = (Get-JcSdkUserGroupMember -GroupId $global:JCRConfig.userGroup.value).Count
 
-    # Get SSID information from Config.ps1
+    # Get SSID information from Config.json
     $radiusSSID = ($global:JCRConfig.networkSSID.value).replace(';', ' ')
 
     # Output for Users
@@ -25,7 +25,9 @@ function Show-RadiusMainMenu {
 
     # ==== TITLE ====
     Write-Host $(PadCenter -string $Title -char '=')
-    Write-Host $(PadCenter -string "Edit the variables in Config.ps1 before continuing this script `n" -char ' ') -ForegroundColor Yellow
+    If (($global:JCRConfig -eq $null) -or (-not (Confirm-JCRConfigFile))) {
+        Write-Host $(PadCenter -string "Edit the required settings with `Set-JCRConfigFile` before continuing this script `n" -char ' ') -ForegroundColor Yellow
+    }
     # /==== TITLE ====
 
     # ==== ROOT CA ====

@@ -48,7 +48,7 @@ Set-JCRConfigFile @settings
 
 "@
             if (-not $loadModule) {
-                Write-Error "Please set these variables with the Set-JCRConfigFile cmdlet"
+                throw "Please set these variables with the Set-JCRConfigFile cmdlet"
             } else {
                 Write-Warning "Please set these variables with the Set-JCRConfigFile cmdlet"
             }
