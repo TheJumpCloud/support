@@ -26,6 +26,10 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
         }
         # Import the module to set the global variable
         Import-Module -Name "$JCRScriptRoot/JumpCloud.Radius.psd1" -Force
+
+        # get the current config.json contents
+        $configFilePath = Join-Path -Path $JCRScriptRoot -ChildPath 'Config.json'
+        $configBefore = Get-Content -Path $configFilePath
     }
 
     It "should confirm the config file exists" {
@@ -97,6 +101,13 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
             It "Confirm-JCRConfigFile should throw when the config is missing required settings" {
                 { Confirm-JCRConfigFile } | Should -Throw
             }
+        }
+    }
+    AfterAll {
+        # Restore the original config file contents
+        $configFilePath = Join-Path -Path $JCRScriptRoot -ChildPath 'Config.json'
+        if (Test-Path -Path $configFilePath) {
+            Set-Content -Path $configFilePath -Value $configBefore
         }
     }
 }
