@@ -202,10 +202,10 @@ Describe 'Module Update' -Tag "Module" {
 
             foreach ($property in $configFileBefore.PSObject.Properties) {
                 # if the property is a hashtable, check each key-value pair
-                if ($property.type -eq "hashtable") {
-                    foreach ($key in $property.value.Keys) {
+                if ($property.value.type -eq "hashtable") {
+                    foreach ($key in $configFileAfter.$($property.Name).value.PSObject.Properties) {
+                        $configFileAfter.$($property.Name).value.$($key.name) | Should -Be $key.Value
                         # Validate that the value is the same as before
-                        $configFileAfter.$($property.Name).$key | Should -Be $property.value.$key
                     }
                     continue
                 } else {
@@ -241,9 +241,6 @@ Describe 'Module Update' -Tag "Module" {
             # Validate that the extensions files are valid with the function
             $extensionsValid = Test-JCRExtensionFile
             $extensionsValid | Should -BeTrue
-
-
-
         }
     }
     AfterAll {
