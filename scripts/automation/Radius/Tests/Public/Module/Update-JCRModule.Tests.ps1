@@ -201,7 +201,17 @@ Describe 'Module Update' -Tag "Module" {
             $configFileAfter = Get-JCRConfigFile -asObject
 
             foreach ($property in $configFileBefore.PSObject.Properties) {
-                $configFileAfter.$($property.Name).value | Should -Be $property.value.value
+                # if the property is a hashtable, check each key-value pair
+                if ($property.type -eq "hashtable") {
+                    foreach ($key in $property.value.Keys) {
+                        # Validate that the value is the same as before
+                        $configFileAfter.$($property.Name).$key | Should -Be $property.value.$key
+                    }
+                    continue
+                } else {
+
+                    $configFileAfter.$($property.Name).value | Should -Be $property.value.value
+                }
             }
 
             # Validate that the extension files in /Extensions are updated from JCRConfig

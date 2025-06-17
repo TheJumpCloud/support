@@ -85,8 +85,14 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
 
                         $param = @{ $setting.Key = $hashTable }
                     } else {
-
-                        $param = @{ $setting.Key = $setting.Value.placeholder.replace('<', '').replace('>', '') }
+                        switch ($setting.Key) {
+                            'radiusDirectory' {
+                                param = @{ $setting.Key = "$HOME" }
+                            }
+                            Default {
+                                $param = @{ $setting.Key = $setting.Value.placeholder.replace('<', '').replace('>', '') }
+                            }
+                        }
                     }
                     Set-JCRConfigFile @param
 
