@@ -110,6 +110,14 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
         $configFilePath = Join-Path -Path $JCRScriptRoot -ChildPath 'Config.json'
         if (Test-Path -Path $configFilePath) {
             Set-Content -Path $configFilePath -Value $configBefore
+            $Global:JCRConfig = Get-JCRConfigFile -asObject
         }
+
+        Write-Host "-----------------------"
+        Write-Host "[Status] JCRConfig Settings:"
+        foreach ($setting in $global:JCRConfig.PSObject.Properties) {
+            Write-Host ("$($setting.Name): $($setting.Value.value)")
+        }
+        Write-Host "-----------------------"
     }
 }
