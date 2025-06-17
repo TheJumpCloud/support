@@ -62,12 +62,6 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
             { ConvertFrom-Json -InputObject $configContent } | Should -Not -Throw
             # Check if the config file contains the expected keys
         }
-        It "Confirm-JCRConfigFile should throw when the config is missing required settings" {
-            # Call the function to create a new config file
-            New-JCRConfigFile -force
-            # Call the function to confirm the config file
-            { Confirm-JCRConfigFile } | Should -Throw
-        }
         Context "Individually Set all of the required settings but one, Confirm-JCRConfigFile should still throw" {
             BeforeEach {
                 # Create a new config file
