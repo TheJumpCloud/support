@@ -63,6 +63,8 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
             # Check if the config file contains the expected keys
         }
         It "Confirm-JCRConfigFile should throw when the config is missing required settings" {
+            # Call the function to create a new config file
+            New-JCRConfigFile -force
             # Call the function to confirm the config file
             { Confirm-JCRConfigFile } | Should -Throw
         }
@@ -87,7 +89,7 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
                     } else {
                         switch ($setting.Key) {
                             'radiusDirectory' {
-                                param = @{ $setting.Key = "$HOME" }
+                                $param = @{ $setting.Key = "$HOME" }
                             }
                             Default {
                                 $param = @{ $setting.Key = $setting.Value.placeholder.replace('<', '').replace('>', '') }
