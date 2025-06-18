@@ -128,7 +128,7 @@ Describe 'Module Update' -Tag "Module" {
         # create the version directory within the module path if it does not exist
         New-Item -Path "$radiusModuleDirectory/$moduleVersion" -ItemType Directory
         # Copy all the contents from the parent folder to the destination folder
-        Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$moduleVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
+        Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$moduleVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md", "config.json"
         Publish-Module -Name "$radiusModuleDirectory/$moduleVersion" -Repository $localRepoName -Force -RequiredVersion $moduleVersion
 
         # Print the LocalPSRepo File Contents:
@@ -165,6 +165,42 @@ Describe 'Module Update' -Tag "Module" {
             Remove-Item -Path $radiusModuleDirectory -Recurse -Force
             Install-Module -Name $radiusModule -Repository $localRepoName -RequiredVersion $moduleVersion
 
+            # import the installed Module
+            Write-Host "Importing module $radiusModule from local repo $localRepoName with version $moduleVersion"
+            Import-Module -Name $radiusModule -force
+
+            $moduleCheck = Get-Module -Name $radiusModule
+            $moduleCheck | Should -Not -BeNullOrEmpty
+            $moduleCheck.version | Should -Be $moduleVersion
+
+            # populate the config:
+            $settings = @{
+                certType          = "UsernameCn"
+                certSecretPass    = "secret1234!"
+                radiusDirectory   = "$(Resolve-Path $HOME/RADIUS)"
+                networkSSID       = "TP-Link_SSID"
+                userGroup         = "111111111111111111111111"
+                openSSLBinary     = 'openssl'
+                certSubjectHeader = @{
+                    CountryCode      = "US"
+                    StateCode        = "CO"
+                    Locality         = "Boulder"
+                    Organization     = "JumpCloud"
+                    OrganizationUnit = "Customer_Tools"
+                    CommonName       = "JumpCloud.com"
+                }
+            }
+
+            Set-JCRConfigFile @settings
+
+            Write-Host "-----------------------"
+            Write-Host "[status] Module Path : $($moduleCheck.Path)"
+            Write-Host "[Status] JCRConfig Settings:"
+            foreach ($setting in $global:JCRConfig.PSObject.Properties) {
+                Write-Host ("$($setting.Name): $($setting.Value.value)")
+            }
+            Write-Host "-----------------------"
+
             # update the module manifest version to simulate a new version
             $newVersion = "$(([version]$moduleVersion).major).$(([version]$moduleVersion).minor).$(([version]$moduleVersion).build + 1)"
             Update-ModuleManifest -Path $psd1Path -ModuleVersion $newVersion
@@ -177,7 +213,7 @@ Describe 'Module Update' -Tag "Module" {
                 New-Item -Path "$radiusModuleDirectory/$newVersion" -ItemType Directory
                 # Copy all the contents from the parent folder to the destination folder
                 Write-Warning "Copying module files from $devModulePath to the local repo for version $newVersion"
-                Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$newVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md"
+                Copy-Item -Path $devModulePath/* -Destination "$radiusModuleDirectory/$newVersion" -Recurse -Force -Exclude "Cert", "UserCerts", "images", "data", "users.json", "reports", "Tests", "deploy", "key.encrypted", "keyCert.encrypted", "log.txt", "changelog.md", "config.json"
                 Publish-Module -Name "$radiusModuleDirectory/$newVersion" -Repository $localRepoName -Force -RequiredVersion $newVersion
             }
 

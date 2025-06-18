@@ -10,7 +10,7 @@ function Get-JCRConfigFile {
     )
 
     begin {
-        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.Parent.FullName
+        $moduleRoot = $JCRScriptRoot
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
         if (-Not (Test-Path -Path $configFilePath)) {
