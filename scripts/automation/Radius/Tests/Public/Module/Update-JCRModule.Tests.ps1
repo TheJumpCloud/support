@@ -157,6 +157,15 @@ Describe 'Module Update' -Tag "Module" {
             $installedModule | Should -Not -BeNullOrEmpty
             $installedModule.version | Should -Be $moduleVersion
         }
+        AfterAll {
+            $moduleCheck = Get-Module -Name $radiusModule
+            if ($moduleCheck) {
+                Write-Host "Removing module $radiusModule from the session"
+                Remove-Module -Name $radiusModule -Force
+            } else {
+                Write-Host "Module $radiusModule is not loaded in the session"
+            }
+        }
     }
 
     Context 'When a new version of the module is available' {
