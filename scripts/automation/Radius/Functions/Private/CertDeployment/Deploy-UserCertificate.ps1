@@ -14,7 +14,7 @@ function Deploy-UserCertificate {
         [bool]
         $forceGenerateCommands,
         # prompt replace existing certificate
-        [Parameter(HelpMessage = 'When specified, this parameter will prompt for user imput and ask if generated commands should be invoked on associated systems')]
+        [Parameter(HelpMessage = 'When specified, this parameter will prompt for user input and ask if generated commands should be invoked on associated systems')]
         [switch]
         $prompt
     )
@@ -73,6 +73,8 @@ function Deploy-UserCertificate {
     process {
         foreach ($user in $userObject) {
             ## first determine if the local cert sha is the same as the cert sha in the admin console:
+            # Write-Warning "processing user: $($user.username)"
+            # Write-Warning "user: $user"
 
             # Get the commands for this user:
             $radiusCommandsByUser = Get-CommandByUsername -username $user.username
@@ -93,12 +95,12 @@ function Deploy-UserCertificate {
 
             # Get the users certificate Details:
             # Get certificate and zip to upload to Commands
-            $userCertFiles = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($user.userName)-*"
+            $userCertFiles = Get-ChildItem -Path (Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts") -Filter "$($user.userName)-*"
             # set crt and pfx filepaths
             $userCrt = ($userCertFiles | Where-Object { $_.Name -match "crt" }).FullName
             $userPfx = ($userCertFiles | Where-Object { $_.Name -match "pfx" }).FullName
             # define .zip name
-            $userPfxZip = "$JCScriptRoot/UserCerts/$($user.userName)-client-signed.zip"
+            $userPfxZip = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user.userName)-client-signed.zip"
             # get certInfo for commands:
             $certInfo = Get-CertInfo -UserCerts -username $user.username
             # Determine if the commands have matching SHA1 values:
@@ -296,10 +298,10 @@ function Deploy-UserCertificate {
 
             if (($workToBeDone.forcegenerateMacOSCommands) -OR ($workToBeDone.forceGenerateWindowsCommands)) {
                 # determine certType
-                switch ($JCR_CERT_TYPE) {
+                switch ($($global:JCRConfig.certType.value)) {
                     'EmailSAN' {
                         # set cert identifier to SAN email of cert
-                        $sanID = Invoke-Expression "$JCR_OPENSSL x509 -in $($userCrt) -ext subjectAltName -noout"
+                        $sanID = Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in $($userCrt) -ext subjectAltName -noout"
                         $regex = 'email:(.*?)$'
                         $JCR_SUBJECT_HEADERSMatch = Select-String -InputObject "$($sanID)" -Pattern $regex
                         $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
@@ -323,7 +325,7 @@ function Deploy-UserCertificate {
                     }
                     'EmailDN' {
                         # Else set cert identifier to email of cert subject
-                        $regex = 'emailAddress=(.*?)$'
+                        $regex = 'emailAddress\s*=\s*(.*?)$'
                         $JCR_SUBJECT_HEADERSMatch = Select-String -InputObject "$($certInfo.Subject)" -Pattern $regex
                         $certIdentifier = $JCR_SUBJECT_HEADERSMatch.matches.Groups[1].value
                         # in macOS search user certs by email
@@ -378,7 +380,7 @@ chmod 755 /tmp/$($user.userName)-client-signed.pfx
 currentUser=`$(/usr/bin/stat -f%Su /dev/console)
 currentUserUID=`$(id -u "`$currentUser")
 currentCertSN="$($certInfo.serial)"
-networkSsid="$($JCR_NETWORKSSID)"
+networkSsid="$($global:JCRConfig.networkSSID.value)"
 # store orig case match value
 caseMatchOrigValue=`$(shopt -p nocasematch; true)
 # set to case-insensitive
@@ -433,7 +435,7 @@ else
 fi
 
 if [[ `$import == true ]]; then
-    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $JCR_USER_CERT_PASS -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
+    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $($global:JCRConfig.certSecretPass.value) -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
     if [[ `$? -eq 0 ]]; then
         echo "Import Success"
         # get the SHA hash of the newly imported cert
@@ -450,8 +452,8 @@ else
     echo "cert already imported"
 fi
 
-# check if the cert secruity preference is set:
-IFS=';' read -ra network <<< "`$JCR_NETWORKSSID"
+# check if the cert security preference is set:
+IFS=';' read -ra network <<< "`$(`$global:JCRConfig.networkSSID.value)"
 for i in "`${network[@]}"; do
     echo "begin setting network SSID: `$i"
     if /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"; then
@@ -642,8 +644,8 @@ If (Test-Path "C:\RadiusCert"){
 }
 # expand archive as root and copy to temp location
 Expand-Archive -LiteralPath C:\Windows\Temp\$($user.userName)-client-signed.zip -DestinationPath C:\RadiusCert -Force
-`$password = ConvertTo-SecureString -String $JCR_USER_CERT_PASS -AsPlainText -Force
-`$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String $JCR_USER_CERT_PASS -AsPlainText -Force
+`$password = ConvertTo-SecureString -String $($global:JCRConfig.certSecretPass.value) -AsPlainText -Force
+`$ScriptBlockInstall = { `$password = ConvertTo-SecureString -String $($global:JCRConfig.certSecretPass.value) -AsPlainText -Force
 Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx" -CertStoreLocation Cert:\CurrentUser\My
 }
 `$imported = Get-PfxData -Password `$password -FilePath "C:\RadiusCert\$($user.userName)-client-signed.pfx"

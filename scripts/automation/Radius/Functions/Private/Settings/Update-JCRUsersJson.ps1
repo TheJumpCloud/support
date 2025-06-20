@@ -15,6 +15,9 @@ function Update-JCRUsersJson {
             $i++
             Write-Progress -activity "Getting User Certificate Info" -status "$($user.username): $i of $($Global:JCRRadiusMembers.Count)" -percentComplete (($i / $Global:JCRRadiusMembers.Count) * 100)
             $MatchedUser = $GLOBAL:JCRUsers[$user.userID]
+            if (-not $MatchedUser) {
+                Write-Warning "Could not find user with userID: $($user.userID) in JCRUsers"
+            }
             $userArrayObject, $userIndex = Get-UserFromTable -userID $user.userID
             try {
                 $InstalledCerts = $Global:JCRCertHash["$($userArrayObject.certInfo.sha1)"]

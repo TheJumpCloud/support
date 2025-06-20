@@ -11,7 +11,8 @@ This automation has been tested with OpenSSL 3.1.1. OpenSSL 3.x.x is required to
 - OpenSSL 3.x.x (Tested with 3.1.1) (see macOS/ Windows requirements below)
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 - Certificate Authority (CA) (either from a vendor or self-generated)
-- Variables in `Config.ps1` updated
+- Module Settings Configured with `Set-JCRConfigFile` cmdlet
+- JumpCloud Organization API Key (Read/ Write Access Required)
   - JumpCloud API Key Set (Read/ Write Access Required)
   - JumpCloud ORG ID Set
   - JumpCloud User Group containing users and assigned to a Radius Server
@@ -22,15 +23,17 @@ macOS ships with a version of OpenSSL titled LibreSSL. LibreSSL is sufficient to
 
 To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
 
-Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$Global:JCR_OPENSSL` variable to point to the Homebrew bin location ex:
+Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `openSSLBinary` setting to point to the Homebrew bin location ex:
 
-In `Config.ps1` change `$JCR_OPENSSL` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`\*\*\*\*
+Update the `openSSLBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`\*\*\*\*
 
 ex:
 
 ```powershell
-$JCR_OPENSSL = '/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'
+Set-JCRConfigFile -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
 ```
+
+````
 
 ### Windows Requirements
 
@@ -63,22 +66,105 @@ After installing PowerShell 7.x.x, install the [JumpCloud PowerShell Module](htt
 
 At the time of this writing JumpCloud Module 2.1.3 was the latest version. Please ensure you are at least running this version of the PowerShell Module.
 
-### Set the Radius Config File
+### Set the Radius Configuration Settings
 
-Before Running the `Start-RadiusDeployment.ps1` script, the environment variables for your JumpCloud Organization must first be set. Open the `Config.ps1` file with a text editor.
+Before Running the `Start-RadiusDeployment` function, the environment variables for your JumpCloud Organization must first be set.
 
-#### Set Your User Group ID
+```pwsh
+$settings = @{
+    radiusDirectory                   = "/Users/username/RADIUS"
+    certType                          = "UsernameCn"
+    certSubjectHeader @{
+        CountryCode      = "Your_Country_Code"
+        StateCode        = "Your_State_Code"
+        Locality         = "Your_City"
+        Organization     = "Your_Organization_Name"
+        OrganizationUnit = "Your_Organization_Unit"
+        CommonName       = "Your_Common_Name"
+}
+    certSecretPass                    = "secret1234!"
+    networkSSID                       = "Your_SSID"
+    userGroup                         = "5f3171a9232e1113939dd6a2"
+    openSSLBinary                     = '/opt/homebrew/bin/openssl'
+}
 
-Change the variable `$Global:JCR_USER_GROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
+Set-JCRConfigFile @settings
+````
+
+#### Set or update the Radius Directory
+
+The Radius Directory is the location where all generated CAs and User Certificates will be stored. This directory should be set to a location on your system where you have read/write access.
+
+To set the Radius Directory, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -radiusDirectory '/Users/username/RADIUS'
+```
+
+#### Set or update the User Cert Validity Days
+
+The user certificate validity days is the number of days a user certificate will be valid for before it expires.
+
+To set the user certificate validity days, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -userCertValidityDays 365
+```
+
+#### Set or update the CA Cert Validity Days
+
+The CA certificate validity days is the number of days a CA certificate will be valid for before it expires.
+
+To set the CA certificate validity days, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -caCertValidityDays 1095
+```
+
+#### Set or update the Certificate Expiration Warning Days
+
+The certificate expiration warning days is the number of days before a user certificate expires that a warning will be displayed in the main menu. The default value is 15 days.
+
+To set the certificate expiration warning days, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -certExpirationWarningDays 15
+```
+
+#### Set or update the certificate secret password
+
+The certificate secret password is used to protect the private key of the user certificates. This password is required when generating user certificates and should be kept secure.
+
+To set the certificate secret password, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -certSecretPass 'Your_Secret_Password'
+```
+
+#### Set or update the Radius User Group
+
+To change the JumpCloud user group with access to the Radius server use the `Set-JCRConfigFile` cmdlet. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
 
 After selecting the User Group, view the url for the user group it should look similar to this url:
-`https://console.jumpcloud.com/#/groups/user/5f808a1bb544064831f7c9fb/details`
+`https://console.jumpcloud.com/#/groups/user/5f3171a9232e1113939dd6a2/details`
 
-The ID of the selected userGroup is the 24 character string between `/user/` and `/details`: `5f808a1bb544064831f7c9fb`
+The ID of the selected userGroup is the 24 character string between `/user/` and `/details`: `5f3171a9232e1113939dd6a2`
 
-#### Set your network SSID Name
+To set the user group ID, run the following command in a PowerShell terminal window:
 
-Change the variable `$Global:JCR_NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a semicolon, ex: "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network". **Note: The SSID and user certificates are only associated with macOS system commands. This parameter does not affect windows generated commands**
+```powershell
+Set-JCRConfigFile -userGroup '5f3171a9232e1113939dd6a2'
+```
+
+#### Set or update the network SSID Name
+
+On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a semicolon, ex: "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network". **Note: The SSID and user certificates are only associated with macOS system commands. This parameter does not affect windows generated commands**
+
+To set the network SSID, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -networkSSID 'Your_SSID'
+```
 
 #### Set the openSSL Binary location
 
@@ -86,15 +172,40 @@ Depending on the host system and how OpenSSL is installed, this variable can eit
 
 [For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'` if installed through Homebrew.
 
-Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$Global:JCR_OPENSSL` necessary)
+Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient.
+
+To set the OpenSSL binary location, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
+```
 
 #### Set Your Certificate Subject Headers
 
-Change the default values provided in the `$Global:JCR_SUBJECT_HEADERS` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
+Set the Country, State, Locality, Organization, Organization Unit and Common Name subject headers for your organization. **Note: subject headers must not contain spaces**
+
+To set the subject headers, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -certSubjectHeader @{
+        CountryCode      = "Your_Country_Code"
+        StateCode        = "Your_State_Code"
+        Locality         = "Your_City"
+        Organization     = "Your_Organization_Name"
+        OrganizationUnit = "Your_Organization_Unit"
+        CommonName       = "Your_Common_Name"
+}
+```
 
 #### Set Desired User Certificate Type
 
-Change the `$Global:JCR_CERT_TYPE` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
+Set the type of user cert to generate to either `EmailSAN`, `EmailDN` or `UsernameCn`
+
+To set the user certificate type, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfigFile -certType 'UsernameCn'
+```
 
 ##### Email Subject Alternative Name (EmailSAN)
 
@@ -180,7 +291,7 @@ After successful import or generation of a self signed CA, the CA's serial numbe
 
 ### User Cert Generation
 
-With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$Global:JCR_USER_GROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
+With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the `userGroup` setting is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
 If local user certificates are set to expire within 15 days, a notification is displayed on the main menu and the certificate generation window:
 
@@ -238,7 +349,7 @@ After a user's certificate has been distributed to a system, those users can the
 
 ### macOS
 
-If the `$Global:JCR_NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
+If the `networkSSID` setting is set with `Set-JCRConfigFile`, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
 
 In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 
