@@ -21,7 +21,7 @@ function Test-JCRRadiusDirectory {
     # validate that the $resolvedPath is not the same as the JCRScriptRoot
     # Write-Warning "Resolved path: $resolvedPath | JCRScriptRoot: $global:JCRScriptRoot"
     if ("$resolvedPath" -eq $($global:JCRScriptRoot)) {
-        Write-Error "The path '$resolvedPath' cannot be the same as the JCRScriptRoot. This could lead to certificate data loss if the module is updated or reinstalled. Please set the 'RadiusDirectory' to different directory.`nSet-JCRConfigFile -RadiusDirectory '<Path/To/radiusDirectory>'"
+        Write-Error "The path '$resolvedPath' cannot be the same as the JCRScriptRoot. This could lead to certificate data loss if the module is updated or reinstalled. Please set the 'RadiusDirectory' to different directory.`nSet-JCRConfig -RadiusDirectory '<Path/To/radiusDirectory>'"
         return $false
     }
 

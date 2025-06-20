@@ -200,7 +200,7 @@ Describe 'Module Update' -Tag "Module" {
                 }
             }
 
-            Set-JCRConfigFile @settings
+            Set-JCRConfig @settings
 
             Write-Host "-----------------------"
             Write-Host "[status] Module Path : $($moduleCheck.Path)"
@@ -229,7 +229,7 @@ Describe 'Module Update' -Tag "Module" {
         }
         It 'Module can be updated from the local repo' {
             # update the module from the local repo
-            $configFileBefore = Get-JCRConfigFile -asObject
+            $configFileBefore = Get-JCRConfig -asObject
             Update-JCRModule -Force -Repository $localRepoName
             # $updateModuleSplat = @{
             #     Name            = $moduleName
@@ -243,7 +243,7 @@ Describe 'Module Update' -Tag "Module" {
             $updatedModule.version | Should -Be $newVersion
 
             # test that the config.json file contains the data from the previous module version
-            $configFileAfter = Get-JCRConfigFile -asObject
+            $configFileAfter = Get-JCRConfig -asObject
 
             foreach ($property in $configFileBefore.PSObject.Properties) {
                 # if the property is a hashtable, check each key-value pair

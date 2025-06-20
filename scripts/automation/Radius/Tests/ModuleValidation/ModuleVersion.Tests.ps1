@@ -49,7 +49,7 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
                     CommonName       = "JumpCloud.com"
                 }
             }
-            Set-JCRConfigFile @settings
+            Set-JCRConfig @settings
         }
     }
 }

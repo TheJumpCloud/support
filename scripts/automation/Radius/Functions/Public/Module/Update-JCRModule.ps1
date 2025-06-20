@@ -42,7 +42,7 @@ function Update-JCRModule {
         } else {
             # else get the module config from the current module:
             # TODO: get the json config with the private function not created yet
-            $savedJCRSettings = Get-JCRConfigFile -asObject
+            $savedJCRSettings = Get-JCRConfig -asObject
             Write-Warning "copying settings from the current module to the new one, this will overwrite the current settings file."
             $savedJCRSettings | Format-List
             Write-Warning "userGroupID =  $($savedJCRSettings.userGroup.value)"
@@ -83,9 +83,9 @@ function Update-JCRModule {
             Import-module -Name $ModuleName -Force
 
             # update the settings file config.json
-            Update-JCRConfigFile -settings $savedJCRSettings
+            Update-JCRConfig -settings $savedJCRSettings
             # re-import the settings file variable
-            $global:JCRConfig = Get-JCRConfigFile -asObject
+            $global:JCRConfig = Get-JCRConfig -asObject
 
             if (-not (Test-JCRExtensionFile)) {
                 Write-Host "Extensions file is not valid, updating it now..."

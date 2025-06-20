@@ -1,4 +1,4 @@
-function Get-JCRConfigFile {
+function Get-JCRConfig {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -16,7 +16,7 @@ function Get-JCRConfigFile {
         if (-Not (Test-Path -Path $configFilePath)) {
             Write-Host "write new settings file $configFilePath"
             # Create new file with default settings
-            New-JCRConfigFile
+            New-JCRConfig
         }
     }
 

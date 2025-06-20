@@ -1,4 +1,4 @@
-function Set-JCRConfigFile {
+function Set-JCRConfig {
     [CmdletBinding()]
     param (
     )
@@ -49,9 +49,9 @@ function Set-JCRConfigFile {
 
         if (-NOT $global:JCRConfig) {
             # create the config file from template
-            New-JCRConfigFile
+            New-JCRConfig
             # set the variable
-            $global:JCRConfig = Get-JCRConfigFile -asObject
+            $global:JCRConfig = Get-JCRConfig -asObject
         }
     }
 
@@ -89,6 +89,6 @@ function Set-JCRConfigFile {
         }
         Write-Host "-----------------------"
         $global:JCRConfig | ConvertTo-Json -Depth 10 | Out-File -FilePath $configFilePath
-        Confirm-JCRConfigFile
+        Confirm-JCRConfig
     }
 }

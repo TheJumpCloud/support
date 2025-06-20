@@ -48,7 +48,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
         It "Data should not be refreshed when running Get-JCRGlobalVars if it's been less than 24 hours since last update" {
             # Get the settings data
-            $settingsData = Get-JCRConfigFile
+            $settingsData = Get-JCRConfig
             $timeSpan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $($global:JCRConfig.lastUpdate.value)
             # Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             # get files before
@@ -58,7 +58,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
-                Set-JCRConfigFile -lastUpdate (Get-Date)
+                Set-JCRConfig -lastUpdate (Get-Date)
 
             }
             # run Get-JCRGlobalVars
@@ -79,7 +79,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
         It "Data should refresh when running Get-JCRGlobalVars if it's been more than 24 hours since last update" {
             # Get the settings data
-            $settingsData = Get-JCRConfigFile
+            $settingsData = Get-JCRConfig
             $timeSpan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $($global:JCRConfig.lastUpdate.value)
             # Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             # get files before
@@ -89,9 +89,9 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
-                Set-JCRConfigFile -lastUpdate (Get-Date).AddHours(-25)
+                Set-JCRConfig -lastUpdate (Get-Date).AddHours(-25)
                 Start-Sleep 2
-                $settingsData = Get-JCRConfigFile
+                $settingsData = Get-JCRConfig
                 $timeSpan = New-TimeSpan -Start  $($global:JCRConfig.lastUpdate.value) -End (Get-Date).AddHours(-24)
                 Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             }

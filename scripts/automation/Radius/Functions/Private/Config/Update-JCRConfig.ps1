@@ -1,4 +1,4 @@
-function Update-JCRConfigFile {
+function Update-JCRConfig {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
@@ -14,11 +14,11 @@ function Update-JCRConfigFile {
 
         if (test-path -path $configFilePath) {
             # Get Contents
-            $config = Get-JCRConfigFile -asObject
+            $config = Get-JCRConfig -asObject
         } else {
             # Create new file with default settings
-            New-JCRConfigFile
-            $config = Get-JCRConfigFile -asObject
+            New-JCRConfig
+            $config = Get-JCRConfig -asObject
         }
 
         Write-Host "---------Update settings--------------"

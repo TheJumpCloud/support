@@ -1,4 +1,4 @@
-function Confirm-JCRConfigFile {
+function Confirm-JCRConfig {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -9,7 +9,7 @@ function Confirm-JCRConfigFile {
     )
     begin {
         if (-not $global:JCRConfig) {
-            $global:JCRConfig = Get-JCRConfigFile -asObject
+            $global:JCRConfig = Get-JCRConfig -asObject
         }
         $requiredAttributesNotSet = @{}
     }
@@ -65,7 +65,7 @@ function Confirm-JCRConfigFile {
             $requiredAttributesNotSet = $requiredAttributesNotSet | Sort-Object
             $requiredAttributesNotSetString = $requiredAttributesNotSet.Keys -join ","
             Write-Warning @"
-There are required settings for this module that have not yet been set with the Set-JCRConfigFile function.
+There are required settings for this module that have not yet been set with the Set-JCRConfig function.
 The module requires you set: $requiredAttributesNotSetString
 
 To set these run the following command (changing the default settings for your own organization):
@@ -75,13 +75,13 @@ $($requiredAttributesNotSet.GetEnumerator() | ForEach-Object {
 "`t$($_.Key) = $($_.Value)" + [System.Environment]::NewLine
 })}
 
-Set-JCRConfigFile @settings
+Set-JCRConfig @settings
 
 "@
             if (-not $loadModule) {
-                throw "Please set these variables with the Set-JCRConfigFile cmdlet"
+                throw "Please set these variables with the Set-JCRConfig cmdlet"
             } else {
-                Write-Warning "Please set these variables with the Set-JCRConfigFile cmdlet"
+                Write-Warning "Please set these variables with the Set-JCRConfig cmdlet"
             }
         }
     }

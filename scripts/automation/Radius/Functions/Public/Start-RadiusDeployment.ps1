@@ -6,7 +6,7 @@ function Start-RadiusDeployment {
     }
 
     # validate the setting from the module have been set
-    Confirm-JCRConfigFile -ErrorAction stop
+    Confirm-JCRConfig -ErrorAction stop
 
     if ($Global:JCRSettings.sessionImport -eq $false) {
         Get-JCRGlobalVars

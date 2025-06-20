@@ -1,4 +1,4 @@
-Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
+Describe 'Confirm-JCRConfig Tests' -Tag "Acceptance" {
     BeforeAll {
         # Load all functions from private folders
         if (-not (test-path -path $JCRScriptRoot -errorAction silentlyContinue)) {
@@ -54,7 +54,7 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
 
         It "should create a new config file" {
             # Call the function to create a new config file
-            New-JCRConfigFile
+            New-JCRConfig
             # Check if the config file exists
             Test-Path -Path $configFilePath | Should -Be $true
             # the config file should be valid JSON
@@ -62,10 +62,10 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
             { ConvertFrom-Json -InputObject $configContent } | Should -Not -Throw
             # Check if the config file contains the expected keys
         }
-        Context "Individually Set all of the required settings but one, Confirm-JCRConfigFile should still throw" {
+        Context "Individually Set all of the required settings but one, Confirm-JCRConfig should still throw" {
             BeforeEach {
                 # Create a new config file
-                New-JCRConfigFile -force
+                New-JCRConfig -force
                 # Get all the required settings
                 $requiredSettings = $Global:JCRConfigTemplate.GetEnumerator() | Where-Object { $_.Value.required -eq $true }
                 foreach ($setting in $requiredSettings) {
@@ -90,18 +90,18 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
                             }
                         }
                     }
-                    Set-JCRConfigFile @param
+                    Set-JCRConfig @param
 
                     # set one of the required settings to null
                     if ($setting.Key -eq 'openSSLBinary') {
                         $param = @{ $setting.Key = $null }
-                        Set-JCRConfigFile @param
+                        Set-JCRConfig @param
                     }
                 }
             }
 
-            It "Confirm-JCRConfigFile should throw when the config is missing required settings" {
-                { Confirm-JCRConfigFile } | Should -Throw
+            It "Confirm-JCRConfig should throw when the config is missing required settings" {
+                { Confirm-JCRConfig } | Should -Throw
             }
         }
     }
@@ -118,12 +118,12 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
                     CommonName       = 'Test User'  # Contains a space
                 }
             }
-            { Set-JCRConfigFile @param } | Should -Throw
+            { Set-JCRConfig @param } | Should -Throw
         }
         It "Should throw when a string value is set for an 'int' type setting" {
             # Set a string value for an int type setting
             $param = @{ caCertValidityDays = 'NotAnInt' }
-            { Set-JCRConfigFile @param } | Should -Throw
+            { Set-JCRConfig @param } | Should -Throw
         }
     }
     AfterAll {
@@ -131,7 +131,7 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
         $configFilePath = Join-Path -Path $JCRScriptRoot -ChildPath 'Config.json'
         if (Test-Path -Path $configFilePath) {
             Set-Content -Path $configFilePath -Value $configBefore
-            $Global:JCRConfig = Get-JCRConfigFile -asObject
+            $Global:JCRConfig = Get-JCRConfig -asObject
         }
 
         Write-Host "-----------------------"

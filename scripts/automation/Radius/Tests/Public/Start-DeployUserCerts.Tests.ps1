@@ -216,7 +216,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailSAN certs are created and command generated with correct identifiers' {
             # set the user cert validity to just 10 days
-            Set-JCRConfigFile -certType "EmailSAN"
+            Set-JCRConfig -certType "EmailSAN"
             # Get Cert Before
             $CertInfoBefore = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Generate the user cert:
@@ -247,7 +247,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'EmailDN certs are created and command generated with correct identifiers' {
             # set the cert type
-            Set-JCRConfigFile -certType "EmailDN"
+            Set-JCRConfig -certType "EmailDN"
             # Get Cert Before
             $CertInfoBefore = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Generate the user cert:
@@ -274,7 +274,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         It 'UsernameCn certs are created and command generated with correct identifiers' {
             # set the cert type
-            Set-JCRConfigFile -certType "usernameCn"
+            Set-JCRConfig -certType "usernameCn"
             # Get Cert Before
             $CertInfoBefore = Get-CertInfo -UserCerts -username $certTypeUser.username
             # Generate the user cert:
@@ -302,7 +302,7 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
         }
         AfterAll {
             # set the cert type
-            Set-JCRConfigFile -certType "usernameCn"
+            Set-JCRConfig -certType "usernameCn"
         }
     }
     Context 'Duplicate Command / Command Result Tests' {

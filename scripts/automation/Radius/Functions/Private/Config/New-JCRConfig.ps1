@@ -1,4 +1,4 @@
-function New-JCRConfigFile {
+function New-JCRConfig {
     [CmdletBinding()]
     param (
         [Parameter(

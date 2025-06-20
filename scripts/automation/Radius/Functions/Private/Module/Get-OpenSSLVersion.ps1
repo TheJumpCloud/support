@@ -10,7 +10,7 @@ function Get-OpenSSLVersion {
         try {
             $version = Invoke-Expression "& '$opensslBinary' version"
         } catch {
-            Write-Warning "OpenSSL Not Found`nThe module could not find 'openssl' or the path is incorrect. Please update the 'OpenSSLBinary' setting for this module with the Set-JCRConfigFile cmdlet:`nWindows: Set-JCRConfigFile -openSSLBinary 'C:\Path\To\OpenSSL\bin\openssl.exe'`nMacOS/Linux: Set-JCRConfigFile -openSSLBinary '/opt/homebrew/bin/openssl'"
+            Write-Warning "OpenSSL Not Found`nThe module could not find 'openssl' or the path is incorrect. Please update the 'OpenSSLBinary' setting for this module with the Set-JCRConfig cmdlet:`nWindows: Set-JCRConfig -openSSLBinary 'C:\Path\To\OpenSSL\bin\openssl.exe'`nMacOS/Linux: Set-JCRConfig -openSSLBinary '/opt/homebrew/bin/openssl'"
             $conditionsNotMet = $true
         }
 

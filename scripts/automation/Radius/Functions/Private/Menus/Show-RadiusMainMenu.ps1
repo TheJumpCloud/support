@@ -25,8 +25,8 @@ function Show-RadiusMainMenu {
 
     # ==== TITLE ====
     Write-Host $(PadCenter -string $Title -char '=')
-    If (($global:JCRConfig -eq $null) -or (-not (Confirm-JCRConfigFile))) {
-        Write-Host $(PadCenter -string "Edit the required settings with `Set-JCRConfigFile` before continuing this script `n" -char ' ') -ForegroundColor Yellow
+    If (($global:JCRConfig -eq $null) -or (-not (Confirm-JCRConfig))) {
+        Write-Host $(PadCenter -string "Edit the required settings with `Set-JCRConfig` before continuing this script `n" -char ' ') -ForegroundColor Yellow
     }
     # /==== TITLE ====
 

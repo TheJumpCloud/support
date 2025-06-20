@@ -125,12 +125,12 @@ $global:JCRConfigTemplate = @{
         copy        = $true
         required    = $true
         placeholder = '@{
-            CountryCode      = "US"
-            StateCode        = "CO"
-            Locality         = "Boulder"
-            Organization     = "JumpCloud"
-            OrganizationUnit = "Customer_Tools"
-            CommonName       = "JumpCloud.com"
+            CountryCode      = "<CountryCode>"
+            StateCode        = "<StateCode>"
+            Locality         = "<Locality>"
+            Organization     = "<Organization>"
+            OrganizationUnit = "<OrganizationUnit>"
+            CommonName       = "<CommonName>"
         }';
         type        = 'hashtable'
     }
@@ -143,11 +143,11 @@ $global:JCRSettings = @{
 }
 
 # From the saved config file, get the settings and set them in the module as $config
-$global:JCRConfig = Get-JCRConfigFile -asObject
+$global:JCRConfig = Get-JCRConfig -asObject
 # Get-JCRConfig
 
 # validate the config settings (skip throw on first load with 'loadModule' param)
-Confirm-JCRConfigFile -loadModule
+Confirm-JCRConfig -loadModule
 
 # TODO: Check the OpenSSL version
 # Get-OpenSSLVersion -opensslBinary $global:JCRConfig.openSSLBinary.value

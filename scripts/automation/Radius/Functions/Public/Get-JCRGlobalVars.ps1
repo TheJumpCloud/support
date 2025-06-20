@@ -26,7 +26,7 @@ function Get-JCRGlobalVars {
         }
 
         if (-Not $global:JCRConfig) {
-            $global:JCRConfig = Get-JCRConfigFile
+            $global:JCRConfig = Get-JCRConfig
         }
 
         # get settings file
@@ -37,7 +37,7 @@ function Get-JCRGlobalVars {
                 Write-Host "[status] lastUpdate value is null, updating global variables"
                 $update = $true
                 $updateAssociation = $true
-                Set-JCRConfigFile -lastUpdate (Get-Date)
+                Set-JCRConfig -lastUpdate (Get-Date)
             }
         }
         if ($ifWindows) {
@@ -47,7 +47,7 @@ function Get-JCRGlobalVars {
                 Write-Host "[status] lastUpdate value is null, updating global variables"
                 $update = $true
                 $updateAssociation = $true
-                Set-JCRConfigFile -lastUpdate (Get-Date)
+                Set-JCRConfig -lastUpdate (Get-Date)
             }
         }
         if ($lastUpdateTimeSpan.TotalHours -gt 24) {
@@ -265,7 +265,7 @@ function Get-JCRGlobalVars {
                 [array]$Global:JCRRadiusMembers = $radiusMemberList
                 $Global:JCRCertHash = $certHash
                 # update the settings date
-                Set-JCRConfigFile -lastUpdate (Get-Date)
+                Set-JCRConfig -lastUpdate (Get-Date)
                 # update users.json
                 Update-JCRUsersJson
             }

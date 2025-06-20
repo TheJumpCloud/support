@@ -77,7 +77,7 @@ $settings = @{
     }
 }
 
-Set-JCRConfigFile @settings
+Set-JCRConfig @settings
 # update the openSSL path:
 if ($IsMacOS) {
     $brewList = brew list openssl@3

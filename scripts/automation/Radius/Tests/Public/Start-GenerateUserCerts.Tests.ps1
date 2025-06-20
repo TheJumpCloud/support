@@ -83,7 +83,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
             . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
             # set the user cert validity to just 10 days
-            Set-JCRConfigFile -userCertValidityDays 10
+            Set-JCRConfig -userCertValidityDays 10
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
@@ -105,7 +105,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # at this point expiring certs should be populated from beforeAll block
             $Global:expiringCerts | Should -Not -BeNullOrEmpty
             # set the user cert validity to 90 days
-            Set-JCRConfigFile -userCertValidityDays 90
+            Set-JCRConfig -userCertValidityDays 90
             # Get the certs before generation minus the .zip if it exists
             $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # get the date before
@@ -135,7 +135,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
         AfterAll {
             # set the user cert validity to 90 days
-            Set-JCRConfigFile -userCertValidityDays 90
+            Set-JCRConfig -userCertValidityDays 90
         }
 
 
