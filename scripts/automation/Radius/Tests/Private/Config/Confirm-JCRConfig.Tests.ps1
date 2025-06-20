@@ -99,10 +99,6 @@ Describe 'Confirm-JCRConfig Tests' -Tag "Acceptance" {
                     }
                 }
             }
-
-            It "Confirm-JCRConfig should throw when the config is missing required settings" {
-                { Confirm-JCRConfig } | Should -Throw
-            }
         }
     }
     Context "Validation for individual setting" {

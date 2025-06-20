@@ -70,7 +70,7 @@ authorityInfoAccess = OCSP;URI:http://localhost:9000
                 Set-Content -Path $ext.FullName -Value $emailDNHereString -NoNewline -Force
             }
             'extensions-emailSAN.cnf' {
-                Set-Content -Path $ext.FullName -Value $emailDNHereString -NoNewline -Force
+                Set-Content -Path $ext.FullName -Value $emailSANHereString -NoNewline -Force
             }
             'extensions-usernameCN.cnf' {
                 Set-Content -Path $ext.FullName -Value $usernameCNHereString -NoNewline -Force
