@@ -76,10 +76,19 @@ function Set-JCRConfigFile {
                 $global:JCRConfig.$param.value = $params[$param]
             }
         }
+        # validate the config settings
     }
 
     end {
         # Write out the new settings
+        Write-Host "---------Updated settings--------------"
+        Write-Host "[status] Module Path : $($ModuleRoot)"
+        Write-Host "[Status] JCRConfig Settings:"
+        foreach ($setting in $global:JCRConfig.PSObject.Properties) {
+            Write-Host ("$($setting.Name): $($setting.Value.value)")
+        }
+        Write-Host "-----------------------"
         $global:JCRConfig | ConvertTo-Json -Depth 10 | Out-File -FilePath $configFilePath
+        Confirm-JCRConfigFile
     }
 }

@@ -20,15 +20,46 @@ function Confirm-JCRConfigFile {
             $settingName = $setting.Name
             $settingValue = $setting.Value
             # check to see if the key is required and if the value is null
-            if ($settingValue.required -eq $true -and $settingValue.value -eq $null) {
-                $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
-            }
-            # specifically for the openssl binary, check if the path exists
-            if ($settingName -eq 'openSSLBinary' -and $settingValue.value -ne $null) {
-                Get-OpenSSLVersion -opensslBinary $settingValue.value
+            switch ($settingName) {
+                'openSSLBinary' {
+                    if ($settingName -eq 'openSSLBinary' -and $settingValue.value -ne $null) {
+                        Get-OpenSSLVersion -opensslBinary $settingValue.value
+                    }
+                }
+                'certSubjectHeader' {
+                    # check if the cert subject header is set
+                    if ($settingValue.value -eq $null) {
+                        $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
+                    } else {
+                        # check if the hashtable has all required keys
+                        $requiredKeys = @('CountryCode', 'StateCode', 'Locality', 'Organization', 'OrganizationUnit', 'CommonName')
+                        foreach ($key in $requiredKeys) {
+                            if ($global:JCRConfig.certSubjectHeader.Value.$($key) -eq $null) {
+                                $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
+                                break
+                            }
+                            # validate that the value has no spaces, throw
+                            if ($global:JCRConfig.certSubjectHeader.Value.$($key) -match '\s') {
+                                if (-not $loadModule) {
+                                    throw "The `'$settingName`' value contains spaces.`nThe value: `'$($global:JCRConfig.certSubjectHeader.Value.$($key))`' for `'$key`' cannot contain spaces."
+                                } else {
+                                    Write-Warning "The `'$settingName`' value contains spaces.`nThe value: `'$($global:JCRConfig.certSubjectHeader.Value.$($key))`' for `'$key`' cannot contain spaces."
+
+                                }
+                            }
+                        }
+                    }
+                }
+                Default {
+                    if ($settingValue.required -eq $true -and $settingValue.value -eq $null) {
+                        $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
+                    }
+                }
             }
         }
     }
+
+
     end {
         if ($requiredAttributesNotSet.count -gt 0) {
             $requiredAttributesNotSet = $requiredAttributesNotSet | Sort-Object

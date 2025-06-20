@@ -105,6 +105,27 @@ Describe 'Confirm-JCRConfigFile Tests' -Tag "Acceptance" {
             }
         }
     }
+    Context "Validation for individual setting" {
+        It "Should throw when a subject header contains a space" {
+            # Set the certSubjectHeader with a space in the CommonName
+            $param = @{
+                certSubjectHeader = @{
+                    CountryCode      = 'US'
+                    StateCode        = 'CA'
+                    Locality         = 'San Francisco'
+                    Organization     = 'JumpCloud'
+                    OrganizationUnit = 'Engineering'
+                    CommonName       = 'Test User'  # Contains a space
+                }
+            }
+            { Set-JCRConfigFile @param } | Should -Throw
+        }
+        It "Should throw when a string value is set for an 'int' type setting" {
+            # Set a string value for an int type setting
+            $param = @{ caCertValidityDays = 'NotAnInt' }
+            { Set-JCRConfigFile @param } | Should -Throw
+        }
+    }
     AfterAll {
         # Restore the original config file contents
         $configFilePath = Join-Path -Path $JCRScriptRoot -ChildPath 'Config.json'

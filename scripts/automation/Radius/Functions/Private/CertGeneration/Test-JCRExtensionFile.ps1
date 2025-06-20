@@ -24,11 +24,9 @@ function Test-JCRExtensionFile {
             if ($extContent -match $pattern) {
                 $actual = $Matches[1].Trim()
                 if ($actual -ne $expected[$key]) {
-                    Write-Error "Mismatch in $($ext.Name): $key expected '$($expected[$key])' but found '$actual'"
                     $allValid = $false
                 }
             } else {
-                Write-Error "Header $key not found in $($ext.Name)"
                 $allValid = $false
             }
         }

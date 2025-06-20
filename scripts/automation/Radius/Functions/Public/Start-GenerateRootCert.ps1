@@ -202,22 +202,13 @@ Function Start-GenerateRootCert {
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -in `"$outCA`" -noout -text"
                 # openssl x509 -in ca-cert.pem -noout -text
                 # Update Extensions Distinguished Names:
-                $exts = Get-ChildItem -Path (Resolve-Path -path "$JCRScriptRoot/Extensions")
-                foreach ($ext in $exts) {
-                    Write-Host "Updating Subject Headers for $($ext.Name)"
-                    $extContent = Get-Content -Path $ext.FullName -Raw
-                    $reqDistinguishedName = @"
-    [req_distinguished_name]
-    C = $($($global:JCRConfig.certSubjectHeader.Value.CountryCode))
-    ST = $($($global:JCRConfig.certSubjectHeader.Value.StateCode))
-    L = $($($global:JCRConfig.certSubjectHeader.Value.Locality))
-    O = $($($global:JCRConfig.certSubjectHeader.Value.Organization))
-    OU = $($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))
-    CN = $($($global:JCRConfig.certSubjectHeader.Value.CommonName))
-
-"@
-                    $extContent -Replace ("\[req_distinguished_name\][\s\S]*(?=\[v3_req\])", $reqDistinguishedName) | Set-Content -Path $ext.FullName -NoNewline -Force
+                if (-not (Test-JCRExtensionFile)) {
+                    Write-Host "Extensions file is not valid, updating it now..."
+                    Set-JCRExtensionFile
+                } else {
+                    Write-Host "Extensions file is valid, no need to update"
                 }
+
                 return
             }
         }
