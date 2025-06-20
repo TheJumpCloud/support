@@ -4,6 +4,8 @@
 *test_results
 # Ignore support.wiki
 *support.wiki
+# Ignore Extensions
+/scripts/automation/Radius/Extensions/*
 # Ignore Config
 /PowerShell/JumpCloud Module/Config.Json
 # Ignore Radius Certs
