@@ -17,7 +17,10 @@ Module for managing JumpCloud Radius user certificates.
 ### [Get-JCRGlobalVars](Get-JCRGlobalVars.md)
 {{ Fill in the Synopsis }}
 
-### [Set-JCRConfigFile](Set-JCRConfigFile.md)
+### [Set-JCRConfig](Set-JCRConfig.md)
+{{ Fill in the Synopsis }}
+
+### [Set-JCRConfig](Set-JCRConfig.md)
 {{ Fill in the Synopsis }}
 
 ### [Start-DeployUserCerts](Start-DeployUserCerts.md)

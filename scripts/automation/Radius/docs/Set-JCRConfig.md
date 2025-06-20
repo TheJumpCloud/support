@@ -5,7 +5,7 @@ online version: /
 schema: 2.0.0
 ---
 
-# Set-JCRConfigFile
+# Set-JCRConfig
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,13 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Set-JCRConfigFile [-certSubjectHeaderCountryCode <String>]
- [-radiusDirectory <String>] [-networkSSID <String>] [-certSubjectHeaderCommonName <String>]
- [-certSubjectHeaderLocality <String>] [-certSubjectHeaderOrganization <String>]
- [-certSubjectHeaderStateCode <String>] [-caCertValidityDays <Int32>] [-userGroup <String>]
- [-certType <String>] [-certSubjectHeaderOrganizationUnit <String>] [-userCertValidityDays <Int32>]
- [-lastUpdate <String>] [-certSecretPass <String>] [-openSSLBinary <String>]
- [-certExpirationWarningDays <Int32>] [<CommonParameters>]
+Set-JCRConfig [-certSubjectHeader <Hashtable>] [-networkSSID <String>]
+ [-lastUpdate <String>] [-certSecretPass <String>] [-openSSLBinary <String>] [-userCertValidityDays <Int32>]
+ [-radiusDirectory <String>] [-caCertValidityDays <Int32>] [-userGroup <String>]
+ [-certExpirationWarningDays <Int32>] [-certType <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -81,86 +78,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -certSubjectHeaderCommonName
-sets the certSubjectHeaderCommonName config for the module
+### -certSubjectHeader
+sets the certSubjectHeader config for the module
 
 ```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -certSubjectHeaderCountryCode
-sets the certSubjectHeaderCountryCode config for the module
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -certSubjectHeaderLocality
-sets the certSubjectHeaderLocality config for the module
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -certSubjectHeaderOrganization
-sets the certSubjectHeaderOrganization config for the module
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -certSubjectHeaderOrganizationUnit
-sets the certSubjectHeaderOrganizationUnit config for the module
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -certSubjectHeaderStateCode
-sets the certSubjectHeaderStateCode config for the module
-
-```yaml
-Type: System.String
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
