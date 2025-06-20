@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2.4
+version=1.2.5
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -139,6 +139,10 @@ fi
 collectionLog "Gathering software installation logs"
 log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDir/systemLogs/appstored.log
 cp /var/log/install.log* $baseDir/systemLogs/
+
+## gather CertificateService diagnostic data
+mkdir $baseDir/DiagnosticReports
+cp /Library/Logs/DiagnosticReports/Certificate* $baseDir/DiagnosticReports/
 
 ## list secure tokens and filesystem information
 collectionLog "Gathering filesystem and secure token information"
