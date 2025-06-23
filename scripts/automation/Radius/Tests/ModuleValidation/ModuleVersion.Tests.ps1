@@ -39,7 +39,7 @@ Describe "Module Version Tests" -Tag "ModuleValidation" {
                 certSecretPass    = "secret1234!"
                 networkSSID       = "TP-Link_SSID"
                 userGroup         = "5f3171a9232e1113939dd6a2"
-                openSSLBinary     = '/opt/homebrew/bin/openssl'
+                openSSLBinary     = 'openssl'
                 certSubjectHeader = @{
                     CountryCode      = "US"
                     StateCode        = "CO"
