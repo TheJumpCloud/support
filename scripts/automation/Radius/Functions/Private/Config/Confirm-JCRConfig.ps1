@@ -23,7 +23,14 @@ function Confirm-JCRConfig {
             switch ($settingName) {
                 'openSSLBinary' {
                     if ($settingName -eq 'openSSLBinary' -and $settingValue.value -ne $null) {
-                        Get-OpenSSLVersion -opensslBinary $settingValue.value
+                        $openSSLValid = Get-OpenSSLVersion -opensslBinary $settingValue.value
+                        if (-not $openSSLValid) {
+                            if (-not $loadModule) {
+                                throw "The `'$settingName`' value is not a valid OpenSSL binary path.`nThe value: `'$($settingValue.value)`' is not valid."
+                            } else {
+                                Write-Warning "The `'$settingName`' value is not a valid OpenSSL binary path.`nThe value: `'$($settingValue.value)`' is not valid."
+                            }
+                        }
                     }
                 }
                 'certSubjectHeader' {
