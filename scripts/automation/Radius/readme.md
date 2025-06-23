@@ -11,7 +11,7 @@ This automation has been tested with OpenSSL 3.1.1. OpenSSL 3.x.x is required to
 - OpenSSL 3.x.x (Tested with 3.1.1) (see macOS/ Windows requirements below)
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 - Certificate Authority (CA) (either from a vendor or self-generated)
-- Module Settings Configured with `Set-JCRConfigFile` cmdlet
+- Module Settings Configured with `Set-JCRConfig` cmdlet
 - JumpCloud Organization API Key (Read/ Write Access Required)
   - JumpCloud API Key Set (Read/ Write Access Required)
   - JumpCloud ORG ID Set
@@ -30,7 +30,7 @@ Update the `openSSLBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/o
 ex:
 
 ```powershell
-Set-JCRConfigFile -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
+Set-JCRConfig -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
 ```
 
 ````
@@ -88,7 +88,7 @@ $settings = @{
     openSSLBinary                     = '/opt/homebrew/bin/openssl'
 }
 
-Set-JCRConfigFile @settings
+Set-JCRConfig @settings
 ````
 
 #### Set or update the Radius Directory
@@ -98,7 +98,7 @@ The Radius Directory is the location where all generated CAs and User Certificat
 To set the Radius Directory, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -radiusDirectory '/Users/username/RADIUS'
+Set-JCRConfig -radiusDirectory '/Users/username/RADIUS'
 ```
 
 #### Set or update the User Cert Validity Days
@@ -108,7 +108,7 @@ The user certificate validity days is the number of days a user certificate will
 To set the user certificate validity days, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -userCertValidityDays 365
+Set-JCRConfig -userCertValidityDays 365
 ```
 
 #### Set or update the CA Cert Validity Days
@@ -118,7 +118,7 @@ The CA certificate validity days is the number of days a CA certificate will be 
 To set the CA certificate validity days, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -caCertValidityDays 1095
+Set-JCRConfig -caCertValidityDays 1095
 ```
 
 #### Set or update the Certificate Expiration Warning Days
@@ -128,7 +128,7 @@ The certificate expiration warning days is the number of days before a user cert
 To set the certificate expiration warning days, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -certExpirationWarningDays 15
+Set-JCRConfig -certExpirationWarningDays 15
 ```
 
 #### Set or update the certificate secret password
@@ -138,12 +138,12 @@ The certificate secret password is used to protect the private key of the user c
 To set the certificate secret password, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -certSecretPass 'Your_Secret_Password'
+Set-JCRConfig -certSecretPass 'Your_Secret_Password'
 ```
 
 #### Set or update the Radius User Group
 
-To change the JumpCloud user group with access to the Radius server use the `Set-JCRConfigFile` cmdlet. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
+To change the JumpCloud user group with access to the Radius server use the `Set-JCRConfig` cmdlet. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
 
 After selecting the User Group, view the url for the user group it should look similar to this url:
 `https://console.jumpcloud.com/#/groups/user/5f3171a9232e1113939dd6a2/details`
@@ -153,7 +153,7 @@ The ID of the selected userGroup is the 24 character string between `/user/` and
 To set the user group ID, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -userGroup '5f3171a9232e1113939dd6a2'
+Set-JCRConfig -userGroup '5f3171a9232e1113939dd6a2'
 ```
 
 #### Set or update the network SSID Name
@@ -163,7 +163,7 @@ On macOS hosts, the user certificate will be set to automatically authenticate t
 To set the network SSID, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -networkSSID 'Your_SSID'
+Set-JCRConfig -networkSSID 'Your_SSID'
 ```
 
 #### Set the openSSL Binary location
@@ -177,7 +177,7 @@ Else, for Windows systems, installing OpenSSL and setting an environment variabl
 To set the OpenSSL binary location, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
+Set-JCRConfig -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
 ```
 
 #### Set Your Certificate Subject Headers
@@ -187,7 +187,7 @@ Set the Country, State, Locality, Organization, Organization Unit and Common Nam
 To set the subject headers, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -certSubjectHeader @{
+Set-JCRConfig -certSubjectHeader @{
         CountryCode      = "Your_Country_Code"
         StateCode        = "Your_State_Code"
         Locality         = "Your_City"
@@ -204,7 +204,7 @@ Set the type of user cert to generate to either `EmailSAN`, `EmailDN` or `Userna
 To set the user certificate type, run the following command in a PowerShell terminal window:
 
 ```powershell
-Set-JCRConfigFile -certType 'UsernameCn'
+Set-JCRConfig -certType 'UsernameCn'
 ```
 
 ##### Email Subject Alternative Name (EmailSAN)
@@ -349,7 +349,7 @@ After a user's certificate has been distributed to a system, those users can the
 
 ### macOS
 
-If the `networkSSID` setting is set with `Set-JCRConfigFile`, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
+If the `networkSSID` setting is set with `Set-JCRConfig`, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
 
 In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 
