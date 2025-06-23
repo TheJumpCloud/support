@@ -1,7 +1,7 @@
 # Get the config path, set this value
 $configPath = "$PSScriptRoot/config.ps1"
 # define the PSD1 path:
-$psd1Path = "$PSScriptRoot/JumpCloud-Radius.psd1"
+$psd1Path = "$PSScriptRoot/JumpCloud.Radius.psd1"
 $logPath = "$PSScriptRoot/log.txt"
 # define data file path:
 $dataFilePath = "$PSScriptRoot/data/radiusMembers.json"
@@ -60,7 +60,7 @@ $EncryptedCertData = Get-Content "$PSScriptRoot/keyCert.encrypted"
 $env:certKeyPassword = $EncryptedCertData | ConvertTo-SecureString | ConvertFrom-SecureString -AsPlainText
 $EncryptedData = Get-Content "$PSScriptRoot/key.encrypted"
 $env:JCAPIKEY = $EncryptedData | ConvertTo-SecureString | ConvertFrom-SecureString -AsPlainText
-# validate that the jumpcloud API key is set as an ENV var
+# validate that the JumpCloud API key is set as an ENV var
 if ( -not $env:certKeyPassword) {
     throw "the Cert Key Password is not set, please set the cert key password as an Env variable"
 }
@@ -69,15 +69,13 @@ if ( -not $env:JCAPIKEY) {
     throw "the Api Key is not set, please set the API key as an Env variable"
 } else {
     Write-ToLog -Message ("Connecting to JumpCloud Organization")
-    import-module jumpcloud
+    import-module JumpCloud
     Connect-JCOnline -JumpCloudApiKey $env:JCAPIKEY -force
 }
 
 # Define list of Radius User Group IDs:
 $radiusUserGroups = @(
     @{"US-Radius" = '5f3171a9232e1113939dd6a2' }
-    @{"US-Dairy-Farmers" = '664e50582d9c0e000143ee97' }
-    @{"AK-Farmers" = '5f7f418a1f247569e35070f1' }
 )
 
 # For each group, update the config and
@@ -85,10 +83,8 @@ foreach ($radiusGroup in $radiusUserGroups) {
     <# $currentItemName is the current item #>
     Write-ToLog -Message ("Processing Radius User Group: $($radiusGroup.keys) | $($radiusGroup.values) ")
     Write-Warning "Processing Radius User Group: $($radiusGroup.keys) | $($radiusGroup.values) "
-    # set the contents of the config for each user groupID
-    $configContent = Get-Content -path $configPath
     # Update the userGroupID:
-    $configContent -replace ('\$Global:JCR_USER_GROUP = *.+', "`$Global:JCR_USER_GROUP = `"$($radiusGroup.values)`"") | Set-Content -Path $configPath
+    Set-JCRConfig -userGroup $radiusGroup.values
     # remove the radius members data file:
     if (Test-Path -Path $dataFilePath) {
         Remove-Item $dataFilePath -Force

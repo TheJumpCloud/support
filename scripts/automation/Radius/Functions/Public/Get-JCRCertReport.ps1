@@ -13,13 +13,17 @@ function Get-JCRCertReport {
             })]
         [System.IO.FileInfo]$ExportFilePath
     )
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
 
     # Initialize an empty array to store the results
     $reportData = New-Object System.Collections.ArrayList
 
-    $radiusMembersPath = Join-Path -Path $JCScriptRoot -ChildPath "data/radiusMembers.json"
-    $certHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/certHash.json"
-    $associationHashPath = Join-Path -Path $JCScriptRoot -ChildPath "data/associationHash.json"
+    $radiusMembersPath = Join-Path -Path $JCRScriptRoot -ChildPath "data/radiusMembers.json"
+    $certHashPath = Join-Path -Path $JCRScriptRoot -ChildPath "data/certHash.json"
+    $associationHashPath = Join-Path -Path $JCRScriptRoot -ChildPath "data/associationHash.json"
 
     if (!(Test-Path $radiusMembersPath)) {
         Write-Error "radiusMembers.json not found at $radiusMembersPath"

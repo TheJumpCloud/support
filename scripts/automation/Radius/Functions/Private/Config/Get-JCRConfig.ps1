@@ -1,4 +1,4 @@
-function Get-JCRSettingsFile {
+function Get-JCRConfig {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -6,29 +6,28 @@ function Get-JCRSettingsFile {
             HelpMessage = 'Returns Config.json with value, copy, write properties'
         )]
         [switch]
-        $raw
+        $asObject
     )
 
     begin {
-        # Config should be in /PowerShell/JumpCloudModule/Config.json
-        $ModuleRoot = (Get-Item -Path:($global:JCScriptRoot))
-        $configFilePath = join-path -path $ModuleRoot -childpath 'settings.json'
+        $moduleRoot = $JCRScriptRoot
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
-        if (-Not (test-path -path $configFilePath)) {
-            write-host "write new settings file $configFilePath"
+        if (-Not (Test-Path -Path $configFilePath)) {
+            Write-Host "write new settings file $configFilePath"
             # Create new file with default settings
-            New-JCRSettingsFile
+            New-JCRConfig
         }
     }
 
     process {
-        if (-Not $raw) {
+        if (-Not $asObject) {
             $rawConfig = Get-Content -Path $configFilePath | ConvertFrom-Json
             $config = @{}
-            foreach ($item in $rawConfig.psobject.Properties) {
+            foreach ($item in $rawConfig.PSObject.Properties) {
                 # $config.$item
                 $config.Add($item.Name, @{})
-                foreach ($setting in $item.value.psobject.Properties) {
+                foreach ($setting in $item.value.PSObject.Properties) {
                     # $setting
                     $config.$($Item.Name).Add($setting.Name, $setting.value.value)
                 }
@@ -38,7 +37,6 @@ function Get-JCRSettingsFile {
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json
         }
     }
-
     end {
         return $config
     }

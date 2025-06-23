@@ -1,6 +1,6 @@
 Describe "Get Global Variable Data Tests" -Tag "Cache" {
     BeforeAll {
-        $dataPath = "$JCScriptRoot/data/"
+        $dataPath = "$JCRScriptRoot/data/"
         $requiredFiles = @(
             'associationHash.json',
             'radiusMembers.json',
@@ -9,7 +9,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             'certHash.json'
         )
         # explicitly import the settings file functions for these tests:
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/Settings/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -48,17 +48,17 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
         It "Data should not be refreshed when running Get-JCRGlobalVars if it's been less than 24 hours since last update" {
             # Get the settings data
-            $settingsData = Get-JCRSettingsFile
-            $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
-            # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+            $settingsData = Get-JCRConfig
+            $timeSpan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $($global:JCRConfig.lastUpdate.value)
+            # Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             # get files before
             $filesBefore = Get-ChildItem -Path $dataPath
             # check the settings time the files were last written
-            if ($timespan.TotalHours -lt 24) {
+            if ($timeSpan.TotalHours -lt 24) {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date)
+                Set-JCRConfig -lastUpdate (Get-Date)
 
             }
             # run Get-JCRGlobalVars
@@ -79,21 +79,21 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
         }
         It "Data should refresh when running Get-JCRGlobalVars if it's been more than 24 hours since last update" {
             # Get the settings data
-            $settingsData = Get-JCRSettingsFile
-            $timespan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $settingsData.globalVars.lastupdate
-            # Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+            $settingsData = Get-JCRConfig
+            $timeSpan = New-TimeSpan -Start (Get-Date).AddHours(-24) -End $($global:JCRConfig.lastUpdate.value)
+            # Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             # get files before
             $filesBefore = Get-ChildItem -Path $dataPath
             # check the settings time the files were last written
-            if ($timespan.TotalHours -gt 24) {
+            if ($timeSpan.TotalHours -gt 24) {
                 # continue with test
             } else {
                 # set the settings file to a mocked value of now
-                Set-JCRSettingsFile -globalVarslastUpdate (Get-Date).AddHours(-25)
+                Set-JCRConfig -lastUpdate (Get-Date).AddHours(-25)
                 Start-Sleep 2
-                $settingsData = Get-JCRSettingsFile
-                $timespan = New-TimeSpan -Start  $settingsData.globalVars.lastupdate -End (Get-Date).AddHours(-24)
-                Write-Host "Time between 24 hrs and settings file: $($timespan.TotalHours)"
+                $settingsData = Get-JCRConfig
+                $timeSpan = New-TimeSpan -Start  $($global:JCRConfig.lastUpdate.value) -End (Get-Date).AddHours(-24)
+                Write-Host "Time between 24 hrs and settings file: $($timeSpan.TotalHours)"
             }
             # run Get-JCRGlobalVars
             Get-JCRGlobalVars -Force -associateManually
@@ -182,8 +182,8 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
                 )
             }
             # write the mocked certHash to the data file:
-            $certHash | ConvertTo-Json |  Out-File "$JCScriptRoot/data/certHash.json"
-            $Global:JCRCertHash = Get-Content -path "$JCScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
+            $certHash | ConvertTo-Json |  Out-File "$JCRScriptRoot/data/certHash.json"
+            $Global:JCRCertHash = Get-Content -path "$JCRScriptRoot/data/certHash.json" | ConvertFrom-Json -AsHashtable
             # update the users json file
             Update-JCRUsersJson
             $userArray = Get-UserJsonData
@@ -205,7 +205,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             # get the RadiusMembers.json before
             # get the user.json file before
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             Start-Sleep 1
             # update the cache forcefully
             Get-JCRGlobalVars -force -skipAssociation -associateManually
@@ -225,7 +225,7 @@ Describe "Get Global Variable Data Tests" -Tag "Cache" {
             # get the RadiusMembers.json before
             # get the user.json file before
             # add a user to the radius Group
-            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             Start-Sleep 1
             # update the cache forcefully
             Get-JCRGlobalVars -force -skipAssociation -associateManually

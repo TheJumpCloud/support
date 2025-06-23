@@ -1,7 +1,7 @@
 Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     BeforeAll {
         # Load all functions from private folders
-        $Private = @( Get-ChildItem -Path "$JCScriptRoot/Functions/Private/*.ps1" -Recurse)
+        $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse)
         Foreach ($Import in $Private) {
             Try {
                 . $Import.FullName
@@ -42,9 +42,9 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # create a new user
             $user = New-RandomUser -Domain "pesterRadius" | New-JCUser
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # Get the certs before
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # wait one moment
             Start-Sleep 1
             # update the cache
@@ -57,7 +57,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # filter by username
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist
@@ -67,7 +67,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $UserCerts.fullname | Where-Object { $_ -match ".crt" } | Should -Exist
             $UserCerts.fullname | Where-Object { $_ -match ".key" } | Should -Exist
             # cleanup
-            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
             # wait just one moment before testing membership since we are writing a file
@@ -80,13 +80,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     Context 'Certs generated for users who have certs that are about set to expire soon' {
         BeforeAll {
             # import necessary functions:
-            . "$JCScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
-            . "$JCScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
-            # Set config
-            $configPath = "$JCScriptRoot/Config.ps1"
-            $content = Get-Content -Path $configPath
+            . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-CertInfo.ps1"
+            . "$JCRScriptRoot/Functions/Private/CertDeployment/Get-ExpiringCertInfo.ps1"
             # set the user cert validity to just 10 days
-            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 10') | Set-Content -Path $configPath
+            Set-JCRConfig -userCertValidityDays 10
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
@@ -101,18 +98,16 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $userCertInfo = Get-CertInfo -UserCerts
             # Determine cut off date for expiring certs
             # Find all certs that will expire between current date and cut off date
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
 
         }
         It 'Certs that are set to expire soon can be updated programmatically' {
             # at this point expiring certs should be populated from beforeAll block
             $Global:expiringCerts | Should -Not -BeNullOrEmpty
-            # reset the validity counter
-            $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
-            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
+            Set-JCRConfig -userCertValidityDays 90
             # Get the certs before generation minus the .zip if it exists
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # get the date before
             $dateBefore = (Get-Date).ToString('MM/dd/yyyy HH:mm:ss')
             Start-Sleep 1
@@ -120,11 +115,11 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             Start-GenerateUserCerts -type ExpiringSoon -forceReplaceCerts
             # Update Global Expiring list:
             $userCertInfo = Get-CertInfo -UserCerts
-            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+            $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
             # there should be no more certs left in the expiring cert var
             $Global:expiringCerts | Should -BeNullOrEmpty
             # Get the certs after generation minus the .zip if it exists
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts" -Filter "$($RandomUsername)*" -Exclude "*.zip"
             # test each file, it should have been written
             foreach ($cert in $certsAfter) {
                 Write-Host "$($cert.Name)"
@@ -139,10 +134,8 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             $certInfo.generated | Should -BeGreaterThan $dateBefore
         }
         AfterAll {
-            # reset the validity counter
-            $content = Get-Content -Path $configPath
             # set the user cert validity to 90 days
-            $content -replace ('\$Global:JCR_USER_CERT_VALIDITY_DAYS = *.+', '$Global:JCR_USER_CERT_VALIDITY_DAYS = 90') | Set-Content -Path $configPath
+            Set-JCRConfig -userCertValidityDays 90
         }
 
 
@@ -167,9 +160,9 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # update the user
             $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/systemusers/$($user.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # Get the certs before
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # wait one moment
             Start-Sleep 1
             # update the cache
@@ -182,7 +175,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # filter by username
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist
@@ -199,9 +192,9 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # manually update the user with a hyphen in their username
             $user = Set-JcSdkUser -Id $($user.id) -Username "$($user.username)-$($user.username)"
             # add a user to the radius Group
-            Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # Get the certs before
-            $certsBefore = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsBefore = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # wait one moment
             Start-Sleep 1
             # update the cache
@@ -214,7 +207,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
             # Generate the user cert:
             Start-GenerateUserCerts -type ByUsername -username $($user.username) -forceReplaceCerts
             # Get the certs after
-            $certsAfter = Get-ChildItem -Path "$JCScriptRoot/UserCerts"
+            $certsAfter = Get-ChildItem -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
             # filter by username
             $UserCerts = $certsAfter | Where-Object { $_.Name -match "$($user.username)" }
             # the files and each type of expected cert file should exist
@@ -227,7 +220,7 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
         AfterEach {
             # cleanup
-            Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $user.id
+            Remove-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $user.id
             # update cache
             Get-JCRGlobalVars -force -skipAssociation
             # wait just one moment before testing membership since we are writing a file
@@ -241,16 +234,16 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
     Context 'Certs generated when userGroup only contains 1 user' {
         BeforeAll {
             # Save users in userGroup to variable for later
-            $RadiusMembers = Get-JCUserGroupMember -ByID $Global:JCR_USER_GROUP
+            $RadiusMembers = Get-JCUserGroupMember -ByID $global:JCRConfig.userGroup.value
 
             # Remove all members from UserGroup
             $RadiusMembers | ForEach-Object {
-                $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID
+                $userRemoval = Remove-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $_.UserID
             }
 
             # Add One Member back to the Group
             $SingleUser = $RadiusMembers | Select-Object -First 1
-            $userAdd = Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
+            $userAdd = Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $SingleUser.UserID
         }
         It "When the Radius UserGroup only contains 1 user, the generation functions will not error" {
             # update the cache
@@ -270,10 +263,10 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
         AfterAll {
             # Remove the single User
-            $userRemoval = Remove-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $SingleUser.UserID
+            $userRemoval = Remove-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $SingleUser.UserID
 
             # Add original members back to the UserGroup
-            $userAdd = $RadiusMembers | ForEach-Object { Add-JCUserGroupMember -GroupID $Global:JCR_USER_GROUP -UserID $_.UserID }
+            $userAdd = $RadiusMembers | ForEach-Object { Add-JCUserGroupMember -GroupID $global:JCRConfig.userGroup.value -UserID $_.UserID }
 
             # update cache
             Get-JCRGlobalVars -force -skipAssociation

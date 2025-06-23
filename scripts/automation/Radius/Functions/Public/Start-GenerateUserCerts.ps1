@@ -16,12 +16,19 @@ function Start-GenerateUserCerts {
         [switch]
         $forceReplaceCerts
     )
+
+    if ($Global:JCRSettings.sessionImport -eq $false) {
+        Get-JCRGlobalVars
+        $Global:JCRSettings.sessionImport = $true
+    }
+    Write-Host "[status] Starting User Certificate Generation"
+    Write-Host "[status] Using Radius Directory: $($global:JCRConfig.radiusDirectory.value)"
     #### begin function setup:
     # Check if CA-Key is saved in env
     if ($env:certKeyPassword) {
         Write-Host "Found CA-Key password in env"
         # Check if the key.pem works with the password
-        $foundKeyPem = Resolve-Path -Path "$JCScriptRoot/Cert/*key.pem"
+        $foundKeyPem = Resolve-Path -Path "$($global:JCRConfig.radiusDirectory.value)/Cert/*key.pem"
         $checkKey = openssl rsa -in $foundKeyPem -check -passin pass:$($env:certKeyPassword) 2>&1
         if ($checkKey -match "RSA key ok") {
             Write-Debug "ENV CA-Key password is works with the current key"
@@ -39,11 +46,17 @@ function Start-GenerateUserCerts {
     $userArray = Get-UserJsonData
 
     # Create UserCerts dir
-    if (Test-Path "$JCScriptRoot/UserCerts") {
+    if (Test-Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts") {
         Write-Host "[status] User Cert Directory Exists"
     } else {
         Write-Host "[status] Creating User Cert Directory"
-        New-Item -ItemType Directory -Path "$JCScriptRoot/UserCerts"
+        New-Item -ItemType Directory -Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts"
+        Write-Host "[status] User Cert Directory Created at: $($global:JCRConfig.radiusDirectory.value)/UserCerts"
+        if (Test-Path ("$($global:JCRConfig.radiusDirectory.value)/UserCerts")) {
+            Write-Host "[status] User Cert Directory Created Successfully"
+        } else {
+            Write-Warning "[error] User Cert Directory could not be created at: $($global:JCRConfig.radiusDirectory.value)/UserCerts"
+        }
     }
     #### end function setup
 
@@ -64,10 +77,10 @@ function Start-GenerateUserCerts {
                 # if force invoke is set, invoke the commands after generation:
                 switch ($forceReplaceCerts) {
                     $true {
-                        $replcaeCerts = $true
+                        $replaceCerts = $true
                     }
                     $false {
-                        $replcaeCerts = $false
+                        $replaceCerts = $false
                     }
                 }
             }
@@ -78,7 +91,7 @@ function Start-GenerateUserCerts {
                 # process all users, generate certificates for uses who do not yet have a certificate
                 # Get each RadiusMember User:
                 for ($i = 0; $i -lt $JCRRadiusMembers.count; $i++) {
-                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $JCR_CERT_TYPE
+                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $($global:JCRConfig.certType.value)
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $JCRRadiusMembers.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
                 }
                 switch ($PSCmdlet.ParameterSetName) {
@@ -121,20 +134,20 @@ function Start-GenerateUserCerts {
                         $true {
                             switch ($PSCmdlet.ParameterSetName) {
                                 'gui' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE -forceReplaceCert
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                                 }
                                 'cli' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE -forceReplaceCert
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                                 }
                             }
                         }
                         $false {
                             switch ($PSCmdlet.ParameterSetName) {
                                 'gui' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE -Prompt
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value) -Prompt
                                 }
                                 'cli' {
-                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $JCR_CERT_TYPE
+                                    $result = Invoke-UserCertProcess -radiusMember $userObject -certType $($global:JCRConfig.certType.value)
                                 }
                             }
                         }
@@ -171,7 +184,7 @@ function Start-GenerateUserCerts {
                 }
                 # Get each RadiusMember User:
                 for ($i = 0; $i -lt $JCRRadiusMembers.count; $i++) {
-                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $JCR_CERT_TYPE -forceReplaceCert
+                    $result = Invoke-UserCertProcess -radiusMember $JCRRadiusMembers[$i] -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $JCRRadiusMembers.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
                 }
                 switch ($PSCmdlet.ParameterSetName) {
@@ -188,19 +201,19 @@ function Start-GenerateUserCerts {
                 # recalculate expiring certs:
                 $userCertInfo = Get-CertInfo -UserCerts
                 # Get expiring certs:
-                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
                 for ($i = 0; $i -lt $ExpiringCerts.Count; $i++) {
                     $userCert = $ExpiringCerts[$i]
                     <# Action that will repeat until the condition is met #>
                     $userArrayIndex = $userArray.username.IndexOf($userCert.username)
                     $IdentifiedUser = $userArray[$userArrayIndex]
-                    $result = Invoke-UserCertProcess -radiusMember $IdentifiedUser -certType $JCR_CERT_TYPE -forceReplaceCert
+                    $result = Invoke-UserCertProcess -radiusMember $IdentifiedUser -certType $($global:JCRConfig.certType.value) -forceReplaceCert
                     Show-RadiusProgress -completedItems ($i + 1) -totalItems $ExpiringCerts.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
 
                     # recalculate expiring certs:
                     $userCertInfo = Get-CertInfo -UserCerts
                 }
-                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $Global:JCR_USER_CERT_EXPIRE_WARNING_DAYS
+                $Global:expiringCerts = Get-ExpiringCertInfo -certInfo $userCertInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
                         Show-StatusMessage -Message "Finished Generating Certificates"

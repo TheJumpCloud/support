@@ -37,7 +37,7 @@ Function Invoke-UserCertProcess {
         # get the user from user.json
         $userObject, $userIndex = Get-UserFromTable -userID $MatchedUser.id
         # Test if the file exists:
-        switch (Test-Path "$JCScriptRoot/UserCerts/$($matchedUser.username)-client-signed.pfx") {
+        switch (Test-Path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($matchedUser.username)-client-signed.pfx") {
             $true {
                 switch ($forceReplaceCert) {
                     $true {
@@ -51,7 +51,7 @@ Function Invoke-UserCertProcess {
                     }
                 }
                 if ($prompt) {
-                    $writeCert = Get-ResponsePrompt -message "A certifcate already exists for user: $($matchedUser.username) do you want to re-generate this certificate?"
+                    $writeCert = Get-ResponsePrompt -message "A certificate already exists for user: $($matchedUser.username) do you want to re-generate this certificate?"
                     switch ($writeCert) {
                         $true {
                             $cert_action = "Overwritten"
@@ -78,15 +78,15 @@ Function Invoke-UserCertProcess {
     process {
         # if writeCert, generate the cert
         if ($writeCert) {
-            Generate-UserCert -CertType $JCR_CERT_TYPE -user $MatchedUser -rootCAKey "$JCScriptRoot/Cert/radius_ca_key.pem" -rootCA "$JCScriptRoot/Cert/radius_ca_cert.pem" 2>&1 | out-null
+            Generate-UserCert -CertType $($global:JCRConfig.certType.value) -user $MatchedUser -rootCAKey (Resolve-Path -path "$($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_key.pem") -rootCA (Resolve-Path -path "$($global:JCRConfig.radiusDirectory.value)/Cert/radius_ca_cert.pem") 2>&1 | out-null
             # validate that the cert was written correctly:
             #TODO: validate and return as variable
 
-            #TODO: cert should be written with $JCR_CERT_TYPE, if other certs exist, remove them.
+            #TODO: cert should be written with $($global:JCRConfig.certType.value), if other certs exist, remove them.
             $CertInfo = Get-CertInfo -UserCerts -username $MatchedUser.username
             if ($CertInfo.count -gt 1) {
-                $foundCerts = Get-ChildItem -path "$JCScriptRoot/UserCerts/$($MatchedUser.username)-*.crt"
-                $orderedCerts = $founDcerts | Sort-Object -Property LastWriteTime -Descending | select -Skip 1
+                $foundCerts = Get-ChildItem -path (Resolve-Path -path "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($MatchedUser.username)-*.crt")
+                $orderedCerts = $foundCerts | Sort-Object -Property LastWriteTime -Descending | select -Skip 1
                 foreach ($cert in $orderedCerts) {
                     Remove-Item $cert.FullName
                 }
@@ -111,9 +111,9 @@ Function Invoke-UserCertProcess {
     end {
         #TODO: eventually add message if we fail to generate a command
         $resultTable = [ordered]@{
-            'Username'       = $MatchedUser.username;
+            'Username'       = $($MatchedUser.username);
             'Cert Action'    = $cert_action;
-            'Generated Date' = $certInfo.generated;
+            'Generated Date' = $($certInfo.generated);
         }
 
         return $resultTable

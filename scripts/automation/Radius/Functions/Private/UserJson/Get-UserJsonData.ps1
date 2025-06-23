@@ -5,8 +5,8 @@ function Get-UserJsonData {
 
     )
     begin {
-        if (Test-Path -Path "$JCScriptRoot/users.json" -PathType Leaf) {
-            $content = (Get-Content -Raw -Path "$JCScriptRoot/users.json")
+        if (Test-Path -Path "$JCRScriptRoot/users.json" -PathType Leaf) {
+            $content = (Get-Content -Raw -Path "$JCRScriptRoot/users.json")
             if ([string]::isNullOrEmpty($content)) {
                 $userArray = New-Object System.Collections.ArrayList
             } else {
