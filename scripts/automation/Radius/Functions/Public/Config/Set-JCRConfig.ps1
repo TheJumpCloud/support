@@ -63,7 +63,10 @@ function Set-JCRConfig {
             switch ($param) {
                 'radiusDirectory' {
                     # validate the directory
-                    Test-JCRRadiusDirectory -Path $params[$param]
+                    $validRadiusDir = Test-JCRRadiusDirectory -Path $params[$param]
+                    if (-not $validRadiusDir) {
+                        Write-Error "The radius directory path '$($params[$param])' is not valid or does not exist. Please create this directory before trying again."
+                    }
                 }
             }
             # set the value of the config setting to the value passed into this function
@@ -80,15 +83,12 @@ function Set-JCRConfig {
     }
 
     end {
-        # Write out the new settings
-        Write-Host "---------Updated settings--------------"
-        Write-Host "[status] Module Path : $($ModuleRoot)"
-        Write-Host "[Status] JCRConfig Settings:"
-        foreach ($setting in $global:JCRConfig.PSObject.Properties) {
-            Write-Host ("$($setting.Name): $($setting.Value.value)")
+        try {
+            $global:JCRConfig | ConvertTo-Json -Depth 10 | Out-File -FilePath $configFilePath
+            Confirm-JCRConfig
+        } catch {
+            Write-Error "Failed to validate JCRConfig File: $_"
+            throw
         }
-        Write-Host "-----------------------"
-        $global:JCRConfig | ConvertTo-Json -Depth 10 | Out-File -FilePath $configFilePath
-        Confirm-JCRConfig
     }
 }
