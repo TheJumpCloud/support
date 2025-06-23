@@ -22,7 +22,9 @@ function Confirm-JCRConfig {
             # check to see if the key is required and if the value is null
             switch ($settingName) {
                 'openSSLBinary' {
-                    if ($settingName -eq 'openSSLBinary' -and $settingValue.value -ne $null) {
+                    if ($settingValue.value -eq $null) {
+                        $requiredAttributesNotSet += @{ $settingName = $settingValue.placeholder }
+                    } else {
                         $openSSLValid = Get-OpenSSLVersion -opensslBinary $settingValue.value
                         if (-not $openSSLValid) {
                             if (-not $loadModule) {
