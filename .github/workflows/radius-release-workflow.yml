@@ -138,7 +138,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Draft Release
         run: |
-          VERSION=$(grep -Po '(\d+\.\d+\.\d+)' ${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius.psd1)
+          VERSION=$(grep -Po "ModuleVersion\s*=\s*'\K[0-9]+\.[0-9]+\.[0-9]+" ${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius.psd1)
           TITLE="JumpCloud Radius Module v$VERSION"
           CHANGELOG=$(cat ${{ github.workspace }}/scripts/automation/Radius/Changelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
           TAG="v$VERSION"

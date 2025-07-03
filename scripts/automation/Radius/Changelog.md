@@ -1,3 +1,25 @@
+## 2.1.0
+
+Release Date: July 3, 2025
+
+#### RELEASE NOTES
+
+```
+This release is a minor update to the Radius Cert Deployment tool. This version of the tool is now a PowerShell Module, which allows for easier updates and management of the tool. The module can be installed and updated from the PowerShell Gallery.
+```
+
+#### Features:
+
+- The Radius Cert Deployment tool is now a PowerShell Module
+- The module and the cert locations are now configurable via a new public function `Set-JCRConfig`
+- All configuration settings which were previously stored in `config.ps1` are now variables configured with the `Set-JCRConfig` function
+- The module can be installed and updated from the PowerShell Gallery using `Install-Module JumpCloud.Radius`
+
+#### Bug Fixes:
+
+- Fixed an issue where the macOS CommandNames were not stored correctly in the users.json file.
+- Fixed an issue where the tool would not work correctly when only one user was assigned to the radius user group.
+
 ## 2.0.0
 
 Release Date: January 30, 2024
