@@ -31,12 +31,24 @@ Function Set-JCOrganization {
         If ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -eq $env:JCApiKey) {
             Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
             Write-Verbose ('Populating JCOrganizations')
-            $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName')
+            try {
+                $Organizations = Get-JCObject -Type:('organization') -Fields:('_id', 'displayName') -ErrorVariable api_err
+            } catch {
+                Throw
+            }
             If (-not [System.String]::IsNullOrEmpty($Organizations)) {
                 If ($Organizations.Count -gt 1) {
+                    # Set the JCProviderID
+                    $JCProviderHeaders = @{
+                        'x-api-key' = $env:JCApiKey
+                    }
+                    $ProviderResponse = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/users/getSelf?fields=provider' -Method GET -Headers $JCProviderHeaders
+                    If ($ProviderResponse) {
+                        $env:JCProviderId = $ProviderResponse.provider
+                    }
+
                     # If not JumpCloudOrgId was specified or if the specified JumpCloudOrgId does not exist within the list of available organizations prompt for selection
                     If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -or $JumpCloudOrgId -notin $Organizations._id) {
-
                         $OrgIdHash = [ordered]@{ }
                         $OrgNameHash = [ordered]@{ }
                         # Build user menu

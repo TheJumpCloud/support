@@ -19,7 +19,8 @@ Import-JCUsersFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Import-JCUsersFromCSV [-CSVFilePath] <String> [-force] [<CommonParameters>]
+Import-JCUsersFromCSV [-CSVFilePath] <String> [-force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -101,7 +102,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

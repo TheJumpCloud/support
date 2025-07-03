@@ -13,7 +13,8 @@ Removes Radius reply attributes from a JumpCloud user group.
 ## SYNTAX
 
 ```
-Remove-JCRadiusReplyAttribute [-GroupName] <String> [-AttributeName <String[]>] [-All] [<CommonParameters>]
+Remove-JCRadiusReplyAttribute [-GroupName] <String> [-AttributeName <String[]>] [-All]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -92,11 +93,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.String[]
-
 ### System.Management.Automation.SwitchParameter
-
 ## OUTPUTS
 
 ### System.Object

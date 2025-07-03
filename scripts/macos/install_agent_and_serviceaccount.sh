@@ -183,9 +183,10 @@ else
     exit 1
   fi
 
-  # check connect key length
-  if [ ${#YOUR_CONNECT_KEY} != 40 ]; then
-    echo 'Connect key is not 40 characters. Please provide a valid connect key in the script or via the -k parameter'
+  # check connect key length and pattern
+  tenantConnectKeyPattern="^jcc_([0-9a-zA-Z+/]{4,}={0,3})$"
+  if [[ ${#YOUR_CONNECT_KEY} != 40 && ! "$YOUR_CONNECT_KEY" =~ $tenantConnectKeyPattern ]]; then
+    echo 'Connect key is invalid. It must either be 40 characters long or match the pattern: jcc_([0-9a-zA-Z+/]{4,}={0,3}). Please confirm that it was copied correctly and completely.'
     exit 1
   fi
 
@@ -216,15 +217,42 @@ else
   # Install Rosetta2 for M1 (Apple Silicon) Macs
   installRosettaForM1
 
-  curl --silent --output /tmp/jumpcloud-agent.pkg "https://cdn02.jumpcloud.com/production/jumpcloud-agent.pkg" >/dev/null
-  mkdir -p /opt/jc
-  cat <<-EOF >/opt/jc/agentBootstrap.json
+curl --silent --output /tmp/jumpcloud-agent.pkg "https://cdn02.jumpcloud.com/production/jumpcloud-agent.pkg" >/dev/null
+mkdir -p /opt/jc
+# Generate the agentBootstrap.json file based on the connect key
+if [[ ${#YOUR_CONNECT_KEY} == 40 ]]; then
+    cat <<EOF >/opt/jc/agentBootstrap.json
 {
-"publicKickstartUrl": "https://kickstart.jumpcloud.com:443",
-"privateKickstartUrl": "https://private-kickstart.jumpcloud.com:443",
-"connectKey": "$YOUR_CONNECT_KEY"
+    "publicKickstartUrl": "https://kickstart.jumpcloud.com:443",
+    "privateKickstartUrl": "https://private-kickstart.jumpcloud.com:443",
+    "connectKey": "$YOUR_CONNECT_KEY"
 }
 EOF
+    if [[ -f /opt/jc/agentBootstrap.json ]]; then
+        echo "agentBootstrap.json created successfully for 40-character connect key."
+    else
+        echo "Error: Failed to create agentBootstrap.json for 40-character connect key."
+        exit 1
+    fi
+elif [[ "$YOUR_CONNECT_KEY" =~ $tenantConnectKeyPattern ]]; then
+    # Remove the "jcc_" prefix before decoding
+    BASE64_PAYLOAD=${YOUR_CONNECT_KEY#jcc_}
+    BOOTSTRAP_PAYLOAD=$(echo "$BASE64_PAYLOAD" | base64 -d 2>/dev/null)
+    if [[ $? -ne 0 ]]; then
+        echo "Error: Failed to decode YOUR_CONNECT_KEY using base64."
+        exit 1
+    fi
+    echo "$BOOTSTRAP_PAYLOAD" > /opt/jc/agentBootstrap.json
+    if [[ -f /opt/jc/agentBootstrap.json ]]; then
+        echo "agentBootstrap.json created successfully for tenant connect key."
+    else
+        echo "Error: Failed to create agentBootstrap.json for tenant connect key."
+        exit 1
+    fi
+else
+    echo "Invalid connect key. Unable to generate agentBootstrap.json."
+    exit 1
+fi
 
   if [ "$SILENT_INSTALL" -eq "0" ]; then
     cat <<-EOF >/var/run/JumpCloud-SecureToken-Creds.txt

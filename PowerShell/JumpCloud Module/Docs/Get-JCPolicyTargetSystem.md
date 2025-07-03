@@ -19,7 +19,8 @@ Get-JCPolicyTargetSystem [-PolicyID] <String> [<CommonParameters>]
 
 ### ByName
 ```
-Get-JCPolicyTargetSystem [-ByName] [-PolicyName] <String> [<CommonParameters>]
+Get-JCPolicyTargetSystem [-ByName] [-PolicyName] <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -102,7 +103,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

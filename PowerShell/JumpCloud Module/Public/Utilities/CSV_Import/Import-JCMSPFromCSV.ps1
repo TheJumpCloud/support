@@ -74,7 +74,7 @@ Function Import-JCMSPFromCSV () {
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
             Write-Verbose 'Verifying JCAPI Key'
-            if ($JCAPIKEY.length -ne 40) {
+            if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                 Connect-JCOnline
             }
             if (-Not $Env:JCProviderID) {

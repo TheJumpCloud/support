@@ -14,14 +14,16 @@ Copy the associations from one object to another.
 
 ### ById (Default)
 ```
-Copy-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [-RemoveExisting] [[-IncludeType] <String[]>] [[-ExcludeType] <String[]>] [<CommonParameters>]
+Copy-JCAssociation [-Type] <String> [-Force] [-Id] <String[]>
+ [[-TargetId] <String>] [[-TargetName] <String>] [-RemoveExisting] [[-IncludeType] <String[]>]
+ [[-ExcludeType] <String[]>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Copy-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-TargetId] <String>] [[-TargetName] <String>]
- [-RemoveExisting] [[-IncludeType] <String[]>] [[-ExcludeType] <String[]>] [<CommonParameters>]
+Copy-JCAssociation [-Type] <String> [-Force] [-Name] <String[]>
+ [[-TargetId] <String>] [[-TargetName] <String>] [-RemoveExisting] [[-IncludeType] <String[]>]
+ [[-ExcludeType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -189,11 +191,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Management.Automation.SwitchParameter
-
 ### System.String[]
-
 ## OUTPUTS
 
 ### System.Object

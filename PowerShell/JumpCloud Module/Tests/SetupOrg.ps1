@@ -36,7 +36,7 @@ Try {
         )
         # Remove all users from an org
         If ($Users) {
-            $NonExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and -not $_.externally_managed }
+            $NonExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*del*' -or $_.Email -like '*pester*') -and -not $_.externally_managed }
             $RemoveNonExternallyManagedUsers = $NonExternallyManagedUsersToRemove | Remove-JCUser -force
             $ExternallyManagedUsersToRemove = Get-JCUser | Where-Object { ($_.Email -like '*delete*' -or $_.Email -like '*pester*') -and $_.externally_managed }
             $UpdateExternallyManagedUsersToRemove = $ExternallyManagedUsersToRemove | Set-JCUser -externally_managed $false
@@ -50,22 +50,33 @@ Try {
         }
         # Remove all groups from an org
         If ($Groups) {
-            # TODO: if system group is assigned to MDM this will throw an error
-            $null = Get-JCGroup | ForEach-Object {
-                If ($_.Type -eq 'system_group') {
-                    # write-host $_.Name
-                    Remove-JcSdkSystemGroup -Id $_.id -ErrorAction Ignore
-                } elseif ($_.Type -eq 'user_group') {
-                    # write-host $_.Name
-                    Remove-JcSdkUserGroup -Id $_.id -ErrorAction Ignore
+            $AllGroupsToRemove = Get-JCGroup
+            foreach ($group in $allGroupsToRemove) {
+                Write-Host "Group Name: $($group.Name) $($group.id) $($group.type)"
+                switch ($group.type) {
+                    'system_group' {
+                        try {
+                            Remove-JcSdkSystemGroup -Id $group.id -ErrorAction Ignore -ErrorVariable groupError
+                        } catch {
+                            if ($groupError.ErrorRecord -Match "default macOS ADE device group") {
+                                Set-JcSdkSystemGroup -Id $group.id -Name "MDM-$(Get-Random)"
+                            } else {
+                                Set-JcSdkSystemGroup -Id $group.id -Name "unknown-$(Get-Random)"
+                            }
+                        }
+                    }
+                    'user_group' {
+                        Remove-JcSdkUserGroup -Id $group.id -ErrorAction Ignore
+                    }
                 }
             }
             Write-Host "[status] Removed groups: $($stopwatch.Elapsed)"
         }
         # Remove all Commands from an org
         If ($Commands) {
+            #$null = Get-JCCommandResult | Remove-JCCommandResult -force
             $null = Get-JCCommand | Remove-JCCommand -force
-            $null = Get-JCCommandResult | Remove-JCCommandResult -force
+            #$null = Get-JCCommandResult | Remove-JCCommandResult -force
             Write-Host "[status] Removed commands: $($stopwatch.Elapsed)"
         }
         # Remove all RadiusServers from an org
@@ -87,7 +98,7 @@ Try {
     # Generate required policies
     foreach ( $policyName in $PesterParamsHash_Common.MultiplePolicyList ) {
         If (-not (Get-JCPolicy -Name $policyName)) {
-            New-JCPolicy -TemplateName linux_Disable_USB_Storage -Name $policyName
+            New-JCPolicy -TemplateName linux_Disable_USB_Storage -Name $policyName -disable_mtp $true -disable_afc $false -disable_mmc $false
         }
     }
     Write-Host "[Status] Finished Generating Policies: $($stopwatch.Elapsed)"
@@ -197,8 +208,8 @@ Try {
 # Clean up unnecessary Radius Server Attributes to Export:
 $r1 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusAzureServer' }
 $r2 = $variableArray | Where-Object { $_.name -eq 'PesterParams_RadiusServer' }
-$r1.value | % { $_.psobject.properties.remove('httpMetaData') }
-$r2.value | % { $_.psobject.properties.remove('httpMetaData') }
+$r1.value | ForEach-Object { $_.psobject.properties.remove('httpMetaData') }
+$r2.value | ForEach-Object { $_.psobject.properties.remove('httpMetaData') }
 
-write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
+Write-Host "[Status] Exporting $($variableArray.count) variables from setupOrg"
 Return $variableArray

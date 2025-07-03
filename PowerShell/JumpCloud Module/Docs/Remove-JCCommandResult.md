@@ -19,7 +19,8 @@ Remove-JCCommandResult [-CommandResultID] <String> [<CommonParameters>]
 
 ### force
 ```
-Remove-JCCommandResult [-CommandResultID] <String> [-force] [<CommonParameters>]
+Remove-JCCommandResult [-CommandResultID] <String> [-force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -99,7 +100,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

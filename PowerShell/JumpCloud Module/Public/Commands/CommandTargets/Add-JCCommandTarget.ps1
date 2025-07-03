@@ -52,7 +52,7 @@ Function Add-JCCommandTarget {
         Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JConline
         }
 

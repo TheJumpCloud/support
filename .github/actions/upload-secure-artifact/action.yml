@@ -1,0 +1,134 @@
+# This was manually copied from JumpCloud's internal actions repository.
+# It may need to be updated from time to time.
+# Latest Update: 9/12/2024
+
+name: "Upload Secure Artifact"
+description: "Upload an artifact, but only after it has been scanned for secrets, etc."
+inputs:
+  name:
+    description: "Name of the artifact to upload"
+    required: true
+  path:
+    description: |
+      Path to the artifact to upload.
+      This can be a file or a directory.
+      Multiple paths can be provided by separating them with a space.
+      Note: This does not match exactly the use of `path` in actions/upload-artifact.
+    required: true
+
+  # These inputs are optional. They defaults match the defaults of the actions/upload-artifact action@v4 as of 8/27/2024.
+  # See https://github.com/actions/upload-artifact?tab=readme-ov-file#inputs
+  if-no-files-found:
+    required: false
+    default: warn
+  retention-days:
+    required: false
+    # Duration after which artifact will expire in days. 0 means using default retention.
+    default: 0
+  compression-level:
+    required: false
+    default: 6
+  overwrite:
+    required: false
+    default: false
+
+runs:
+  using: "composite"
+
+  steps:
+      - name: Check out Gitleaks
+        uses: actions/checkout@v4
+        with:
+          repository: gitleaks/gitleaks
+          path: gitleaks
+          fetch-depth: 1
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+      - name: Install Gitleaks
+        run: |
+          ### Install Gitleaks ###
+          # Set ARTIFACTS_DIR to something that should not collide with any real path in a repo.
+          ARTIFACTS_DIR="./__artifacts"
+          SCAN_DIR="${ARTIFACTS_DIR}_scan"
+          echo "ARTIFACTS_DIR=${ARTIFACTS_DIR}" >> ${GITHUB_ENV}
+          echo "SCAN_DIR=${SCAN_DIR}" >> ${GITHUB_ENV}
+          echo "GITLEAKS_SOURCE=${SCAN_DIR}" >> ${GITHUB_ENV}
+          case ${{ runner.os }} in
+            Windows)
+              echo "GITLEAKS_COMMAND=gitleaks/gitleaks.exe" >> ${GITHUB_ENV}
+              ;;
+            Linux|macOS)
+              echo "GITLEAKS_COMMAND=gitleaks/gitleaks" >> ${GITHUB_ENV}
+              ;;
+            *)
+              echo "Unsupported OS: ${{ runner.os }}"
+              exit 1
+              ;;
+          esac
+
+          cd gitleaks
+          make build
+        shell: bash
+      - name: Scan Artifacts
+        id: scan-artifacts
+        run: |
+          ### Scan Artifacts ###
+          # Create a directory to store the artifacts
+          mkdir -p "${ARTIFACTS_DIR}"
+          # Copy the artifact to the artifacts directory
+          for path in ${{ inputs.path }}; do
+            echo "Copying path: $path"
+            if [[ ! -e $path ]]; then
+              echo "Skipping non-existent path: $path"
+              continue
+            fi
+            if [[ -d $path ]]; then
+              cp -r $path "${ARTIFACTS_DIR}"
+            else
+              cp $path "${ARTIFACTS_DIR}"
+            fi
+          done
+          # Run the gitleaks scan if ARTIFACTS_DIR is not empty
+          if [ "$(ls -A ${ARTIFACTS_DIR})" ]; then
+            # Create a copy of the artifacts directory for scanning only
+            cp -r "${ARTIFACTS_DIR}" "${SCAN_DIR}"
+            # Unzip any .zip files in ARTIFACTS_DIR
+            # Check if there are .zip files in SCAN_DIR
+            if [ -n "$(find ${SCAN_DIR} -maxdepth 1 -name '*.zip' -print -quit)" ]; then
+              for file in ${SCAN_DIR}/*.zip; do
+                echo "Unzipping $file for scanning"
+                unzip -q $file -d ${SCAN_DIR}
+                rm $file
+              done
+            fi
+
+            ${GITLEAKS_COMMAND} detect --source="${GITLEAKS_SOURCE}" -f -v -f json --no-git || exit_code=$?
+            if [[ $exit_code -ne 0 ]]; then
+              echo "Gitleaks scan failed. It is unsafe to upload the artifacts as requested."
+              echo "To see the scan results, you have to replicate the artifacts and scan locally."
+              echo "See this link for more information: https://jumpcloud.atlassian.net/wiki/spaces/ED/pages/2135654401/GitHub+Actions#Uploading-Artifacts"
+              exit 1
+            fi
+            echo "artifacts-exist=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "${ARTIFACTS_DIR} is empty. Skipping scan and upload."
+            echo "artifacts-exist=false" >> "${GITHUB_OUTPUT}"
+          fi
+        shell: bash
+      - name: Upload Secure Artifacts
+        if: steps.scan-artifacts.outputs.artifacts-exist == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.name }}
+          path: ${{ env.ARTIFACTS_DIR }}
+          if-no-files-found: ${{ inputs.if-no-files-found }}
+          retention-days: ${{ inputs.retention-days }}
+          compression-level: ${{ inputs.compression-level }}
+          overwrite: ${{ inputs.overwrite }}
+      - name: Clean Up Tmp Artifacts Directory
+        run: |
+          ### Clean Up Tmp Artifacts Directory ###
+          # Remove the artifacts directory in case this action is used multiple times in the same job.
+          rm -rf "${ARTIFACTS_DIR}"
+        shell: bash

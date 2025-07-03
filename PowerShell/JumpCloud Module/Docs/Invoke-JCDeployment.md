@@ -13,7 +13,8 @@ Triggers a JumpCloud Command Deployment using the CommandID and a filled out dep
 ## SYNTAX
 
 ```
-Invoke-JCDeployment [-CommandID] <String> -CSVFilePath <String> [<CommonParameters>]
+Invoke-JCDeployment [-CommandID] <String> -CSVFilePath <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -84,7 +85,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

@@ -84,7 +84,7 @@ $PesterParamsHash_Common = @{
     # Policy Info
     MultiplePolicyList              = @('1 Linux', 'Disable USB Storage - Linux')
     SinglePolicyList                = @('Disable USB Storage - Linux')
-    CommandResultCount              = 10
+    CommandResultCount              = 20
     SystemNameLinux                 = 'PesterTest-Linux'
     SystemNameMac                   = 'PesterTest-Mac'
     SystemNameWindows               = 'PesterTest-Windows'

@@ -25,12 +25,14 @@ Get-JCUser [[-username] <String>] [-firstname <String>] [-lastname <String>] [-e
  [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
  [-employeeType <String>] [-description <String>] [-location <String>] [-external_dn <String>]
  [-external_source_type <String>] [-managedAppleId <String>] [-manager <String>] [-state <String>]
- [-recoveryEmail <String>] -dateFilter <String> -date <DateTime> [<CommonParameters>]
+ [-recoveryEmail <String>] -dateFilter <String> -date <DateTime>
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Get-JCUser -userid <String> -dateFilter <String> -date <DateTime> [<CommonParameters>]
+Get-JCUser -userid <String> -dateFilter <String> -date <DateTime>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -595,7 +597,7 @@ Valid properties that can be returned are: 'created', 'password_expiration_date'
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, alternateEmail, recoveryEmail, managedAppleId, manager, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn, suspended, mfa, recoveryEmail
+Accepted values: created, password_expiration_date, account_locked, activated, addresses, allow_public_key, attributes, alternateEmail, recoveryEmail, managedAppleId, manager, email, enable_managed_uid, enable_user_portal_multifactor, externally_managed, firstname, lastname, ldap_binding_user, passwordless_sudo, password_expired, password_never_expires, phoneNumbers, samba_service_user, ssh_keys, sudo, totp_enabled, unix_guid, unix_uid, username, middlename, displayname, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, location, external_source_type, external_dn, suspended, mfa, recoveryEmail, systemUsername, relationships, public_key, external_password_expiration_date, disableDeviceMaxLoginAttempts, password, state, restrictedFields
 
 Required: False
 Position: Named
@@ -743,11 +745,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ### System.String[]
-
 ## OUTPUTS
 
 ### System.Object

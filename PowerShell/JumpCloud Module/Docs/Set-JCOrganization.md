@@ -13,7 +13,8 @@ Allows a multi tenant admin to update their connection to a specific JumpCloud o
 ## SYNTAX
 
 ```
-Set-JCOrganization [[-JumpCloudApiKey] <String>] [[-JumpCloudOrgId] <String>] [<CommonParameters>]
+Set-JCOrganization [[-JumpCloudApiKey] <String>] [[-JumpCloudOrgId] <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -84,7 +85,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

@@ -48,6 +48,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomString)"
                 "employeeIdentifier" = "eid$($user1RandomString)"
                 "alternateEmail"     = "deleteme$($user1RandomString)ae@testimportcsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomString)re@testimportcsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomString)maid@testimportcsvuser.com"
                 "department"         = "$($user1RandomString)"
@@ -74,8 +75,10 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
 
         }
     }
@@ -167,6 +170,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomString)"
                 "employeeIdentifier" = "eid$($user1RandomString)"
                 "alternateEmail"     = "deleteme$($user1RandomString)ae@testimportcsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomString)re@testimportcsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomString)maid@testimportcsvuser.com"
                 "department"         = "$($user1RandomString)"
@@ -204,6 +208,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomString)"
                 "employeeIdentifier" = "eid$($user2RandomString)"
                 "alternateEmail"     = "deleteme$($user2RandomString)ae@testimportcsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomString)re@testimportcsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomString)maid@testimportcsvuser.com"
                 "department"         = "$($user2RandomString)"
@@ -248,8 +253,10 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
             $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
@@ -289,6 +296,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomString)"
                 "employeeIdentifier" = "eid$($user1RandomString)"
                 "alternateEmail"     = "deleteme$($user1RandomString)ae@testimportcsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomString)re@testimportcsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomString)maid@testimportcsvuser.com"
                 "department"         = "$($user1RandomString)"
@@ -335,6 +343,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomString)"
                 "employeeIdentifier" = "eid$($user2RandomString)"
                 "alternateEmail"     = "deleteme$($user2RandomString)ae@testimportcsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomString)re@testimportcsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomString)maid@testimportcsvuser.com"
                 "department"         = "$($user2RandomString)"
@@ -385,6 +394,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
             # TODO: Dynamically populate manager
             # $ImportCheck.manager | Should -Be $NewUserInfo.manager
             $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
@@ -392,7 +402,7 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 1.8.0" {
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
@@ -597,6 +607,73 @@ Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.5.1" {
             $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/custom_attribute.csv" -Force
             $importResults = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/custom_attribute.csv" -force
             $importResults[0].AdditionalInfo | Should -Match "Attribute names may only contain letters and numbers"
+        }
+    }
+}
+
+Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.14.2" {
+    Context "Import-JCUsersFromCSV with empty custom attribute" {
+        It "When there are custom attributes with empty names and values, the API should not return an error message in the status field and continue to import the user" {
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
+            $today = Get-Date
+            $EnrollmentDays = 14
+            $CSVDATA = @{
+                Username         = $user.username
+                LastName         = $user.LastName
+                FirstName        = $user.FirstName
+                Email            = $user.Email
+                Attribute1_name  = "Name"
+                Attribute1_value = "Value"
+                Attribute2_name  = ""
+                Attribute2_value = ""
+                Attribute3_name  = "Name1"
+                Attribute3_value = "Value1"
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/custom_attribute.csv" -Force
+            $importResults = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/custom_attribute.csv" -force
+            # ImportResults should not be error
+            $importResults[0].Status | Should -Match "User Created"
+        }
+    }
+}
+Describe -Tag:('JCUsersFromCSV') "Import-JCUsersFromCSV 2.15.1" {
+    Context "Import-JCUsersFromCSV with 10 or more custom attributes" {
+        It "When there are 10 or more custom attributes, the API should not return an error message in the status field and continue to import the user" {
+            $user = New-RandomUser -Domain "ImportCSVUser.$(New-RandomString -NumberOfChars 5)"
+            $today = Get-Date
+            $EnrollmentDays = 14
+            $CSVDATA = @{
+                Username          = $user.username
+                LastName          = $user.LastName
+                FirstName         = $user.FirstName
+                Email             = $user.Email
+                Attribute1_name   = "Name"
+                Attribute1_value  = "Value"
+                Attribute2_name   = "Name1"
+                Attribute2_value  = "Value1"
+                Attribute3_name   = "Name2"
+                Attribute3_value  = "Value2"
+                Attribute4_name   = "Name3"
+                Attribute4_value  = "Value3"
+                Attribute5_name   = "Name4"
+                Attribute5_value  = "Value4"
+                Attribute6_name   = "Name5"
+                Attribute6_value  = "Value5"
+                Attribute7_name   = "Name6"
+                Attribute7_value  = "Value6"
+                Attribute8_name   = "Name7"
+                Attribute8_value  = "Value7"
+                Attribute9_name   = "Name8"
+                Attribute9_value  = "Value8"
+                Attribute10_name  = "Name9"
+                Attribute10_value = "Value9"
+                Attribute11_name  = "Name10"
+                Attribute11_value = "Value10"
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_ImportPath/custom_attribute.csv" -Force
+            $importResults = Import-JCUsersFromCSV -CSVFilePath "$PesterParams_ImportPath/custom_attribute.csv" -force
+            # ImportResults should not be error
+            $importResults[0].Status | Should -Match "User Created"
         }
     }
 }

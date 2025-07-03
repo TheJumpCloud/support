@@ -191,7 +191,7 @@ Searching headers for download links
 Download link found
 Downloaded Firefox%2065.0.dmg to /tmp/Download-2019-01-23-10-28-59
 DMG File Found: Firefox%2065.0.dmg
-Used hdiutil to mount Firefox%2065.0.dmg 
+Used hdiutil to mount Firefox%2065.0.dmg
 Located DMG Volume: /Volumes/Firefox
 Located DMG Mount Point: /dev/disk3s3
 Located App: Firefox.app
@@ -208,5 +208,5 @@ Deleted /tmp/Download-2019-01-23-10-28-59
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 
 ```
-Import-JCCommand -URL 'https://git.io/fhQD5'
+Import-JCCommand -URL 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/JumpCloud%20Commands%20Gallery/Mac%20Commands/Application%20Installs/Mac%20-%20Install%20FireFox%20DMG.md'
 ```

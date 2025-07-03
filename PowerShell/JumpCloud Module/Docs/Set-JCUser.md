@@ -26,27 +26,29 @@ Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastna
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-recoveryEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
- -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
+ [-external_source_type <String>] [-state <String>] [-manager <Object>] [-managedAppleId <String>]
+ [-alternateEmail <String>] [-recoveryEmail <String>]
+ [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String>
+ -Attribute2_value <String> [<CommonParameters>]
 ```
 
-### RemoveAttribute
+### RemoveCustomAttribute
 ```
 Set-JCUser [-Username] <String> [-email <String>] [-firstname <String>] [-lastname <String>]
  [-password <String>] [-password_never_expires <Boolean>] [-allow_public_key <Boolean>] [-sudo <Boolean>]
  [-enable_managed_uid <Boolean>] [-unix_uid <Int32>] [-unix_guid <Int32>] [-account_locked <Boolean>]
  [-passwordless_sudo <Boolean>] [-externally_managed <Boolean>] [-ldap_binding_user <Boolean>]
- [-enable_user_portal_multifactor <Boolean>] [-NumberOfCustomAttributes <Int32>] [-RemoveAttribute <String[]>]
- [-middlename <String>] [-displayname <String>] [-jobTitle <String>] [-employeeIdentifier <String>]
- [-department <String>] [-costCenter <String>] [-company <String>] [-employeeType <String>]
- [-description <String>] [-location <String>] [-work_streetAddress <String>] [-work_poBox <String>]
- [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>] [-work_country <String>]
- [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>] [-home_region <String>]
- [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
- [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-recoveryEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
+ [-enable_user_portal_multifactor <Boolean>] [-NumberOfCustomAttributes <Int32>]
+ [-RemoveCustomAttribute <String[]>] [-middlename <String>] [-displayname <String>] [-jobTitle <String>]
+ [-employeeIdentifier <String>] [-department <String>] [-costCenter <String>] [-company <String>]
+ [-employeeType <String>] [-description <String>] [-location <String>] [-work_streetAddress <String>]
+ [-work_poBox <String>] [-work_locality <String>] [-work_region <String>] [-work_postalCode <String>]
+ [-work_country <String>] [-home_streetAddress <String>] [-home_poBox <String>] [-home_locality <String>]
+ [-home_region <String>] [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>]
+ [-home_number <String>] [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>]
+ [-external_dn <String>] [-external_source_type <String>] [-state <String>] [-manager <Object>]
+ [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>]
+ [-EnrollmentDays <Int32>] -Attribute1_name <String>
  -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
@@ -64,9 +66,10 @@ Set-JCUser -UserID <String> [-email <String>] [-firstname <String>] [-lastname <
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-external_dn <String>]
- [-external_source_type <String>] [-state <String>] [-manager <String>] [-managedAppleId <String>]
- [-alternateEmail <String>] [-recoveryEmail <String>] [-EnrollmentDays <Int32>] -Attribute1_name <String>
- -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
+ [-external_source_type <String>] [-state <String>] [-manager <Object>] [-managedAppleId <String>]
+ [-alternateEmail <String>] [-recoveryEmail <String>]
+ [-EnrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String>
+ -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -104,10 +107,10 @@ This example either updates or adds the Custom Attribute 'name = Department, val
 
 ### Example 5
 ```powershell
-PS C:\> Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveAttribute Department
+PS C:\> Get-JCUserGroupMember -GroupName 'Sales' | Set-JCUser -RemoveCustomAttribute ATTRIBUTENAME
 ```
 
-This example removes the Custom Attribute with the name 'Department' from all JumpCloud Users in the JumpCloud User Group 'Sales'
+This example removes the Custom Attribute with the name 'ATTRIBUTENAME' from all JumpCloud Users in the JumpCloud User Group 'Sales'
 
 ### Example 6
 ```powershell
@@ -226,7 +229,7 @@ Accept wildcard characters: False
 ### -ByID
 Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function.
 The -ByID SwitchParameter will set the ParameterSet to 'ByID' which will increase the function speed and performance.
-You cannot use this with the 'RemoveAttribute' Parameter
+You cannot use this with the 'RemoveCustomAttribute' Parameter
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -668,7 +671,7 @@ Accept wildcard characters: False
 The manager for the user
 
 ```yaml
-Type: System.String
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
@@ -789,14 +792,14 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -RemoveAttribute
+### -RemoveCustomAttribute
 The name of the existing Custom Attributes you wish to remove.
-See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5
+See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 5
 
 ```yaml
 Type: System.String[]
-Parameter Sets: RemoveAttribute
-Aliases:
+Parameter Sets: RemoveCustomAttribute
+Aliases: RemoveAttribute
 
 Required: False
 Position: Named
@@ -898,7 +901,7 @@ The Username of the JumpCloud user you wish to modify
 
 ```yaml
 Type: System.String
-Parameter Sets: Username, RemoveAttribute
+Parameter Sets: Username, RemoveCustomAttribute
 Aliases:
 
 Required: True
@@ -1058,15 +1061,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ### System.Int32
-
 ### System.String[]
-
 ### System.Management.Automation.SwitchParameter
-
+### System.Object
 ## OUTPUTS
 
 ### System.Object

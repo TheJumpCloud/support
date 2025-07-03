@@ -26,7 +26,7 @@ Function Get-JCPolicy () {
 
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 
@@ -70,7 +70,9 @@ Function Get-JCPolicy () {
                 $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
             }
 
-            $Result | Add-Member -MemberType NoteProperty -Name "templateID" -Value $Result.template.id
+            $Result | ForEach-Object {
+                $_ | Add-Member -MemberType NoteProperty -Name "templateID" -Value $_.template.id
+            }
             if ($result.id) {
                 $Results += $Result
             }
@@ -78,7 +80,7 @@ Function Get-JCPolicy () {
     }
     End {
         If ($Results) {
-            Return $Results | Select-Object -Property "name", "id", "templateID", "values", "template"
+            Return $Results | Select-Object -Property "name", "id", "templateID", "values", "template", "notes"
         }
     }
 }

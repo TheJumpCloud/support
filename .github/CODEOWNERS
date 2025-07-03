@@ -1,9 +1,11 @@
 # Support Code Owners
 
-# PowerShell Module
+- @TheJumpCloud/customer-tools
 
-/PowerShell/ @TheJumpCloud/jc-sa
+## PowerShell Module & Command Gallery
 
-# Scripts
+/PowerShell/ @TheJumpCloud/customer-tools
 
-/scripts/ @TheJumpCloud/jc-sa
+## Scripts
+
+/scripts/ @TheJumpCloud/customer-tools

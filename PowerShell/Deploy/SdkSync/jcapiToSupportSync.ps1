@@ -16,8 +16,16 @@ $ApprovedFunctions = [Ordered]@{
             Name        = 'Get-JcSdkEventCount';
             Destination = '/Public/DirectoryInsights';
         }
+        #     [PSCustomObject]@{
+        #         Name        = 'Get-JcSdkReport';
+        #         Destination = '/Public/Reports';
+        #     },
+        #     [PSCustomObject]@{
+        #         Name        = 'New-JcSdkReport';
+        #         Destination = '/Public/Reports';
+        #     }
     );
-    # 'JumpCloud.SDK.V2'                = @(
+    #'JumpCloud.SDK.V2'                = @(
     #     [PSCustomObject]@{
     #         Name        = 'Get-JcSdkAppleMdm';
     #         Destination = '/Public/AppleMdm';
@@ -66,14 +74,39 @@ $ApprovedFunctions = [Ordered]@{
     #         Name        = 'Get-JcSdkAppleMdmEnrollmentProfile';
     #         Destination = '/Public/AppleMdm';
     #     }
-    # )
+    #)
 }
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
 $IndentChar = '    '
 $MSCopyrightHeader = "`n<#`n.Synopsis`n"
 $Divider = "`n[SPLIT]`n<#`n.Synopsis`n"
-$FunctionTemplate = "{0}`nFunction {1}`n{{`n$($IndentChar){2}`n$($IndentChar)Param(`n{3}`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar){{`n{4}`n$($IndentChar)}}`n$($IndentChar)Process`n$($IndentChar){{`n{5}`n$($IndentChar)}}`n$($IndentChar)End`n$($IndentChar){{`n{6}`n$($IndentChar)}}`n}}"
+$FunctionTemplate = @"
+{0}
+Function {1} {
+
+    {2}
+    Param(
+    {3}
+    )
+    Begin {
+        {
+            {4}
+        }
+    }
+    Process {
+        {
+            {5}
+        }
+    }
+    End {
+        {
+            {6}
+        }
+    }
+}
+"@
+# $FunctionTemplate = "{ 0 }`nFunction { 1 }`n { { `n$($IndentChar) { 2 }`n$($IndentChar)Param(`n { 3 }`n$($IndentChar))`n$($IndentChar)Begin`n$($IndentChar) { { `n { 4 }`n$($IndentChar) } }`n$($IndentChar)Process`n$($IndentChar) { { `n { 5 }`n$($IndentChar) } }`n$($IndentChar)End`n$($IndentChar) { { `n { 6 }`n$($IndentChar) } }`n } }"
 $ScriptAnalyzerResults = @()
 $JumpCloudModulePath = (Get-Item $FilePath_psd1).Directory.FullName
 $PSD1_Module = Test-ModuleManifest -Path:("$FilePath_psd1")
@@ -116,43 +149,87 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 $PSScriptInfo = ($FunctionContent | Select-String -Pattern:([regex]'(?s)(<#)(.*?)(#>)')).Matches.Value
                 $Params = $FunctionContent | Select-String -Pattern:([regex]'(?s)(    \[Parameter)(.*?)(\})') -AllMatches
                 $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' })
+
+                # Check if there is only one parameter
+                if ($ParameterContent -is [string]) {
+                    $ParameterContent = @($ParameterContent)
+                }
+
+                for ($i = 0; $i -lt $ParameterContent.Count; $i++) {
+                    if ($i -ne ($ParameterContent.Count - 1 )) {
+                        $ParameterContent[$i] = $($ParameterContent[$i].Replace('}', '},'))
+                        $ParameterContent[$i] += "`n"
+                    } else {
+                        $ParameterContent[$i] = $ParameterContent[$i]
+                    }
+                }
+                # declare param here string
+                $paramString = @"
+"@
+                ForEach ($line in $($ParameterContent -split "`n")) {
+                    # for the last item don't add a new line:
+                    if ($line -eq $($ParameterContent -split "`n")[-1] ) {
+                        $line = $line -replace '(^\s+|\s+$)', ''
+                        $paramString += @"
+        $line
+"@
+                    } else {
+                        # otherwise add a new line after each row
+                        $line = $line -replace '(^\s+|\s+$)', ''
+                        $paramString += @"
+        $line`n
+"@
+                    }
+                }
                 $OutputType = (($FunctionContent | Select-String -Pattern:([regex]'(\[OutputType)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
                 $CmdletBinding = (($FunctionContent | Select-String -Pattern:([regex]'(\[CmdletBinding)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
                 If (-not [System.String]::IsNullOrEmpty($PSScriptInfo)) {
                     $PSScriptInfo = $PSScriptInfo.Replace($SdkPrefix, $JumpCloudModulePrefix)
                     $PSScriptInfo = $PSScriptInfo.Replace("$NewCommandName.md", "$FunctionName.md")
                 }
-                # Build CmdletBinding
-                If (-not [System.String]::IsNullOrEmpty($OutputType)) {
-                    $CmdletBinding = "$($OutputType)`n$($IndentChar)$($CmdletBinding)"
-                }
+
                 # Build $BeginContent, $ProcessContent, and $EndContent
-                $BeginContent = @()
-                $ProcessContent = @()
-                $EndContent = @()
+                # $BeginContent = @()
+                # $ProcessContent = @()
+                # $EndContent = @()
                 # Build "Begin" block
-                $BeginContent += "$($IndentChar)$($IndentChar)Connect-JCOnline -force | Out-Null"
-                $BeginContent += "$($IndentChar)$($IndentChar)`$Results = @()"
-                # Build "Process" block
-                $ProcessContent += "$($IndentChar)$($IndentChar)`$Results = $($ModuleName)\$($CommandName) @PSBoundParameters"
-                # Build "End" block
-                $EndContent += "$($IndentChar)$($IndentChar)Return `$Results"
-                If (-not [System.String]::IsNullOrEmpty($BeginContent) -and -not [System.String]::IsNullOrEmpty($ProcessContent) -and -not [System.String]::IsNullOrEmpty($EndContent)) {
-                    # Build "Function"
-                    $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, ($ParameterContent -join ",`n`n"), ($BeginContent -join "`n"), ($ProcessContent -join "`n"), ($EndContent -join "`n")
-                    # Fix line endings
-                    $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
-                    # Export the function
-                    Write-Host ("[STATUS] Writing File: $OutputPath/$NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
-                    $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
-                    New-FolderRecursive -Path:($OutputFilePath) -Force
-                    $NewScript | Out-File -FilePath:($OutputFilePath) -Force
-                    # Validate script syntax
-                    $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
-                    If ($ScriptAnalyzerResult) {
-                        $ScriptAnalyzerResults += $ScriptAnalyzerResult
-                    }
+
+                # Build "Function"
+                # $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, $ParameterContent, $BeginContent, $ProcessContent, $EndContent
+                $NewScript = @"
+$PSScriptInfo
+Function $NewCommandName {
+    $($OutputType)
+    $($CmdletBinding)
+    Param(
+$paramString
+    )
+    Begin {
+        Connect-JCOnline -force | Out-Null
+        `$Results = @()
+    }
+    Process {
+        `$Results = $($ModuleName)\$($CommandName) @PSBoundParameters
+    }
+    End {
+        Return `$Results
+    }
+}
+"@
+                # $NewScript = $FunctionTemplate -f $PSScriptInfo, $NewCommandName, $CmdletBinding, ($ParameterContent -join ", `n`n"), ($BeginContent -join "`n"), ($ProcessContent -join "`n"), ($EndContent -join "`n")
+                # Fix line endings
+                # $NewScript = $NewScript.Replace("`r`n", "`n").Trim()
+                # Export the function
+                Write-Host ("[STATUS] Writing File: $OutputPath/$NewCommandName") -BackgroundColor:('Black') -ForegroundColor:('Magenta')
+                $OutputFilePath = "$OutputPath/$NewCommandName.ps1"
+                New-FolderRecursive -Path:($OutputFilePath) -Force
+                $NewScript | Out-File -FilePath:($OutputFilePath) -Force
+                # Validate script syntax
+                $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
+                If ($ScriptAnalyzerResult) {
+                    $ScriptAnalyzerResults += $ScriptAnalyzerResult
                 }
+
                 # Copy tests?
                 # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
                 # Update .Psd1 file

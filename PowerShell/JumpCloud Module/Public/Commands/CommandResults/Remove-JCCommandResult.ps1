@@ -16,7 +16,7 @@ The CommandResultID will be the 24 character string populated for the _id field.
 
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) { Connect-JConline }
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{

@@ -93,7 +93,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
     begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 

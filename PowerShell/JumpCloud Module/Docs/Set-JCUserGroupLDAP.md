@@ -14,12 +14,14 @@ The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the m
 
 ### GroupName (Default)
 ```
-Set-JCUserGroupLDAP [-GroupName] <String> -LDAPEnabled <Boolean> [<CommonParameters>]
+Set-JCUserGroupLDAP [-GroupName] <String> -LDAPEnabled <Boolean>
+ [<CommonParameters>]
 ```
 
 ### GroupID
 ```
-Set-JCUserGroupLDAP [-GroupID] <String> -LDAPEnabled <Boolean> [<CommonParameters>]
+Set-JCUserGroupLDAP [-GroupID] <String> -LDAPEnabled <Boolean>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -102,9 +104,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object
