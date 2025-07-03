@@ -4,7 +4,7 @@ $nuspecFiles = @(
     @{src = "en-Us/**/*.*"; target = "en-Us" },
     @{src = "Functions/Public/**/*.ps1"; target = "Functions/Public" },
     @{src = "Functions/Private/**/*.ps1"; target = "Functions/Private" },
-    @{src = "Extensions/*.cnf"; target = "Extensions" },
+    @{src = "Extensions/**/*.cnf"; target = "Extensions" },
     @{src = "JumpCloud.Radius.psd1" },
     @{src = "JumpCloud.Radius.psm1" },
     @{src = "LICENSE" },

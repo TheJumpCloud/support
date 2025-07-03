@@ -120,13 +120,13 @@ jobs:
           "Public" | should -bein (Get-ChildItem -Directory -Path:("$moduleRootDirectory/Functions")).name
           "Private" | should -bein (Get-ChildItem -Directory -Path:("$moduleRootDirectory/Functions")).name
           # Validate that the nuspec directory contains an Extensions directory
-        #   "Extensions" | should -bein $moduleRootDirectories.name
+          "Extensions" | should -bein $moduleRootDirectories.name
 
       - name: Upload Nupkg
         uses: ./.github/actions/upload-secure-artifact
         with:
           name: radius-module-nupkg
-          path: D:/a/support/support/scripts/automation/Radius/JumpCloud.Radius*.nupkg
+          path: D:\a\support\support\scripts\automation\Radius\JumpCloud.Radius*.nupkg
           retention-days: 1
 
   #   Manual-Approval-Release:
