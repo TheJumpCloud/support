@@ -1,9 +1,9 @@
-name: Release and Publish PSModule
+name: Release and Publish Radius Module
 on:
   pull_request:
     # Sequence of patterns matched against refs/heads
     branches:
-      - "Radius_2.1.0"
+      - "master"
     paths:
       - "scripts/automation/Radius/**"
     types: [opened, synchronize, reopened, labeled, unlabeled]
@@ -46,7 +46,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Setup PowerShell Module Cache
+      - name: Setup Radius Module Cache
         id: cacher
         uses: actions/cache@v4
         with:
