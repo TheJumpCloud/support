@@ -168,7 +168,7 @@ jobs:
           # add nuget source for PSGallery:
           dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
           # get nupkg artifact:
-          $nupkgPath = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius*.nupkg")).FullName
+          $nupkgPath = (Get-ChildItem -Path:("D:/a/support/support/scripts/automation/Radius/JumpCloud.Radius*.nupkg")).FullName
           # test
           $nupkgPath | Should -Exist
           Write-Host "Nupkg Artifact Restored: $nupkgPath"
