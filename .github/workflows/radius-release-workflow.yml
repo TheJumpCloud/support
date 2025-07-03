@@ -111,11 +111,17 @@ jobs:
           unzip $nupkgPath -d $NupkgPathDirectory/nupkg_module
           $moduleRootFiles = Get-ChildItem -File -Path:("$NupkgPathDirectory/nupkg_module")
           $moduleRootDirectories = Get-ChildItem -Directory -Path:("$NupkgPathDirectory/nupkg_module")
+          $moduleRootDirectory = "$NupkgPathDirectory/nupkg_module"
           Write-Host "Module Files:\n$moduleRootFiles"
           Write-Host "Module Directories:\n$moduleRootDirectories"
-          # Validate that the nuspec directory contains a Public/ Private directory
-          "Private" | should -bein $moduleRootDirectories.name
-          "Public" | should -bein $moduleRootDirectories.name
+          # Validate that the nuspec directory contains a Functions directory with a Public/ Private directory
+          "Functions" | should -bein $moduleRootDirectories.name
+          # the public and private directories should be inside the Functions directory
+          "Public" | should -bein (Get-ChildItem -Directory -Path:("$moduleRootDirectory/Functions")).name
+          "Private" | should -bein (Get-ChildItem -Directory -Path:("$moduleRootDirectory/Functions")).name
+          # Validate that the nuspec directory contains an Extensions directory
+          "Extensions" | should -bein $moduleRootDirectories.name
+
       - name: Upload Nupkg
         uses: ./.github/actions/upload-secure-artifact
         with:
