@@ -162,6 +162,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: radius-module-nupkg
+          path: D:/a/support/support/scripts/automation/Radius/
       - name: Publish
         shell: pwsh
         run: |
