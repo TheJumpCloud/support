@@ -14,12 +14,14 @@ Updates the permissions of a JumpCloud user on a JumpCloud system
 
 ### ByName (Default)
 ```
-Set-JCSystemUser [-Username] <String> -SystemID <String> -Administrator <Boolean> [<CommonParameters>]
+Set-JCSystemUser [-Username] <String> -SystemID <String> -Administrator <Boolean>
+ [<CommonParameters>]
 ```
 
 ### ByID
 ```
-Set-JCSystemUser -UserID <String> -SystemID <String> -Administrator <Boolean> [<CommonParameters>]
+Set-JCSystemUser -UserID <String> -SystemID <String> -Administrator <Boolean>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -116,9 +118,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object

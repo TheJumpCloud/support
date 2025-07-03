@@ -16,6 +16,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomString)"
                 "employeeIdentifier" = "eid$($user1RandomString)"
                 "alternateEmail"     = "deleteme$($user1RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user1RandomString)"
@@ -53,6 +54,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomString)"
                 "employeeIdentifier" = "eid$($user2RandomString)"
                 "alternateEmail"     = "deleteme$($user2RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user2RandomString)"
@@ -94,6 +96,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomUpdateString)"
                 "employeeIdentifier" = "eid$($user1RandomUpdateString)"
                 "alternateEmail"     = "deleteme$($user1RandomUpdateString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomUpdateString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomUpdateString)maid@testupdatecsvuser.com"
                 "department"         = "$($user1RandomUpdateString)"
@@ -131,6 +134,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomUpdateString)"
                 "employeeIdentifier" = "eid$($user2RandomUpdateString)"
                 "alternateEmail"     = "deleteme$($user2RandomUpdateString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomUpdateString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomUpdateString)maid@testupdatecsvuser.com"
                 "department"         = "$($user2RandomUpdateString)"
@@ -177,8 +181,10 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
+            $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
             $ImportCheck.home_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq home | Select-Object -ExpandProperty number)
@@ -232,7 +238,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.costCenter | Should -Be $UpdateUserInfo.costCenter
             $UpdateCheck.company | Should -Be $UpdateUserInfo.company
             $UpdateCheck.employeeType | Should -Be $UpdateUserInfo.employeeType
-            $UpdateCheck.decription | Should -Be $UpdateUserInfo.decription
+            $UpdateCheck.description | Should -Be $UpdateUserInfo.description
             $UpdateCheck.location | Should -Be $UpdateUserInfo.location
 
             $UpdateCheck.mobile_number | Should -Be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
@@ -258,6 +264,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomString)"
                 "employeeIdentifier" = "eid$($user1RandomString)"
                 "alternateEmail"     = "deleteme$($user1RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user1RandomString)"
@@ -304,6 +311,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomString)"
                 "employeeIdentifier" = "eid$($user2RandomString)"
                 "alternateEmail"     = "deleteme$($user2RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user2RandomString)"
@@ -354,6 +362,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomUpdateString)"
                 "employeeIdentifier" = "eid$($user1RandomUpdateString)"
                 "alternateEmail"     = "deleteme$($user1RandomUpdateString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomUpdateString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomUpdateString)maid@testupdatecsvuser.com"
                 "department"         = "$($user1RandomUpdateString)"
@@ -400,6 +409,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomString)"
                 "employeeIdentifier" = "eid$($user2RandomString)"
                 "alternateEmail"     = "deleteme$($user2RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user2RandomString)"
@@ -450,13 +460,14 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
             # TODO: Dynamically populate manager
             # $ImportCheck.manager | Should -Be $NewUserInfo.manager            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
@@ -515,7 +526,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $UpdateCheck.costCenter | Should -Be $UpdateUserInfo.costCenter
             $UpdateCheck.company | Should -Be $UpdateUserInfo.company
             $UpdateCheck.employeeType | Should -Be $UpdateUserInfo.employeeType
-            $UpdateCheck.decription | Should -Be $UpdateUserInfo.decription
+            $UpdateCheck.description | Should -Be $UpdateUserInfo.description
             $UpdateCheck.location | Should -Be $UpdateUserInfo.location
 
             $UpdateCheck.mobile_number | Should -Be $($UpdateUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
@@ -583,6 +594,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user1RandomString)"
                 "employeeIdentifier" = "eid$($user1RandomString)"
                 "alternateEmail"     = "deleteme$($user1RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user1RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user1RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user1RandomString)"
@@ -629,6 +641,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
                 "jobTitle"           = "$($user2RandomString)"
                 "employeeIdentifier" = "eid$($user2RandomString)"
                 "alternateEmail"     = "deleteme$($user2RandomString)ae@testupdatecsvuser.com"
+                "recoveryEmail"      = "deleteme$($user2RandomString)re@testupdatecsvuser.com"
                 "manager"            = ""
                 "managedAppleID"     = "deleteme$($user2RandomString)maid@testupdatecsvuser.com"
                 "department"         = "$($user2RandomString)"
@@ -773,13 +786,14 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.jobTitle | Should -Be $NewUserInfo.jobTitle
             $ImportCheck.employeeIdentifier | Should -Be $NewUserInfo.employeeIdentifier
             $ImportCheck.alternateEmail | Should -Be $NewUserInfo.alternateEmail
+            $ImportCheck.recoveryEmail | Should -Be $NewUserInfo.recoveryEmail.address
             # TODO: Dynamically populate manager
             # $ImportCheck.manager | Should -Be $NewUserInfo.manager            $ImportCheck.managedAppleId | Should -Be $NewUserInfo.managedAppleId
             $ImportCheck.department | Should -Be $NewUserInfo.department
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
@@ -817,7 +831,7 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 1.8.0" {
             $ImportCheck.costCenter | Should -Be $NewUserInfo.costCenter
             $ImportCheck.company | Should -Be $NewUserInfo.company
             $ImportCheck.employeeType | Should -Be $NewUserInfo.employeeType
-            $ImportCheck.decription | Should -Be $NewUserInfo.decription
+            $ImportCheck.description | Should -Be $NewUserInfo.description
             $ImportCheck.location | Should -Be $NewUserInfo.location
 
             $ImportCheck.mobile_number | Should -Be $($NewUserInfo.phoneNumbers | Where-Object type -eq mobile | Select-Object -ExpandProperty number)
@@ -994,6 +1008,64 @@ Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.5.1" {
             # the error message should show that custom attribute names cannot contain spaces
             $UpdateStatus[0].status | Should -Match "Attribute names may only contain letters and numbers"
             $UpdateStatus[0].status | Should -Not -Match "User does not exist"
+        }
+    }
+}
+
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.14.2" {
+    Context "User should be updated even with empty custom attribute values" {
+        It "When there is a custom attribute with an empty value, the user should still be updated" {
+            $user = New-RandomUser -Domain "testupdatecsvuser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+            $CSVDATA = @{
+                Username         = $user.username
+                Attribute1_name  = "Name"
+                Attribute1_value = 'Value'
+                Attribute2_name  = ""
+                Attribute2_value = ''
+                Attribute3_name  = "Name1"
+                Attribute3_value = 'Value1'
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/custom_attribute.csv" -Force
+            $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/custom_attribute.csv" -force
+            # the error message should show that custom attribute names cannot contain spaces
+            $UpdateStatus[0].status | Should -Be "User Updated"
+        }
+    }
+}
+
+Describe -Tag:('JCUsersFromCSV') "Update-JCUsersFromCSV 2.15.1" {
+    Context "User should be updated even with 10 or more custom attributes" {
+        It "When there are 10 or more custom attributes, the user should still be updated" {
+            $user = New-RandomUser -Domain "testupdatecsvuser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+            $CSVDATA = @{
+                Username          = $user.username
+                Attribute1_name   = "Name"
+                Attribute1_value  = "Value"
+                Attribute2_name   = "Name1"
+                Attribute2_value  = "Value1"
+                Attribute3_name   = "Name2"
+                Attribute3_value  = "Value2"
+                Attribute4_name   = "Name3"
+                Attribute4_value  = "Value3"
+                Attribute5_name   = "Name4"
+                Attribute5_value  = "Value4"
+                Attribute6_name   = "Name5"
+                Attribute6_value  = "Value5"
+                Attribute7_name   = "Name6"
+                Attribute7_value  = "Value6"
+                Attribute8_name   = "Name7"
+                Attribute8_value  = "Value7"
+                Attribute9_name   = "Name8"
+                Attribute9_value  = "Value8"
+                Attribute10_name  = "Name9"
+                Attribute10_value = "Value9"
+                Attribute11_name  = "Name10"
+                Attribute11_value = "Value10"
+            }
+            $CSVFILE = $CSVDATA | Export-Csv "$PesterParams_UpdatePath/custom_attribute.csv" -Force
+            $UpdateStatus = Update-JCUsersFromCSV -CSVFilePath "$PesterParams_UpdatePath/custom_attribute.csv" -force
+            # the error message should show that custom attribute names cannot contain spaces
+            $UpdateStatus[0].status | Should -Be "User Updated"
         }
     }
 }

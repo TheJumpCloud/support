@@ -19,7 +19,8 @@ Update-JCUsersFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Update-JCUsersFromCSV [-CSVFilePath] <String> [-force] [<CommonParameters>]
+Update-JCUsersFromCSV [-CSVFilePath] <String> [-force]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -86,7 +87,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

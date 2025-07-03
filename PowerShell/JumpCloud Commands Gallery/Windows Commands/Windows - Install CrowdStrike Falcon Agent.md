@@ -1,6 +1,6 @@
 #### Name
 
-Windows - Install CrowdStrike Falcon Agent | v2.0 JCCG
+Windows - Install CrowdStrike Falcon Agent | v2.2 JCCG
 
 #### commandType
 
@@ -17,6 +17,9 @@ $CSClientSecret = ""
 # https://falcon.us-2.crowdstrike.com/documentation/page/f8a0f751/host-and-host-group-management#x7be77b4
 
 $CSInstallToken=""
+
+# Mark $true if this install is for Windows 7 machines
+$Windows7Sensor = $false
 
 ############### Do Not Edit Below This Line ###############
 function Connect-CrowdStrike {
@@ -94,7 +97,7 @@ function Get-CrowdStrikeSensorInstaller {
         }
     }
     process {
-        $Response = Invoke-WebRequest -Uri "$CSBaseAddress/sensors/combined/installers/v1" -method Get -Headers $CrowdStrikeAuthHeader -UseBasicParsing
+        $Response = Invoke-WebRequest -Uri "$CSBaseAddress/sensors/combined/installers/v1?filter=platform:%27windows%27" -method Get -Headers $CrowdStrikeAuthHeader -UseBasicParsing
 
         if ($Response.headers."X-Ratelimit-Remaining" -le 0) {
             Write-Host "Too many requests are being made to CrowdStrike services..."
@@ -102,15 +105,18 @@ function Get-CrowdStrikeSensorInstaller {
         }
 
         $Installers = $Response.Content | ConvertFrom-Json
-        $Installers = $Installers.Resources | Group-Object platform
 
         switch ($operatingSystem) {
             windows {
-                $WindowsInstallers = $Installers | Where-Object Name -eq 'windows'
-                $SortedInstallers = $WindowsInstallers.Group | Sort-Object release_date -Descending
+                $WindowsInstallers = $Installers.resources
+                $SortedInstallers = $WindowsInstallers | Sort-Object version -Descending
             }
         }
-        $LatestInstaller = $SortedInstallers | Select-Object -First 1
+        if ($Windows7Sensor -eq $true) {
+            $LatestInstaller = $SortedInstallers | Where-Object os -eq "Windows 7" | Select -First 1
+        } else {
+            $LatestInstaller = $SortedInstallers | Where-Object os -eq "Windows"| Select-Object -First 1
+        }
     }
     end {
         return $LatestInstaller
@@ -145,17 +151,17 @@ if (Get-Service "CSFalconService" -ErrorAction SilentlyContinue) {
 }
 Write-Host "Falcon Agent not installed."
 
-Write-Host "Downloading Falcon Agent installer now."
+Write-Host "Downloading Falcon Agent v$($LatestInstaller.version) installer now."
 try {
     $ProgressPreference = 'SilentlyContinue'
     Invoke-WebRequest -Headers $CrowdStrikeAuthHeader -Uri $installerURL -UseBasicParsing -OutFile $installerTempLocation
 } catch {
-    Write-Error "Unable to download Falcon Agent installer."
+    Write-Error "Unable to download Falcon Agent v$($LatestInstaller.version) installer."
     exit 1
 }
-Write-Host "Finished downloading Falcon Agent installer."
+Write-Host "Finished downloading Falcon Agent v$($LatestInstaller.version) installer."
 
-Write-Host "Installing Falcon Agent now, this may take a few minutes."
+Write-Host "Installing Falcon Agent v$($LatestInstaller.version) now, this may take a few minutes."
 try {
     $args = @("/install", "/quiet", "/norestart", "CID=$CID")
     if ($CSInstallToken){
@@ -183,6 +189,7 @@ In order to use this command:
 1. Create a CrowdStrike API Client with the "SENSOR DOWNLOAD" Read scope and make note of the ClientID and ClientSecret Refer to CrowdStrike's article [Getting Access to the CrowdStrike API](https://www.crowdstrike.com/blog/tech-center/get-access-falcon-apis/) for further information
 2. Set the 3 variables (CSBaseAddress, CSClientID, CSClientSecret) to their respective values for your CrowdStrike API Client
     1. If you have Require Token enabled for your CrowdStrike org, set the CSInstallToken variable with your installation token
+    2. If you're looking to install the Windows 7 sensor, set the Windows7Sensor variable to $true
 3. Extend the command timeout to a value that makes sense in your environment. The suggested command timeout for an environment with average network speeds on devices with average computing power is 10 minutes. Note that the command may timeout with a 124 error code in the command result window if not extended, but the script will continue to run.
 
 #### _Import This Command_

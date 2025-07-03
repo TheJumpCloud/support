@@ -16,7 +16,8 @@ Updates an existing JumpCloud System
 Set-JCSystem [-SystemID] <String> [-displayName <String>] [-description <String>]
  [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>]
  [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
- [-systemInsights <Boolean>] [<CommonParameters>]
+ [-systemInsights <Boolean>] [-primarySystemUser <Object>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -133,6 +134,21 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -primarySystemUser
+A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SystemID
 The _id of the System which you want to remove from JumpCloud.
 The SystemID will be the 24 character string populated for the _id field.
@@ -174,9 +190,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object

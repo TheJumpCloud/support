@@ -14,14 +14,15 @@ Triggers a JumpCloud Command to run by calling the trigger associated with the C
 
 ### NoVariables (Default)
 ```
-Invoke-JCCommand [-trigger] <String> -Variable1_name <String> -Variable1_value <String>
- -Variable2_name <String> -Variable2_value <String> [<CommonParameters>]
+Invoke-JCCommand [-trigger] <String> -Variable1_name <String>
+ -Variable1_value <String> -Variable2_name <String> -Variable2_value <String> [<CommonParameters>]
 ```
 
 ### Variables
 ```
-Invoke-JCCommand [-trigger] <String> [-NumberOfVariables <Int32>] -Variable1_name <String>
- -Variable1_value <String> -Variable2_name <String> -Variable2_value <String> [<CommonParameters>]
+Invoke-JCCommand [-trigger] <String> [-NumberOfVariables <Int32>]
+ -Variable1_name <String> -Variable1_value <String> -Variable2_name <String> -Variable2_value <String>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -163,7 +164,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

@@ -15,7 +15,8 @@ Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud C
 ### SearchFilter (Default)
 ```
 Get-JCCommand [-command <String>] [-name <String>] [-commandType <String>] [-launchType <String>]
- [-trigger <String>] [-scheduleRepeatType <String>] [-returnProperties <String[]>] [<CommonParameters>]
+ [-trigger <String>] [-scheduleRepeatType <String>] [-returnProperties <String[]>]
+ [<CommonParameters>]
 ```
 
 ### ByID
@@ -187,7 +188,7 @@ Allows you to return select properties on JumpCloud user objects. Specifying wha
 Type: System.String[]
 Parameter Sets: SearchFilter
 Aliases:
-Accepted values: command, name, launchType, commandType, trigger, scheduleRepeatType
+Accepted values: command, name, launchType, commandType, trigger, scheduleRepeatType, listensTo, organization, commandRunners, schedule, shell, timeout, sudo, template, scheduleYear, timeToLiveSeconds, files, user, systems
 
 Required: False
 Position: Named
@@ -233,9 +234,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.String[]
-
 ## OUTPUTS
 
 ### System.Object

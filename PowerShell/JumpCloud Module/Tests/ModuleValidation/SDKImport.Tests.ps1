@@ -13,10 +13,10 @@ Describe -Tag:('ModuleValidation') 'SDK Generation' {
                 # Set the function File Path to test:
                 $functionFilePath = "$FolderPath_Public" -replace "/Public", "$($subitem.Destination)/$($subitem.Name).ps1"
                 $functionFilePath = "$functionFilePath" -replace "JcSdk", "JC"
-                # Sach function defined in the jcapiToSupportSync file should exist
+                # Each function defined in the jcapiToSupportSync file should exist
                 Test-Path -Path $functionFilePath | should -Be $true
                 # Git Diff for the file should not exist
-                $diff = git diff -- $functionFilePath
+                $diff = git diff -w $functionFilePath
                 if ($diff) {
                     write-warning "diff found in file: $functionFilePath when we expected none to exist; have you run jcapiToSupportSync.ps1 and committed the resulting changes?"
                 }

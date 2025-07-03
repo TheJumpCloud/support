@@ -12,8 +12,7 @@ Function Set-JCUser () {
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName = $true,
             Position = 0,
-            ParameterSetName = 'RemoveAttribute', HelpMessage = 'The Username of the JumpCloud user you wish to modify')]
-
+            ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The Custom Attribute of the JumpCloud user you wish to modify')]
         [string]$Username,
 
         [Parameter(Mandatory,
@@ -94,11 +93,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [int]
         $NumberOfCustomAttributes,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveAttribute Parameter in EXAMPLE 5')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'RemoveCustomAttribute', HelpMessage = 'The name of the existing Custom Attributes you wish to remove. See an EXAMPLE for working with the -RemoveCustomAttribute Parameter in EXAMPLE 5')]
         [string[]]
-        $RemoveAttribute,
+        [Alias('RemoveAttribute')]
+        $RemoveCustomAttribute,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveAttribute'' Parameter')]
+        [Parameter(ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByID', HelpMessage = 'Use the -ByID parameter when the UserID is being passed over the pipeline to the Set-JCUser function. The -ByID SwitchParameter will set the ParameterSet to ''ByID'' which will increase the function speed and performance. You cannot use this with the ''RemoveCustomAttribute'' Parameter')]
         [switch]
         $ByID,
 
@@ -239,7 +239,6 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $suspended,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The manager username, ID or primary email of the JumpCloud manager user; must be a valid user')]
-        [string]
         $manager,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The managedAppleId for the user')]
@@ -321,8 +320,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         Write-Debug "Parameter set $($PSCmdlet.ParameterSetName)"
 
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
-            Connect-JConline
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
         }
 
         $hdrs = @{
@@ -562,83 +561,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
-                        if ([System.String]::isNullOrEmpty($param.value)) {
+                        if ($param.Value -eq $null -or $param.Value -eq "") {
+                            $body.add($param.Key, $null)
                             continue
                         } else {
-                            # First check if manager returns valid user with id
-                            # Regex match a userid
-                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
-                                # if we have a 24 characterid, try to match the id using the search endpoint
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'id'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue) {
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'username'
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            }
-                            # Use class mailaddress to check if $param.value is email
-                            try {
-                                $null = [mailaddress]$EmailAddress
-                                # Search for manager using email
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'email'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue) {
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'username'
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            } catch {
-                                # search the username in the search endpoint
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
+                            $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
                             if ($managerValue) {
                                 $body.add($param.Key, $managerValue)
                             } else {
@@ -701,7 +628,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-                $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
+                $CurrentAttributes = Get-JCUser -userid $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
                 $CustomAttributeArrayList = New-Object System.Collections.ArrayList
@@ -733,83 +660,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
-                        if ([System.String]::isNullOrEmpty($param.value)) {
+                        if ($param.Value -eq $null -or $param.Value -eq "") {
+                            $body.add($param.Key, $null)
                             continue
                         } else {
-                            # First check if manager returns valid user with id
-                            # Regex match a userid
-                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
-                                # if we have a 24 characterid, try to match the id using the search endpoint
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'id'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue) {
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'username'
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            }
-                            # Use class mailaddress to check if $param.value is email
-                            try {
-                                $null = [mailaddress]$EmailAddress
-                                # Search for manager using email
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'email'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue) {
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'username'
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            } catch {
-                                # search the username in the search endpoint
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
+                            $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
                             if ($managerValue) {
                                 $body.add($param.Key, $managerValue)
                             } else {
@@ -935,7 +790,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        elseif ($PSCmdlet.ParameterSetName -eq 'RemoveAttribute') {
+        elseif ($PSCmdlet.ParameterSetName -eq 'RemoveCustomAttribute') {
             if ($UserHash.Values.username -contains ($Username)) {
                 $URL_ID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
                 Write-Debug $URL_ID
@@ -943,7 +798,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $URL = "$JCUrlBasePath/api/Systemusers/$URL_ID"
                 Write-Debug $URL
 
-                $CurrentAttributes = Get-JCUser -UserID $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
+                $CurrentAttributes = Get-JCUser -userid $URL_ID | Select-Object -ExpandProperty attributes | Select-Object value, name
                 Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
                 foreach ($param in $PSBoundParameters.GetEnumerator()) {
@@ -955,7 +810,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         continue
                     }
 
-                    if ($param.key -eq 'RemoveAttribute') {
+                    if ($param.key -eq 'RemoveCustomAttribute') {
                         continue
                     }
 
@@ -973,84 +828,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                     # Get the manager using manager username instead of userId
                     if ("manager" -eq $param.Key) {
-                        if ([System.String]::isNullOrEmpty($param.value)) {
+                        if ($param.Value -eq $null -or $param.Value -eq "") {
+                            $body.add($param.Key, $null)
                             continue
                         } else {
-                            # First check if manager returns valid user with id
-                            # Regex match a userid
-                            $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                            if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
-                                # if we have a 24 characterid, try to match the id using the search endpoint
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'id'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue) {
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'username'
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            }
-                            # Use class mailaddress to check if $param.value is email
-                            try {
-                                $null = [mailaddress]$EmailAddress
-                                Write-Debug "This is true"
-                                # Search for manager using email
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'email'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue; this is a validated user id
-                                $managerValue = $managerResults.id
-                                # if no value was returned, then assume the case this is actually a username and search
-                                if (!$managerValue) {
-                                    $managerSearch = @{
-                                        filter = @{
-                                            'and' = @(
-                                                @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                            )
-                                        }
-                                        fields = 'username'
-                                    }
-                                    $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                    # Set managerValue from the matched username
-                                    $managerValue = $managerResults.id
-                                }
-                            } catch {
-                                # search the username in the search endpoint
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
+                            $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
                             if ($managerValue) {
                                 $body.add($param.Key, $managerValue)
                             } else {
@@ -1070,14 +852,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value)
                 }
 
-                foreach ($Remove in $RemoveAttribute) {
+                foreach ($Remove in $RemoveCustomAttribute) {
                     if ($CurrentAttributesHash.ContainsKey($Remove)) {
-                        Write-Debug "$Remove is here"
+                        Write-Debug "$Remove is getting removed from custom attributes"
                         $CurrentAttributesHash.Remove($Remove)
                     }
                 }
-
-
 
                 $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
 
@@ -1168,84 +948,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 # Get the manager using manager username instead of userId
                 if ("manager" -eq $param.Key) {
-                    if ([System.String]::isNullOrEmpty($param.value)) {
+                    if ($param.Value -eq $null -or $param.Value -eq "") {
+                        $body.add($param.Key, $null)
                         continue
                     } else {
-                        # First check if manager returns valid user with id
-                        # Regex match a userid
-                        $regexPattern = [Regex]'^[a-z0-9]{24}$'
-                        if (((Select-String -InputObject $param.Value -Pattern $regexPattern).Matches.value)::IsNullOrEmpty) {
-                            # if we have a 24 characterid, try to match the id using the search endpoint
-                            $managerSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'id' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                    )
-                                }
-                                fields = 'id'
-                            }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue; this is a validated user id
-                            $managerValue = $managerResults.id
-                            # if no value was returned, then assume the case this is actually a username and search
-                            if (!$managerValue) {
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
-                        }
-                        # Use class mailaddress to check if $param.value is email
-                        try {
-                            $null = [mailaddress]$EmailAddress
-                            Write-Debug "This is true"
-                            # Search for manager using email
-                            $managerSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'email' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                    )
-                                }
-                                fields = 'email'
-                            }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue; this is a validated user id
-                            $managerValue = $managerResults.id
-                            # if no value was returned, then assume the case this is actually a username and search
-                            if (!$managerValue) {
-                                $managerSearch = @{
-                                    filter = @{
-                                        'and' = @(
-                                            @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                        )
-                                    }
-                                    fields = 'username'
-                                }
-                                $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                                # Set managerValue from the matched username
-                                $managerValue = $managerResults.id
-                            }
-                        } catch {
-                            # search the username in the search endpoint
-                            $managerSearch = @{
-                                filter = @{
-                                    'and' = @(
-                                        @{'username' = @{'$regex' = "(?i)(`^$($param.Value)`$)" } }
-                                    )
-                                }
-                                fields = 'username'
-                            }
-                            $managerResults = Search-JcSdkUser -Body:($managerSearch)
-                            # Set managerValue from the matched username
-                            $managerValue = $managerResults.id
-                        }
+                        $managerValue = Convert-JCUserToID -UserIdentifier $param.Value
                         if ($managerValue) {
                             $body.add($param.Key, $managerValue)
                         } else {
@@ -1311,7 +1018,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
             $URL = "$JCUrlBasePath/api/Systemusers/$UserID"
 
-            $CurrentAttributes = Get-JCUser -UserID $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
+            $CurrentAttributes = Get-JCUser -userid $UserID | Select-Object -ExpandProperty attributes | Select-Object value, name
             Write-Debug "There are $($CurrentAttributes.count) existing attributes"
 
             $CustomAttributeArrayList = New-Object System.Collections.ArrayList

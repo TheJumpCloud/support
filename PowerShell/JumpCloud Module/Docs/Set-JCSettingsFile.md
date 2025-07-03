@@ -14,7 +14,8 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>] [-parallelOverride <PSObject>] [<CommonParameters>]
+Set-JCSettingsFile [-parallelOverride <PSObject>]
+ [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -71,7 +72,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

@@ -14,30 +14,30 @@ The function Get-JCAssociation can be used to query an object's associations and
 
 ### ById (Default)
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]> [[-Fields] <Array>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
- [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [-Id] <String[]>
+ [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>]
+ [-Direct] [-Indirect] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]> [[-Fields] <Array>] [[-Limit] <Int32>]
- [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo]
- [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [-Name] <String[]>
+ [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>]
+ [-Direct] [-Indirect] [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### ByValue
 ```
-Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>]
- [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>]
+ [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ### Default
 ```
-Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>] [[-Limit] <Int32>] [[-Skip] <Int32>]
- [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect] [-IncludeInfo] [-IncludeNames]
- [-IncludeVisualPath] [<CommonParameters>]
+Get-JCAssociation [-Type] <String> [-Force] [[-Fields] <Array>]
+ [[-Limit] <Int32>] [[-Skip] <Int32>] [[-Paginate] <Boolean>] [[-TargetType] <String[]>] [-Direct] [-Indirect]
+ [-IncludeInfo] [-IncludeNames] [-IncludeVisualPath] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -301,17 +301,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Management.Automation.SwitchParameter
-
 ### System.String[]
-
 ### System.Array
-
 ### System.Int32
-
 ### System.Boolean
-
 ## OUTPUTS
 
 ### System.Object

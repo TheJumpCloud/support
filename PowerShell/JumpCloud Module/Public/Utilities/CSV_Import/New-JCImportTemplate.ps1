@@ -96,6 +96,7 @@ Function New-JCImportTemplate() {
                 Password                       = $null
                 Email                          = $null
                 alternateEmail                 = $null
+                recoveryEmail                  = $null
                 manager                        = $null
                 managedAppleId                 = $null
                 middlename                     = $null
@@ -186,7 +187,7 @@ Function New-JCImportTemplate() {
 
                 if ($ConfirmUserPop -eq 'Y') {
                     Write-Verbose 'Verifying JCAPI Key'
-                    if ($JCAPIKEY.length -ne 40) {
+                    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                         Connect-JConline
                     }
                     $ExistingUsers = Get-DynamicHash -Object User -returnProperties username
@@ -212,7 +213,7 @@ Function New-JCImportTemplate() {
 
             Write-Host "`nDo you want to add extended user information attributes available over JumpCloud LDAP to your users during import?"
             Write-Host 'Extended user information attributes include: ' -NoNewline
-            Write-Host -ForegroundColor Yellow 'AlternateEmail, Manager, ManagedAppleId, MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
+            Write-Host -ForegroundColor Yellow 'AlternateEmail, RecoveryEmail, Manager, ManagedAppleId, MiddleName, preferredName, jobTitle, employeeIdentifier, department, costCenter, company, employeeType, description, and location'
 
 
             while ($ConfirmLDAPAttributes -ne 'Y' -and $ConfirmLDAPAttributes -ne 'N') {
@@ -221,6 +222,7 @@ Function New-JCImportTemplate() {
 
             if ($ConfirmLDAPAttributes -eq 'Y') {
                 $CSV.add('alternateEmail', $null)
+                $CSV.add('recoveryEmail', $null)
                 $CSV.add('manager', $null)
                 $CSV.add('managedAppleId', $null)
                 $CSV.add('MiddleName', $null)

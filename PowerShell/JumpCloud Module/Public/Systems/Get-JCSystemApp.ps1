@@ -17,7 +17,7 @@ function Get-JCSystemApp () {
     )
     begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
         $Parallel = $JCConfig.parallel.Calculated
@@ -42,7 +42,7 @@ function Get-JCSystemApp () {
                     }
                     # Get the OS Type
                     if ($SystemID) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID -Fields osFamily | Select-Object -ExpandProperty OSFamily
+                        $OSType = Get-JcSdkSystem -Id $SystemID -Fields osFamily | Select-Object -ExpandProperty OSFamily
                     } else {
                         $OSType = $SystemOS
                         if ($OSType -eq 'macOS') {
@@ -101,8 +101,8 @@ function Get-JCSystemApp () {
                             if ($name) {
                                 # Check for .app at the end of the software name
                                 $macOsSoftwareName = $name
-                                $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
-                                If ($ending -match '.app') {
+                                if ($macOsSoftwareName -match '.app') {
+                                    $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
                                     $macOsSoftwareName = $macOsSoftwareName.Replace($ending, $ending.toLower())
                                     Write-Debug "$macOsSoftwareName"
                                 } else {
@@ -217,8 +217,8 @@ function Get-JCSystemApp () {
 
                         } elseif ($os -eq 'MacOs') {
                             $macOsSoftwareName = $name
-                            $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
-                            If ($ending -match '.app') {
+                            if ($macOsSoftwareName -match '.app') {
+                                $ending = $macOsSoftwareName.Substring($macOsSoftwareName.Length - 4)
                                 $macOsSoftwareName = $macOsSoftwareName.Replace($ending, $ending.toLower())
                                 Write-Debug "$macOsSoftwareName"
                             } else {
@@ -270,7 +270,7 @@ function Get-JCSystemApp () {
                     if ($version) {
                         Throw 'You cannot specify software version when using -search for a software name'
                     } elseif ($SystemId) {
-                        $OSType = Get-JcSdkSystem -ID $SystemID | Select-Object -ExpandProperty OSFamily
+                        $OSType = Get-JcSdkSystem -Id $SystemID | Select-Object -ExpandProperty OSFamily
                         Switch ($OSType) {
                             "Windows" {
                                 $result = Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID")

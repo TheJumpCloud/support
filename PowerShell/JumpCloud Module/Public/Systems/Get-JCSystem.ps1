@@ -152,8 +152,8 @@ Function Get-JCSystem () {
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
-            HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version''')]
-        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'provisionMetadata', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'systemToken', 'templateName', 'userMetrics', 'usernameHashes', 'version')]
+            HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version'', ''hwVendor'',''secureLogin'',''displayManager'',''amazonInstanceID'',''archFamily'',''builtInCommands'',''description'',''osVersionDetail'',''policyStats'',''desktopCapable'', ''sshRootEnabled''')]
+        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'primarySystemUser', 'provisionMetadata', 'remoteAssistAgentVersion', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'templateName', 'userMetrics', 'usernameHashes', 'version', 'hwVendor', 'secureLogin', 'displayManager', 'amazonInstanceID', 'archFamily', 'builtInCommands', 'description', 'osVersionDetail', 'policyStats', 'desktopCapable', 'sshRootEnabled', 'isPolicyBound')]
         [String[]]$returnProperties
     )
 
@@ -212,7 +212,7 @@ Function Get-JCSystem () {
 
     begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 
@@ -301,7 +301,7 @@ Function Get-JCSystem () {
                     }
 
                     if ($param.key -eq 'date') {
-                        $Timestamp = Get-Date $param.Value -format o
+                        $Timestamp = Get-Date $param.Value -Format o
 
                         continue
                     }
@@ -358,7 +358,7 @@ Function Get-JCSystem () {
 
                         # Remove variables that interfere with recursive call
                         $removeVariables = @("filterDateProperty")
-                        $removeVariables | Foreach-Object {
+                        $removeVariables | ForEach-Object {
                             Remove-Variable -Name $_ | Out-Null
                         }
 
@@ -461,10 +461,10 @@ Function Get-JCSystem () {
 
         switch ($PSCmdlet.ParameterSetName) {
             SearchFilter {
-                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, sshRootEnabled
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, sshRootEnabled, systemToken
             }
             ByID {
-                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount
+                return $resultsArrayList | Select-Object -ExcludeProperty associatedTagCount, systemToken
             }
 
         }

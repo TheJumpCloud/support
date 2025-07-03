@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Enroll MDM System in DEP | v1.1 JCCG
+Mac - Enroll MDM System in DEP | v1.0.2 JCCG
 
 #### commandType
 
@@ -12,12 +12,18 @@ mac
 #!/bin/bash
 
 # Verify JumpCloud MDM
-verify_jc_mdm (){
+verify_jc_mdm(){
     # Check the system for the following profileIdentifier
     mdmID="com.jumpcloud.mdm"
     check=$(profiles -Lv | grep "name: $4" -4 | awk -F": " '/attribute: profileIdentifier/{print $NF}')
     if [[ $check == *$mdmID* ]] ; then
         echo "ProfileIdentifier: ${mdmID} found on system. MDM Verified"
+        depApproveCheck=$(profiles status -type enrollment | grep "Enrolled via DEP:" | awk 'NF>1{print $NF}')
+        if [[ $depApproveCheck = "No" ]]; then
+            false
+        elif [[ $depApproveCheck = "Yes)" ]]; then
+            echo "MDM is DEP enrolled already"
+        fi
         return
     else
         echo "JumpCloud MDM profile not found on system."
@@ -25,20 +31,47 @@ verify_jc_mdm (){
     fi
 }
 
-# If JumpCLoud MDM is on the system check for DEP Enrollment
-if verify_jc_mdm "$":; then
-    depApproveCheck=$(profiles status -type enrollment | grep "Enrolled via DEP:" | awk 'NF>1{print $NF}')
-    if [[ $depApproveCheck = "No" ]]; then
-        echo "MDM is not DEP enrolled, enrolling and prompted for User Approval"
-        # Prompt for DEP Enrollment
-        profiles renew -type enrollment
-        exit 0
-    elif [[ $depApproveCheck = "Yes)" ]]; then
-        echo "MDM is DEP enrolled already"
-        exit 0
+isAdmin(){
+    local username=${1}
+    groupMembership=$(id -nG $username)
+    for group in $groupMembership
+    do
+        if [[ $group == "admin" ]]; then
+            return
+        fi
+    done
+    false
+}
+
+currentUser=$(/usr/bin/stat -f%Su /dev/console)
+currentUserUID=$(id -u "$currentUser")
+# If JumpCloud MDM is on the system check for DEP Enrollment
+verify_jc_mdm
+verifyStatus=$?
+if [[ $verifyStatus -eq 1 ]]; then
+    echo "MDM is not DEP enrolled, enrolling and prompting for User Approval"
+    # check if the logged in user is admin
+    isAdmin $currentUser
+    status=$?
+    if [[ $status -eq 0 ]]; then
+        echo "The logged in user $currentUser: is an administrator"
+    else
+        echo "The logged in user $currentUser: is not an administrator"
+        echo "Please login as an administrator user before issuing the enrollment command to this device again"
+        adminUsers=$(dscl . -read /Groups/admin GroupMembership | awk '{$1=""; print $0}')
+        echo "The following users are administrators on this device:"
+        for adminUser in $adminUsers
+        do
+            echo $adminUser
+        done
+        exit 1
     fi
+
+    # Prompt for DEP Enrollment
+    /bin/launchctl asuser "$currentUserUID" sudo profiles renew -type enrollment
+    exit 0
 else
-    exit 1
+    exit 0
 fi
 ```
 
@@ -60,7 +93,7 @@ If the user clicks allow the device will be DEP enrolled and the MDM profile wil
 
 ![Enrollment Type](../Files/enrollmentType.png)
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 

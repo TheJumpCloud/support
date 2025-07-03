@@ -17,7 +17,7 @@ linux
 ################################################################################
 
 # Set Read API KEY - Required to read "DisplayName" from console.jumpcloud.com
-API_KEY="yourReadWriteAPIKey"
+API_KEY="YourReadOnlyAPIKey"
 
 # ------- Do not modify below this line ------
 

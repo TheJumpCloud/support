@@ -14,9 +14,10 @@ Query the API for Directory Insights events
 
 ### GetExpanded (Default)
 ```
-Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>] [-Q <String>]
- [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermNot <Hashtable>]
- [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-JCEvent -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
+ [-Limit <Int64>] [-Q <String>] [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>]
+ [-SearchTermNot <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -129,6 +130,21 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Limit
+Max number of rows to return
+
+```yaml
+Type: System.Int64
+Parameter Sets: GetExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: 0
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -318,4 +334,3 @@ Known services: systems,radius,sso,directory,ldap,all
 ## RELATED LINKS
 
 [https://github.com/TheJumpCloud/support/wiki/Get-JCEvent](https://github.com/TheJumpCloud/support/wiki/Get-JCEvent)
-

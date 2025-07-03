@@ -24,7 +24,8 @@ Get-JCCommandResult [-CommandResultID] <String> [<CommonParameters>]
 
 ### ByCommandID
 ```
-Get-JCCommandResult [-CommandID <String>] [-ByCommandID] [<CommonParameters>]
+Get-JCCommandResult [-CommandID <String>] [-ByCommandID]
+ [<CommonParameters>]
 ```
 
 ### Detailed
@@ -176,9 +177,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Management.Automation.SwitchParameter
-
 ## OUTPUTS
 
 ### System.Object

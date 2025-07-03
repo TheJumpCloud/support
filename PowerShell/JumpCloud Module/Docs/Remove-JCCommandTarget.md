@@ -14,17 +14,20 @@ Removes the association between a JumpCloud system or a JumpCloud system group f
 
 ### SystemID (Default)
 ```
-Remove-JCCommandTarget [-CommandID] <String> [-SystemID] <Object> [<CommonParameters>]
+Remove-JCCommandTarget [-CommandID] <String> [-SystemID] <Object>
+ [<CommonParameters>]
 ```
 
 ### GroupID
 ```
-Remove-JCCommandTarget [-CommandID] <String> [-GroupID] <Object> [<CommonParameters>]
+Remove-JCCommandTarget [-CommandID] <String> [-GroupID] <Object>
+ [<CommonParameters>]
 ```
 
 ### GroupName
 ```
-Remove-JCCommandTarget [-CommandID] <String> [-GroupName] <Object> [<CommonParameters>]
+Remove-JCCommandTarget [-CommandID] <String> [-GroupName] <Object>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -125,9 +128,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Object
-
 ## OUTPUTS
 
 ### System.Object

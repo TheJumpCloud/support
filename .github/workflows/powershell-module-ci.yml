@@ -99,6 +99,7 @@ jobs:
               'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
               'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
               'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'powershell-yaml'                       = @{Repository = 'PSGallery'; RequiredVersion = '0.4.7'}
           }
 
           foreach ($RequiredModule in $PSDependencies.Keys) {
@@ -121,6 +122,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
@@ -139,6 +141,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
@@ -157,7 +160,7 @@ jobs:
           Write-Host ('[status] Setting up org')
           $variables = . ("./PowerShell/JumpCloud Module/Tests/SetupOrg.ps1") -JumpCloudApiKey "$env:PESTER_APIKEY" -JumpCloudApiKeyMsp "$env:PESTER_MSP_APIKEY"
           $variables | ConvertTo-Json -Depth 10 | Out-File -FilePath /home/runner/.local/share/powershell/Modules/PesterVariables.json
-      - uses: actions/upload-artifact@v3
+      - uses: ./.github/actions/upload-secure-artifact
         with:
           name: jumpcloud-vars
           path: /home/runner/.local/share/powershell/Modules/PesterVariables.json
@@ -175,11 +178,12 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
           key: PS-Dependancies
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: jumpcloud-vars
       - name: Test PWSH Module
@@ -218,6 +222,7 @@ jobs:
         with:
           sparse-checkout: |
             PowerShell
+            .github
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"

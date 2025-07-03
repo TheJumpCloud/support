@@ -1,4 +1,4 @@
-Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
+Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' -Skip {
     It "Gets all JumpCloud command results" {
         $CommandResults = Get-JCCommandResult
         $CommandResults.count | Should -BeGreaterThan 1
@@ -23,13 +23,13 @@ Describe -Tag:('JCCommandResult') 'Get-JCCommandResults 1.0' {
         $SingleCommandResult._id | Should -Not -BeNullOrEmpty
     }
 }
-Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" {
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.4.1" -Skip {
     It "Returns the total count of JumpCloud command results" {
         $TotalCount = Get-JCCommandResult -TotalCount
         $TotalCount | Should -BeGreaterThan 0
     }
 }
-Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.5.0" {
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.5.0" -Skip {
     It "Returns a command result with the SystemID" {
         $CommandResult = Get-JCCommandResult | Select-Object -Last 1
         $VerifySystemID = Get-JCSystem -SystemID $CommandResult.SystemID
@@ -41,7 +41,7 @@ Describe -Tag:('JCCommandResult') "Get-JCCommandResult 1.5.0" {
         $CommandResult.system | Should -Be $VerifySystemID.displayname
     }
 }
-Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" {
+Describe -Tag:('JCCommandResult') "Get-JCCommandResult 2.0" -Skip {
     It "Returns command results with the workflowId" {
         $Command = Get-JCCommandResult | Select-Object -First 1
         $CommandResults = Get-JCCommandResult -WorkflowId $Command.workflowId

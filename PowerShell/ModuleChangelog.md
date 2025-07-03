@@ -1,3 +1,312 @@
+## 2.18.1
+
+Release Date: April 25, 2025
+
+#### RELEASE NOTES
+
+```
+Implements fix for errors in module directory path resolution
+```
+
+#### BUG FIXES:
+
+* Addresses a bug that impacted module directory paths.
+
+## 2.18.0
+
+Release Date: April 18, 2025
+
+#### RELEASE NOTES
+
+```
+This release adds support for Windows MDM OMA Custom policy (Custom MDM (OMA-URI)) with New/Set-JCPolicy
+Introduces the primarySystemUser parameter to Set-JCSystem and Update-JCDeviceFromCSV functions. This parameter will allow you associate a user to the specified device
+
+```
+
+#### FEATURES:
+- Introduces support for passing list of objects (uriList) for Custom MDM (OMA-URI) policy with New/Set-JCPolicy
+  - Dynamic param added `-uriList`
+  - Menu for `Set-JCPolicy` to edit uriList - create/update/add/remove
+* Added the primarySystemUser parameter to Set-JCSystem
+* Update-JCDeviceFromCSV supports the primarySystemUser param that was added to Set-JCSystem
+
+#### BUG FIXES:
+
+* Added an Alias of GroupID to the ByID parameter for Get-JCUserGroupMember
+
+## 2.17.0
+
+Release Date: January 30, 2025
+
+#### RELEASE NOTES
+
+```
+This release introduces two new functions `New-JCReport` and `Get-JCReport`
+```
+
+#### FEATURES:
+
+- Introduces two new functions `New-JCReport` and `Get-JCReport`
+  - `New-JCReport` - Generates a report using the pre-built report generators available in the console
+  - `Get-JCReport` - Allows you get get the report metadata and once the report is finished processing, using the reportID and the artifactID, you can output the report content via JSON or CSV
+
+## 2.16.0
+
+Release Date: January 02, 2025
+
+#### RELEASE NOTES
+
+```
+This release introduces support for cascading managers with `Remove-JCUser`
+This release introduces a bug fix for `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` issues with importing more than 10 custom attributes. This release also introduces `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions.
+```
+
+#### FEATURES:
+
+- Introduces the `Update-JCDeviceFromCSV` and `New-JCDeviceUpdateTemplate` functions
+  - `New-JCDeviceUpdateTemplate`: Creates a csv template used for bulk updating devices
+  - `Update-JCDeviceFromCSV`: Updates a list of devices from a CSV created by the `New-JCDeviceUpdateTemplate` function
+- Introduces `Remove-JCUser` - Added -CascadeManager (null, automatic, user) parameter
+  - null - Manager field for managed users by the user being removed will be set to null
+  - automatic - If the user (manager1) being removed is a manager but also managed by another user(manager2). The manager for managed users will cascade to manager2.
+  - User - Manually specify the manager for users managed by the user/manager being removed
+    - -CascadeManagerUser Id/Username
+
+#### BUG FIXES:
+
+- Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` throwing error when importing 10 or more Custom Attributes due to a sorting issue
+- Fixed a bug with `Get-JCSystemApp` returning an error when searching for an app that is less than 4 characters long
+
+## 2.15.0
+
+Release Date: November 18, 2024
+
+#### RELEASE NOTES
+
+```
+This release adds support for new functions to interact with Policy Groups and Policy Group Templates
+```
+
+#### FEATURES:
+
+New Functions:
+Get-JCPolicyGroup
+Set-JCPolicyGroup
+Remove-JCPolicyGroup
+New-JCPolicyGroup
+Get-JCPolicyGroupMember
+Get-JCConfiguredTemplatePolicy
+Get-JCPolicyGroupTemplate
+Get-JCPolicyGroupTemplateMember
+Remove-JCPolicyGroupTemplate
+
+#### IMPROVEMENTS:
+
+Support for future MTP specific functions. The Update/Import-JCUserFromCSV function can now update/import a user's recovery email.
+
+## 2.14.3
+
+Release Date: November 7, 2024
+
+#### RELEASE NOTES
+
+```
+Removed 40 character validation for the JumpCloud API key, Add "notes" to the JCPolicy Functions
+```
+
+#### FEATURES:
+
+- Notes can be set and added when creating new policies using the Set/New-JCPolicy Functions. Notes are returned when querying Get-JCPolicy
+
+## 2.14.2
+
+Release Date: October 16, 2024
+
+#### RELEASE NOTES
+
+```
+Fixed a bug with `Import-JCUsersFromCSV` and `Update-JCUsersFromCSV` where the a user does not get created/updated when there is an empty value on one of the Attribute columns on the CSV
+```
+
+#### BUG FIXES:
+
+- Import-JCUsersFromCSV and Update-JCUsersFromCSV are now able to update/create users even when some Attributes column are not filled in
+
+## 2.14.1
+
+Release Date: October 1, 2024
+
+#### RELEASE NOTES
+
+```
+Fixed a bug with `Set-JCUser` not having the ability to remove a user's manager by setting it to `$null`
+```
+
+#### BUG FIXES:
+
+- Set-JCUser now allows removing a user's manager by inputting a `$null` value as expected
+
+## 2.14.0
+
+Release Date: September 25, 2024
+
+#### RELEASE NOTES
+
+```
+Introduces the `Get-JCSystemKB` Function - This function will allow you to search for applied hotfixes/KBs on your Windows devices across your organization
+```
+
+#### BUG FIXES:
+
+Fixed a bug where Get-JCPolicy would return multiple templateIDs per policy
+
+#### FEATURES:
+
+- Get-JCSystemKB - Returns applied hotfixes/KBs on Windows devices in your organization
+
+## 2.13.1
+
+Release Date: September 09, 2024
+
+#### RELEASE NOTES
+
+```
+Renamed -RemoveAtrribute to -RemoveCustomAttribute
+```
+
+## 2.13.0
+
+Release Date: August 8, 2024
+
+#### RELEASE NOTES
+
+```
+New admin function, Get-JCAdmin - returns admins in your organization(s)
+```
+
+#### FEATURES:
+
+- Get-JCAdmin - Returns administrators in your organization
+  - MSP/MTP tenants can query multiple organizations or individual organizations
+
+## 2.12.1
+
+Release Date: August 08, 2024
+
+#### RELEASE NOTES
+
+```
+Patch release to include new Pester Tests. No functional changes have been made
+```
+
+#### IMPROVEMENTS:
+
+Included Pester Test to check for updating documentation
+
+## 2.12.0
+
+Release Date: July 10, 2024
+
+#### RELEASE NOTES
+
+```
+Added new calculated fields for Get-JCSystemInsights Tables LogicalDrives, Mounts, and SystemInfo to include human readable sizes in GB for the following fields: PhysicalMemory, blocks, blocksAvailable, freeSpace, and size
+```
+
+#### IMPROVEMENTS:
+
+- Added calculated fields for the `Get-JCSystemInsights` following tables:
+  - LogicalDrives - freeSpaceGB, sizeGB
+  - Mounts - blocksGB, blocksAvailableGB
+  - systemInfo - physicalMemoryGB
+
+## 2.11.0
+
+Release Date: June 13, 2024
+
+#### RELEASE NOTES
+
+```
+Introducing a new function Get-JcScheduledUserstate - This will allow for the lookup of upcoming user suspensions/activations
+```
+
+#### FEATURES:
+
+New Function: `Get-JcScheduledUserState` - Allows for the lookup of scheduled userstate changes. This will list upcoming suspensions or activations as well as being able to search for a particular user's upcoming state changes by their UserID
+
+## 2.10.2
+
+Release Date: May 30, 2024
+
+#### RELEASE NOTES
+
+```
+Fixed a bug when creating a staged user and attempting to enable MFA
+Removed the unused `systemToken` property from the Get-JCSystem function
+```
+
+#### BUG FIXES:
+
+Fixed a bug when creating a staged user and attempting to enable MFA
+
+#### FEATURES:
+
+Removed the `systemToken` property from the Get-JCSystem function
+
+## 2.10.1
+
+Release Date: April 2, 2024
+
+#### RELEASE NOTES
+
+```
+Added several missing filter fields to Get-JCUser, Get-JCSystem, Get-JCCommand
+```
+
+#### FEATURES:
+
+Additional `returnProperties` added to Get-JCUser, Get-JCSystem, Get-JCCommand functions
+
+## 2.10.0
+
+Release Date: January 17, 2024
+
+#### RELEASE NOTES
+
+```
+New Directory Functions, Add-JCGsuiteMember, Add-JCOffice365Member, Remove-JCGsuiteMember, and Remove-JCOffice365Member added to the module
+```
+
+#### FEATURES:
+
+Add-JCGsuiteMember - Add a user or user group to a Gsuite instance
+Add-JCOffice365Member - Add a user or user group to an Office365 instance
+Remove-JCGsuiteMember - Remove a user or user group from a Gsuite instance
+Remove-JCOffice365Member - Remove a user or user group from an Office365 instance
+
+## 2.9.1
+
+Release Date: January 11, 2024
+
+#### RELEASE NOTES
+
+```
+This release adds an available field for Get-JCUser to reutn, `systemUsername`.
+```
+
+#### FEATURES:
+
+NA
+
+#### IMPROVEMENTS:
+
+`SystemUsername` has been added to Get-JCUser -returnProperties. ex. `Get-JCuser -username defaultadmin -returnProperties systemUsername` will return the local systemUsername for a given user.
+
+#### BUG FIXES:
+
+NA
+
 ## 2.9.0
 
 Release Date: December 5, 2023
@@ -26,7 +335,6 @@ Addressed the issue with Get-JCPolicyTemplateConfigField select/multi property s
 ### BUG FIXES:
 
 - Fixed an issue with Get-JCPolicyTemplateConfigField error when a string select/multi property is passed to an int conversion
-
 
 Release Date: November 2, 2023
 

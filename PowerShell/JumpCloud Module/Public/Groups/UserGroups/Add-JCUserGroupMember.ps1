@@ -46,7 +46,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 
@@ -100,11 +100,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 Write-Debug $jsonbody
 
 
-                $GroupAdd = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body -ErrorVariable addError -ErrorAction SilentlyContinue
-                if ($addError) {
-                    $Status = $addError.ErrorDetails.Message
-                } else {
+                try {
+                    $GroupAdd = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body
                     $Status = 'Added'
+                } catch {
+                    $Status = $_.Exception.Message
                 }
 
                 $FormattedResults = [PSCustomObject]@{
@@ -159,12 +159,13 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             Write-Debug $jsonbody
 
 
-            $GroupAdd = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body -ErrorVariable addError -ErrorAction SilentlyContinue
-            if ($addError) {
-                $Status = $addError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupAdd = Set-JcSdkUserGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Added'
+            } catch {
+                $Status = $_.Exception.Message
             }
+
 
             $FormattedResults = [PSCustomObject]@{
 

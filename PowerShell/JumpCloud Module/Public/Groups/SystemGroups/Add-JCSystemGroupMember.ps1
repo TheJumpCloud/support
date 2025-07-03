@@ -53,7 +53,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
     )
     begin {
         Write-Debug 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 
@@ -102,12 +102,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
             $jsonbody = $body | ConvertTo-Json
             Write-Debug $jsonbody
 
-
-            $GroupAdd = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable addError -ErrorAction SilentlyContinue
-            if ($addError) {
-                $Status = $addError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupAdds = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Added'
+            } catch {
+                $Status = $_.Exception.Message
             }
 
             $FormattedResults = [PSCustomObject]@{
@@ -143,11 +142,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
             Write-Debug $jsonbody
 
 
-            $GroupAdd = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body -ErrorVariable addError -ErrorAction SilentlyContinue
-            if ($addError) {
-                $Status = $addError.ErrorDetails.Message
-            } else {
+            try {
+                $GroupAdds = Set-JcSdkSystemGroupMember -GroupId $GroupID -Body $body
                 $Status = 'Added'
+            } catch {
+                $Status = $_.Exception.Message
             }
 
             $FormattedResults = [PSCustomObject]@{

@@ -14,7 +14,8 @@ Creates a new JumpCloud Mac, Linux, or Windows command
 
 ```
 New-JCCommand [-name] <String> [-commandType] <String> [-command] <String> [[-launchType] <String>]
- [[-timeout] <String>] [-shell <String>] [-user <String>] -trigger <String> [<CommonParameters>]
+ [[-timeout] <String>] [-shell <String>] [-user <String>]
+ -trigger <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -166,7 +167,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

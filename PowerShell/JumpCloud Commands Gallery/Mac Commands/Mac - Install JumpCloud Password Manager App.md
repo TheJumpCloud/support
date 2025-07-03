@@ -1,6 +1,6 @@
 #### Name
 
-Mac - Install JumpCloud Password Manager App | v1.3 JCCG
+Mac - Install and Update JumpCloud Password Manager App | v2.0.1 JCCG
 
 #### commandType
 
@@ -10,10 +10,30 @@ mac
 
 ```
 #!/bin/bash
+# This script will install password manager in Users/$user/Applications for all user accounts based on their architecture (x64 or arm64)
+# Set LaunchAfterInstall to true ON LINE 4 if you wish to launch the password manager after installation
+LaunchAfterInstall=true
 
-# This script will install password manager in Users/$user/Applications for all user accounts
+# Set UpdateToLatest to true if you want to update to the latest version of JumpCloud Password Manager
+# Set UpdateToLatest to false if you want to re-install the JumpCloud Password Manager no matter your current version.
+# ********** DISCLAIMER: Setting UpdateToLatest to $false will NOT affect any user data **********
+UpdateToLatest=true
+
 
 DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.dmg"
+DownloadYamlFileUrl="https://cdn.pwm.jumpcloud.com/DA/release/latest-mac.yml"
+
+# Detect device architecture
+DeviceArchitecture=$(uname -m)
+
+
+if [ "$DeviceArchitecture" = "arm64" ]; then
+    DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/arm64/JumpCloud-Password-Manager-latest.dmg"
+    DownloadYamlFileUrl="https://cdn.pwm.jumpcloud.com/DA/release/arm64/latest-mac.yml"
+fi
+
+# Kill any existing JumpCloud Password Manager processes
+killall "JumpCloud Password Manager"
 
 regex='^https.*.dmg$'
 if [[ $DownloadUrl =~ $regex ]]; then
@@ -60,9 +80,57 @@ mkdir /tmp/$TempFolder
 # Navigate to Temp Folder
 cd /tmp/$TempFolder
 
+if [ -d /Applications/JumpCloud\ Password\ Manager.app ]; then
+    # If JumpCloud Password Manager exists within this directory, force re-install as it is in the wrong directory
+    # the script will continue and re-install it in the correct directory
+    UpdateToLatest=false
+fi
+
+LatestAppVersion=$(curl -s "$DownloadYamlFileUrl" | \
+                grep '^version:' | \
+                sed -E 's/version:\s*//g' | \
+                tr -d '\r' | \
+                xargs)
+
+# Array to track users who need update/reinstall
+users_need_update=()
+if [ "$UpdateToLatest" = true ]; then
+    for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
+    do
+        APP_PATH="/Users/$user/Applications/JumpCloud Password Manager.app"
+        InstalledAppVersion=$(mdls -name kMDItemVersion "$APP_PATH" 2>/dev/null | awk -F '"' '{print $2}')
+        if [ -z "$InstalledAppVersion" ]; then
+            echo "Could not determine installed app version from '$APP_PATH' for $user."
+            echo "User $user will be treated as a re-install."
+            users_need_update+=("$user")
+            # Skipping over the current user will prevent unnecessary logic handling.
+            continue
+        fi
+
+        if [[ "$(printf '%s\n%s\n' "$InstalledAppVersion" "$LatestAppVersion" | sort -V | head -n1)" = "$InstalledAppVersion" && "$InstalledAppVersion" != "$LatestAppVersion" ]]; then
+            echo "Installed app ($InstalledAppVersion) is OLDER than the latest available ($LatestAppVersion)."
+            users_need_update+=("$user")
+        elif [[ "$(printf '%s\n%s\n' "$InstalledAppVersion" "$LatestAppVersion" | sort -V | tail -n1)" = "$InstalledAppVersion" && "$InstalledAppVersion" != "$LatestAppVersion" ]]; then
+            echo "Installed app ($InstalledAppVersion) is NEWER than the latest available ($LatestAppVersion)."
+            echo "This might indicate a beta version."
+            continue
+        else
+            echo "Installed app is already the LATEST version ($InstalledAppVersion) for $user."
+            continue
+        fi
+    done
+fi
+
+if [ "$UpdateToLatest" = true ] && [ ${#users_need_update[@]} -eq 0 ]; then
+    echo "All users are up to date, exiting."
+    exit 0
+fi
+
+echo "Downloading JumpCloud Password Manager from $DownloadUrl"
 # Download File into Temp Folder
 curl -s -O "$DownloadUrl"
 
+echo "Download complete."
 # Capture name of Download File
 DownloadFile="$(ls)"
 
@@ -127,19 +195,25 @@ userInstall=false
 
 for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
 do
+    APP_PATH="/Users/$user/Applications/JumpCloud Password Manager.app"
     if [[ -d /Users/$user ]]; then
         # Create ~/Applications folder
         if [[ ! -d /Users/$user/Applications ]]; then
             mkdir /Users/$user/Applications
         fi
-        if [[ -d /Users/$user/Applications/JumpCloud\ Password\ Manager.app ]]; then
+        if [[ -d $APP_PATH ]]; then
             # remove if exists
-            rm -rf /Users/$user/Applications/JumpCloud\ Password\ Manager.app
+            rm -rf $APP_PATH
         fi
 
         # Copy the contents of the DMG file to /Users/$user/Applications/
         # Preserves all file attributes and ACLs
         cp -pPR "$DMGAppPath" /Users/$user/Applications/
+
+        # Change ownership of the file and Applications folder to the user of this loop iteration
+        chown -v "$user" /Users/$user/Applications
+        chown -R -v "$user" "$APP_PATH" >/dev/null 2>&1 || true
+        echo "Changed ownership of $APP_PATH and /Users/$user/Applications to $user"
 
         if [[ -d /Users/$user/Desktop/JumpCloud\ Password\ Manager.app ]]; then
             # remove alias on desktop if exists
@@ -158,9 +232,11 @@ do
 
         userInstall=true
         echo "Copied $DMGAppPath to /Users/$user/Applications"
-
+        if [ "$LaunchAfterInstall" = true ]; then
+            sudo -u "$user" open "$APP_PATH" >/dev/null 2>&1 || true
+        fi
         # Create an alias on desktop
-        ln -s /Users/$user/Applications/JumpCloud\ Password\ Manager.app /Users/$user/Desktop/JumpCloud\ Password\ Manager.app
+        ln -s "$APP_PATH" "/Users/$user/Desktop/JumpCloud Password Manager.app"
     fi
 done
 
@@ -185,6 +261,7 @@ fi
 rm -r /tmp/$TempFolder
 
 echo "Deleted /tmp/$TempFolder"
+
 
 exit
 ```

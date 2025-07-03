@@ -25,9 +25,9 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
  [-home_poBox <String>] [-home_locality <String>] [-home_region <String>] [-home_postalCode <String>]
  [-home_country <String>] [-mobile_number <String>] [-home_number <String>] [-work_number <String>]
  [-work_mobile_number <String>] [-work_fax_number <String>] [-state <String>] [-manager <String>]
- [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>] [-enrollmentDays <Int32>]
- -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String>
- [<CommonParameters>]
+ [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>]
+ [-enrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ### Attributes
@@ -44,8 +44,8 @@ New-JCUser -firstname <String> -lastname <String> -username <String> -email <Str
  [-home_postalCode <String>] [-home_country <String>] [-mobile_number <String>] [-home_number <String>]
  [-work_number <String>] [-work_mobile_number <String>] [-work_fax_number <String>] [-state <String>]
  [-manager <String>] [-managedAppleId <String>] [-alternateEmail <String>] [-recoveryEmail <String>]
- [-enrollmentDays <Int32>] -Attribute1_name <String> -Attribute1_value <String> -Attribute2_name <String>
- -Attribute2_value <String> [<CommonParameters>]
+ [-enrollmentDays <Int32>] -Attribute1_name <String>
+ -Attribute1_value <String> -Attribute2_name <String> -Attribute2_value <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -904,11 +904,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Boolean
-
 ### System.Int32
-
 ## OUTPUTS
 
 ### System.Object

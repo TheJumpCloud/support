@@ -19,12 +19,14 @@ At a minimum to display the dynamic set of parameters per template, the `Templat
 
 ### ByID (Default)
 ```
-New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
+New-JCPolicy -TemplateID <String> [-Name <String>] [-Values <Object[]>] [-Notes <String>]
+ [<CommonParameters>]
 ```
 
 ### ByName
 ```
-New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [<CommonParameters>]
+New-JCPolicy -TemplateName <String> [-Name <String>] [-Values <Object[]>] [-Notes <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -80,11 +82,34 @@ PS C:\>  New-JCPolicy -TemplateName windows_Advanced:_Custom_Registry_Keys -Name
 
 This command would create a new Windows Custom Registry Policy named "Windows - Imported Custom Registry Settings" and populate the values from a registry file. .Reg registry files can be passed into New-JCPolicy as long as the TemplateName is specified with the corresponding "windows_Advanced:\_Custom_Registry_Keys" template. .Reg files will be converted and uploaded to the JumpCloud policy as long as they contain "DWORD", "EXPAND_SZ", "MULTI_SZ", "SZ" or "QWORD" type data.
 
+### Example 6
+
+```PowerShell
+PS C:\>  New-JCPolicy -TemplateName custom_oma_uri_mdm_windows -Name "Windows - Custom OMA MDM Policy" -uriList '(@( @{format = "string"; uri = "./Vendor/MSFT/Policy/Config/DeviceLock/EnforceLockScreenAndLogonImage; value = "pathToImage" }, @{format = "int"; uri = "./Device/Vendor/MSFT/Policy/Config/DeviceLock/AccountLockoutPolicy"; value = "1" } ))'
+```
+
+This command creates a JumpCloud policy named "Windows - Custom OMA MDM Policy" using the custom_oma_uri_mdm_windows template. It defines two OMA-URI configurations: a string value for EnforceLockScreenAndLogonImage and an integer value for AccountLockoutPolicy.
+
 ## PARAMETERS
 
 ### -Name
 
 The name of the policy to create
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Notes
+The notes of the policy to create.
 
 ```yaml
 Type: System.String
@@ -152,9 +177,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ### System.Object[]
-
 ## OUTPUTS
 
 ### System.Object

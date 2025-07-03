@@ -1,6 +1,6 @@
 #!/bin/bash
 ###############################################################################
-# Version 1.3
+# Version 1.4
 #
 # RenameMacUserNameAndHomeDirectory.sh - Script to rename the username of a
 # user account on MacOS. The script updates the users record name (username),
@@ -180,12 +180,43 @@ ${log} Success ${oldUser} username has been updated to ${newUser}
 ${log} Folder "${origHomeDir}" has been renamed to "/Users/${newUser}"
 ${log} RecordName: ${newUser}
 ${log} NFSHomeDirectory: "/Users/${newUser}"
-${log} SYSTEM RESTARTING in 5 seconds to complete username update.
+${log} SYSTEM RESTARTING in 1 min to complete username update.
 EOM
 
 echo "${successOutput}" 2>&1 | tee -a JC_RENAME.log
 
-# System restart
-Sleep 5
-osascript -e 'tell application "System Events" to restart'
+# create the plist file:
+echo '#!/bin/bash
+/sbin/shutdown -r +1
+' > /tmp/reboot.sh
+# make the script executable
+chmod +x /tmp/reboot.sh
+# create the plist file:
+echo '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.jumpcloud.prestage</string>
+	<key>Program</key>
+    <string>/tmp/reboot.sh</string>
+	<key>RunAtLoad</key>
+	<true/>
+    <key>StandardOutPath</key>
+    <string>/var/tmp/com.apple.restart.stdout</string>
+    <key>StandardErrorPath</key>
+    <string>/var/tmp/com.apple.restart.stderr</string>
+</dict>
+</plist>' > /Library/LaunchDaemons/com.rebootnow.plist
+
+# change ownership
+chown root:wheel "/Library/LaunchDaemons/com.rebootnow.plist"
+chmod 644 "/Library/LaunchDaemons/com.rebootnow.plist"
+
+launchctl load -w /Library/LaunchDaemons/com.rebootnow.plist
+
+sleep 2
+# remove the LaunchDaemons so that they do not kick off after the restart
+rm /Library/LaunchDaemons/com.rebootnow.plist
+# exit
 exit 0

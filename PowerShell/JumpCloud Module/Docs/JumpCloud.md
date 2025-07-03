@@ -2,8 +2,8 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 2.7.0
-Locale: en-US
+Help Version: 2.18.1
+Locale: en-Us
 ---
 
 # JumpCloud Module
@@ -16,6 +16,12 @@ Create an association between two object within the JumpCloud console.
 
 ### [Add-JCCommandTarget](Add-JCCommandTarget.md)
 Associates a JumpCloud system or a JumpCloud system group with a JumpCloud command
+
+### [Add-JCGsuiteMember](Add-JCGsuiteMember.md)
+Adds a user or usergroup to a GSuite instance
+
+### [Add-JCOffice365Member](Add-JCOffice365Member.md)
+Adds a user or usergroup to an Office365 instance
 
 ### [Add-JCRadiusReplyAttribute](Add-JCRadiusReplyAttribute.md)
 Adds Radius reply attributes to a JumpCloud user group.
@@ -38,11 +44,17 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 ### [Copy-JCAssociation](Copy-JCAssociation.md)
 Copy the associations from one object to another.
 
+### [Get-JCAdmin](Get-JCAdmin.md)
+Gets JumpCloud administrators in your organization
+
 ### [Get-JCAssociation](Get-JCAssociation.md)
 The function Get-JCAssociation can be used to query an object's associations and then provide information about how objects are associated with one another.
 
 ### [Get-JCBackup](Get-JCBackup.md)
 Backs up JumpCloud directory information to CSV
+
+### [Get-JCCloudDirectory](Get-JCCloudDirectory.md)
+Returns all Cloud Directory instances within a JumpCloud tenant, a single Cloud Directory instance using the -ID or -Name Parameter, or directories matching a single type using the -Type Parameter.
 
 ### [Get-JCCommand](Get-JCCommand.md)
 Returns all JumpCloud Commands within a JumpCloud tenant or a single JumpCloud Command using the -ByID Parameter.
@@ -52,6 +64,9 @@ Returns all JumpCloud Command Results within a JumpCloud tenant or a single Jump
 
 ### [Get-JCCommandTarget](Get-JCCommandTarget.md)
 Returns the JumpCloud systems or system groups associated with a JumpCloud command.
+
+### [Get-JCConfiguredTemplatePolicy](Get-JCConfiguredTemplatePolicy.md)
+Retrieves a Configured Policy Templates
 
 ### [Get-JCEvent](Get-JCEvent.md)
 Query the API for Directory Insights events
@@ -68,6 +83,18 @@ Returns all JumpCloud organizations associated with the authenticated JumpCloud 
 ### [Get-JCPolicy](Get-JCPolicy.md)
 Returns all JumpCloud Policies within a JumpCloud tenant.
 
+### [Get-JCPolicyGroup](Get-JCPolicyGroup.md)
+Returns all policy groups, policy groups by name or id.
+
+### [Get-JCPolicyGroupMember](Get-JCPolicyGroupMember.md)
+This function will return the policies that are members of the specified policy group.
+
+### [Get-JCPolicyGroupTemplate](Get-JCPolicyGroupTemplate.md)
+Returns the policy group templates for an MTP organization
+
+### [Get-JCPolicyGroupTemplateMember](Get-JCPolicyGroupTemplateMember.md)
+Retrieves a Policy Group Template's Members
+
 ### [Get-JCPolicyResult](Get-JCPolicyResult.md)
 Returns all JumpCloud results for a given policy within a JumpCloud tenant.
 
@@ -83,6 +110,12 @@ Returns the Radius reply attributes associated with a JumpCloud user group.
 ### [Get-JCRadiusServer](Get-JCRadiusServer.md)
 Return JumpCloud radius server information.
 
+### [Get-JCReport](Get-JCReport.md)
+Ordered list of report metadata
+
+### [Get-JCScheduledUserstate](Get-JCScheduledUserstate.md)
+Returns scheduled userstate changes by state or returns a user's scheduled userstate changes
+
 ### [Get-JCSystem](Get-JCSystem.md)
 Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.
 
@@ -95,6 +128,9 @@ Returns the System Group members of a JumpCloud System Group.
 ### [Get-JCSystemInsights](Get-JCSystemInsights.md)
 JumpCloud's System Insights feature provides admins with the ability to easily interrogate their fleet of systems to find important pieces of information.
 Using this function you can easily gather heightened levels of information from your fleet of JumpCloud managed systems.
+
+### [Get-JCSystemKB](Get-JCSystemKB.md)
+Returns applied hotfixes/KBs on Windows devices
 
 ### [Get-JCSystemUser](Get-JCSystemUser.md)
 Returns all JumpCloud Users associated with a JumpCloud System.
@@ -126,6 +162,9 @@ Creates a new JumpCloud Mac, Linux, or Windows command
 ### [New-JCDeploymentTemplate](New-JCDeploymentTemplate.md)
 A guided walk through that creates a command deployment CSV file on your local machine.
 
+### [New-JCDeviceUpdateTemplate](New-JCDeviceUpdateTemplate.md)
+A guided walk through that creates a JumpCloud Device Import CSV file on your local machine.
+
 ### [New-JCImportTemplate](New-JCImportTemplate.md)
 A guided walk through that creates a JumpCloud User Import CSV file on your local machine.
 
@@ -139,8 +178,14 @@ TemplateIDs or TemplateNames are required to identify which JumpCloud Policy to 
 
 At a minimum to display the dynamic set of parameters per template, the `TemplateID` or `TemplateName` must be specified. Tab actions display the available dynamic parameters available per function. For example, `New-JCPolicy -TemplateName darwin_Login_Window_Text -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `darwin_Login_Window_Text` policy. Dynamic parameters for templates are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
 
+### [New-JCPolicyGroup](New-JCPolicyGroup.md)
+This endpoint allows you to create a new Policy Group.
+
 ### [New-JCRadiusServer](New-JCRadiusServer.md)
 Creates a JumpCloud radius server.
+
+### [New-JCReport](New-JCReport.md)
+Request a JumpCloud report to be generated asynchronously
 
 ### [New-JCSystemGroup](New-JCSystemGroup.md)
 Creates a JumpCloud System Group
@@ -163,8 +208,20 @@ Removes a JumpCloud Command Result
 ### [Remove-JCCommandTarget](Remove-JCCommandTarget.md)
 Removes the association between a JumpCloud system or a JumpCloud system group from a JumpCloud command
 
+### [Remove-JCGsuiteMember](Remove-JCGsuiteMember.md)
+Removes a user or usergroup from a GSuite instance
+
+### [Remove-JCOffice365Member](Remove-JCOffice365Member.md)
+Removes a user or usergroup from an Office365 instance
+
 ### [Remove-JCPolicy](Remove-JCPolicy.md)
 Removes a JumpCloud Policy
+
+### [Remove-JCPolicyGroup](Remove-JCPolicyGroup.md)
+This endpoint allows you to delete a Policy Group.
+
+### [Remove-JCPolicyGroupTemplate](Remove-JCPolicyGroupTemplate.md)
+Deletes a Policy Group Template
 
 ### [Remove-JCRadiusReplyAttribute](Remove-JCRadiusReplyAttribute.md)
 Removes Radius reply attributes from a JumpCloud user group.
@@ -196,6 +253,9 @@ Removes a JumpCloud User from a JumpCloud User Group
 ### [Send-JCPasswordReset](Send-JCPasswordReset.md)
 Sends a JumpCloud activation/password reset email.
 
+### [Set-JCCloudDirectory](Set-JCCloudDirectory.md)
+Updates an existing Cloud Directory instance within a JumpCloud tenant
+
 ### [Set-JCCommand](Set-JCCommand.md)
 Updates an existing JumpCloud command
 
@@ -208,6 +268,9 @@ Set-JCPolicy updates existing JumpCloud Policies in an organization by PolicyID 
 PolicyIDs or PolicyNames are required to identify which JumpCloud Policy to be built. TemplateIDs can be found by looking at the JumpCloud Console URL on existing policies or running `Get-JCpolicy -Name "Some Policy Name` to get the policy by ID. PolicyNames can be specified if you know the name of a policy you wish to update or by running `Get-JCpolicy -Name "Some Policy Name` to get the policy by Name
 
 Set-JCPolicy can display the available parameters per policy if a `PolicyName` or `PolicyID` is specified. Tab actions display the available dynamic parameters available per function. For example, `Set-JCPolicy -PolicyName "macOS - Login Window Policy" -*tab*` where the tab key is pressed in place of `*tab*`, would display available parameters specific to the `macOS - Login Window Policy` policy. Dynamic parameters for policies are displayed after the `Name` and `Values` parameters, and are generally camelCase strings like `LoginwindowText`.
+
+### [Set-JCPolicyGroup](Set-JCPolicyGroup.md)
+This endpoint allows you to do a full update of the Policy Group.
 
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.
@@ -229,6 +292,9 @@ Updates an existing JumpCloud User
 
 ### [Set-JCUserGroupLDAP](Set-JCUserGroupLDAP.md)
 The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the members to/from the JumpCloud LDAP directory.
+
+### [Update-JCDeviceFromCSV](Update-JCDeviceFromCSV.md)
+Updates a set of JumpCloud devices from a CSV file created using the New-JCDeviceUpdateTemplate function.
 
 ### [Update-JCModule](Update-JCModule.md)
 Running this function will trigger the update of the JumpCloud PowerShell module.

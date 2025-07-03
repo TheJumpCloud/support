@@ -67,6 +67,12 @@ Describe -Tag:('MSP') 'Connect-JCOnline Tests' {
             #  $Connect.JCOrgId | Should -Be $env:JCOrgId
         }
     }
+    Context 'ProviderID Tests' {
+        It ('Should set an ENV variable with the MTP Provider ID') {
+            $Connect = Connect-JCOnline -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($RandomOrgs[1].OrgID) -force
+            $env:JCProviderId | Should -Not -BeNullOrEmpty
+        }
+    }
     # AfterAll {
     #     Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -force | Out-Null
     # }

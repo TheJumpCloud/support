@@ -14,7 +14,8 @@ Adds a JumpCloud System to a JumpCloud System Group
 
 ### ByName (Default)
 ```
-Add-JCSystemGroupMember [-GroupName] <String> -SystemID <String> [<CommonParameters>]
+Add-JCSystemGroupMember [-GroupName] <String> -SystemID <String>
+ [<CommonParameters>]
 ```
 
 ### ByID
@@ -148,7 +149,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

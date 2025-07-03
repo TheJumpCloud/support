@@ -13,8 +13,8 @@ Creates a JumpCloud radius server.
 ## SYNTAX
 
 ```
-New-JCRadiusServer [-Force] [-Name] <String[]> [-networkSourceIp] <String> [[-sharedSecret] <String>]
- [[-authIdp] <String>] [<CommonParameters>]
+New-JCRadiusServer [-Force] [-Name] <String[]> [-networkSourceIp] <String>
+ [[-sharedSecret] <String>] [[-authIdp] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -113,11 +113,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.Management.Automation.SwitchParameter
-
 ### System.String[]
-
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object

@@ -20,7 +20,8 @@ Update-JCMSPFromCSV [-CSVFilePath] <String> [<CommonParameters>]
 
 ### force
 ```
-Update-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>] [<CommonParameters>]
+Update-JCMSPFromCSV [-CSVFilePath] <String> [-force] [-ProviderID <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -106,7 +107,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

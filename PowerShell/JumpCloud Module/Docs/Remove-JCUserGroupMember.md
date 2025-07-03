@@ -14,7 +14,8 @@ Removes a JumpCloud User from a JumpCloud User Group
 
 ### ByName (Default)
 ```
-Remove-JCUserGroupMember [-GroupName] <String> [-Username] <String> [<CommonParameters>]
+Remove-JCUserGroupMember [-GroupName] <String> [-Username] <String>
+ [<CommonParameters>]
 ```
 
 ### ByID
@@ -159,7 +160,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
