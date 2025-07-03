@@ -147,7 +147,7 @@ jobs:
           VERSION=$(grep -Po "ModuleVersion\s*=\s*'\K[0-9]+\.[0-9]+\.[0-9]+" ${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius.psd1)
           TITLE="JumpCloud Radius Module v$VERSION"
           CHANGELOG=$(cat ${{ github.workspace }}/scripts/automation/Radius/Changelog.md |awk "/^## $VERSION/{ f = 1; next } /## [0-9]+.[0-9]+.[0-9]+/{ f = 0 } f")
-          TAG="v$VERSION"
+          TAG="radius_v$VERSION"
           BODY="$TITLE $CHANGELOG"
 
           (gh release view $TAG && echo "Release exists for $TAG") || gh release create $TAG --title "$TITLE" --notes "$BODY" --draft
