@@ -126,7 +126,7 @@ jobs:
         uses: ./.github/actions/upload-secure-artifact
         with:
           name: radius-module-nupkg
-          path: D:\a\support\support\scripts\automation\Radius\JumpCloud.Radius*.nupkg
+          path: D:\\a\\support\\support\\scripts\\automation\\Radius\\JumpCloud.Radius*.nupkg
           retention-days: 1
 
   #   Manual-Approval-Release:
