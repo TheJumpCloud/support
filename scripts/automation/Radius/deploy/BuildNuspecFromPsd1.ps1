@@ -173,7 +173,7 @@ function New-NuspecFile {
 $psd1Path = "$PSScriptRoot/../JumpCloud.Radius.psd1"
 $Psd1 = Import-PowerShellDataFile -Path:("$psd1Path")
 $params = @{
-    OutputPath   = "$PSScriptRoot/output"
+    OutputPath   = "$PSScriptRoot/../"
     Id           = $(Get-Item ($psd1Path)).BaseName
     buildNumber  = $env:GITHUB_RUN_NUMBER
     Version      = $Psd1.ModuleVersion

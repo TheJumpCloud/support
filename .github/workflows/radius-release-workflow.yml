@@ -100,12 +100,12 @@ jobs:
       - name: Pack nuspec
         shell: pwsh
         run: |
-          nuget pack "${{ github.workspace }}/scripts/automation/Radius/deploy/output/JumpCloud.Radius.nuspec" -Properties NoWarn=NU5111,NU5110
+          nuget pack "${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius.nuspec" -Properties NoWarn=NU5111,NU5110 -OutputDirectory "${{ github.workspace }}/scripts/automation/Radius/"
       - name: Validate NuPkg File
         shell: pwsh
         run: |
-          $NupkgPathDirectory = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/deploy/output/*.nupkg")).Directory
-          $nupkgPath = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/deploy/output/*.nupkg")).FullName
+          $NupkgPathDirectory = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius.*.nupkg")).Directory
+          $nupkgPath = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius*.nupkg")).FullName
           Write-Host "NuPkg Path: $nupkgPath"
           mkdir $NupkgPathDirectory/nupkg_module
           unzip $nupkgPath -d $NupkgPathDirectory/nupkg_module
@@ -120,19 +120,19 @@ jobs:
         uses: ./.github/actions/upload-secure-artifact
         with:
           name: radius-module-nupkg
-          path: "${{ github.workspace }}/scripts/automation/Radius/deploy/output/JumpCloud.Radius*.nupkg"
+          path: "${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius*.nupkg"
           retention-days: 1
 
-  Manual-Approval-Release:
-    needs: ["Check-PR-Labels", "Setup-Build-Dependencies"]
-    environment: PublishToPSGallery
-    runs-on: ubuntu-latest
-    steps:
-      - name: Manual Approval for Release
-        run: echo "Awaiting approval from required reviewers before continuing"
+  #   Manual-Approval-Release:
+  #     needs: ["Check-PR-Labels", "Setup-Build-Dependencies"]
+  #     environment: PublishToPSGallery
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - name: Manual Approval for Release
+  #         run: echo "Awaiting approval from required reviewers before continuing"
 
   Draft-GH-Release:
-    needs: [Manual-Approval-Release]
+    needs: [Build-Nuspec-Nupkg]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -149,7 +149,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Deploy-Nupkg:
-    needs: [Manual-Approval-Release, Build-Nuspec-Nupkg]
+    needs: [Build-Nuspec-Nupkg]
     runs-on: windows-latest
     steps:
       - name: Download nupkg artifact
@@ -162,7 +162,7 @@ jobs:
           # add nuget source for PSGallery:
           dotnet nuget add source "https://www.powershellgallery.com/api/v2/package" --name PSGallery
           # get nupkg artifact:
-          $nupkgPath = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/deploy/output/JumpCloud.Radius*.nupkg")).FullName
+          $nupkgPath = (Get-ChildItem -Path:("${{ github.workspace }}/scripts/automation/Radius/JumpCloud.Radius*.nupkg")).FullName
           # test
           $nupkgPath | Should -Exist
           Write-Host "Nupkg Artifact Restored: $nupkgPath"
