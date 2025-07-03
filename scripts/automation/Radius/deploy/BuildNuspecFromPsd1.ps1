@@ -2,11 +2,13 @@
 # $nuspecFiles = @{ src = 'en-Us/**;Private/**;Public/**;JumpCloud.psd1;JumpCloud.psm1;LICENSE'; }
 $nuspecFiles = @(
     @{src = "en-Us/**/*.*"; target = "en-Us" },
-    @{src = "Functions/Public/**/*.*"; target = "Public" },
-    @{src = "Functions/Private/**/*.*"; target = "Private" },
+    @{src = "Functions/Public/**/*.ps1"; target = "Functions/Public" },
+    @{src = "Functions/Private/**/*.ps1"; target = "Functions/Private" },
+    @{src = "Extensions/*.cnf"; target = "Extensions" },
     @{src = "JumpCloud.Radius.psd1" },
     @{src = "JumpCloud.Radius.psm1" },
-    @{src = "LICENSE" }
+    @{src = "LICENSE" },
+    @{src = "readme.md" }
 )
 # Adapted from PowerShell Get
 # https://github.com/PowerShell/PowerShellGetv2/blob/7de99ee0c38611556e5c583ffaca98bb1922a0d4/src/PowerShellGet/private/functions/New-NuspecFile.ps1

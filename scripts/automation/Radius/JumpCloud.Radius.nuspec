@@ -18,10 +18,12 @@
   </metadata>
   <files>
     <file src="en-Us/**/*.*" target="en-Us" />
-    <file src="Functions/Public/**/*.*" target="Public" />
-    <file src="Functions/Private/**/*.*" target="Private" />
+    <file src="Functions/Public/**/*.ps1" target="Functions/Public" />
+    <file src="Functions/Private/**/*.ps1" target="Functions/Private" />
+    <file src="Extensions/*.cnf" target="Extensions" />
     <file src="JumpCloud.Radius.psd1" />
     <file src="JumpCloud.Radius.psm1" />
     <file src="LICENSE" />
+    <file src="readme.md" />
   </files>
 </package>
