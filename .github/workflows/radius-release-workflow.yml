@@ -9,12 +9,12 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 jobs:
-  Check-If-Merged:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if Merged
-        run: echo {GITHUB_HEAD_REF} merged into master
+    Check-If-Merged:
+      if: github.event.pull_request.merged == false
+      runs-on: ubuntu-latest
+      steps:
+        - name: Check if Merged
+          run: echo {GITHUB_HEAD_REF} merged into master
 
   Filter-Branch:
     runs-on: ubuntu-latest
