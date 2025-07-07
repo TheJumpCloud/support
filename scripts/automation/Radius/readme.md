@@ -79,7 +79,7 @@ $settings = @{
         Organization     = "Your_Organization_Name"
         OrganizationUnit = "Your_Organization_Unit"
         CommonName       = "Your_Common_Name"
-}
+    }
     certSecretPass                    = "secret1234!"
     networkSSID                       = "Your_SSID"
     userGroup                         = "5f3171a9232e1113939dd6a2"
