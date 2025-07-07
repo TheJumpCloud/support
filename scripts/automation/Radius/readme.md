@@ -33,8 +33,6 @@ ex:
 Set-JCRConfig -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
 ```
 
-````
-
 ### Windows Requirements
 
 Windows does not typically ship with a preconfigured version of OpenSSL but a pre-compiled version of OpenSSL can be installed from [Shining Light Productions](https://slproweb.com/products/Win32OpenSSL.html). These automations have been tested with the full installer (i.e. not the "Light") version of the tool. OpenSSL can of course be downloaded and configured from [source](https://www.openssl.org/source) if desired.
@@ -89,7 +87,7 @@ $settings = @{
 }
 
 Set-JCRConfig @settings
-````
+```
 
 #### Set or update the Radius Directory
 
