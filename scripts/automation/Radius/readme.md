@@ -23,9 +23,9 @@ macOS ships with a version of OpenSSL titled LibreSSL. LibreSSL is sufficient to
 
 To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
 
-Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `openSSLBinary` setting to point to the Homebrew bin location ex:
+Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `openSSLBinary` setting with `Set-JCRConfig` to point to the Homebrew bin location ex:
 
-Update the `openSSLBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`\*\*\*\*
+Update the `openSSLBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`.
 
 ex:
 
