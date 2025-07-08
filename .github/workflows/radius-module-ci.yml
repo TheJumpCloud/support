@@ -4,7 +4,7 @@ on:
   pull_request:
     # Sequence of patterns matched against refs/heads
     branches:
-      - "Radius_2.1.0"
+      - "master"
     paths:
       - "scripts/automation/Radius/**"
     types: [opened, synchronize, reopened, labeled, unlabeled]
