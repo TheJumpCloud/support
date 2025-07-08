@@ -14,13 +14,11 @@ This function generates user certificates for JumpCloud Managed Users, allowing 
 ## SYNTAX
 
 ### gui (Default)
-
 ```
 Start-GenerateUserCerts [<CommonParameters>]
 ```
 
 ### cli
-
 ```
 Start-GenerateUserCerts -type <String> [-username <String>] [-forceReplaceCerts]
  [<CommonParameters>]
@@ -95,17 +93,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

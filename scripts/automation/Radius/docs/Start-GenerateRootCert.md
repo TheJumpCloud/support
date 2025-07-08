@@ -14,13 +14,11 @@ This function generates a root certificate for the JumpCloud Radius module, allo
 ## SYNTAX
 
 ### gui (Default)
-
 ```
 Start-GenerateRootCert [<CommonParameters>]
 ```
 
 ### cli
-
 ```
 Start-GenerateRootCert [-certKeyPassword <String>] [-generateType <String>] [-force]
  [<CommonParameters>]
@@ -39,12 +37,6 @@ Start-GenerateRootCert -generateType "New" -certKeyPassword "your_password" -for
 ```
 
 This command generates a new root certificate for the JumpCloud Radius module, using the specified key password and forcing replacement of any existing certificates.
-
-```powershell
-PS C:\> {{ Add example code here }}
-```
-
-{{ Add example description here }}
 
 ## PARAMETERS
 
@@ -98,17 +90,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

@@ -14,13 +14,11 @@ This function initiates the deployment of user certificates for JumpCloud Manage
 ## SYNTAX
 
 ### gui (Default)
-
 ```
 Start-DeployUserCerts [<CommonParameters>]
 ```
 
 ### cli
-
 ```
 Start-DeployUserCerts -type <String> [-username <String>] [-forceInvokeCommands] [-forceGenerateCommands]
  [<CommonParameters>]
@@ -108,17 +106,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

@@ -14,10 +14,10 @@ This function sets the configuration for the JumpCloud Radius module, allowing y
 ## SYNTAX
 
 ```
-Set-JCRConfig [-certSubjectHeader <Hashtable>] [-networkSSID <String>]
- [-lastUpdate <String>] [-certSecretPass <String>] [-openSSLBinary <String>] [-userCertValidityDays <Int32>]
- [-radiusDirectory <String>] [-caCertValidityDays <Int32>] [-userGroup <String>]
- [-certExpirationWarningDays <Int32>] [-certType <String>] [<CommonParameters>]
+Set-JCRConfig [-caCertValidityDays <Int32>]
+ [-certSubjectHeader <Hashtable>] [-openSSLBinary <String>] [-lastUpdate <String>] [-networkSSID <String>]
+ [-radiusDirectory <String>] [-certExpirationWarningDays <Int32>] [-userCertValidityDays <Int32>]
+ [-userGroup <String>] [-certType <String>] [-certSecretPass <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -230,17 +230,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
