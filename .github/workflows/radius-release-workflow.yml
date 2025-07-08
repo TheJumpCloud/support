@@ -129,16 +129,16 @@ jobs:
           path: D:/a/support/support/scripts/automation/Radius/JumpCloud.Radius*.nupkg
           retention-days: 1
 
-  #   Manual-Approval-Release:
-  #     needs: ["Check-PR-Labels", "Setup-Build-Dependencies"]
-  #     environment: PublishToPSGallery
-  #     runs-on: ubuntu-latest
-  #     steps:
-  #       - name: Manual Approval for Release
-  #         run: echo "Awaiting approval from required reviewers before continuing"
+  Manual-Approval-Release:
+    needs: ["Check-PR-Labels", "Setup-Build-Dependencies"]
+    environment: PublishToPSGallery
+    runs-on: ubuntu-latest
+    steps:
+      - name: Manual Approval for Release
+        run: echo "Awaiting approval from required reviewers before continuing"
 
   Draft-GH-Release:
-    needs: [Build-Nuspec-Nupkg]
+    needs: [Build-Nuspec-Nupkg, Manual-Approval-Release]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -155,7 +155,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Deploy-Nupkg:
-    needs: [Build-Nuspec-Nupkg]
+    needs: [Build-Nuspec-Nupkg, Manual-Approval-Release]
     runs-on: windows-latest
     steps:
       - name: Download nupkg artifact
@@ -174,7 +174,7 @@ jobs:
           $nupkgPath | Should -Exist
           Write-Host "Nupkg Artifact Restored: $nupkgPath"
           # nuget push from here:
-          #   dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NuGetApiKey
+          dotnet nuget push $nupkgPath --source PSGallery --api-key $env:NuGetApiKey
         env:
           NuGetApiKey: ${{ secrets.NUGETAPIKEY }}
 
