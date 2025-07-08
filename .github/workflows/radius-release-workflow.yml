@@ -1,12 +1,12 @@
 name: Release and Publish Radius Module
 on:
   pull_request:
-    # Sequence of patterns matched against refs/heads
+    types:
+      - closed
     branches:
       - "master"
     paths:
       - "scripts/automation/Radius/**"
-    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 jobs:
   Check-If-Merged:
