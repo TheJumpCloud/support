@@ -66,7 +66,9 @@ At the time of this writing JumpCloud Module 2.1.3 was the latest version. Pleas
 
 ### Set the Radius Configuration Settings
 
-Before Running the `Start-RadiusDeployment` function, the environment variables for your JumpCloud Organization must first be set.
+Before Running the `Start-RadiusDeployment` function, the environment variables for your JumpCloud Organization must first be set. All of the required settings can be set at once or individually.
+
+To set all of the settings at once, run the `Set-JCRConfig` cmdlet with a hashtable containing all of the required settings. The following example shows how to set all of the required settings in one command:
 
 ```pwsh
 $settings = @{
@@ -101,7 +103,7 @@ Set-JCRConfig -radiusDirectory '/Users/username/RADIUS'
 
 #### Set or update the User Cert Validity Days
 
-The user certificate validity days is the number of days a user certificate will be valid for before it expires.
+The user certificate validity days is the number of days a user certificate will be valid for before it expires. The default value is 365 days.
 
 To set the user certificate validity days, run the following command in a PowerShell terminal window:
 
@@ -111,7 +113,7 @@ Set-JCRConfig -userCertValidityDays 365
 
 #### Set or update the CA Cert Validity Days
 
-The CA certificate validity days is the number of days a CA certificate will be valid for before it expires.
+The CA certificate validity days is the number of days a CA certificate will be valid for before it expires. The default value is 1095 days.
 
 To set the CA certificate validity days, run the following command in a PowerShell terminal window:
 
