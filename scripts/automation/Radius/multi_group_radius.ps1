@@ -1,5 +1,3 @@
-# Get the config path, set this value
-$configPath = "$PSScriptRoot/config.ps1"
 # define the PSD1 path:
 $psd1Path = "$PSScriptRoot/JumpCloud.Radius.psd1"
 $logPath = "$PSScriptRoot/log.txt"
@@ -55,7 +53,13 @@ Function Write-ToLog {
 Write-ToLog -Message ('########### Begin Radius Deployment ###########')
 
 Write-ToLog -Message ('Begin setting environment variables')
-#TODO: validate the paths exist ^^
+If (!(Test-Path "$PSScriptRoot/keyCert.encrypted")) {
+    throw "The keyCert.encrypted file does not exist at path: $PSScriptRoot/keyCert.encrypted"
+}
+If (!(Test-Path "$PSScriptRoot/key.encrypted")) {
+    throw "The key.encrypted file does not exist at path: $PSScriptRoot/key.encrypted"
+}
+
 $EncryptedCertData = Get-Content "$PSScriptRoot/keyCert.encrypted"
 $env:certKeyPassword = $EncryptedCertData | ConvertTo-SecureString | ConvertFrom-SecureString -AsPlainText
 $EncryptedData = Get-Content "$PSScriptRoot/key.encrypted"
