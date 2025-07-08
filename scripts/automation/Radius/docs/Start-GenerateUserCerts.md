@@ -8,36 +8,42 @@ schema: 2.0.0
 # Start-GenerateUserCerts
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+This function generates user certificates for JumpCloud Managed Users, allowing you to specify the type of certificate generation and whether to replace existing certificates.
 
 ## SYNTAX
 
 ### gui (Default)
+
 ```
 Start-GenerateUserCerts [<CommonParameters>]
 ```
 
 ### cli
+
 ```
 Start-GenerateUserCerts -type <String> [-username <String>] [-forceReplaceCerts]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+This function generates user certificates for JumpCloud Managed Users. It allows you to specify the type of certificate generation, such as generating certificates for all users, new users, by username, or for users with expiring certificates. The function can also replace existing certificates if specified.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+Start-GenerateUserCerts -type "New"
 ```
 
-{{ Add example description here }}
+This command generates user certificates for users who have not yet had certificates generated.
 
 ## PARAMETERS
 
 ### -forceReplaceCerts
+
 When specified, this parameter will replace certificates if they already exist on the current filesystem
 
 ```yaml
@@ -53,6 +59,7 @@ Accept wildcard characters: False
 ```
 
 ### -type
+
 Type of certificate to initialize.
 To generate all new certificates for existing users, specify "all", To generate certificates for users who have not yet had certificates generated, specify "new".
 To generate certificates by an individual, speficy "ByUsername" and populate the "username" parameter.
@@ -72,6 +79,7 @@ Accept wildcard characters: False
 ```
 
 ### -username
+
 The JumpCloud username of an individual user
 
 ```yaml
@@ -87,14 +95,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

@@ -8,27 +8,38 @@ schema: 2.0.0
 # Start-GenerateRootCert
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+This function generates a root certificate for the JumpCloud Radius module, allowing you to create or replace the root certificate as needed.
 
 ## SYNTAX
 
 ### gui (Default)
+
 ```
 Start-GenerateRootCert [<CommonParameters>]
 ```
 
 ### cli
+
 ```
 Start-GenerateRootCert [-certKeyPassword <String>] [-generateType <String>] [-force]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+This function generates a root certificate for the JumpCloud Radius module. It allows you to specify whether to create a new certificate, replace an existing one, or renew the current certificate. The function can also handle the root certificate key password and force replacement of existing certificates if specified.
 
 ## EXAMPLES
 
 ### Example 1
+
+```powershell
+Start-GenerateRootCert -generateType "New" -certKeyPassword "your_password" -force
+```
+
+This command generates a new root certificate for the JumpCloud Radius module, using the specified key password and forcing replacement of any existing certificates.
+
 ```powershell
 PS C:\> {{ Add example code here }}
 ```
@@ -38,6 +49,7 @@ PS C:\> {{ Add example code here }}
 ## PARAMETERS
 
 ### -certKeyPassword
+
 The root certificate key password
 
 ```yaml
@@ -53,6 +65,7 @@ Accept wildcard characters: False
 ```
 
 ### -force
+
 When specified, this parameter will replace certificates if they already exist on the current filesystem
 
 ```yaml
@@ -68,6 +81,7 @@ Accept wildcard characters: False
 ```
 
 ### -generateType
+
 Select an option to generate or replace the root certificate
 
 ```yaml
@@ -84,14 +98,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

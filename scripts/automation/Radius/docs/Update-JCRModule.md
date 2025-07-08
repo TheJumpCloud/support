@@ -8,7 +8,8 @@ schema: 2.0.0
 # Update-JCRModule
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+This function updates the JumpCloud Radius module, ensuring that the latest configurations and settings are applied.
 
 ## SYNTAX
 
@@ -17,20 +18,23 @@ Update-JCRModule [-Force] [[-Repository] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+This function will check if there are any updates available for the JumpCloud Radius module and apply them if necessary. It can also bypass user prompts if the `-Force` parameter is specified.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+Update-JCRModule -Force
 ```
 
-{{ Add example description here }}
+This command forces the update of the JumpCloud Radius module without any user prompts.
 
 ## PARAMETERS
 
 ### -Force
+
 ByPasses user prompts.
 
 ```yaml
@@ -46,6 +50,7 @@ Accept wildcard characters: False
 ```
 
 ### -Repository
+
 Set the PSRepository
 
 ```yaml
@@ -61,14 +66,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

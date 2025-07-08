@@ -8,7 +8,8 @@ schema: 2.0.0
 # Get-JCRGlobalVars
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+This function retrieves and updates global variables related to JumpCloud Radius deployment, including user associations and system caches.
 
 ## SYNTAX
 
@@ -18,20 +19,23 @@ Get-JCRGlobalVars [-force] [-skipAssociation] [-associateManually] [[-associatio
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+This function retrieves and updates global variables related to JumpCloud Radius deployment, including user associations and system caches.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+Get-JCRGlobalVars -force
 ```
 
-{{ Add example description here }}
+This command forces an update of all cached users, systems, associations, and RADIUS group members.
 
 ## PARAMETERS
 
 ### -associateManually
+
 Updates the system to user association cache manually using the graph api
 
 ```yaml
@@ -47,6 +51,7 @@ Accept wildcard characters: False
 ```
 
 ### -associationUsername
+
 Updates just a single user's associations manually using the graph api
 
 ```yaml
@@ -62,6 +67,7 @@ Accept wildcard characters: False
 ```
 
 ### -force
+
 Force update all cached users, systems, associations, radius group members
 
 ```yaml
@@ -77,6 +83,7 @@ Accept wildcard characters: False
 ```
 
 ### -skipAssociation
+
 Skips the user to system association cache, which may take a long time on larger organizations
 
 ```yaml
@@ -92,14 +99,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS

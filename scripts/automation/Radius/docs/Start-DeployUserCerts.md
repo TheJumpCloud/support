@@ -8,36 +8,42 @@ schema: 2.0.0
 # Start-DeployUserCerts
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+This function initiates the deployment of user certificates for JumpCloud Managed Users.
 
 ## SYNTAX
 
 ### gui (Default)
+
 ```
 Start-DeployUserCerts [<CommonParameters>]
 ```
 
 ### cli
+
 ```
 Start-DeployUserCerts -type <String> [-username <String>] [-forceInvokeCommands] [-forceGenerateCommands]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+Typically called using a CLI method in scripts this function initiates the deployment of user certificates for JumpCloud Managed Users. It can be used to generate new commands or invoke existing ones based on the specified parameters.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+Start-DeployUserCerts -type "New" -forceInvokeCommands
 ```
 
-{{ Add example description here }}
+This command initiates the deployment of new user certificates and forces the invocation of generated commands on the systems.
 
 ## PARAMETERS
 
 ### -forceGenerateCommands
+
 Switch to force generate new commands on systems
 
 ```yaml
@@ -53,6 +59,7 @@ Accept wildcard characters: False
 ```
 
 ### -forceInvokeCommands
+
 Switch to force invoke generated commands on systems
 
 ```yaml
@@ -68,6 +75,7 @@ Accept wildcard characters: False
 ```
 
 ### -type
+
 Type of cert deployment to initiate
 
 ```yaml
@@ -84,6 +92,7 @@ Accept wildcard characters: False
 ```
 
 ### -username
+
 The JumpCloud username of a user to deploy a certificate
 
 ```yaml
@@ -99,14 +108,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
