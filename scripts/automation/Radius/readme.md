@@ -4,14 +4,15 @@ This set of PowerShell automations are designed to help administrators generate 
 
 ## Requirements
 
-This automation has been tested with OpenSSL 3.0.7. OpenSSL 3.x.x is required to generate the Radius Authentication user certificates. The following items are required to use this automation workflow
+This automation has been tested with OpenSSL 3.1.1. OpenSSL 3.x.x is required to generate the Radius Authentication user certificates. The following items are required to use this automation workflow
 
 - PowerShell 7.x.x ([PowerShell 7](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3))
 
-- OpenSSL 3.x.x (Tested with 3.0.7) (see macOS/ Windows requirements below)
+- OpenSSL 3.x.x (Tested with 3.1.1) (see macOS/ Windows requirements below)
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
 - Certificate Authority (CA) (either from a vendor or self-generated)
-- Variables in `config.ps1` updated
+- Module Settings Configured with `Set-JCRConfig` cmdlet
+- JumpCloud Organization API Key (Read/ Write Access Required)
   - JumpCloud API Key Set (Read/ Write Access Required)
   - JumpCloud ORG ID Set
   - JumpCloud User Group containing users and assigned to a Radius Server
@@ -22,14 +23,14 @@ macOS ships with a version of OpenSSL titled LibreSSL. LibreSSL is sufficient to
 
 To install the latest version of OpenSSL on mac, install the [Homebrew package manager](https://brew.sh/) and install the following [formulae](https://formulae.brew.sh/formula/openssl@3)
 
-Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `$openSSLBinary` variable to point to the Homebrew bin location ex:
+Some packages or applications in macOS rely on the pre-configured LibreSSL distribution. To use the Homebrew distribution of OpenSSL in this project, simply change the `openSSLBinary` setting with `Set-JCRConfig` to point to the Homebrew bin location ex:
 
-In `Config.ps1` change `$opensslBinary` to point to `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'`
+Update the `openSSLBinary` to point to `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'`.
 
 ex:
 
 ```powershell
-$opensslBinary = '/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'
+Set-JCRConfig -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
 ```
 
 ### Windows Requirements
@@ -63,46 +64,148 @@ After installing PowerShell 7.x.x, install the [JumpCloud PowerShell Module](htt
 
 At the time of this writing JumpCloud Module 2.1.3 was the latest version. Please ensure you are at least running this version of the PowerShell Module.
 
-### Set the Radius Config File
+### Set the Radius Configuration Settings
 
-Before Running the `Start-RadiusDeployment.ps1` script, the environment variables for your JumpCloud Organization must first be set. Open the `config.ps1` file with a text editor.
+Before Running the `Start-RadiusDeployment` function, the environment variables for your JumpCloud Organization must first be set. All of the required settings can be set at once or individually.
 
-#### Set Your API Key ID
+To set all of the settings at once, run the `Set-JCRConfig` cmdlet with a hashtable containing all of the required settings. The following example shows how to set all of the required settings in one command:
 
-Change the variable `$JCAPIKEY` to an [API Key](https://support.jumpcloud.com/s/article/jumpcloud-apis1) from an administrator in your JumpCloud Tenant. An administrator API Key with at least [read/write access](https://support.jumpcloud.com/support/s/article/JumpCloud-Roles) is required.
+```pwsh
+$settings = @{
+    radiusDirectory                   = "/Users/username/RADIUS"
+    certType                          = "UsernameCn"
+    certSubjectHeader @{
+        CountryCode      = "Your_Country_Code"
+        StateCode        = "Your_State_Code"
+        Locality         = "Your_City"
+        Organization     = "Your_Organization_Name"
+        OrganizationUnit = "Your_Organization_Unit"
+        CommonName       = "Your_Common_Name"
+    }
+    certSecretPass                    = "secret1234!"
+    networkSSID                       = "Your_SSID"
+    userGroup                         = "5f3171a9232e1113939dd6a2"
+    openSSLBinary                     = '/opt/homebrew/bin/openssl'
+}
 
-#### Set Your Organization ID
+Set-JCRConfig @settings
+```
 
-Change the variable `$JCORGID` to the [organization ID value](https://support.jumpcloud.com/s/article/Settings-in-the-JumpCloud-Admin-Portal#AccessOrgID) from your JumpCloud Tenant.
+#### Set or update the Radius Directory
 
-#### Set Your User Group ID
+The Radius Directory is the location where all generated CAs and User Certificates will be stored. This directory should be set to a location on your system where you have read/write access.
 
-Change the variable `$JCUSERGROUP` to the ID of the JumpCloud user group with access to the Radius server. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
+To set the Radius Directory, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -radiusDirectory '/Users/username/RADIUS'
+```
+
+#### Set or update the User Cert Validity Days
+
+The user certificate validity days is the number of days a user certificate will be valid for before it expires. The default value is 365 days.
+
+To set the user certificate validity days, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -userCertValidityDays 365
+```
+
+#### Set or update the CA Cert Validity Days
+
+The CA certificate validity days is the number of days a CA certificate will be valid for before it expires. The default value is 1095 days.
+
+To set the CA certificate validity days, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -caCertValidityDays 1095
+```
+
+#### Set or update the Certificate Expiration Warning Days
+
+The certificate expiration warning days is the number of days before a user certificate expires that a warning will be displayed in the main menu. The default value is 15 days.
+
+To set the certificate expiration warning days, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -certExpirationWarningDays 15
+```
+
+#### Set or update the certificate secret password
+
+The certificate secret password is used to protect the private key of the user certificates. This password is required when generating user certificates and should be kept secure.
+
+To set the certificate secret password, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -certSecretPass 'Your_Secret_Password'
+```
+
+#### Set or update the Radius User Group
+
+To change the JumpCloud user group with access to the Radius server use the `Set-JCRConfig` cmdlet. To get the ID of a user group, navigate to the user group within the JumpCloud Administrator Console.
 
 After selecting the User Group, view the url for the user group it should look similar to this url:
-`https://console.jumpcloud.com/#/groups/user/5f808a1bb544064831f7c9fb/details`
+`https://console.jumpcloud.com/#/groups/user/5f3171a9232e1113939dd6a2/details`
 
-The ID of the selected userGroup is the 24 character string between `/user/` and `/details`: `5f808a1bb544064831f7c9fb`
+The ID of the selected userGroup is the 24 character string between `/user/` and `/details`: `5f3171a9232e1113939dd6a2`
 
-#### Set your network SSID Name
+To set the user group ID, run the following command in a PowerShell terminal window:
 
-Change the variable `$NETWORKSSID` to the name of the SSID network your clients will connect to. On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a space, ex: "CorpNetwork_Denver CorpNetwork_Boulder". **Note: The SSID and user certificate are only associated with macOS system commands are generated. This parameter does not affect windows generated commands**
+```powershell
+Set-JCRConfig -userGroup '5f3171a9232e1113939dd6a2'
+```
+
+#### Set or update the network SSID Name
+
+On macOS hosts, the user certificate will be set to automatically authenticate to this SSID when the end user selects the WiFi Network. Multiple SSIDs can be provided as a single string with SSID names separated by a semicolon, ex: "CorpNetwork_Denver;CorpNetwork_Boulder;CorpNetwork_Boulder 5G;Guest Network". **Note: The SSID and user certificates are only associated with macOS system commands. This parameter does not affect windows generated commands**
+
+To set the network SSID, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -networkSSID 'Your_SSID'
+```
 
 #### Set the openSSL Binary location
 
 Depending on the host system and how OpenSSL is installed, this variable can either point to a path or call the binary with just the name `openssl`.
 
-[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.0.7/bin/openssl'` if installed through Homebrew.
+[For macOS systems](#macos-requirements), this will likely need to be set to the openSSL binary installation path like `'/opt/homebrew/opt/openssl@3/bin/openssl'` or `'/usr/local/Cellar/openssl@3/3.1.1/bin/openssl'` if installed through Homebrew.
 
-Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient. (i.e no additional changes to `$opensslBinary` necessary)
+Else, for Windows systems, installing OpenSSL and setting an environment variable described in [Windows Requirements](#Windows-Requirements) should be sufficient.
+
+To set the OpenSSL binary location, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -openSSLBinary '/opt/homebrew/opt/openssl@3/bin/openssl'
+```
 
 #### Set Your Certificate Subject Headers
 
-Change the default values provided in the `$Subj` variable to Country, State, Locality, Organization, Organization Unit and Common Name values for your organization. **Note: subject headers must not contain spaces**
+Set the Country, State, Locality, Organization, Organization Unit and Common Name subject headers for your organization. **Note: subject headers must not contain spaces**
+
+To set the subject headers, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -certSubjectHeader @{
+        CountryCode      = "Your_Country_Code"
+        StateCode        = "Your_State_Code"
+        Locality         = "Your_City"
+        Organization     = "Your_Organization_Name"
+        OrganizationUnit = "Your_Organization_Unit"
+        CommonName       = "Your_Common_Name"
+}
+```
 
 #### Set Desired User Certificate Type
 
-Change the `$certType` variable to either `EmailSAN`, `EmailDN` or `UsernameCn`
+Set the type of user cert to generate to either `EmailSAN`, `EmailDN` or `UsernameCn`
+
+To set the user certificate type, run the following command in a PowerShell terminal window:
+
+```powershell
+Set-JCRConfig -certType 'UsernameCn'
+```
 
 ##### Email Subject Alternative Name (EmailSAN)
 
@@ -162,6 +265,12 @@ A Certificate Authority (CA) is required for passwordless Radius Authentication.
 
 The first option in the menu will present options to generate a self-signed CA. The resulting file `radius_ca_cert.pem` in the `projectDirectory/Radius/Cert` directory. When generating a self signed CA, a password prompt is displayed, this password is used to protect the CA from unauthorized access. Choose a secure but memorable password, during the session this password will be stored as an environment variable as it is required to generate user certificates.
 
+#### Renewing a self-signed certificate
+
+The second option in the root certificate menu allows you to renew the current CA certificate. During the renewal process, you will be prompted to enter the password for the current private key. This ensures that administrators can renew expiring CA certificates while maintaining the ability to authenticate user certificates issued by the previous CA. The renewed certificate will retain the same serial number and CA headers.
+
+![Root Cert Menu](./images/rootCertMenu.png)
+
 #### Importing a certificate
 
 To Import your own CA, the certificate and key files can be copied to the `projectDirectory/Radius/Cert` directory. **Note: Please ensure the certificate and key name ends with `key.pem` and `cert.pem` (ex. `radius_ca_cert.pem` or `radius_ca_key.pem`)**
@@ -182,17 +291,27 @@ After successful import or generation of a self signed CA, the CA's serial numbe
 
 ### User Cert Generation
 
-With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the variable: `$JCUSERGROUP` is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
+With the certificate authority generated/ imported, individual user certs can then be generated. The ID of the user group stored as the `userGroup` setting is used to store JumpCloud users destined for passwordless Radius access. For each user in the group, a `.pfx` certificate will be generated in the `/projectDirectory/Radius/UserCerts/` directory. The user certificates are stored locally and monitored for expiration.
 
-If local user certificates are set to expire within 15 days, a notification is displayed on the main menu:
+If local user certificates are set to expire within 15 days, a notification is displayed on the main menu and the certificate generation window:
 
 ![certs due to expire](./images/expireCert.png)
+
+Selection option 2 from the main menu presents the various choices to generate/ re-generate user certificates:
+
+![certs due to expire from window](./images/expireCertFromWindow.png)
 
 At any time user certificates can be manually removed from the `/projectDirectory/Radius/UserCerts/` directory and regenerated using option 2 from the main menu. User certificates can be continuously re-applied to devices using option 3 to distribute user certificates.
 
 ## Certificate Distribution
 
-Option 3 in the main menu will enable admins to distribute user certificates to end user devices. Commands will be generated in your JumpCloud Tenant for each user in the Radius User Group and their corresponding system associations. This script will prompt you to kick off the generated commands. If the commands are invoked, they should be queued for all users in the Radius User Group. These commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCLoud console and wait for the device to come online before attempting to run.
+Option 3 in the main menu will enable admins to distribute user certificates to end user devices.
+
+![radius re-issue workflow](./images/deployMenu.png)
+
+Windows and macOS commands will be generated for each user in the Radius User Group.
+
+This script will prompt you to kick off the generated commands. Commands are queued with a TTL timeout of 10 days — meaning that if the end user device is offline when the command is queued, for 10 days, the command will sit in the JumpCloud console and wait for the device to come online before attempting to run.
 
 On the device, certificates are replaced if a command is sent to a device with a newer certificate. i.e.
 
@@ -230,7 +349,7 @@ After a user's certificate has been distributed to a system, those users can the
 
 ### macOS
 
-If the `$NETWORKSSID` variable in `Config.ps1` was specified, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
+If the `networkSSID` setting is set with `Set-JCRConfig`, macOS users will only be prompted once to let `eapolclient` access the private key from the installed certificate. If the end user selects `Always Allow`, the'll not be prompted to enter their password for the entire life cycle of the user certificate, only when new certificates are deployed will end users have to re-enter their login password.
 
 In macOS a user simply needs to select the radius network from the wireless networks dialog prompt. A prompt to select a user certificate should be displayed, select the user certificate from the drop down menu and click "OK"
 
@@ -265,6 +384,109 @@ Before Connecting, users can view the authentication source. Click "Connect" to 
 ![select network](./images/windows_auth.png)
 
 The user should then be connected to the radius network.
+
+## Automation Scripts
+
+The generation and distribution of certificates with Radius Certificate Module can be automated with the [multi_group_radius](./multi_group_radius.ps1) script found in this repository. This script should serve as just an example of how to automate this, there are numerous ways in which this can be achieved.
+
+For the purpose of this example, we'll assume:
+
+- A self-hosted Windows System is acting as a scripting server
+- All of the requirements from the Radius Certificate Module have been met/ software installed on that server
+- A scheduled task can be run on this device
+
+### Automation Setup
+
+In order to automate these scripts, our scripted example solution needs to know how to get the values of your JumpCloud Organization API Key and the secret password saved when the CA was generated. In the following example, these values will be saved as secure strings.
+
+On the self-hosted Windows system, create a location on the scripting server to host the Radius project directory. Within this directory and signed in as the user administering these certificates, open a powershell 7 terminal window.
+
+CD into this location root and run the following
+
+```powershell
+$APIKeyString = "yourAPIKEY"
+$APIKeySecureString = ConvertTo-SecureString -String $APIKeyString -AsPlainText -Force
+$EncryptedKey = ConvertFrom-SecureString $APIKeySecureString
+$EncryptedKey | Out-File -FilePath ".\key.encrypted"
+```
+
+This should save a "key.encrypted" file containing your API Key to the root of the Radius directory. When the Multi_Group_Radius script runs it'll connected to your organization using the contents of this file and the authentication data stored in the scheduled task.
+
+Encrypt the CA key password. Copy the following into the same PowerShell window:
+
+```powershell
+$CertKeyPass = "yourCertPass"
+$CertKeySecurePass = ConvertTo-SecureString -String $CertKeyPass -AsPlainText -Force
+$EncryptedKey = ConvertFrom-SecureString $CertKeySecurePass
+$EncryptedKey | Out-File -FilePath ".\keyCert.encrypted"
+```
+
+This should save a "keyCert.encrypted" file containing your API Key to the root of the Radius directory. This file is used to set your CA Private Key variable during the Multi_Group_Radius operation.
+
+If the [multi_group_radius](./multi_group_radius.ps1) script is not already in the project root, copy it to the root directory of the Radius project.
+
+Edit the file and name each Radius User Group you wish to generate and distribute certificates for.
+
+```powershell
+# Define list of Radius User Group IDs:
+$radiusUserGroups = @(
+    @{"US-Radius" = '5f3171a9232e1113939dd6a2' }
+    @{"US-Dairy-Farmers" = '664e50582d9c0e000143ee97' }
+    @{"AK-Farmers" = '5f7f418a1f247569e35070f1' }
+)
+```
+
+The names should correspond to the userGroupIDs of each user group. Note. Multiple user groups are not required, if you only wish to automate one single group just list the single user group name and the user group ID in the $radiusUserGroups list.
+
+#### Running the Multi Group Radius script
+
+At this point, if you’ve set everything already, you should be able to just change directories into the Radius folder and run the script “MultiGroupRadius.ps1”
+
+The script will generate and deploy user certificates for each user in the defined groups.
+
+![script running](./images/mgr_running.png)
+
+#### Scheduling the Multi Group Radius script
+
+The Multi Group Radius script can be scheduled with Windows Task Scheduler
+
+Create a task
+
+![Create a task](./images/create_task.png)
+
+Define a trigger time for the task to run
+
+![Task Schedule](./images/task_schedule.png)
+
+Add an action to "Start A Program"
+Under the Program/ script field add: `"C:\Program Files\PowerShell\7\pwsh.exe"`
+Under the Add Arguments add: `-ExecutionPolicy ByPass -File "C:\Users\yourUsername\path\to\Radius\MultiGroupRadius.ps1"`
+
+![Task Action](./images/task_action.png)
+
+When you click Okay and save the task it should prompt for your user account password. Enter the value and click OK
+
+![Password Prompt](./images/pass_prompt.png)
+
+The task should run at the scheduled time. You can also kick off the task manually by pressing the run button from the task scheduler.
+
+![Task Running](./images/task_running.png)
+
+After running the task, user certs for each user group should be added to the `/Radius/UserCerts` directory:
+
+![User Cert List](./images/user_cert_list.png)
+
+Every user with a system association should have a command generated and queued for installatioon if they do not already have the current generated certificate installed.
+
+![Command List](./images/command_list.png)
+
+#### Logging
+
+Each time the script runs there should be a corresponding log generated in the Radius Directory titled “log.txt”. Below is a sample screenshot showing one of the two of the user groups I’ve generated/ deployed certs for.
+
+![Log Example](./images/log_example.png)
+
+New events will be appended to this log file until the log is greater than 5mb. At that point the log will be copied to a new file log.txt.old and a new log will be created to prevent excess log data from being stored.
 
 ### Troubleshooting
 

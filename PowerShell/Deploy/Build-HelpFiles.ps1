@@ -220,8 +220,9 @@ Try {
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
 "@
-    (Get-Content -Path "$FolderPath_enUS/JumpCloud-help.xml" -Raw).Replace($ProgressActionXML1, '') | Set-Content "$FolderPath_enUS/JumpCloud-help.xml"
-    (Get-Content -Path "$FolderPath_enUS/JumpCloud-help.xml" -Raw).Replace($ProgressActionXML2, '') | Set-Content "$FolderPath_enUS/JumpCloud-help.xml"
+    (Get-Content -Path "$FolderPath_enUS/$ModuleName-help.xml" -Raw).Replace($ProgressActionXML1, '') | Set-Content "$FolderPath_enUS/$ModuleName-help.xml"
+    (Get-Content -Path "$FolderPath_enUS/$ModuleName-help.xml" -Raw).Replace($ProgressActionXML2, '') | Set-Content "$FolderPath_enUS/$ModuleName-help.xml"
+
 } Catch {
     Write-Error ($_)
 }

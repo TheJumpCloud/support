@@ -1,3 +1,62 @@
+## 2.1.0
+
+Release Date: July 3, 2025
+
+#### RELEASE NOTES
+
+```
+This release is a minor update to the Radius Cert Deployment tool. This version of the tool is now a PowerShell Module, which allows for easier updates and management of the tool. The module can be installed and updated from the PowerShell Gallery.
+```
+
+#### Features:
+
+- The Radius Cert Deployment tool is now a PowerShell Module
+- The module and the cert locations are now configurable via a new public function `Set-JCRConfig`
+- All configuration settings which were previously stored in `config.ps1` are now variables configured with the `Set-JCRConfig` function
+- The module can be installed and updated from the PowerShell Gallery using `Install-Module JumpCloud.Radius`
+
+#### Bug Fixes:
+
+- Fixed an issue where the macOS CommandNames were not stored correctly in the users.json file.
+- Fixed an issue where the tool would not work correctly when only one user was assigned to the radius user group.
+
+## 2.0.0
+
+Release Date: January 30, 2024
+
+#### RELEASE NOTES
+
+```
+This release offers a significant overhaul for the Radius Cert Deployment tool, many new underlying functions have been introduced to reduce the number of required API calls. Most notably, the tool will cache data from an organization on load.
+```
+
+#### Features:
+
+- Added an option to both generate and deploy radius certificates by username
+- Association data is cached up front rather than gathered throughout the script, offering performance improvements for organizations with a large number of radius users
+- Added ability to run each public function headless in order to automate cert generation and distribution
+- Added a table to keep track of generated/deployed certificates when using the tool
+- Added password validation (re-enter) when generating root certificate
+- Added Start-GenerateRootCert menu
+  - Functionalities added
+    - New: creates new root cert. If there is an existing root cert, user gets prompted to overwrite the cert
+    - Replace: replaces the current cert. If you replace root cert, it will contain a different serial number and user certs generated with the previous CA will no longer authenticate
+    - Renew: renewing the root CA will contain the same serial number and CA subject headers. User certs generated with the previous CA will continue to authenticate.
+
+## 1.1.0
+
+Release Date: December 13, 2023
+
+#### RELEASE NOTES
+
+```
+Fixed an issue where similar usernames were having incorrect certificates deployed
+```
+
+#### Bug Fixes:
+
+- Addressed a bug where similar usernames were having incorrect certificates deployed. Ex: john.smith and john
+
 ## 1.0.7
 
 Release Date: December 1, 2023
@@ -5,7 +64,7 @@ Release Date: December 1, 2023
 #### RELEASE NOTES
 
 ```
-In macOS, it's possible for a user to define their username as `user1234` or `USER1234`. When JumpCloud takes of a user it'll perform a case insensive string comparison and take over the account that matches the username from JumpCloud.
+In macOS, it's possible for a user to define their username as `user1234` or `USER1234`. When JumpCloud takes of a user it'll perform a case insensitive string comparison and take over the account that matches the username from JumpCloud.
 
 Commands executed by JumpCloud in macOS run as shell scripts `/bin/bash` by default, this shell does not perform case-insensitive string comparisons. This patch version of the Radius Certificate Utility addresses this limitation by explicitly changing the `bash` match patterns to be case-insensitive.
 ```
@@ -109,7 +168,7 @@ Release Date: March 21, 2023
 #### RELEASE NOTES
 
 ```
-Iniital release of the Passwordless Radius User Certificate Generation automation scritps
+Initial release of the Passwordless Radius User Certificate Generation automation scripts
 ```
 
 #### FEATURES:

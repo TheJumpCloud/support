@@ -42,7 +42,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  Setup-Build-Dependancies:
+  Setup-Build-Dependencies:
     needs: ["Filter-Branch", "Check-PR-Labels"]
     runs-on: windows-latest
     timeout-minutes: 10
@@ -53,7 +53,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
-          key: PS-Dependancies
+          key: PS-Dependencies
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
@@ -70,9 +70,9 @@ jobs:
               'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
               'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
               'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
-              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.35'}
-              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.0.39'}
-              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = '0.0.23'}
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
           }
           foreach ($RequiredModule in $PSDependencies.Keys) {
               If ([System.String]::IsNullOrEmpty((Get-InstalledModule | Where-Object { $_.Name -eq $RequiredModule }))) {
@@ -86,14 +86,14 @@ jobs:
           }
 
   Build-Nuspec-Nupkg:
-    needs: Setup-Build-Dependancies
+    needs: Setup-Build-Dependencies
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
         with:
           path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
-          key: PS-Dependancies
+          key: PS-Dependencies
       - name: Build Nuspec
         shell: pwsh
         run: |
@@ -126,7 +126,7 @@ jobs:
           retention-days: 1
 
   Manual-Approval-Release:
-    needs: ["Check-PR-Labels", "Setup-Build-Dependancies"]
+    needs: ["Check-PR-Labels", "Setup-Build-Dependencies"]
     environment: PublishToPSGallery
     runs-on: ubuntu-latest
     steps:

@@ -4,6 +4,8 @@
 *test_results
 # Ignore support.wiki
 *support.wiki
+# Ignore Extensions
+/scripts/automation/Radius/Extensions/*
 # Ignore Config
 /PowerShell/JumpCloud Module/Config.Json
 # Ignore Radius Certs
@@ -16,6 +18,15 @@
 /scripts/automation/Radius/*/*.srl
 /scripts/automation/Radius/Config.ps1
 /scripts/automation/Radius/users.json
+/scripts/automation/Radius/settings.json
+/scripts/automation/Radius/data/*
+/scripts/automation/Radius/Cert/Backups/*.pem
+/scripts/automation/Radius/Cert/Backups/*.zip
+/scripts/automation/Radius/*.encrypted
+/scripts/automation/Radius/log.txt
+/scripts/automation/Radius/reports/*
+/scripts/automation/Radius/config.json
+
 __pycache__/
 *.pyc
 # Ignore PWSH CSV Import/Update Files:
