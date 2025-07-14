@@ -1,9 +1,10 @@
 # define the PSD1 path:
-$psd1Path = "$PSScriptRoot/JumpCloud.Radius.psd1"
 $logPath = "$PSScriptRoot/log.txt"
-# define data file path:
-$dataFilePath = "$PSScriptRoot/data/radiusMembers.json"
-$certHashFilePath = "$PSScriptRoot/data/certHash.json"
+
+# test that the module is installed
+if (-not (Get-InstalledModule -Name JumpCloud.Radius -ErrorAction SilentlyContinue)) {
+    throw "The JumpCloud.Radius module is not installed, please install the JumpCloud.Radius module before running this script."
+}
 
 Function Write-ToLog {
     [CmdletBinding()]
@@ -73,9 +74,17 @@ if ( -not $env:JCAPIKEY) {
     throw "the Api Key is not set, please set the API key as an Env variable"
 } else {
     Write-ToLog -Message ("Connecting to JumpCloud Organization")
-    import-module JumpCloud
+    $jcModuleImport = import-module JumpCloud
     Connect-JCOnline -JumpCloudApiKey $env:JCAPIKEY -force
+    $radiusModuleImport = Import-Module JumpCloud.Radius
 }
+
+# get the installed module location
+$installedModule = (Get-InstalledModule -Name JumpCloud.Radius)
+$dataLocation = $installedModule.installedLocation
+# define data file path:
+$dataFilePath = "$dataLocation/data/radiusMembers.json"
+$certHashFilePath = "$dataLocation/data/certHash.json"
 
 # Define list of Radius User Group IDs:
 $radiusUserGroups = @(
@@ -97,8 +106,9 @@ foreach ($radiusGroup in $radiusUserGroups) {
     if (Test-Path -Path $certHashFilePath) {
         Remove-Item $certHashFilePath -Force
     }
-    # force import the radius module
-    Import-Module "$psd1Path" -Force
+    # force import the radius module and redirect all output to null
+    Write-ToLog -Message ("Importing JumpCloud.Radius Module")
+    $moduleImport = Import-Module -Name JumpCloud.Radius -Force
     # this will generate a new user-to-association report and update the cached data of your radius group membership
     Write-ToLog -Message ("Begin updating global variables")
     Get-JCRGlobalVars -force *>> $logPath

@@ -58,8 +58,8 @@ function Generate-UserCert {
                 # Write-Host "[status] Get CSR & Key"
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -newkey rsa:2048 -nodes -keyout `"$userKey`" -subj `"/C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($JCORGID)/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))`" -out `"$userCsr`""
 
-                # take signing request, make cert # specify extensions requets
-                # Write-Host "[status] take signing request, make cert # specify extensions requets"
+                # take signing request, make cert # specify extensions request
+                # Write-Host "[status] take signing request, make cert # specify extensions request"
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -req -extfile `"$ExtensionPath`" -days $($global:JCRConfig.userCertValidityDays.value) -in `"$userCsr`" -CA `"$rootCA`" -CAkey `"$rootCAKey`" -passin pass:$($env:certKeyPassword) -CAcreateserial -out `"$userCert`" -extensions v3_req"
 
                 # validate the cert we cant see it once it goes to pfx
@@ -67,7 +67,7 @@ function Generate-UserCert {
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -text -in `"$userCert`""
                 # legacy needed if we take a cert like this then pass it out
                 # Write-Host "[status] legacy needed if we take a cert like this then pass it out"
-                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -export -out `"$userPfx`" -inkey `"$userKey`" -in `"$userCert`" -passout pass:$($JCR_USER_CERT_PASS) -legacy"
+                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -export -out `"$userPfx`" -inkey `"$userKey`" -in `"$userCert`" -passout pass:$($global:JCRConfig.certSecretPass.value) -legacy"
             }
             'EmailDn' {
                 # Create Client cert with email in the subject distinguished name
@@ -76,11 +76,11 @@ function Generate-UserCert {
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -nodes -new -key `"$rootCAKey`" -passin pass:$($env:certKeyPassword) -out `"$userCsr`" -subj /C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($JCORGID)/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=$($($global:JCRConfig.certSubjectHeader.Value.CommonName))"
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -new -key `"$userKey`" -out `"$userCsr`" -config `"$ExtensionPath`" -subj `"/C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($JCORGID)/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=/emailAddress=$($user.email)`""
 
-                # Gennerate User Cert
+                # Generate User Cert
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -req -in `"$userCsr`" -CA `"$rootCA`" -CAkey `"$rootCAKey`" -days $($global:JCRConfig.userCertValidityDays.value) -passin pass:$($env:certKeyPassword) -CAcreateserial -out `"$userCert`" -extfile `"$ExtensionPath`""
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -export -out `"$userPfx`" -inkey `"$userKey`" -in `"$userCert`" -passout pass:$($JCR_USER_CERT_PASS) -legacy"
+                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -export -out `"$userPfx`" -inkey `"$userKey`" -in `"$userCert`" -passout pass:$($global:JCRConfig.certSecretPass.value) -legacy"
                 # Output
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -text -in `"$userCert`""
                 # Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -clcerts -nokeys -in `"$userPfx`" -passin pass:$($JCR_USER_CERT_PASS)"
@@ -92,14 +92,14 @@ function Generate-UserCert {
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -nodes -new -key `"$rootCAKey`" -passin pass:$($env:certKeyPassword) -out `"$userCsr`" -subj /C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($JCORGID)/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=$($($global:JCRConfig.certSubjectHeader.Value.CommonName))"
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) req -new -key `"$userKey`" -out `"$userCsr`" -config `"$ExtensionPath`" -subj `"/C=$($($global:JCRConfig.certSubjectHeader.Value.CountryCode))/ST=$($($global:JCRConfig.certSubjectHeader.Value.StateCode))/L=$($($global:JCRConfig.certSubjectHeader.Value.Locality))/O=$($JCORGID)/OU=$($($global:JCRConfig.certSubjectHeader.Value.OrganizationUnit))/CN=$($user.username)`""
 
-                # Gennerate User Cert
+                # Generate User Cert
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -req -in `"$userCsr`" -CA `"$rootCA`" -CAkey `"$rootCAKey`" -days $($global:JCRConfig.userCertValidityDays.value) -CAcreateserial -passin pass:$($env:certKeyPassword) -out `"$userCert`" -extfile `"$ExtensionPath`""
 
                 # Combine key and cert to create pfx file
-                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -export -out `"$userPfx`" -inkey `"$userKey`" -in `"$userCert`" -inkey `"$userKey`" -passout pass:$($JCR_USER_CERT_PASS) -legacy"
+                Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -export -out `"$userPfx`" -inkey `"$userKey`" -in `"$userCert`" -inkey `"$userKey`" -passout pass:$($global:JCRConfig.certSecretPass.value) -legacy"
                 # Output
                 Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) x509 -noout -text -in `"$userCert`""
-                # Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -clcerts -nokeys -in `"$userPfx`" -passin pass:$($JCR_USER_CERT_PASS)"
+                # Invoke-Expression "$($global:JCRConfig.openSSLBinary.value) pkcs12 -clcerts -nokeys -in `"$userPfx`" -passin pass:$($global:JCRConfig.certSecretPass.value)"
             }
         }
 
