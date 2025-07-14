@@ -68,7 +68,8 @@ function Deploy-UserCertificate {
                 }
             }
         }
-        $global:JCRConfig = Get-JCRConfig -asObject
+        #TODO: uncomment
+        # $global:JCRConfig = Get-JCRConfig -asObject
     }
 
     process {
