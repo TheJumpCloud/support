@@ -27,8 +27,7 @@ jobs:
         id: validate
         shell: pwsh
         run: |
-          PR_LABELS_JSON=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels")
-          PR_LABEL_LIST=$(echo "$PR_LABELS_JSON" | jq -r 'if type=="array" then .[].name else empty end')
+          $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
           if ("PowerShell Radius Module" -in $PR_LABEL_LIST) {
               write-host "Starting Build for PowerShell Radius Module Release"
           }
