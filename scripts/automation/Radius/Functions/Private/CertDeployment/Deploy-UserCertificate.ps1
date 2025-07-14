@@ -68,6 +68,7 @@ function Deploy-UserCertificate {
                 }
             }
         }
+        $global:JCRConfig = Get-JCRConfig -asObject
     }
 
     process {
@@ -104,7 +105,6 @@ function Deploy-UserCertificate {
             # get certInfo for commands:
             $certInfo = Get-CertInfo -UserCerts -username $user.username
             # Determine if the commands have matching SHA1 values:
-
 
             if ($macOSCommands) {
                 # verify the certs match for macOS systems:
@@ -296,7 +296,7 @@ function Deploy-UserCertificate {
                 }
             }
 
-            if (($workToBeDone.forcegenerateMacOSCommands) -OR ($workToBeDone.forceGenerateWindowsCommands)) {
+            if (($workToBeDone.forceGenerateMacOSCommands) -OR ($workToBeDone.forceGenerateWindowsCommands)) {
                 # determine certType
                 switch ($($global:JCRConfig.certType.value)) {
                     'EmailSAN' {
@@ -364,8 +364,7 @@ function Deploy-UserCertificate {
                 Compress-Archive -Path $userPfx -DestinationPath $userPfxZip -CompressionLevel NoCompression -Force
             }
 
-
-            if ($workToBeDone.forcegenerateMacOSCommands) {
+            if ($workToBeDone.forceGenerateMacOSCommands) {
                 # Get the macOS system ids
                 $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
                 if ($systemIds.count -gt 0) {
@@ -387,149 +386,152 @@ caseMatchOrigValue=`$(shopt -p nocasematch; true)
 shopt -s nocasematch
 userCompare="$($user.localUsername)"
 if [[ "`$currentUser" ==  "`$userCompare" ]]; then
-# restore case match type
-`$caseMatchOrigValue
-certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain)
-regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
-regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
-global_rematch() {
-    # Set local variables
-    local s=`$1 regex=`$2
-    # While string matches regex expression
-    while [[ `$s =~ `$regex ]]; do
-        # Echo out the match
-        echo "`${BASH_REMATCH[1]}"
-        # Remove the string
-        s=`${s#*"`${BASH_REMATCH[1]}"}
-    done
-}
-# Save results
-# Get Text Results
-textSHA=`$(global_rematch "`$certs" "`$regexSHA")
-# Set as array for SHA results
-arraySHA=(`$textSHA)
-# Get Text Results
-textSN=`$(global_rematch "`$certs" "`$regexSN")
-# Set as array for SN results
-arraySN=(`$textSN)
-# set import var
-import=true
-if [[ `${#arraySN[@]} == `${#arraySHA[@]} ]]; then
-    len=`${#arraySN[@]}
-    for (( i=0; i<`$len; i++ )); do
-        if [[ `$currentCertSN == `${arraySN[`$i]} ]]; then
-            echo "Found Cert: SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
-            installedCertSN=`${arraySN[`$i]}
-            installedCertSHA=`${arraySHA[`$i]}
-            # if cert is installed, no need to update
-            import=false
-        else
-            echo "Removing previously installed radius cert:"
-            echo "SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
-            security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.localUsername)/Library/Keychains/login.keychain
-        fi
-    done
-
-else
-    echo "array length mismatch, will not delete old certs"
-fi
-
-if [[ `$import == true ]]; then
-    /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P $($global:JCRConfig.certSecretPass.value) -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
-    if [[ `$? -eq 0 ]]; then
-        echo "Import Success"
-        # get the SHA hash of the newly imported cert
-        installedCertSN=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain | grep snbr | awk '{print `$1}' | sed 's/"snbr"<blob>=0x//g')
-        if [[ `$installedCertSN == `$currentCertSN ]]; then
-            installedCertSHA=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain | grep SHA-1 | awk '{print `$3}')
-        fi
+    # restore case match type
+    `$caseMatchOrigValue
+    certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain)
+    regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
+    regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
+    global_rematch() {
+        # Set local variables
+        local s=`$1 regex=`$2
+        # While string matches regex expression
+        while [[ `$s =~ `$regex ]]; do
+            # Echo out the match
+            echo "`${BASH_REMATCH[1]}"
+            # Remove the string
+            s=`${s#*"`${BASH_REMATCH[1]}"}
+        done
+    }
+    # Save results
+    # Get Text Results
+    textSHA=`$(global_rematch "`$certs" "`$regexSHA")
+    # Set as array for SHA results
+    arraySHA=(`$textSHA)
+    # Get Text Results
+    textSN=`$(global_rematch "`$certs" "`$regexSN")
+    # Set as array for SN results
+    arraySN=(`$textSN)
+    # set import var
+    import=true
+    if [[ `${#arraySN[@]} == `${#arraySHA[@]} ]]; then
+        len=`${#arraySN[@]}
+        for (( i=0; i<`$len; i++ )); do
+            if [[ `$currentCertSN == `${arraySN[`$i]} ]]; then
+                echo "Found Cert: SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                installedCertSN=`${arraySN[`$i]}
+                installedCertSHA=`${arraySHA[`$i]}
+                # if cert is installed, no need to update
+                import=false
+            else
+                echo "Removing previously installed radius cert:"
+                echo "SN: `${arraySN[`$i]} SHA: `${arraySHA[`$i]}"
+                security delete-certificate -Z "`${arraySHA[`$i]}" /Users/$($user.localUsername)/Library/Keychains/login.keychain
+            fi
+        done
 
     else
-        echo "import failed"
-        exit 4
+        echo "array length mismatch, will not delete old certs"
     fi
-else
-    echo "cert already imported"
-fi
 
-# check if the cert security preference is set:
-IFS=';' read -ra network <<< "`$(`$global:JCRConfig.networkSSID.value)"
-for i in "`${network[@]}"; do
-    echo "begin setting network SSID: `$i"
-    if /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"; then
-        echo "it was already set"
-    else
-        echo "certificate not linked from SSID: `$i to certSN: `$currentCertSN, setting now"
-        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"
+    if [[ `$import == true ]]; then
+        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P "$($global:JCRConfig.certSecretPass.value)" -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
         if [[ `$? -eq 0 ]]; then
-        echo "SSID: `$i and certificate linked"
+            echo "Import Success"
+            # get the SHA hash of the newly imported cert
+            installedCertSN=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain | grep snbr | awk '{print `$1}' | sed 's/"snbr"<blob>=0x//g')
+            if [[ `$installedCertSN == `$currentCertSN ]]; then
+                installedCertSHA=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security find-certificate -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain | grep SHA-1 | awk '{print `$3}')
+            fi
+
         else
-            echo "Could not associate SSID: `$i and certifiacte"
+            echo "import failed"
+            exit 4
         fi
+    else
+        echo "cert already imported"
     fi
-done
 
-# print results
-echo "################## Cert Install Results ##################"
-echo "Installed Cert SN: `$installedCertSN"
-echo "Installed Cert SHA1: `$installedCertSHA"
-echo "##########################################################"
+    # check if the cert security preference is set:
+    IFS=';' read -ra network <<< "$($global:JCRConfig.networkSSID.value)"
+    for i in "`${network[@]}"; do
+        echo "begin setting network SSID: `$i"
+        # Capture the output of the get-identity-preference command
+        pref_output=$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z 2>&1)
+        if [[ "`$pref_output" == *"`$installedCertSHA"* ]]; then
+            echo "network SSID: `$i is already set for cert: `$installedCertSHA"
+        else
+            echo "certificate not linked from SSID: `$i to certSN: `$currentCertSN"
+            echo "setting now with certSHA: `$installedCertSHA and currentUserUID: `$currentUserUID"
+            /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"
+            if [[ `$? -eq 0 ]]; then
+                echo "SSID: `$i and certificate linked"
+            else
+                echo "Could not associate SSID: `$i and certificate"
+            fi
+        fi
+    done
 
-# Finally clean up files
-if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
-    echo "Removing Temp Zip"
-    rm "/tmp/$($user.userName)-client-signed.zip"
-fi
-if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
-    echo "Removing Temp Pfx"
-    rm "/tmp/$($user.userName)-client-signed.pfx"
-fi
+    # print results
+    echo "################## Cert Install Results ##################"
+    echo "Installed Cert SN: `$installedCertSN"
+    echo "Installed Cert SHA1: `$installedCertSHA"
+    echo "##########################################################"
 
-# update si table
-# The conf file is JSON and can be parsed using JSON.parse() in a supported language.
-conf="`$(cat /opt/jc/jcagent.conf)"
-regex='\"systemKey\":\"([a-zA-Z0-9_]+)\"'
-if [[ `${conf} =~ `$regex ]] ; then
-systemKey="`${BASH_REMATCH[1]}"
-fi
-# get the certUUID
-regex='\"certuuid\":\"([a-zA-Z0-9_]+)\"'
-if [[ `${conf} =~ `$regex ]] ; then
-certUUID="`${BASH_REMATCH[1]}"
-fi
+    # Finally clean up files
+    if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
+        echo "Removing Temp Zip"
+        rm "/tmp/$($user.userName)-client-signed.zip"
+    fi
+    if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
+        echo "Removing Temp Pfx"
+        rm "/tmp/$($user.userName)-client-signed.pfx"
+    fi
 
-# get the key /cert locations
-keyLocation="/opt/jc/client.key"
-certLocation="/opt/jc/client.crt"
-caCertLocation="/opt/jc/ca.crt"
+    # update si table
+    # The conf file is JSON and can be parsed using JSON.parse() in a supported language.
+    conf="`$(cat /opt/jc/jcagent.conf)"
+    regex='\"systemKey\":\"([a-zA-Z0-9_]+)\"'
+    if [[ `${conf} =~ `$regex ]] ; then
+    systemKey="`${BASH_REMATCH[1]}"
+    fi
+    # get the certUUID
+    regex='\"certuuid\":\"([a-zA-Z0-9_]+)\"'
+    if [[ `${conf} =~ `$regex ]] ; then
+    certUUID="`${BASH_REMATCH[1]}"
+    fi
 
-# Get json certificate data from osquery and add missing windows certificate columns
-certJson=`$(/opt/jc/bin/jcosqueryi --json "select *, '' AS sid, '' AS store, '' AS store_id, '' AS store_location, '' AS username from certificates;")
+    # get the key /cert locations
+    keyLocation="/opt/jc/client.key"
+    certLocation="/opt/jc/client.crt"
+    caCertLocation="/opt/jc/ca.crt"
 
-# post
-curl --cert `$certLocation --key `$keyLocation --cacert `$caCertLocation \
--X POST 'https://agent.jumpcloud.com/systeminsights/snapshots/certificates' \
--H "x-system-id: `$systemKey" \
--H "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" \
--H 'Content-Type: application/json' \
---data-raw '{
-    "data": '"`$certJson"'
-}'
+    # Get json certificate data from osquery and add missing windows certificate columns
+    certJson=`$(/opt/jc/bin/jcosqueryi --json "select *, '' AS sid, '' AS store, '' AS store_id, '' AS store_location, '' AS username from certificates;")
+
+    # post
+    curl --cert `$certLocation --key `$keyLocation --cacert `$caCertLocation \
+    -X POST 'https://agent.jumpcloud.com/systeminsights/snapshots/certificates' \
+    -H "x-system-id: `$systemKey" \
+    -H "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" \
+    -H 'Content-Type: application/json' \
+    --data-raw '{
+        "data": '"`$certJson"'
+    }'
 
 else
-# restore case match type
-`$caseMatchOrigValue
-echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.localUsername) is signed in and retry"
-# Finally clean up files
-if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
-    echo "Removing Temp Zip"
-    rm "/tmp/$($user.userName)-client-signed.zip"
-fi
-if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
-    echo "Removing Temp Pfx"
-    rm "/tmp/$($user.userName)-client-signed.pfx"
-fi
-exit 4
+    # restore case match type
+    `$caseMatchOrigValue
+    echo "Current logged in user, `$currentUser, does not match expected certificate user. Please ensure $($user.localUsername) is signed in and retry"
+    # Finally clean up files
+    if [[ -f "/tmp/$($user.userName)-client-signed.zip" ]]; then
+        echo "Removing Temp Zip"
+        rm "/tmp/$($user.userName)-client-signed.zip"
+    fi
+    if [[ -f "/tmp/$($user.userName)-client-signed.pfx" ]]; then
+        echo "Removing Temp Pfx"
+        rm "/tmp/$($user.userName)-client-signed.pfx"
+    fi
+    exit 4
 fi
 
 "@
@@ -658,7 +660,7 @@ Import-PfxCertificate -Password `$password -FilePath "C:\RadiusCert\$($user.user
     }
 }
 `$scriptBlockValidate = {
-    if (Get-ChildItem Cert:\CurrentUser\My\`$(`$imported.thumbrprint)){
+    if (Get-ChildItem Cert:\CurrentUser\My\`$(`$imported.thumbprint)){
         return `$true
     } else {
         return `$false
