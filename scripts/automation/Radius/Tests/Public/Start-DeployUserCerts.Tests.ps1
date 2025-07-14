@@ -47,6 +47,13 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 if ($user.systemAssociations) {
                     $user.certInfo.deployed | Should -Be $true
                     $user.commandAssociations | ForEach-Object {
+                        # write out the details of the command association
+                        Write-Warning "# Command Association Item #"
+                        Write-Warning "User ID: $($user.userID) Username: $($user.username)"
+                        Write-Warning "Command ID: $($_.commandId)"
+                        Write-Warning "Command Name: $($_.CommandName)"
+                        Write-Warning "Command Previous Run : $($_.commandPreviouslyRun)"
+                        Write-Warning "Command Queued: $($_.commandQueued)"
                         $command = Get-JcSdkCommand -Id $_.commandId -Fields name
                         $command | should -Not -BeNullOrEmpty
                     }
