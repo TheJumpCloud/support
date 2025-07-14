@@ -1,3 +1,18 @@
+## 2.1.2
+
+Release Date: July 15, 2025
+
+#### RELEASE NOTES
+
+```
+This release is a patch update to the JumpCloud Radius module, which includes bug fixes and improvements to the multi-group radius deployment script.
+```
+
+#### Bug Fixes:
+
+- Fixed an issue when generating certificates where the cert password was never applied
+- Fixed an issue when deploying certificates in parallel where the cert password / SSID settings were not applied to the certificate
+
 ## 2.1.1
 
 Release Date: July 9, 2025
