@@ -385,23 +385,26 @@ caseMatchOrigValue=`$(shopt -p nocasematch; true)
 # set to case-insensitive
 shopt -s nocasematch
 userCompare="$($user.localUsername)"
+# define bash rematch function
+global_rematch() {
+    # Set local variables
+    local s=`$1 regex=`$2
+    # While string matches regex expression
+    while [[ `$s =~ `$regex ]]; do
+        # Echo out the match
+        echo "`${BASH_REMATCH[1]}"
+        # Remove the string
+        s=`${s#*"`${BASH_REMATCH[1]}"}
+    done
+}
+
 if [[ "`$currentUser" ==  "`$userCompare" ]]; then
     # restore case match type
     `$caseMatchOrigValue
     certs=`$(security find-certificate -a -$($macCertSearch) "$($certIdentifier)" -Z /Users/$($user.localUsername)/Library/Keychains/login.keychain)
     regexSHA='SHA-1 hash: ([0-9A-F]{5,40})'
     regexSN='"snbr"<blob>=0x([0-9A-F]{5,40})'
-    global_rematch() {
-        # Set local variables
-        local s=`$1 regex=`$2
-        # While string matches regex expression
-        while [[ `$s =~ `$regex ]]; do
-            # Echo out the match
-            echo "`${BASH_REMATCH[1]}"
-            # Remove the string
-            s=`${s#*"`${BASH_REMATCH[1]}"}
-        done
-    }
+
     # Save results
     # Get Text Results
     textSHA=`$(global_rematch "`$certs" "`$regexSHA")
