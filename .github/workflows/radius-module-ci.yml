@@ -27,7 +27,13 @@ jobs:
         id: validate
         shell: pwsh
         run: |
-          $PR_LABEL_LIST=$(curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" | jq -r '.[].name')
+          $PR_LABELS_JSON = curl -s "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels"
+          $PR_LABEL_LIST = $PR_LABELS_JSON | ConvertFrom-Json
+          if ($PR_LABEL_LIST -is [System.Collections.IEnumerable]) {
+              $PR_LABEL_LIST = $PR_LABEL_LIST | ForEach-Object { $_.name }
+          } else {
+              $PR_LABEL_LIST = @()
+          }
           if ("PowerShell Radius Module" -in $PR_LABEL_LIST) {
               write-host "Starting Build for PowerShell Radius Module Release"
           }
