@@ -546,6 +546,8 @@ fi
                             TimeToLiveSeconds = 864000
                             files             = (New-JCCommandFile -certFilePath $userPfxZip -FileName "$($user.userName)-client-signed.zip" -FileDestination "/tmp/$($user.userName)-client-signed.zip")
                         }
+                        # first replace the line endings if the file is encoded with crlf line endings
+                        $CommandBody['Command'] = $CommandBody['Command'] -replace "`r`n", "`n"
                         $NewCommand = New-JcSdkCommand @CommandBody
 
                     } catch {
