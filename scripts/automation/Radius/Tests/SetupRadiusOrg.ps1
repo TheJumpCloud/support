@@ -35,7 +35,7 @@ Write-Host "MacOS System Name: $($macOSSystem.displayName) | Associated User Nam
 $windowsUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
 $windowsSystem = Get-JCSystem -os "Windows" | Get-Random -Count 1
 Set-JcSdkSystemAssociation -SystemId $macOSSystem.id -id $windowsUser.id -Type 'user' -Op "add"
-Write-Host " Windows System Name: $($windowsSystem.displayName) |  Associated User Name: $($windowsUser.username)"
+Write-Host "Windows System Name: $($windowsSystem.displayName) |  Associated User Name: $($windowsUser.username)"
 # user bound to both macOS and windows
 $bothUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
 Set-JcSdkSystemAssociation -SystemId $macOSSystem.id -id $bothUser.id -Type 'user' -Op "add"
