@@ -434,7 +434,7 @@ if [[ "`$currentUser" ==  "`$userCompare" ]]; then
     fi
 
     if [[ `$import == true ]]; then
-        /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P "$($global:JCRConfig.certSecretPass.value)" -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient"
+        import=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security import /tmp/$($user.userName)-client-signed.pfx -x -k /Users/$($user.localUsername)/Library/Keychains/login.keychain -P "$($global:JCRConfig.certSecretPass.value)" -T "/System/Library/SystemConfiguration/EAPOLController.bundle/Contents/Resources/eapolclient")
         if [[ `$? -eq 0 ]]; then
             echo "Import Success"
             # get the SHA hash of the newly imported cert
@@ -456,13 +456,13 @@ if [[ "`$currentUser" ==  "`$userCompare" ]]; then
     for i in "`${network[@]}"; do
         echo "begin setting network SSID: `$i"
         # Capture the output of the get-identity-preference command
-        pref_output=$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z 2>&1)
+        pref_output=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security get-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z 2>&1)
         if [[ "`$pref_output" == *"`$installedCertSHA"* ]]; then
             echo "network SSID: `$i is already set for cert: `$installedCertSHA"
         else
             echo "certificate not linked from SSID: `$i to certSN: `$currentCertSN"
             echo "setting now with certSHA: `$installedCertSHA and currentUserUID: `$currentUserUID"
-            /bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA"
+            set_pref=`$(/bin/launchctl asuser "`$currentUserUID" sudo -iu "`$currentUser" /usr/bin/security set-identity-preference -s "com.apple.network.eap.user.identity.wlan.ssid.`$i" -Z "`$installedCertSHA")
             if [[ `$? -eq 0 ]]; then
                 echo "SSID: `$i and certificate linked"
             else
