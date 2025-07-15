@@ -40,13 +40,25 @@ Describe 'Distribute User Cert Tests' -Tag 'Distribute' {
                 $user.certInfo.deployed | Should -Be $false
             }
             start-deployUserCerts -type All -forceInvokeCommands
-            Start-Sleep 1
+            Start-Sleep 5
             $userArray = Get-UserJsonData
             foreach ($user in $userArray) {
                 # cert should be deployed for users that have a system association
                 if ($user.systemAssociations) {
                     $user.certInfo.deployed | Should -Be $true
                     $user.commandAssociations | ForEach-Object {
+                        # write out the details of the command association
+                        Write-Warning "# Command Association Item #"
+                        Write-Warning "User ID: $($user.userID) Username: $($user.username)"
+                        Write-Warning "Command ID: $($_.commandId)"
+                        Write-Warning "Command Name: $($_.CommandName)"
+                        Write-Warning "Command Previous Run : $($_.commandPreviouslyRun)"
+                        Write-Warning "Command Queued: $($_.commandQueued)"
+
+                        #####
+                        # Get the user's associations:
+                        Get-JcSdkUserTraverseSystem -UserId $user.userID
+                        ####
                         $command = Get-JcSdkCommand -Id $_.commandId -Fields name
                         $command | should -Not -BeNullOrEmpty
                     }

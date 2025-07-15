@@ -29,15 +29,18 @@ Write-Warning "Creating New Pester Radius Users"
 $macUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
 $macOSSystem = Get-JCSystem -os "Mac OS X" | Get-Random -Count 1
 Set-JcSdkSystemAssociation -SystemId $macOSSystem.id -id $macUser.id -Type 'user' -Op "add"
+Write-Host "MacOS System Name: $($macOSSystem.displayName) | Associated User Name: $($macUser.username)"
 # user bound to windows
 
 $windowsUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
 $windowsSystem = Get-JCSystem -os "Windows" | Get-Random -Count 1
 Set-JcSdkSystemAssociation -SystemId $macOSSystem.id -id $windowsUser.id -Type 'user' -Op "add"
+Write-Host " Windows System Name: $($windowsSystem.displayName) |  Associated User Name: $($windowsUser.username)"
 # user bound to both macOS and windows
 $bothUser = New-RandomUser -Domain "PesterRadTest" | New-JCUser
 Set-JcSdkSystemAssociation -SystemId $macOSSystem.id -id $bothUser.id -Type 'user' -Op "add"
 Set-JcSdkSystemAssociation -SystemId $windowsSystem.id -id $bothUser.id -Type 'user' -Op "add"
+Write-Host "Windows System Name: $($windowsSystem.displayName) | Mac System Name: $($macOSSystem.displayName) |  Associated User Name: $($bothUser.username)"
 
 # create user group + Add membership
 Write-Warning "Creating New Pester Radius Group"
@@ -91,8 +94,8 @@ if ($IsMacOS) {
     }
 
     $brewListBinary = $brewList | Where-Object { $_ -match "/bin/openssl" }
-    $regmatch = $brewListBinary | Select-String -pattern "\/([0-9].[0-9].[0-9])\/"
-    $opensslVersion = $regmatch.matches.groups[1].value
+    $regMatch = $brewListBinary | Select-String -pattern "\/([0-9].[0-9].[0-9])\/"
+    $opensslVersion = $regMatch.matches.groups[1].value
 
     Write-Warning "OpenSSL Version: $opensslVersion is installed via homebrew on this system; updating config:"
 }
