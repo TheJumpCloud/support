@@ -1,3 +1,18 @@
+## 2.1.5
+
+Release Date: July 215, 2025
+
+#### RELEASE NOTES
+
+```
+This release addresses an issue with the date parsing in the Get-CertInfo function, ensuring that the date is parsed in a culture-invariant manner.
+```
+
+#### Bug Fixes:
+
+- Fixed an issue when generating certificates where the date parsing was not culture invariant, leading to potential issues in different locales.
+- Fixed an issue where the date format in the certificate report was not correctly parsed.
+
 ## 2.1.4
 
 Release Date: July 15, 2025

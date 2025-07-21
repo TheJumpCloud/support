@@ -2,7 +2,7 @@
 Module Name: JumpCloud.Radius
 Module Guid: 71bfaf58-3326-4512-9a7f-a2d9dc19d6b5
 Download Help Link:  
-Help Version: 2.1.4
+Help Version: 2.1.5
 Locale: en-Us
 ---
 
