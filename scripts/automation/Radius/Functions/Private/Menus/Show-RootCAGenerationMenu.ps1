@@ -13,7 +13,11 @@ function Show-RootCAGenerationMenu {
         Write-Host $(PadCenter -string "Root CA Expiration: $($rootCAInfo.notAfter)`n" -char ' ') -ForegroundColor Green
 
         # If root CA is expiring within 30 days, display warning
-        $expirationDate = [datetime]$rootCAInfo.notAfter
+        if ($rootCAInfo.notAfter -is [string]) {
+            $expirationDate = [datetime]::Parse($rootCAInfo.notAfter, [System.Globalization.CultureInfo]::InvariantCulture)
+        } else {
+            $expirationDate = [datetime]$rootCAInfo.notAfter
+        }
         $currentDate = Get-Date
         $daysRemaining = ($expirationDate - $currentDate).Days
 

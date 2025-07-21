@@ -231,6 +231,35 @@ Describe 'Generate User Cert Tests' -Tag "GenerateUserCerts" {
         }
 
     }
+    Context 'Date Parsing' {
+        BeforeAll {
+            $originalCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture
+            $originalUICulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture
+        }
+        AfterAll {
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = $originalCulture
+            [System.Threading.Thread]::CurrentThread.CurrentUICulture = $originalUICulture
+        }
+        It "Generates a cert in pt-BR culture" {
+            # Set culture to Brazilian Portuguese
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = 'pt-BR'
+            [System.Threading.Thread]::CurrentThread.CurrentUICulture = 'pt-BR'
+
+            $user = $global:JCRRadiusMembers.username | select -First 1
+            # if the user does not have a valid cert, generate one with Start-GenerateUserCerts
+            $userCertExpectedPath = "$($global:JCRConfig.radiusDirectory.value)/UserCerts/$($user)-$($global:JCRConfig.certType.value)-client-signed-cert.crt"
+            if (-not (Test-Path -Path $userCertExpectedPath)) {
+                Start-GenerateUserCerts -username $user -forceReplaceCert -type ByUsername
+            }
+
+            { Get-CertInfo -UserCerts -username $user } | Should -Not -Throw
+            # save the cert info to a variable
+            $certInfo = Get-CertInfo -UserCerts -username $user
+            # check that the cert is not in need of renewal
+            Get-ExpiringCertInfo -certInfo $certInfo -cutoffDate $global:JCRConfig.certExpirationWarningDays.value | Should -BeNullOrEmpty
+        }
+
+    }
     Context 'Certs generated when userGroup only contains 1 user' {
         BeforeAll {
             # Save users in userGroup to variable for later

@@ -14,10 +14,10 @@ This function sets the configuration for the JumpCloud Radius module, allowing y
 ## SYNTAX
 
 ```
-Set-JCRConfig [-lastUpdate <String>] [-certSecretPass <String>]
- [-caCertValidityDays <Int32>] [-userCertValidityDays <Int32>] [-certSubjectHeader <Hashtable>]
- [-networkSSID <String>] [-userGroup <String>] [-certType <String>] [-radiusDirectory <String>]
- [-certExpirationWarningDays <Int32>] [-openSSLBinary <String>] [<CommonParameters>]
+Set-JCRConfig [-userGroup <String>] [-networkSSID <String>]
+ [-lastUpdate <String>] [-certType <String>] [-caCertValidityDays <Int32>] [-userCertValidityDays <Int32>]
+ [-certSubjectHeader <Hashtable>] [-radiusDirectory <String>] [-openSSLBinary <String>]
+ [-certExpirationWarningDays <Int32>] [-certSecretPass <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
