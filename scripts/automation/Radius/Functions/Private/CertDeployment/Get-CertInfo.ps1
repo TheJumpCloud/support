@@ -66,10 +66,12 @@ function Get-CertInfo {
 
                     # Convert notAfter property into datetime format
                     if ($property.notAfter) {
+                        # write-host "TIME: $($property.notAfter)"
                         $date = $property.notAfter
                         # $date = $date.replace('GMT', '').Trim()
                         $date = $date -replace '\s+', ' '
-                        $date = ([datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy GMT", $null)).ToUniversalTime()
+                        # $date = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy GMT", $null)
+                        $date = [datetime]::ParseExact($date, "MMM d HH:mm:ss yyyy GMT", [System.Globalization.CultureInfo]::InvariantCulture)
                         $property.notAfter = Get-Date $date.ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z'
                     }
 
@@ -89,10 +91,13 @@ function Get-CertInfo {
                         $property = $_ | ConvertFrom-StringData
                         switch ($($property.keys)) {
                             'notAfter' {
+                                # write-host "TIME: $($property.notAfter)"
                                 $date = $property.notAfter
                                 # $date = $date.replace('GMT', '').Trim()
                                 $date = $date -replace '\s+', ' '
-                                $date = [datetime]::ParseExact($date , "MMM d HH:mm:ss yyyy GMT", $null)
+
+                                # $date = [datetime]::ParseExact($date, "MMM d HH:mm:ss yyyy GMT", [System.Globalization.CultureInfo]::InvariantCulture)
+                                # write-host "TIMENOW: $($date)"
                                 $property.notAfter = Get-Date $date.ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z'
 
                             }

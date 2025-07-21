@@ -7,7 +7,7 @@ Function Get-LatestUserToDeviceReport {
     )
     begin {
         # get UTC time now:
-        $utcTimeNow = Get-Date ([datetime]::UtcNow) -UFormat "%m/%d/%Y %r"
+        $utcTimeNow = [datetime]::UtcNow
 
         $headers = @{
             "accept"    = "application/json";

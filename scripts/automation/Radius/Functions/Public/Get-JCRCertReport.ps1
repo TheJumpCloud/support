@@ -66,7 +66,11 @@ function Get-JCRCertReport {
             }
 
             $reportEntry.certSerialNumber = $certificateSerialNumber
-            $reportEntry.certExpirationDate = $certificateExpirationDate
+            if ($certificateExpirationDate -is [string]) {
+                $reportEntry.certExpirationDate = [datetime]::Parse($certificateExpirationDate, [System.Globalization.CultureInfo]::InvariantCulture)
+            } else {
+                $reportEntry.certExpirationDate = [datetime]$certificateExpirationDate
+            }
             $reportEntry.certInstalled = $certInstalled
 
             $reportData.Add([pscustomobject]$reportEntry) | Out-Null

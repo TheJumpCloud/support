@@ -1,6 +1,5 @@
 function Get-ExpiringCertInfo {
     param (
-        # array of certificates
         [Parameter(Mandatory)]
         [System.Object]
         $certInfo,
@@ -15,9 +14,12 @@ function Get-ExpiringCertInfo {
     process {
         foreach ($cert in $certInfo) {
             $startDate = [datetime]$currentTime
-            $endDate = [datetime]$cert.notAfter
+            if ($cert.notAfter -is [string]) {
+                $endDate = [datetime]::Parse($cert.notAfter, [System.Globalization.CultureInfo]::InvariantCulture)
+            } else {
+                $endDate = [datetime]$cert.notAfter
+            }
             $certTimespan = New-Timespan -Start $startDate -End $endDate
-            # $cert
             if ($certTimespan.days -lt 15) {
                 Write-Debug "$($cert.userName)'s certificate will expire in $($certTimespan.Days) days"
                 $expiringCerts.add($cert) | Out-Null
@@ -26,7 +28,6 @@ function Get-ExpiringCertInfo {
             }
         }
     }
-
     end {
         return $expiringCerts
     }

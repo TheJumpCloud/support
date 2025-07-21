@@ -34,4 +34,24 @@ Describe 'User Cert Report' -Tag "Reports" {
             { Get-JCRCertReport -ExportFilePath "$JCRScriptRoot/testReport.csv" } | Should -Not -Throw
         }
     }
+    Context "Date Parsing" {
+        BeforeAll {
+            $originalCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture
+            $originalUICulture = [System.Threading.Thread]::CurrentThread.CurrentUICulture
+        }
+        AfterAll {
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = $originalCulture
+            [System.Threading.Thread]::CurrentThread.CurrentUICulture = $originalUICulture
+        }
+        It "Generates the report in pt-BR culture" {
+            # Set culture to Brazilian Portuguese
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = 'pt-BR'
+            [System.Threading.Thread]::CurrentThread.CurrentUICulture = 'pt-BR'
+
+            # Export the report
+            { Get-JCRCertReport -ExportFilePath "$JCRScriptRoot/testReport.csv" } | Should -Not -Throw
+            $report = Import-Csv -Path "$JCRScriptRoot/testReport.csv"
+            $report | Should -Not -BeNullOrEmpty
+        }
+    }
 }
