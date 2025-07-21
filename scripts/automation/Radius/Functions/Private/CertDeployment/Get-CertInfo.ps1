@@ -96,7 +96,7 @@ function Get-CertInfo {
                                 # $date = $date.replace('GMT', '').Trim()
                                 $date = $date -replace '\s+', ' '
 
-                                # $date = [datetime]::ParseExact($date, "MMM d HH:mm:ss yyyy GMT", [System.Globalization.CultureInfo]::InvariantCulture)
+                                $date = [datetime]::ParseExact($date, "MMM d HH:mm:ss yyyy GMT", [System.Globalization.CultureInfo]::InvariantCulture)
                                 # write-host "TIMENOW: $($date)"
                                 $property.notAfter = Get-Date $date.ToUniversalTime() -UFormat '+%Y-%m-%dT%H:%M:%S.000Z'
 
