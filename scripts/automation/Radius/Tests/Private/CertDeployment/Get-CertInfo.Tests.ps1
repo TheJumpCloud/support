@@ -34,7 +34,6 @@ Describe "Date Parsing is Culture Invariant" -Tag "Acceptance" {
             if (-not (Test-Path -Path $userCertExpectedPath)) {
                 Start-GenerateUserCerts -username $user -forceReplaceCert -type ByUsername
             }
-            . "/Users/jworkman/Documents/GitHub/support/scripts/automation/Radius/Functions/Private/CertDeployment/Get-CertInfo.ps1"
             { Get-CertInfo -UserCerts -username $user } | Should -Not -Throw
         }
     }
