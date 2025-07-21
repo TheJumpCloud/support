@@ -20,8 +20,6 @@ function Show-RootCAGenerationMenu {
         }
         $currentDate = Get-Date
         $daysRemaining = ($expirationDate - $currentDate).Days
-        $currentDate = Get-Date
-        $daysRemaining = ($expirationDate - $currentDate).Days
 
         # Check if expiration is less root cert warning days
         if ($daysRemaining -lt $JCR_ROOT_CERT_Expire_Warning_Days) {

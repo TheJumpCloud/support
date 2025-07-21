@@ -1,6 +1,6 @@
 ## 2.1.5
 
-Release Date: July 215, 2025
+Release Date: July 21, 2025
 
 #### RELEASE NOTES
 
