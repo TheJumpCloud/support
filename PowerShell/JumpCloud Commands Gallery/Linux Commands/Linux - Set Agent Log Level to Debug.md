@@ -50,7 +50,7 @@ exit 0
 
 #### Description
 
-This command will set the JumpCloud Agent Log Level to Debug level.
+This command will set the JumpCloud Agent Log Level to Debug level. This command requires the `at` command to be installed on the system. If `at` is not installed, the script will exit with an error message.
 
 #### _Import This Command_
 
