@@ -1,6 +1,6 @@
 #### Name
 
-Linux - Set Agent Log Level to Default | v1.0 JCCG
+Linux - Set Agent Log Level to Default | v1.0.1 JCCG
 
 #### commandType
 
