@@ -40,7 +40,7 @@ fi
 service jcagent restart
 
 # Remove this script
-rm -- "$0"
+rm /var/tmp/jc_setAgent.sh
 EOF
 echo "Setting JumpCloud-Agent Log Level settings"
 at now + 1 minutes -f $scriptFile
@@ -52,7 +52,7 @@ exit 0
 
 This command will set the JumpCloud Agent Log Level to Debug level.
 
-#### *Import This Command*
+#### _Import This Command_
 
 To import this command into your JumpCloud tenant run the below command using the [JumpCloud PowerShell Module](https://github.com/TheJumpCloud/support/wiki/Installing-the-JumpCloud-PowerShell-Module)
 

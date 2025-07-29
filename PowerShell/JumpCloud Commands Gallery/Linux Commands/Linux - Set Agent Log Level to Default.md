@@ -40,7 +40,7 @@ fi
 service jcagent restart
 
 # Remove this script
-rm -- "$0"
+rm /var/tmp/jc_setAgent.sh
 EOF
 
 echo "Setting JumpCloud-Agent Log Level to default settings"
