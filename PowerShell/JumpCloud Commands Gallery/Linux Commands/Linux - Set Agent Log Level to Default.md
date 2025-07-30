@@ -1,6 +1,6 @@
 #### Name
 
-Linux - Set Agent Log Level to Default | v1.0 JCCG
+Linux - Set Agent Log Level to Default | v1.0.1 JCCG
 
 #### commandType
 
@@ -40,7 +40,7 @@ fi
 service jcagent restart
 
 # Remove this script
-rm -- "$0"
+rm /var/tmp/jc_setAgent.sh
 EOF
 
 echo "Setting JumpCloud-Agent Log Level to default settings"
@@ -51,7 +51,7 @@ exit 0
 
 #### Description
 
-This command will set the JumpCloud Agent Log Level to Default logging level.
+This command will set the JumpCloud Agent Log Level to Default logging level. This command requires the `at` command to be installed on the system. If `at` is not installed, the script will exit with an error message.
 
 #### _Import This Command_
 
