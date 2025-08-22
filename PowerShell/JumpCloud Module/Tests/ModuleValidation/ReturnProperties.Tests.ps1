@@ -8,7 +8,7 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
                 'customDefinitionMap' = @{
 
                 }
-                'ignoreList'          = @('_id', 'tags')
+                'ignoreList'          = @('agentHasFullDiskAccess')
             };
             'Get-JCUser'    = @{
                 'modelDefinition'     = 'definitions.systemuserput.properties'
