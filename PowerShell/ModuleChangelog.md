@@ -1,3 +1,17 @@
+## 2.18.2
+
+Release Date: August 22, 2025
+
+#### RELEASE NOTES
+
+```
+Fixed an issue with excluding properties for Update-JCDeviceFromCSV when using PWSH 5.1
+```
+
+#### BUG FIXES:
+
+* Address a bug impacting Update-JCDeviceFromCSV
+
 ## 2.18.1
 
 Release Date: April 25, 2025
