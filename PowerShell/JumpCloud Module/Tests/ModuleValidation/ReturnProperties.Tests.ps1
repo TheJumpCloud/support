@@ -8,7 +8,7 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
                 'customDefinitionMap' = @{
 
                 }
-                'ignoreList'          = @('agentHasFullDiskAccess')
+                'ignoreList'          = @('_id', 'tags')
             };
             'Get-JCUser'    = @{
                 'modelDefinition'     = 'definitions.systemuserput.properties'
@@ -22,7 +22,6 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
                 'customDefinitionMap' = @{
 
                 }
-                'ignoreList'          = @('filesS3')
             };
         }
         $swaggerV1Url = "https://docs.jumpcloud.com/api/1.0/index.yaml"

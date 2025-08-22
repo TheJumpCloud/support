@@ -152,8 +152,8 @@ Function Get-JCSystem () {
         [Parameter(
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
-            HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version'', ''hwVendor'',''secureLogin'',''displayManager'',''amazonInstanceID'',''archFamily'',''builtInCommands'',''description'',''osVersionDetail'',''policyStats'',''desktopCapable'', ''sshRootEnabled''')]
-        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'primarySystemUser', 'provisionMetadata', 'remoteAssistAgentVersion', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'templateName', 'userMetrics', 'usernameHashes', 'version', 'hwVendor', 'secureLogin', 'displayManager', 'amazonInstanceID', 'archFamily', 'builtInCommands', 'description', 'osVersionDetail', 'policyStats', 'desktopCapable', 'sshRootEnabled', 'isPolicyBound')]
+            HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version'', ''hwVendor'',''secureLogin'',''displayManager'',''amazonInstanceID'',''archFamily'',''builtInCommands'',''description'',''osVersionDetail'',''policyStats'',''desktopCapable'', ''sshRootEnabled'', ''isPolicyBound'',''agentHasFullDiskAccess''')]
+        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'primarySystemUser', 'provisionMetadata', 'remoteAssistAgentVersion', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'templateName', 'userMetrics', 'usernameHashes', 'version', 'hwVendor', 'secureLogin', 'displayManager', 'amazonInstanceID', 'archFamily', 'builtInCommands', 'description', 'osVersionDetail', 'policyStats', 'desktopCapable', 'sshRootEnabled', 'isPolicyBound', 'agentHasFullDiskAccess')]
         [String[]]$returnProperties
     )
 
@@ -311,18 +311,18 @@ Function Get-JCSystem () {
 
                     if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                         # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
                     } elseif ($param.Value -match '.+?\*$') {
                         # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
                     } elseif ($param.Value -match '^\*.+?') {
                         # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
                     } elseif ($param.Value -match '^[-+]?\d+$') {
                         # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
                     } else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
                     }
 
 
