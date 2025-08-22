@@ -22,7 +22,7 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
                 'customDefinitionMap' = @{
 
                 }
-                'ignoreList'          = @('filesS3', 'description')
+                'ignoreList'          = @('filesS3')
             };
         }
         $swaggerV1Url = "https://docs.jumpcloud.com/api/1.0/index.yaml"
