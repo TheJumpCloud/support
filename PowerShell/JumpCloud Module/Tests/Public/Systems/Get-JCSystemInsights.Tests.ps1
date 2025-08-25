@@ -2,7 +2,8 @@ BeforeAll {
 
     $ErrorActionPreference = 'Stop' # Continue (Default), Ignore, Inquire, SilentlyContinue, Stop, Suspend
 }
-Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
+# TODO: Waiting on the API team to fix an issue with the authorized_key endpoint
+Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" -Skip {
     Function Get-JCSystemInsightsTestCases($System) {
         # Retrieve objects to test with
         $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
