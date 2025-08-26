@@ -1,6 +1,6 @@
 ## 2.18.2
 
-Release Date: August 25, 2025
+Release Date: August 26, 2025
 
 #### RELEASE NOTES
 
