@@ -33,7 +33,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.primarySystemUser.id | Should -Be $NewUser._id
 
         # Reset the system name
-        Set-JCSystem -SystemID $system.id -displayName $currentSystemName -force
+        Set-JCSystem -SystemID $system.id -displayName $currentSystemName
 
     }
     It 'Updates users from a CSV populated with a null value' {
@@ -64,6 +64,10 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
         $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser.id
+
+        # Reset the system name
+        Set-JCSystem -SystemID $system.id -displayName $currentSystemName
+
     }
     It 'Updates users from a CSV populated with an invalid primarySystemUser' {
         $system = Get-JCSystem | Select-Object -First 1
@@ -94,7 +98,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
         $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser.id
         # Reset the system name
-        Set-JCSystem -SystemID $system.id -displayName $currentSystemName -force
+        Set-JCSystem -SystemID $system.id -displayName $currentSystemName
     }
     AfterEach {
         Remove-JCUser -UserID $NewUser._id -force
