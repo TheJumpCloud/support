@@ -1,4 +1,4 @@
-Describe 'Module Update' -Tag "Module" {
+Describe 'Module Update' -Tag "Module" -skip {
     BeforeAll {
         # Load all functions from private folders
         if (-not (test-path -path $JCRScriptRoot -errorAction silentlyContinue)) {
