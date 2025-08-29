@@ -130,6 +130,7 @@ jobs:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
+          # run module validation tests
           . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -ModuleValidation
   Test-Module:
     needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Validate-Module"]
@@ -138,7 +139,7 @@ jobs:
     timeout-minutes: 75
     strategy:
       fail-fast: false
-    name: Run Pester Tests and Upload Results
+    name: Run Pester Tests
     steps:
       - uses: actions/checkout@v4
         with:
@@ -159,4 +160,6 @@ jobs:
             write-host "$($item.FullName)"
           }
           # Invoke Pester
-          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList "ModuleValidation"
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList @("ModuleValidation", "Module")
+          # run module update tests seperatly
+          . "./scripts/automation/Radius/Tests/Invoke-Pester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -IncludeTagList "Module"
