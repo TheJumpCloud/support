@@ -10,7 +10,8 @@ This automation has been tested with OpenSSL 3.1.1. OpenSSL 3.x.x is required to
 
 - OpenSSL 3.x.x (Tested with 3.1.1) (see macOS/ Windows requirements below)
 - [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud)
-- Certificate Authority (CA) (either from a vendor or self-generated)
+- [JumpCloud Radius Module](https://www.powershellgallery.com/packages/JumpCloud.Radius)
+- Certificate Authority (CA) (either from a vendor or self-generated using the JumpCloud.Radius module)
 - Module Settings Configured with `Set-JCRConfig` cmdlet
 - JumpCloud Organization API Key (Read/ Write Access Required)
   - JumpCloud API Key Set (Read/ Write Access Required)
@@ -61,6 +62,8 @@ The `openssl` command should be available in new PowerShell terminal windows.
 Ensure that you are these commands in a PowerShell 7 environment. Within your PowerShell terminal window run `$PSVersionTable`, PSVersion should be version 7.x.x. If 5.1.x is running you need to install [PowerShell 7 from Microsoft](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3)
 
 After installing PowerShell 7.x.x, install the [JumpCloud PowerShell Module](https://www.powershellgallery.com/packages/JumpCloud) in the PowerShell terminal window. This can be done by running `Install-Module -Name JumpCloud`
+
+Install the [JumpCloud Radius Module](https://www.powershellgallery.com/packages/JumpCloud.Radius) in the PowerShell terminal window. This can be done by running `Install-Module -Name JumpCloud.Radius`
 
 At the time of this writing JumpCloud Module 2.1.3 was the latest version. Please ensure you are at least running this version of the PowerShell Module.
 
@@ -245,10 +248,10 @@ When a UsernameCN user certificate authorizes to a JumpCloud managed radius netw
 
 ## Certificate Generation
 
-The entire certificate generate process is managed through a PowerShell menu based script `Start-RadiusDeployment.ps1`. To run the main program simply open a PowerShell 7 terminal session, cd to the location where this automation is stored and run:
+The entire certificate generate process is managed through a PowerShell menu based function `Start-RadiusDeployment`. To run the main program simply open a PowerShell 7 terminal session and run:
 
 ```PowerShell
-./Start-RadiusDeployment.ps1
+Start-RadiusDeployment
 ```
 
 An interactive menu will be presented displaying the following:
