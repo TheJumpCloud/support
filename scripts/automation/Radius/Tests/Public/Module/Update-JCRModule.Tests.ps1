@@ -188,7 +188,7 @@ Describe 'Module Update' -Tag "Module" {
                 certSecretPass    = "secret1234!"
                 radiusDirectory   = "$(Resolve-Path $HOME/RADIUS)"
                 networkSSID       = "TP-Link_SSID"
-                userGroup         = "111111111111111111111111"
+                userGroup         = $global:JCRConfig.userGroup.value
                 openSSLBinary     = 'openssl'
                 certSubjectHeader = @{
                     CountryCode      = "US"
