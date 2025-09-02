@@ -1,4 +1,4 @@
-##################### Do Not Modify Below ######################
+ ##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
 $automate = $false
 
@@ -33,7 +33,6 @@ function Check-PowerShellVersion {
 Check-PowerShellVersion
 
 
-
 # Function to Gather Logs Based on User Selection
 function Gather-Logs {
     [CmdletBinding()]
@@ -59,12 +58,9 @@ function Gather-Logs {
         # Temp Directory Used During Log Gathering
         $tempDir = Join-Path $env:TEMP "Jumpcloud_Temp_Logs"
 
-        # Check if the Temp Directory Already Exists and Remove it if it Does
         if (Test-Path $tempDir) {
             Remove-Item -Path $tempDir -Recurse -Force
         }
-
-        # Create the Temp Directory
         New-Item -ItemType Directory -Path $tempDir > $null
 
         # Gather Windows Version Information
@@ -72,8 +68,6 @@ function Gather-Logs {
         $winVersion += " - Version " + (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
         $winVersionFile = Join-Path $tempDir "WinVersion.txt"
         $winVersion | Out-File -FilePath $winVersionFile -ErrorAction SilentlyContinue
-
-
 
         # List of Log Files and Event Logs to Gather
         $fileList = @{
@@ -92,13 +86,14 @@ function Gather-Logs {
                 "C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf",
                 "C:\Program Files\JumpCloud\Plugins\Contrib\lockoutCache.json",
                 "C:\Program Files\JumpCloud\Plugins\Contrib\managedUsers.json",
-                "C:\Program Files\JumpCloud\Plugins\Contrib\version.txt"
+                "C:\Program Files\JumpCloud\Plugins\Contrib\version.txt",
+                "C:\ProgramData\JumpCloud\CredentialProvider\provider.log",
+                "C:\ProgramData\JumpCloud\DependencyLoader\loader.log"
             )
             "RemoteAssistLogs"    = @(
                 "C:\Windows\System32\config\systemprofile\AppData\Roaming\JumpCloud-Remote-Assist\logs\*.log",
                 "C:\Windows\Temp\jc_raasvc.log"
             )
-
             "ChocolateyLogs"      = @(
                 "C:\ProgramData\chocolatey\logs\choco.summary.log",
                 "C:\ProgramData\chocolatey\logs\chocolatey.log",
@@ -110,7 +105,6 @@ function Gather-Logs {
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\jcadimportagent.config.json",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\JumpCloud_AD_Sync.log",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\config.json"
-
             )
             "Policies"            = @(
                 "C:\windows\temp\jcagent.log"
@@ -129,12 +123,11 @@ function Gather-Logs {
 
         $files = @()
         $eventLogs = @()
-        $nonExistentFiles = @()
+        $copyLog = @()
 
         if ($PSCmdlet.ParameterSetName -eq 'SearchFilter') {
             $selectedSections = $selections
         } elseif ($PSCmdlet.ParameterSetName -eq 'All Logs') {
-            # "Active Directory Logs" are not returned with "All Logs"
             $selectedSections = @("JumpCloud Agent Logs",
                 "Remote Assist logs",
                 "Password Manager Logs",
@@ -146,38 +139,50 @@ function Gather-Logs {
         }
     }
 
-
     process {
-
         foreach ($logType in $selectedSections) {
-
             Write-Host "Getting $($logType)"
             switch ($logType) {
                 "JumpCloud Agent Logs" {
                     $files += $fileList["AgentLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
-                    # Handle jc-user-agent.log and jcupdate.log
+
+                    # Getting jc-user-agent.log and jcupdate.log per user
                     $allUsers = Get-LocalUser
                     foreach ($user in $allUsers) {
                         if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
                             $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
                             $profileImagePath = $profilePath.ProfileImagePath
+
+                            $jcUserAgentLog = "$profileImagePath\AppData\Local\Temp\jc-user-agent.log"
+                            $jcUpdateLog    = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
+
+                            foreach ($file in @($jcUserAgentLog, $jcUpdateLog)) {
+                                if (Test-Path $file) {
+                                    try {
+                                        $destName = "$tempDir\$($user.Name)-$(Split-Path $file -Leaf)"
+                                        Copy-Item -Path $file -Destination $destName -ErrorAction Stop
+                                        $copyLog += "SUCCESS: $file -> $destName"
+                                    } catch {
+                                        $copyLog += "FAILED: $file - $($_.Exception.Message)"
+                                    }
+                                } else {
+                                    $copyLog += "FAILED: $file - File does not exist"
+                                }
+                            }
                         }
+                    }
 
-                        # Define paths to jc-user-agent.log and jcupdate.log
-                        $jcUserAgentLog = "$profileImagePath\AppData\Local\Temp\jc-user-agent.log"
-                        $jcUpdateLog = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
-
-                        # Check and copy jc-user-agent.log if it exists
-                        if (Test-Path -Path $jcUserAgentLog) {
-                            $destinationPath = "$tempDir\$($user.Name).jc-user-agent.log"
-                            Copy-Item -Path $jcUserAgentLog -Destination $destinationPath -ErrorAction SilentlyContinue
-                        }
-
-                        # Check and copy jcupdate.log if it exists
-                        if (Test-Path -Path $jcUpdateLog) {
-                            $destinationPath = "$tempDir\$($user.Name).jcupdate.log"
-                            Copy-Item -Path $jcUpdateLog -Destination $destinationPath -ErrorAction SilentlyContinue
+                    # Getting JumpCloud TrayApp logs
+                    $trayAppLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\TrayApp\" -Recurse -Filter "jumpcloudtray.log" -ErrorAction SilentlyContinue
+                    foreach ($log in $trayAppLogs) {
+                        try {
+                            $parentFolder = Split-Path $log.DirectoryName -Leaf
+                            $destName = "$tempDir\$parentFolder-jumpcloudtray.log"
+                            Copy-Item -Path $log.FullName -Destination $destName -ErrorAction Stop
+                            $copyLog += "SUCCESS: $($log.FullName) -> $destName"
+                        } catch {
+                            $copyLog += "FAILED: $($log.FullName) - $($_.Exception.Message)"
                         }
                     }
                 }
@@ -190,16 +195,23 @@ function Gather-Logs {
                         if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
                             $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
                             $profileImagePath = $profilePath.ProfileImagePath
-                        }
 
-                        if (Test-Path -Path "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log") {
-                            $passwordManagerLogPath = "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log"
-                            $files += $passwordManagerLogPath
-                        }
-                        if (Test-Path -Path "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log") {
-                            $passwordManagerLogPath = "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
-                            $files += $passwordManagerLogPath
+                            foreach ($file in @(
+                                "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log",
+                                "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
+                            )) {
+                                if (Test-Path $file) {
+                                    try {
+                                        Copy-Item -Path $file -Destination $tempDir -ErrorAction Stop
+                                        $copyLog += "SUCCESS: $file"
+                                    } catch {
+                                        $copyLog += "FAILED: $file - $($_.Exception.Message)"
+                                    }
+                                } else {
+                                    $copyLog += "FAILED: $file - File does not exist"
+                                }
                             }
+                        }
                     }
                 }
                 "MDM Enrollment and Hosted Software Management" {
@@ -225,7 +237,7 @@ function Gather-Logs {
                 "Device Policies" {
                     $files += $fileList["Policies"]
 
-                    # Generate RSOP Output
+                    # Getting RSOP Output
                     $rsopOutputPath = Join-Path $tempDir "RSOP.html"
                     $rsopCmd = "gpresult /SCOPE COMPUTER /H $rsopOutputPath"
                     Invoke-Expression $rsopCmd
@@ -233,100 +245,74 @@ function Gather-Logs {
                 "Active Directory Integration Logs" {
                     $files += $fileList["ADLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
-                    # Export AD Integration Registry Keys
-                    # test for import agent files
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\JumpCloud\AD Integration Import Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Import Agent" "$tempDir\ADIntegrationImportAgent.reg" /y
-                    } else {
-                        Write-Warning "No AD Import Agent Keys exist"
                     }
-                    # test for sync agent files
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Jumpcloud\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\ADIntegrationSyncAgent.reg" /y
-                    } else {
-                        Write-Warning "No AD Sync Agent Keys exist"
                     }
-                    # Output DistinguishedName to a Text File
-                    Import-Module ActiveDirectory
+                    Import-Module ActiveDirectory -ErrorAction SilentlyContinue
                     if (Get-Module -Name ActiveDirectory) {
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
-                    } else {
-                        Write-Warning "The Active Directory PowerShell Module was not installed"
                     }
                 }
             }
         }
 
-        # Check if the Zip File Already Exists and Remove it if it Does
-        $zipFilePath = "C:\Windows\Temp\Jumpcloud_Agent_Logs.zip"
-        if (Test-Path $zipFilePath) {
-            Remove-Item $zipFilePath
-        }
-
-        # Copy the Files to the Temporary Directory if They Exist
+        # Copy the Files in $files list
         foreach ($file in $files) {
             if (Test-Path $file) {
-                if ($file -match "logs-live") {
-
-                    $pwmFile = $file | Select-String -Pattern "C:\\Users\\([\s\S]+)\\AppData"
-                    $pwnFileUsername = $pwmFile.matches.groups[1].value
-                    Copy-Item -Path $file -Destination "$tempDir/$pwnFileUsername-logs-live.txt" -ErrorAction SilentlyContinue
-                } else {
-                    Copy-Item -Path $file -Destination $tempDir -ErrorAction SilentlyContinue
+                try {
+                    if ($file -match "logs-live") {
+                        $pwmFile = $file | Select-String -Pattern "C:\\Users\\([\s\S]+)\\AppData"
+                        $pwnFileUsername = $pwmFile.matches.groups[1].value
+                        $destName = "$tempDir/$pwnFileUsername-logs-live.txt"
+                        Copy-Item -Path $file -Destination $destName -ErrorAction Stop
+                        $copyLog += "SUCCESS: $file -> $destName"
+                    } else {
+                        Copy-Item -Path $file -Destination $tempDir -ErrorAction Stop
+                        $copyLog += "SUCCESS: $file"
+                    }
+                } catch {
+                    $copyLog += "FAILED: $file - $($_.Exception.Message)"
                 }
             } else {
-                $nonExistentFiles += $file
+                $copyLog += "FAILED: $file - File does not exist"
             }
         }
 
-        # Export Event Logs to Temporary Directory
+        # Export Event Logs
         foreach ($log in $eventLogs) {
             $evtFile = Join-Path $tempDir "$($log -replace '/', '-').evtx"
-            if (Test-Path -Path $evtFile) {
-                Remove-Item -Path $evtFile -Force
-            }
-            try {
-                wevtutil epl $log $evtFile
-            } catch {
-                Write-Host "Skipping $log event log: $_"
-            }
+            if (Test-Path -Path $evtFile) { Remove-Item -Path $evtFile -Force }
+            try { wevtutil epl $log $evtFile } catch { $copyLog += "FAILED EventLog: $log - $($_.Exception.Message)" }
         }
     }
+
     end {
-
-        # Create a Log File of All Copied Files and include it in the ZIP
+        # Write copy results
         $logFilePath = Join-Path $tempDir "CopiedFiles.log"
-        $files | Out-File -FilePath $logFilePath -ErrorAction SilentlyContinue
+        $copyLog | Out-File -FilePath $logFilePath -ErrorAction SilentlyContinue
 
-        # Create the Zip File
+        # Zip
         $hostname = $env:COMPUTERNAME
-        $selectedSectionsString = $selectedSections -join "_"
         $zipFileName = "${hostname}_Jumpcloud_Agent_Logs.zip"
         $zipFilePath = Join-Path "C:\Windows\Temp" $zipFileName
-        if (Test-Path $zipFilePath) {
-            Remove-Item -Path $zipFilePath -Recurse -Force
-        }
+        if (Test-Path $zipFilePath) { Remove-Item -Path $zipFilePath -Recurse -Force }
         Compress-Archive -Path $tempDir\* -DestinationPath $zipFilePath -Force
 
         Write-Host "Logs have been gathered and compressed into $zipFilePath"
-
-        # Open the Folder Containing the Zip File
         Start-Process "explorer.exe" -ArgumentList "/select,`"$zipFilepath`""
 
-        # Cleanup Temporary Directory
         Remove-Item -Path $tempDir -Recurse -Force
     }
 }
-
-
 
 # if automate is selected, do not prompt, set all logs
 if ($automate) {
     Gather-Logs -All
 } else {
-
-    # Prompt the User to Select the Sections to Gather Logs From
     $sections = @(
         "All Logs (No Active Directory)",
         "JumpCloud Agent Logs",
@@ -355,4 +341,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-}
+} 
