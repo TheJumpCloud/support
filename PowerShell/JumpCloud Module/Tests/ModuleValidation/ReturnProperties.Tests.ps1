@@ -8,7 +8,7 @@ Describe -Tag:('ModuleValidation') 'Return Properties Checks' {
                 'customDefinitionMap' = @{
 
                 }
-                'ignoreList'          = @('_id', 'tags')
+                'ignoreList'          = @('primarySystemUser')
             };
             'Get-JCUser'    = @{
                 'modelDefinition'     = 'definitions.systemuserput.properties'
