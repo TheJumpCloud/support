@@ -1,3 +1,13 @@
+## 2.1.6
+
+Release Date: August 29, 2025
+
+#### RELEASE NOTES
+
+```
+This patch release addresses changes to menu formatting to fit within the width of the terminal window.
+```
+
 ## 2.1.5
 
 Release Date: July 21, 2025

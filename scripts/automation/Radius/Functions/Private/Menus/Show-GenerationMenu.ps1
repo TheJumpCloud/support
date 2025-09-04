@@ -11,7 +11,7 @@ function Show-GenerationMenu {
         Write-Host $(PadCenter -string ' Certs Expiring Soon ' -char '-')
 
         $Global:expiringCerts | Format-Table -Property username, @{name = 'Remaining Days'; expression = {
-            (New-TimeSpan -Start (Get-Date -Format "o") -End ([dateTime]("$($_.notAfter)"))).Days
+                (New-TimeSpan -Start (Get-Date -Format "o") -End ([dateTime]("$($_.notAfter)"))).Days
             }
         }, @{name = "Expires On"; expression = {
                 [datetime]($_.notAfter)
@@ -21,11 +21,15 @@ function Show-GenerationMenu {
 
     Write-Host $(PadCenter -string ' User Certificate Generation Options ' -char '-')
     # List Options
-    Write-Host "1: Press '1' to generate new certificates for NEW RADIUS users. `n`t$([char]0x1b)[96mNOTE: This will only generate certificates for users who do not have a certificate file yet."
-    Write-Host "2: Press '2' to generate new certificates for ONE RADIUS user. `n`t$([char]0x1b)[96mNOTE: you will be prompted to overwrite any previously generated certificates."
-    Write-Host "3: Press '3' to re-generate new certificates for ALL users. `n`t$([char]0x1b)[96mNOTE: This will overwrite any local generated certificates."
-    Write-Host "4: Press '4' to re-generate new certificates for users who's cert is set to expire shortly. `n`t$([char]0x1b)[96mNOTE: This will overwrite any local generated certificates."
-    Write-Host "E: Press 'E' to return to main menu."
+    Write-WrappedHost "1: Press '1' to generate new certificates for NEW RADIUS users."
+    Write-WrappedHost "NOTE: This will only generate certificates for users who do not have a certificate file yet." -ForegroundColor Cyan -Indent
+    Write-WrappedHost "2: Press '2' to generate new certificates for ONE RADIUS user."
+    Write-WrappedHost "NOTE: you will be prompted to overwrite any previously generated certificates." -ForegroundColor Cyan -Indent
+    Write-WrappedHost "3: Press '3' to re-generate new certificates for ALL users."
+    Write-WrappedHost "NOTE: This will overwrite any local generated certificates." -ForegroundColor Cyan -Indent
+    Write-WrappedHost "4: Press '4' to re-generate new certificates for users who's cert is set to expire shortly."
+    Write-WrappedHost "NOTE: This will overwrite any local generated certificates." -ForegroundColor Cyan -Indent
+    Write-WrappedHost "E: Press 'E' to return to main menu."
 
     Write-Host $(PadCenter -string "-" -char '-')
 }
