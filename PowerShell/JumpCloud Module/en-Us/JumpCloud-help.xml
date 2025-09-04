@@ -8579,65 +8579,6 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
             <command:parameterValue required="false" command:variableLength="false">desktopCapable</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">sshRootEnabled</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">isPolicyBound</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">agentHasFullDiskAccess</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.account_locked_date</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.lastname</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.samba_service_user</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser._id</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.jobTitle</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.allow_public_key</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.organization</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.creationSource</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.ssh_keys</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.totp_enabled</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.disableDeviceMaxLoginAttempts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.displayname</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.state</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.addresses</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.admin</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.created</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.manager</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.username</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.attributes</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.firstname</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.password_never_expires</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.managedAppleId</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.activated</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.recoveryEmail</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.external_password_expiration_date</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.employeeType</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.enable_managed_uid</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.sudo</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.ldap_binding_user</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.enable_user_portal_multifactor</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.phoneNumbers</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.middlename</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.externally_managed</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.costCenter</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.password_date</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.description</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.passwordless_sudo</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.alternateEmail</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.badLoginAttempts</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.company</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.password_expired</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.relationships</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.mfaEnrollment</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.employeeIdentifier</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.external_dn</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.account_locked</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.location</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.email</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.mfa</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.unix_uid</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.department</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.password_expiration_date</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.external_source_type</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.public_key</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.suspended</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.restrictedFields</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.unix_guid</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">primarySystemUser.tags</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
