@@ -8579,6 +8579,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
             <command:parameterValue required="false" command:variableLength="false">desktopCapable</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">sshRootEnabled</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">isPolicyBound</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">agentHasFullDiskAccess</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
