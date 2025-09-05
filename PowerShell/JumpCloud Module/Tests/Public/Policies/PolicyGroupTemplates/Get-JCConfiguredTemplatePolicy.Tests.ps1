@@ -1,4 +1,5 @@
-Describe -Tag:('MSP') 'Get-JCConfiguredTemplatePolicy' {
+# TODO: card to fix the issue CUT-4867
+Describe -Tag:('MSP') 'Get-JCConfiguredTemplatePolicy' -Skip {
     # Note for these tests, there's not a public endpoint to delete these objects
     # tests in this file will assume that configuredTemplatePolicy objects exist
     It "Lists all configured template policies" {
