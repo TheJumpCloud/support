@@ -89,7 +89,13 @@ Function Update-JCDeviceFromCSV () {
                 throw "DeviceID: $($DeviceUpdate.DeviceID) does not exist in JumpCloud. Please validate that this device exists in JumpCloud"
             }
 
-            $DeviceParams = $DeviceUpdate | Select-Object -ExcludeProperty deviceID, hostname
+            # Get the names of the properties to keep. Exclude DeviceID and hostname
+            $devicePropertiesToKeep = $DeviceUpdate.psobject.properties | Where-Object {
+                $_.MemberType -eq "NoteProperty" -and $_.Name -ne "DeviceID" -and $_.Name -ne "hostname"
+            } | Select-Object -ExpandProperty Name
+
+            # Create a new PSCustomObject with only those properties
+            $DeviceParams = $DeviceUpdate | Select-Object -Property $devicePropertiesToKeep
             $DeviceHash = @{}
             $DeviceParams.psobject.properties | ForEach-Object {
                 if (($_.Value -eq '$true') -or ($_.Value -eq 'true')) {

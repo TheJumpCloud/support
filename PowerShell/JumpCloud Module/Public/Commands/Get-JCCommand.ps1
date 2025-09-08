@@ -20,8 +20,8 @@ Function Get-JCCommand () {
         [Parameter( ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'The scheduled command repeat type (minute, hour, day, week, month) of the JumpCloud Command you wish to search for ex. Get-JCCommand -scheduleRepeatType <repeatType>')]
         [ValidateSet('minute', 'hour', 'day', 'week', 'month')]
         [string]$scheduleRepeatType,
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType'',''listensTo'',''organization'',''commandRunners'',''schedule'',''shell'',''timeout'',''sudo'',''template'',''scheduleYear'',''timeToLiveSeconds'',''files'',''user'',''systems''')]
-        [ValidateSet('command', 'name', 'launchType', 'commandType', 'trigger', 'scheduleRepeatType', 'listensTo', 'organization', 'commandRunners', 'schedule', 'shell', 'timeout', 'sudo', 'template', 'scheduleYear', 'timeToLiveSeconds', 'files', 'user', 'systems')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud commands objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''command'', ''name'',''launchType'',''commandType'',''trigger'',''scheduleRepeatType'',''listensTo'',''organization'',''commandRunners'',''schedule'',''shell'',''timeout'',''sudo'',''template'',''scheduleYear'',''timeToLiveSeconds'',''files'',''user'',''systems'', ''description'', ''filesS3''')]
+        [ValidateSet('command', 'name', 'launchType', 'commandType', 'trigger', 'scheduleRepeatType', 'listensTo', 'organization', 'commandRunners', 'schedule', 'shell', 'timeout', 'sudo', 'template', 'scheduleYear', 'timeToLiveSeconds', 'files', 'user', 'systems', 'description', 'filesS3')]
         [String[]]$returnProperties,
         [Parameter(Mandatory,
             ValueFromPipelineByPropertyName,
@@ -94,7 +94,7 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
                         continue
                     }
                     if ($param.value -is [Boolean]) {
-                            (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
+                        (($Search.filter).GetEnumerator()).add($param.Key, $param.value)
 
                         continue
                     }
@@ -106,18 +106,18 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
 
                     if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                         # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
                     } elseif ($param.Value -match '.+?\*$') {
                         # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
                     } elseif ($param.Value -match '^\*.+?') {
                         # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
                     } elseif ($param.Value -match '^[-+]?\d+$') {
                         # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
                     } else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
                     }
 
                 } # End foreach
