@@ -2,7 +2,7 @@ BeforeAll {
 
     $ErrorActionPreference = 'Stop' # Continue (Default), Ignore, Inquire, SilentlyContinue, Stop, Suspend
 }
-# TODO: Waiting on the API team to fix an issue with the authorized_key endpoint
+# TODO: Waiting on the API team to fix an issue with the authorized_key endpoint marking CUT-4892 as the card to revert these changes
 Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" -Skip {
     Function Get-JCSystemInsightsTestCases($System) {
         # Retrieve objects to test with
