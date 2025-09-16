@@ -1,51 +1,51 @@
 <#
 .DESCRIPTION
-    This script identifies JumpCloud managed systems that can have a Primary User assigned. 
-    It allows an administrator to provide a "ignore list" of usernames to exclude from consideration. 
+    This script identifies JumpCloud managed systems that can have a Primary User assigned.
+    It allows an administrator to provide a "ignore list" of usernames to exclude from consideration.
 
     Primary User is assigned in two cases:
     1.  The system has exactly one associated user (who is directly associated and not on the ignore list).
     2.  The system has multiple directly associated users, but all except one are on the ignore list.
 
-    Before making any changes, a CSV file is generated for review and prompts for final confirmation. 
+    Before making any changes, a CSV file is generated for review and prompts for final confirmation.
     The script uses the JumpCloud PowerShell module for all reads/writes of the relevant JumpCloud organization.
 #>
 
 # Initialize counters for the final summary report
 $counters = @{
-    totalSystemsProcessed   = 0
-    updatedCount            = 0
-    unaffectedCount         = 0 # Systems with 0 users, or multiple non-ignored users
-    fullyIgnoredCount       = 0 # Systems where all users were on the ignore list
-    singleUserOnIgnoreList  = 0 # Systems with 1 user who was on the ignore list
-    failedLookupCount       = 0 # Systems skipped because user details could not be found
+    totalSystemsProcessed  = 0
+    updatedCount           = 0
+    unaffectedCount        = 0 # Systems with 0 users, or multiple non-ignored users
+    fullyIgnoredCount      = 0 # Systems where all users were on the ignore list
+    singleUserOnIgnoreList = 0 # Systems with 1 user who was on the ignore list
+    failedLookupCount      = 0 # Systems skipped because user details could not be found
 }
 
 try {
     # --- 1. Authentication ---
     Write-Host "Connecting to JumpCloud..." -ForegroundColor Cyan
-    Connect-JCOnline -force
+    Connect-JCOnline
 
     if (-not $Global:JCAPIKEY) {
         throw "Failed to connect. Please ensure the JumpCloud module is installed and a valid API key is provided."
     }
     Write-Host "Successfully connected to JumpCloud." -ForegroundColor Green
-    
+
     $changeKeyConfirmation = Read-Host -Prompt "A connection is established. Do you want to use a different API key for this session? (y/n)"
     if ($changeKeyConfirmation.ToLower() -eq 'y') {
         $newApiKey = Read-Host -Prompt "Please enter the new JumpCloud API Key"
         if ([string]::IsNullOrWhiteSpace($newApiKey)) {
-             throw "New API Key cannot be empty. Halting script."
+            throw "New API Key cannot be empty. Halting script."
         }
 
         $addOrgId = Read-Host -Prompt "Do you want to provide an organization ID (only needed for multi tenant portals)? (y/n)"
         if ($addOrgId.ToLower() -eq 'y') {
             $newOrgId = Read-Host -Prompt "Please enter the new JumpCloud organization ID"
             if ([string]::IsNullOrWhiteSpace($newOrgId)) {
-                 throw "New Org ID cannot be empty. Halting script."
+                throw "New Org ID cannot be empty. Halting script."
             }
         }
-        
+
         Write-Host "Attempting to connect with the new API key..." -ForegroundColor Cyan
         Connect-JCOnline -JumpCloudApiKey $newApiKey -JumpCloudOrgId $newOrgId
 
@@ -56,12 +56,12 @@ try {
     }
     Write-Host ""
 
-     # --- 2. Get and Validate Ignore List ---
-     while ($true) {
+    # --- 2. Get and Validate Ignore List ---
+    while ($true) {
         Write-Host "You can provide a list of usernames to exclude from being assigned as a primary user." -ForegroundColor Cyan
         $ignoreListInput = Read-Host -Prompt "Enter a comma-separated list of usernames to ignore (such as IT Administrators, guest accounts, etc.) or press Enter to skip"
         $ignoreList = if (-not [string]::IsNullOrWhiteSpace($ignoreListInput)) { $ignoreListInput.Split(',') | ForEach-Object { $_.Trim() } } else { @() }
-        
+
         if ($ignoreList.Count -eq 0) { break } # Exit loop if list is empty
 
         $invalidUsers = @()
@@ -75,7 +75,8 @@ try {
 
         if ($invalidUsers.Count -gt 0) {
             Write-Warning "The following users could not be found: $($invalidUsers -join ', '). Please check the usernames and try again."
-        } else {
+        }
+        else {
             break # Exit loop if all users are valid
         }
     }
@@ -93,6 +94,14 @@ try {
     Write-Host ""
 
     Write-Host "Analyzing systems..." -ForegroundColor Cyan
+    $report = New-JCReport -ReportType 'users-to-devices'
+    do {
+        $reportStatus = Get-JCReport | Where-object { $_.id -eq $report.id }
+        Write-Host "Report status: $($reportStatus.Status)"
+        Start-Sleep -Seconds 1
+    } until ($reportStatus.Status -eq "COMPLETED")
+    $reportContent = Get-JCReport -reportID $report.id -Type json
+
     # This list will hold a report item for EVERY system.
     $reportItems = [System.Collections.Generic.List[PSCustomObject]]::new()
 
@@ -100,28 +109,29 @@ try {
     foreach ($system in $allSystems) {
         $progress++
         Write-Progress -Activity "Analyzing Systems" -Status "Processing $($system.hostname) ($progress of $($allSystems.Count))" -PercentComplete (($progress / $allSystems.Count) * 100)
-        
-        $associatedUsers = Get-JCSystemUser -SystemID $system.id
+
+        $associatedUsers = $reportContent | Where-Object { $_.resource_object_id -eq $system.id }
         $userCount = $associatedUsers.Count
 
         # Create a report object for the current system
         $reportObject = [PSCustomObject]@{
-            SystemID                           = $system.id
-            SystemHostname                     = $system.hostname
-            SystemDisplayname                  = $system.displayName
-            AssociatedUserCount                = $userCount
-            ProposedPrimaryUserEmail           = ''
-            ProposedPrimaryUsername            = ''
-            ProposedPrimaryUserID              = ''
-            Reason                             = ''
+            SystemID                 = $system.id
+            SystemHostname           = $system.hostname
+            SystemDisplayname        = $system.displayName
+            AssociatedUserCount      = $userCount
+            ProposedPrimaryUserEmail = ''
+            ProposedPrimaryUsername  = ''
+            ProposedPrimaryUserID    = ''
+            Reason                   = ''
         }
 
         if ($userCount -eq 0) {
             $reportObject.Reason = "No associated users"
             $counters.unaffectedCount++
-        } else {
+        }
+        else {
             # First, filter for only directly associated users, as they are the only eligible candidates.
-            $directlyAssociatedUsers = $associatedUsers | Where-Object { $_.directBind -eq $true }
+            $directlyAssociatedUsers = $associatedUsers | Where-Object { $_.association_type -eq 'direct' }
 
             # Next, filter out ignored users from the list of directly associated users.
             $candidateUsers = $directlyAssociatedUsers | Where-Object { $_.Username -notin $ignoreList }
@@ -134,51 +144,60 @@ try {
                     $existingSystemInfo = Get-JCSystem -SystemID $system.id
                     if ($null -ne $existingSystemInfo.primarySystemUser.id) {
                         $reportObject.Reason = "System already has a Primary User assigned"
-                    } else {
+                    }
+                    else {
                         # No primary user is set, so we can proceed with our candidate
                         $fullUserObject = Get-JCUser -Username $candidateUser.Username -ErrorAction Stop
 
                         if ($null -eq $fullUserObject -or [string]::IsNullOrWhiteSpace($fullUserObject.id)) {
                             $reportObject.Reason = "Could not retrieve full details for candidate user $($candidateUser.Username)"
                             $counters.failedLookupCount++
-                        } else {
+                        }
+                        else {
                             # This is a valid system to update. Populate the object.
                             $reportObject.ProposedPrimaryUserEmail = $fullUserObject.email
-                            $reportObject.ProposedPrimaryUsername  = $fullUserObject.username
-                            $reportObject.ProposedPrimaryUserID    = $fullUserObject.id
-                            $reportObject.Reason    = if ($associatedUsers.Count -eq 1) {
+                            $reportObject.ProposedPrimaryUsername = $fullUserObject.username
+                            $reportObject.ProposedPrimaryUserID = $fullUserObject.id
+                            $reportObject.Reason = if ($associatedUsers.Count -eq 1) {
                                 "Exactly one associated user on system"
-                            } else {
+                            }
+                            else {
                                 "All but exactly one eligible user are on the ignore list"
                             }
                         }
                     }
-                } catch {
+                }
+                catch {
                     $reportObject.Reason = "Error retrieving details for user $($candidateUser.Username): $($_.Exception.Message)"
                     $counters.failedLookupCount++
                 }
-            } elseif ($candidateUsers.Count -eq 0) {
+            }
+            elseif ($candidateUsers.Count -eq 0) {
                 if ($directlyAssociatedUsers.Count -eq 0) {
                     $reportObject.Reason = "All associated user(s) do not have a direct association to system"
-                } else {
+                }
+                else {
                     $reportObject.Reason = "All eligible directly associated users are on the ignore list"
                 }
                 $counters.fullyIgnoredCount++
-            } else { # More than 1 non-ignored user
+            }
+            else {
+                # More than 1 non-ignored user
                 $reportObject.Reason = "Multiple eligible (non-ignored, directly associated) users associated"
                 $counters.unaffectedCount++
             }
         }
-        
+
         # Final check to populate placeholder text if no valid user was assigned
         if ([string]::IsNullOrWhiteSpace($reportObject.ProposedPrimaryUserID)) {
             $reportObject.ProposedPrimaryUsername = "No Primary User can be assigned"
-            $reportObject.ProposedPrimaryUserEmail  = "No Primary User can be assigned"
+            $reportObject.ProposedPrimaryUserEmail = "No Primary User can be assigned"
         }
 
         # Add the report object for the current system to our list
         $reportItems.Add($reportObject)
     }
+
     Write-Progress -Activity "Analyzing Systems" -Completed
     Write-Host "Analysis complete." -ForegroundColor Green
     Write-Host ""
@@ -190,12 +209,14 @@ try {
 
     if ($reportItems.Count -eq 0) {
         Write-Host "No systems were found in the organization." -ForegroundColor Green
-    } else {
+    }
+    else {
         $saveLocationInput = Read-Host -Prompt "Enter a folder path to save the CSV report (press Enter to save to your Desktop)"
-        
+
         $saveDirectory = if ([string]::IsNullOrWhiteSpace($saveLocationInput)) {
             [Environment]::GetFolderPath('Desktop')
-        } else {
+        }
+        else {
             $saveLocationInput
         }
 
@@ -205,28 +226,31 @@ try {
                 try {
                     New-Item -Path $saveDirectory -ItemType Directory -Force | Out-Null
                     Write-Host "Directory '$saveDirectory' created." -ForegroundColor Green
-                } catch {
+                }
+                catch {
                     throw "Failed to create directory. Please check permissions and run the script again."
                 }
-            } else {
+            }
+            else {
                 throw "Save directory not found. Halting script."
             }
         }
-        
+
         $csvPath = Join-Path -Path $saveDirectory -ChildPath "JumpCloud_PrimaryUser_Changes_$(Get-Date -Format 'yyyy-MM-dd-HHmmss').csv"
         # Export the full report of all systems
         $reportItems | Select-Object SystemID, SystemHostname, SystemDisplayname, AssociatedUserCount, ProposedPrimaryUserEmail, ProposedPrimaryUsername, Reason | Export-Csv -Path $csvPath -NoTypeInformation
 
         Write-Host "A report of ALL systems has been generated." -ForegroundColor Cyan
         Write-Host "File location: $csvPath" -ForegroundColor Yellow
-        
+
         # Ask user if they want to open the file now
         $openFileConfirm = Read-Host -Prompt "Do you want to open the report file now? (y/n)"
         if ($openFileConfirm.ToLower() -eq 'y') {
             try {
                 Invoke-Item -Path $csvPath
                 Write-Host "Opening file..."
-            } catch {
+            }
+            catch {
                 Write-Warning "Could not open the file. Please navigate to the path manually: $csvPath"
             }
         }
@@ -247,23 +271,28 @@ try {
                         Set-JCSystem -SystemID $item.SystemID -primarySystemUser $item.ProposedPrimaryUserID
                         Write-Host "  -> Successfully assigned '$($item.ProposedPrimaryUsername)' as primary user for '$($item.SystemHostname)'." -ForegroundColor Green
                         $counters.updatedCount++
-                    } catch {
+                    }
+                    catch {
                         Write-Error "  -> FAILED to update system '$($item.SystemHostname)'. Error: $($_.Exception.Message)"
                     }
                 }
                 Write-Progress -Activity "Applying Changes" -Completed
                 Write-Host "All changes have been applied." -ForegroundColor Green
-            } else {
+            }
+            else {
                 Write-Host "Operation cancelled by the administrator. No changes were made." -ForegroundColor Yellow
             }
-        } else {
+        }
+        else {
             Write-Host "No systems were identified for primary user assignment based on the criteria." -ForegroundColor Green
         }
     }
 
-} catch {
+}
+catch {
     Write-Error "A critical error occurred: $($_.Exception.Message)"
-} finally {
+}
+finally {
     Write-Host ""
     Write-Host "------------------- Final Summary -------------------" -ForegroundColor Cyan
     Write-Host "Total Systems Processed: $($counters.totalSystemsProcessed)"
