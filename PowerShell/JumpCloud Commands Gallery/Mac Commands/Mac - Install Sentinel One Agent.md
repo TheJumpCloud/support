@@ -26,10 +26,10 @@ if [[ -d /Applications/SentinelOne/ ]]
     exit 0
 fi
 
-# Create Temp Folder
+# Create A Unique Temp Folder
 #
-DATE=$(date '+%Y-%m-%d-%H-%M-%S')
-TempFolder="Download-$DATE"
+UUID=$(uuidgen)
+TempFolder="Download-$UUID"
 mkdir /tmp/$TempFolder
 
 # Navigate to Temp Folder
