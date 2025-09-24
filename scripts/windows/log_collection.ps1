@@ -88,7 +88,7 @@ function Gather-Logs {
                 "C:\Program Files\JumpCloud\Plugins\Contrib\managedUsers.json",
                 "C:\Program Files\JumpCloud\Plugins\Contrib\version.txt",
                 "C:\ProgramData\JumpCloud\CredentialProvider\provider.log",
-                "C:\ProgramData\JumpCloud\DependencyLoader\loader.log"
+                "C:\ProgramData\JumpCloud\DependencyLoader\loader.log",
                 "C:\Program Files\JumpCloud\policyConf.json"
             )
             "RemoteAssistLogs" = @(
