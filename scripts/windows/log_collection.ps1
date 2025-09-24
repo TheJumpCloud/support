@@ -188,7 +188,12 @@ function Gather-Logs {
                     }
 
                     # Getting local security policy export
-                    secedit /export /cfg "$tempDir\secpol_backup.inf"
+                    try {
+                        secedit /export /cfg "$tempDir\secpol_backup.inf"
+                        $copyLog += "SUCCESS: Exported local security policy to $tempDir\secpol_backup.inf"
+                    } catch {
+                        $copyLog += "FAILED: Exporting local security policy - $($_.Exception.Message)"
+                    }
                 }
                 "Remote Assist logs" {
                     $files += $fileList["RemoteAssistLogs"]
