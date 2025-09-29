@@ -1,4 +1,4 @@
- ##################### Do Not Modify Below ######################
+##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
 $automate = $false
 
@@ -71,7 +71,7 @@ function Gather-Logs {
 
         # List of Log Files and Event Logs to Gather
         $fileList = @{
-            "AgentLogs"           = @(
+            "AgentLogs"        = @(
                 "C:\windows\temp\jcagent.log",
                 "C:\windows\temp\jcagent.log.*",
                 "C:\Windows\Temp\jcagent_updater.log",
@@ -88,25 +88,26 @@ function Gather-Logs {
                 "C:\Program Files\JumpCloud\Plugins\Contrib\managedUsers.json",
                 "C:\Program Files\JumpCloud\Plugins\Contrib\version.txt",
                 "C:\ProgramData\JumpCloud\CredentialProvider\provider.log",
-                "C:\ProgramData\JumpCloud\DependencyLoader\loader.log"
+                "C:\ProgramData\JumpCloud\DependencyLoader\loader.log",
+                "C:\Program Files\JumpCloud\policyConf.json"
             )
-            "RemoteAssistLogs"    = @(
+            "RemoteAssistLogs" = @(
                 "C:\Windows\System32\config\systemprofile\AppData\Roaming\JumpCloud-Remote-Assist\logs\*.log",
                 "C:\Windows\Temp\jc_raasvc.log"
             )
-            "ChocolateyLogs"      = @(
+            "ChocolateyLogs"   = @(
                 "C:\ProgramData\chocolatey\logs\choco.summary.log",
                 "C:\ProgramData\chocolatey\logs\chocolatey.log",
                 "C:\windows\temp\jcagent.log"
             )
-            "ADLogs"              = @(
+            "ADLogs"           = @(
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\JumpCloud_AD_Import_Grpc*.log",
                 "C:\Windows\Temp\JumpCloud_AD_Integration.log",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Import\jcadimportagent.config.json",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\JumpCloud_AD_Sync.log",
                 "C:\Program Files\JumpCloud\AD Integration\JumpCloud AD Sync\config.json"
             )
-            "Policies"            = @(
+            "Policies"         = @(
                 "C:\windows\temp\jcagent.log"
             )
         }
@@ -155,7 +156,7 @@ function Gather-Logs {
                             $profileImagePath = $profilePath.ProfileImagePath
 
                             $jcUserAgentLog = "$profileImagePath\AppData\Local\Temp\jc-user-agent.log"
-                            $jcUpdateLog    = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
+                            $jcUpdateLog = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
 
                             foreach ($file in @($jcUserAgentLog, $jcUpdateLog)) {
                                 if (Test-Path $file) {
@@ -185,6 +186,14 @@ function Gather-Logs {
                             $copyLog += "FAILED: $($log.FullName) - $($_.Exception.Message)"
                         }
                     }
+
+                    # Getting local security policy export
+                    try {
+                        secedit /export /cfg "$tempDir\secpol_backup.inf"
+                        $copyLog += "SUCCESS: Exported local security policy to $tempDir\secpol_backup.inf"
+                    } catch {
+                        $copyLog += "FAILED: Exporting local security policy - $($_.Exception.Message)"
+                    }
                 }
                 "Remote Assist logs" {
                     $files += $fileList["RemoteAssistLogs"]
@@ -197,9 +206,9 @@ function Gather-Logs {
                             $profileImagePath = $profilePath.ProfileImagePath
 
                             foreach ($file in @(
-                                "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log",
-                                "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
-                            )) {
+                                    "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log",
+                                    "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
+                                )) {
                                 if (Test-Path $file) {
                                     try {
                                         Copy-Item -Path $file -Destination $tempDir -ErrorAction Stop
@@ -341,4 +350,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-} 
+}
