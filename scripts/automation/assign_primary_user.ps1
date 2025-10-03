@@ -11,6 +11,13 @@
     The script uses the JumpCloud PowerShell module for all reads/writes of the relevant JumpCloud organization.
 #>
 
+# Prerequisites:
+# require PowerShell 7+
+If ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Error "This script requires PowerShell 7 or higher. Please upgrade your PowerShell version."
+    exit
+}
+
 # Initialize counters for the final summary report
 $counters = @{
     totalSystemsProcessed  = 0
@@ -75,8 +82,7 @@ try {
 
         if ($invalidUsers.Count -gt 0) {
             Write-Warning "The following users could not be found: $($invalidUsers -join ', '). Please check the usernames and try again."
-        }
-        else {
+        } else {
             break # Exit loop if all users are valid
         }
     }
@@ -128,8 +134,7 @@ try {
         if ($userCount -eq 0) {
             $reportObject.Reason = "No associated users"
             $counters.unaffectedCount++
-        }
-        else {
+        } else {
             # First, filter for only directly associated users, as they are the only eligible candidates.
             $directlyAssociatedUsers = $associatedUsers | Where-Object { $_.association_type -eq 'direct' }
 
@@ -144,44 +149,37 @@ try {
                     $existingSystemInfo = Get-JCSystem -SystemID $system.id
                     if ($null -ne $existingSystemInfo.primarySystemUser.id) {
                         $reportObject.Reason = "System already has a Primary User assigned"
-                    }
-                    else {
+                    } else {
                         # No primary user is set, so we can proceed with our candidate
                         $fullUserObject = Get-JCUser -Username $candidateUser.Username -ErrorAction Stop
 
                         if ($null -eq $fullUserObject -or [string]::IsNullOrWhiteSpace($fullUserObject.id)) {
                             $reportObject.Reason = "Could not retrieve full details for candidate user $($candidateUser.Username)"
                             $counters.failedLookupCount++
-                        }
-                        else {
+                        } else {
                             # This is a valid system to update. Populate the object.
                             $reportObject.ProposedPrimaryUserEmail = $fullUserObject.email
                             $reportObject.ProposedPrimaryUsername = $fullUserObject.username
                             $reportObject.ProposedPrimaryUserID = $fullUserObject.id
                             $reportObject.Reason = if ($associatedUsers.Count -eq 1) {
                                 "Exactly one associated user on system"
-                            }
-                            else {
+                            } else {
                                 "All but exactly one eligible user are on the ignore list"
                             }
                         }
                     }
-                }
-                catch {
+                } catch {
                     $reportObject.Reason = "Error retrieving details for user $($candidateUser.Username): $($_.Exception.Message)"
                     $counters.failedLookupCount++
                 }
-            }
-            elseif ($candidateUsers.Count -eq 0) {
+            } elseif ($candidateUsers.Count -eq 0) {
                 if ($directlyAssociatedUsers.Count -eq 0) {
                     $reportObject.Reason = "All associated user(s) do not have a direct association to system"
-                }
-                else {
+                } else {
                     $reportObject.Reason = "All eligible directly associated users are on the ignore list"
                 }
                 $counters.fullyIgnoredCount++
-            }
-            else {
+            } else {
                 # More than 1 non-ignored user
                 $reportObject.Reason = "Multiple eligible (non-ignored, directly associated) users associated"
                 $counters.unaffectedCount++
@@ -209,14 +207,12 @@ try {
 
     if ($reportItems.Count -eq 0) {
         Write-Host "No systems were found in the organization." -ForegroundColor Green
-    }
-    else {
+    } else {
         $saveLocationInput = Read-Host -Prompt "Enter a folder path to save the CSV report (press Enter to save to your Desktop)"
 
         $saveDirectory = if ([string]::IsNullOrWhiteSpace($saveLocationInput)) {
             [Environment]::GetFolderPath('Desktop')
-        }
-        else {
+        } else {
             $saveLocationInput
         }
 
@@ -226,12 +222,10 @@ try {
                 try {
                     New-Item -Path $saveDirectory -ItemType Directory -Force | Out-Null
                     Write-Host "Directory '$saveDirectory' created." -ForegroundColor Green
-                }
-                catch {
+                } catch {
                     throw "Failed to create directory. Please check permissions and run the script again."
                 }
-            }
-            else {
+            } else {
                 throw "Save directory not found. Halting script."
             }
         }
@@ -249,8 +243,7 @@ try {
             try {
                 Invoke-Item -Path $csvPath
                 Write-Host "Opening file..."
-            }
-            catch {
+            } catch {
                 Write-Warning "Could not open the file. Please navigate to the path manually: $csvPath"
             }
         }
@@ -271,28 +264,23 @@ try {
                         Set-JCSystem -SystemID $item.SystemID -primarySystemUser $item.ProposedPrimaryUserID
                         Write-Host "  -> Successfully assigned '$($item.ProposedPrimaryUsername)' as primary user for '$($item.SystemHostname)'." -ForegroundColor Green
                         $counters.updatedCount++
-                    }
-                    catch {
+                    } catch {
                         Write-Error "  -> FAILED to update system '$($item.SystemHostname)'. Error: $($_.Exception.Message)"
                     }
                 }
                 Write-Progress -Activity "Applying Changes" -Completed
                 Write-Host "All changes have been applied." -ForegroundColor Green
-            }
-            else {
+            } else {
                 Write-Host "Operation cancelled by the administrator. No changes were made." -ForegroundColor Yellow
             }
-        }
-        else {
+        } else {
             Write-Host "No systems were identified for primary user assignment based on the criteria." -ForegroundColor Green
         }
     }
 
-}
-catch {
+} catch {
     Write-Error "A critical error occurred: $($_.Exception.Message)"
-}
-finally {
+} finally {
     Write-Host ""
     Write-Host "------------------- Final Summary -------------------" -ForegroundColor Cyan
     Write-Host "Total Systems Processed: $($counters.totalSystemsProcessed)"
