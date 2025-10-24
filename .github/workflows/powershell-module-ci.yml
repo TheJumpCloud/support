@@ -1,5 +1,7 @@
 name: PowerShell Module CI
-
+permissions:
+  contents: read
+  actions: write
 on:
   pull_request:
     # Sequence of patterns matched against refs/heads

@@ -1,4 +1,7 @@
 name: Release and Publish Radius Module
+permissions:
+  contents: write
+  actions: write
 on:
   pull_request:
     types:
