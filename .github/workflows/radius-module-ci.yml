@@ -1,5 +1,6 @@
 name: Radius Module CI
-
+permissions:
+  contents: read
 on:
   pull_request:
     # Sequence of patterns matched against refs/heads
