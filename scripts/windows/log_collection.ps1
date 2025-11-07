@@ -90,7 +90,8 @@ function Gather-Logs {
                 "C:\ProgramData\JumpCloud\CredentialProvider\provider*.json",
                 "C:\ProgramData\JumpCloud\CredentialProvider\provider*.log",
                 "C:\ProgramData\JumpCloud\DependencyLoader\loader.log",
-                "C:\Program Files\JumpCloud\policyConf.json"
+                "C:\Program Files\JumpCloud\policyConf.json", Get add .
+                "C:\ProgramData\JumpCloud\DependencyLoader\loader.log"
             )
             "RemoteAssistLogs" = @(
                 "C:\Windows\System32\config\systemprofile\AppData\Roaming\JumpCloud-Remote-Assist\logs\*.log",
