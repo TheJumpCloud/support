@@ -2,7 +2,8 @@
 ## This API call deletes the system record.
 ##
 
-$config = get-content 'C:\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf'
+$windowsDrive = (Get-CimInstance Win32_OperatingSystem).SystemDrive
+$config = get-content "$($windowsDrive)\Program Files\JumpCloud\Plugins\Contrib\jcagent.conf"
 $regex = 'systemKey\":\"(\w+)\"'
 $systemKey = [regex]::Match($config, $regex).Groups[1].Value
 
@@ -294,7 +295,7 @@ $sha = New-Object System.Security.Cryptography.SHA256CryptoServiceProvider
 # Now hash and display results
 $result = $sha.ComputeHash($data)
 # Private Key Path
-$PrivateKeyFilePath = 'C:\Program Files\JumpCloud\Plugins\Contrib\client.key'
+$PrivateKeyFilePath = "$($windowsDrive)\Program Files\JumpCloud\Plugins\Contrib\client.key"
 $hashAlgo = [System.Security.Cryptography.HashAlgorithmName]::SHA256
 [System.Security.Cryptography.RSA]$rsa = [RSAEncryption.RSAEncryptionProvider]::GetRSAProviderFromPemFile($PrivateKeyFilePath)
 # Format the Signature
