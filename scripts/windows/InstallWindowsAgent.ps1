@@ -15,7 +15,7 @@ $TempPath = "$($windowsDrive)\Windows\Temp\"
 $AGENT_PATH = Join-Path ${env:ProgramFiles} "JumpCloud"
 $AGENT_BINARY_NAME = "jumpcloud-agent.exe"
 $AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/jcagent-msi-signed.msi"
-$AGENT_INSTALLER_PATH = "$($TempPath)\jcagent-msi-signed.msi"
+$AGENT_INSTALLER_PATH = Join-Path $TempPath "jcagent-msi-signed.msi"
 # JumpCloud Agent Installation Functions
 Function InstallAgent() {
     msiexec /i $AGENT_INSTALLER_PATH /quiet /norestart JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey`" /L*V "$TempPath\jcUpdate.log"
