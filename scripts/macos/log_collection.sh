@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2.5
+version=1.2.6
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -60,7 +60,7 @@ baseDir="${hostDir}JumpCloudLogCollect"
 sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
 ## Create directories for log collection
-mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs}
+mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs,$baseDir/DiagnosticReports}
 
 # Setup Log output for Log Collection Script
 collectionLogFile="${baseDir}/collection.log"
@@ -69,6 +69,8 @@ collectionLog() {
 }
 # Also redirect standard errors to the collectionLog file
 exec 2> >(tee -a "$collectionLogFile" >&2)
+
+collectionLog "Log Collection Version: $version"
 
 
 ## Change directory to save log archive depending on active user state
@@ -149,8 +151,20 @@ log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDi
 cp /var/log/install.log* $baseDir/systemLogs/
 
 ## gather CertificateService diagnostic data
-mkdir $baseDir/DiagnosticReports
-cp /Library/Logs/DiagnosticReports/Certificate* $baseDir/DiagnosticReports/
+diagCertPath="/Library/Logs/DiagnosticReports/Certificate*"
+
+if [ -d /Library/Logs/DiagnosticReports/ ]; then
+    collectionLog "Gathering CertificateService diagnostic reports"
+
+    # Check if any file matches the pattern
+    if ls $diagCertPath 1>/dev/null 2>&1; then
+        cp $diagCertPath "$baseDir/DiagnosticReports/"
+        collectionLog "Successfully copied CertificateService reports."
+    else
+        collectionLog "No CertificateService diagnostic reports found to copy."
+    fi
+fi
+
 
 ## list secure tokens and filesystem information
 collectionLog "Gathering filesystem and secure token information"
@@ -219,7 +233,7 @@ rm -R $baseDir
 
 if [[ $localuser ]]; then
     sudo -u $localuser open $archiveTargetDir
-    echo "Log archive has been saved to the current user's Documents folder."
+    echo "Log archive has been saved to the Documents folder for the current user: $localuser."
 else
     echo "Please log in locally on the device and open /var/tmp to locate the log archive.
 You may run the command 'open /var/tmp' in the macOS Terminal to do this."
