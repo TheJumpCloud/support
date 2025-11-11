@@ -31,8 +31,8 @@ function Connect-JCOnline () {
             'Position'                        = 3;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'HelpMessage'                     = 'Specific to JumpCloud development team to connect to staging dev environment.';
-            'ValidateSet'                     = ('production', 'staging');
+            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "production".';
+            'ValidateSet'                     = ('US', 'staging', 'EU');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
@@ -90,14 +90,17 @@ function Connect-JCOnline () {
                 $env:JCEnvironment = $JCEnvironment
                 $global:JCEnvironment = $env:JCEnvironment
             }
-            $global:JCUrlBasePath = Switch ($JCEnvironment) {
-                'production' {
+            $global:JCUrlBasePath = switch ($JCEnvironment) {
+                'US' {
                     "https://console.jumpcloud.com"
                 }
                 'staging' {
                     "https://console.awsstg.jumpcloud.com"
                 }
-                Default {
+                'EU' {
+                    "https://console.eu.jumpcloud.com"
+                }
+                default {
                     Write-Error ('Unknown value for $JCEnvironment.')
                 }
             }
