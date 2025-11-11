@@ -1,6 +1,6 @@
-Function Connect-JCOnline () {
+function Connect-JCOnline () {
     [CmdletBinding()]
-    Param
+    param
     (
         [Parameter(
             ParameterSetName = 'force',
@@ -8,7 +8,7 @@ Function Connect-JCOnline () {
         )]
         [Switch]$force
     )
-    DynamicParam {
+    dynamicparam {
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
@@ -35,20 +35,20 @@ Function Connect-JCOnline () {
             'ValidateSet'                     = ('production', 'staging');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        If ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
+        if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
-        } Else {
+        } else {
             $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
         }
         # If the $env:JCOrgId is set then set the default value to be the env variable
-        If (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+        if (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
             $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
         }
         # If the $env:JCEnvironment is set then set the default value to be the env variable
-        If (-not [System.String]::IsNullOrEmpty($env:JCEnvironment)) {
+        if (-not [System.String]::IsNullOrEmpty($env:JCEnvironment)) {
             $Param_JCEnvironment.Add('Default', $env:JCEnvironment);
-        } Else {
-            $Param_JCEnvironment.Add('Default', 'production');
+        } else {
+            $Param_JCEnvironment.Add('Default', 'US');
         }
         # Build output
         # Build parameter array
@@ -60,32 +60,32 @@ Function Connect-JCOnline () {
             # Creating each parameter
             $VarName = $_.Name
             $VarValue = $_.Value
-            Try {
+            try {
                 New-DynamicParameter @VarValue | Out-Null
-            } Catch {
+            } catch {
                 Write-Error -Message:('Unable to create dynamic parameter:"' + $VarName.Replace($ParamVarPrefix, '') + '"; Error:' + $Error)
             }
         }
-        $IndShowMessages = If ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+        $IndShowMessages = if ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
             $false
-        } Else {
+        } else {
             $true
         }
-        Return $RuntimeParameterDictionary
+        return $RuntimeParameterDictionary
     }
-    Begin {
+    begin {
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
-    Process {
+    process {
         # Load color scheme
         $JCColorConfig = Get-JCColorConfig
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
-        Try {
+        try {
             #Region Set environment variables that can be used by other scripts
             # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
-            If (-not [System.String]::IsNullOrEmpty($JCEnvironment)) {
+            if (-not [System.String]::IsNullOrEmpty($JCEnvironment)) {
                 # Set $env:JCEnvironment
                 $env:JCEnvironment = $JCEnvironment
                 $global:JCEnvironment = $env:JCEnvironment
@@ -102,44 +102,44 @@ Function Connect-JCOnline () {
                 }
             }
             # If "$JumpCloudApiKey" is populated set $env:JCApiKey
-            If (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey)) {
+            if (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey)) {
                 $env:JCApiKey = $JumpCloudApiKey
                 $global:JCAPIKEY = $env:JCApiKey
             }
             # Set $env:JCOrgId in Set-JCOrganization
             try {
-                $Auth = If ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                $Auth = if ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
                     Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -ErrorVariable api_err
-                } ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                } elseif (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
                     Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId) -ErrorVariable api_err
-                } ElseIf ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                } elseif ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
                     Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId) -ErrorVariable api_err
-                } ElseIf (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId) {
+                } elseif (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId) {
                     Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId) -ErrorVariable api_err
-                } Else {
+                } else {
                     Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
                     Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId) -ErrorVariable api_err
                 }
             } catch {
                 Write-Verbose "Error: Unable to validate API Key"
             }
-            If (-not [System.String]::IsNullOrEmpty($Auth)) {
+            if (-not [System.String]::IsNullOrEmpty($Auth)) {
                 # Each time a new org is selected get settings info
                 $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
                 $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
                 $global:JCOrgSettings = (Get-JcSdkOrganization -Id $env:JCOrgId).Settings
                 #EndRegion Set environment variables that can be used by other scripts
-                If (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId))) {
+                if (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId))) {
                     Write-Error ('Incorrect JumpCloudOrgID OR no network connectivity. You can obtain your Organization Id below your Organization''s Contact Information on the Settings page.')
-                    Break
+                    break
                 }
-                If (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey))) {
+                if (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey))) {
                     Write-Error ('Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with "API Settings" accessible from the drop down in the top right hand corner of the screen')
-                    Break
+                    break
                 }
                 # Check for updates to the module and only prompt if user has not been prompted during the session already
-                If (!($force)) {
-                    If ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True') {
+                if (!($force)) {
+                    if ([System.String]::IsNullOrEmpty($env:JcUpdateModule) -or $env:JcUpdateModule -eq 'True') {
                         # Update-JCModule depends on these resources being available, check if available then continue
                         $moduleSites = @(
                             'https://github.com/TheJumpCloud/support/blob/master/PowerShell/ModuleChangelog.md',
@@ -154,14 +154,14 @@ Function Connect-JCOnline () {
                                 $HTTP_Response = $_.Exception.Response
                             }
                             $HTTP_Status = [int]$HTTP_Response.StatusCode
-                            If ($HTTP_Status -eq 200) {
+                            if ($HTTP_Status -eq 200) {
                             } #Site is working properly
-                            Else {
+                            else {
                                 $downRepo += $site
                             }
                             # Clean up the http request by closing it.
-                            If ($HTTP_Response -eq $null) {
-                            } Else {
+                            if ($HTTP_Response -eq $null) {
+                            } else {
                                 $HTTP_Response.Close()
                             }
                         }
@@ -173,7 +173,7 @@ Function Connect-JCOnline () {
                             ($updateStatus = Update-JCModule) | Out-Null
                         }
                     }
-                    If ($IndShowMessages) {
+                    if ($IndShowMessages) {
                         Write-Host ('Connection Status:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                         Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                         Write-Host ('Successfully connected to JumpCloud!') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
@@ -188,7 +188,7 @@ Function Connect-JCOnline () {
                             Write-Host ('Notice:') -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Header)
                             Write-Host ($JCColorConfig.IndentChar) -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Indentation) -NoNewline
                             Write-Host $JCConfig.moduleBanner.Message -BackgroundColor:($JCColorConfig.BackgroundColor) -ForegroundColor:($JCColorConfig.ForegroundColor_Body)
-                            If (-Not $updateStatus) {
+                            if (-not $updateStatus) {
                                 # If we recently updated the module, do not update messageCount
                                 Set-JCSettingsFile -moduleBannerMessageCount ($JCConfig.moduleBanner.messagecount + 1)
                             }
@@ -200,11 +200,11 @@ Function Connect-JCOnline () {
                 # 'JCOrgId'   = $Auth.JCOrgId;
                 # 'JCOrgName' = $Auth.JCOrgName;
                 # }
-            } Else {
+            } else {
                 Write-Verbose "Error: Unable to set module authentication"
             }
             # set Argument Completer(s) which require authentication
-            $templates = Get-JCSDKPolicyTemplate
+            $templates = Get-JcSdkPolicyTemplate
             $global:TemplateNameList = New-Object System.Collections.ArrayList
             foreach ($template in $templates) {
                 $templateHashObject = [PSCustomObject]@{
@@ -218,13 +218,13 @@ Function Connect-JCOnline () {
                 param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
 
                 $TypeFilter = $fakeBoundParameter.Name;
-                $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" }  | Sort-Object -Unique | ForEach-Object { $_ }
+                $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
             }
 
-        } Catch {
-            Throw "Unable to authenticate: $_"
+        } catch {
+            throw "Unable to authenticate: $_"
         }
     }
-    End {
+    end {
     }
 }
