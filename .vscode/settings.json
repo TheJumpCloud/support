@@ -65,81 +65,24 @@
     "editor.formatOnSave": true,
     "files.trimTrailingWhitespace": true,
     // powershell settings
-    // Adds a space before and after the pipeline operator (`|`) if it is missing.
 	"powershell.codeFormatting.addWhitespaceAroundPipe": true,
-
-	// Align assignment statements in a hashtable or a DSC Configuration.
 	"powershell.codeFormatting.alignPropertyValuePairs": true,
-
-	// Replaces aliases with their aliased name.
 	"powershell.codeFormatting.autoCorrectAliases": true,
-
-	// Removes redundant semicolon(s) at the end of a line where a line terminator is sufficient.
 	"powershell.codeFormatting.avoidSemicolonsAsLineTerminators": false,
-
-	// Does not reformat one-line code blocks, such as: `if (...) {...} else {...}`.
 	"powershell.codeFormatting.ignoreOneLineBlock": true,
-
-	// Adds a newline (line break) after a closing brace.
 	"powershell.codeFormatting.newLineAfterCloseBrace": true,
-
-	// Adds a newline (line break) after an open brace.
 	"powershell.codeFormatting.newLineAfterOpenBrace": true,
-
-	// Places open brace on the same line as its associated statement.
 	"powershell.codeFormatting.openBraceOnSameLine": true,
-
-	// Whether to increase indentation after a pipeline for multi-line statements. See [PSScriptAnalyzer](https://github.com/PowerShell/PSScriptAnalyzer/blob/a94d9f5666bba9f569cdf9c1bc99556934f2b8f4/docs/Rules/UseConsistentIndentation.md#pipelineindentation-string-default-value-is-increaseindentationforfirstpipeline) for examples. It is suggested to use `IncreaseIndentationForFirstPipeline` instead of the default `NoIndentation`. **This default may change in the future,** please see the [Request For Comment](https://github.com/PowerShell/vscode-powershell/issues/4296).
-	//  - IncreaseIndentationForFirstPipeline: Indent once after the first pipeline and keep this indentation.
-	//  - IncreaseIndentationAfterEveryPipeline: Indent more after the first pipeline and keep this indentation.
-	//  - NoIndentation: Do not increase indentation.
-	//  - None: Do not change any existing pipeline indentation (disables feature).
 	"powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
-
-	// Sets the code formatting options to follow the given indent style in a way that is compatible with PowerShell syntax. Any setting other than `Custom` will configure (and override) the settings:
-	//
-	// * `powershell.codeFormatting.openBraceOnSameLine`
-	//
-	// * `powershell.codeFormatting.newLineAfterOpenBrace`
-	//
-	// * `powershell.codeFormatting.newLineAfterCloseBrace`
-	//
-	// For more information about the brace styles, please see [PoshCode's discussion](https://github.com/PoshCode/PowerShellPracticeAndStyle/issues/81).
-	//  - Custom: The three brace settings are respected as-is.
-	//  - Allman: Sets `powershell.codeFormatting.openBraceOnSameLine#` to `false`, `#powershell.codeFormatting.newLineAfterOpenBrace#` to `true`, and `#powershell.codeFormatting.newLineAfterCloseBrace` to `true`.
-	//  - OTBS: Sets `powershell.codeFormatting.openBraceOnSameLine#` to `true`, `#powershell.codeFormatting.newLineAfterOpenBrace#` to `true`, and `#powershell.codeFormatting.newLineAfterCloseBrace` to `false`.
-	//  - Stroustrup: Sets `powershell.codeFormatting.openBraceOnSameLine#` to `true`, `#powershell.codeFormatting.newLineAfterOpenBrace#` to `true`, and `#powershell.codeFormatting.newLineAfterCloseBrace` to `true`.
 	"powershell.codeFormatting.preset": "OTBS",
-
-	// Trims extraneous whitespace (more than one character) before and after the pipeline operator (`|`).
 	"powershell.codeFormatting.trimWhitespaceAroundPipe": true,
-
-	// Use single quotes if a string is not interpolated and its value does not contain a single quote.
 	"powershell.codeFormatting.useConstantStrings": false,
-
-	// Use correct casing for cmdlets.
 	"powershell.codeFormatting.useCorrectCasing": true,
-
-	// Adds a space after a separator (`,` and `;`).
 	"powershell.codeFormatting.whitespaceAfterSeparator": true,
-
-	// Adds spaces before and after an operator (`=`, `+`, `-`, etc.).
 	"powershell.codeFormatting.whitespaceAroundOperator": true,
-
-	// **Deprecated:** Please use the `powershell.codeFormatting.addWhitespaceAroundPipe` setting instead. If you've used this setting before, we have moved it for you automatically.
-	// **Deprecated:** Please use the `powershell.codeFormatting.addWhitespaceAroundPipe` setting instead. If you've used this setting before, we have moved it for you automatically.
-	"powershell.codeFormatting.whitespaceAroundPipe": true,
-
-	// Adds a space between a keyword and its associated script-block expression.
 	"powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
-
-	// Adds a space between a keyword (`if`, `elseif`, `while`, `switch`, etc.) and its associated conditional expression.
 	"powershell.codeFormatting.whitespaceBeforeOpenParen": true,
-
-	// Removes redundant whitespace between parameters.
-	"powershell.codeFormatting.whitespaceBetweenParameters": false,
-
-	// Adds a space after an opening brace (`{`) and before a closing brace (`}`).
+	"powershell.codeFormatting.whitespaceBetweenParameters": true,
 	"powershell.codeFormatting.whitespaceInsideBrace": true,
     "powershell.scriptAnalysis.enable": true,
     "powershell.scriptAnalysis.settingsPath": "PowerShell/JumpCloud Module/Tests/ModuleValidation/PSScriptAnalyzerSettings.psd1",
