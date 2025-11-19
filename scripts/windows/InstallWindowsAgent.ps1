@@ -10,14 +10,24 @@ Param (
 #--- Modify Below This Line At Your Own Risk ------------------------------
 
 # JumpCloud Agent Installation Variables
-$TempPath = 'C:\Windows\Temp\'
+$windowsDrive = (Get-CimInstance Win32_OperatingSystem).SystemDrive
+$TempPath = "$($windowsDrive)\Windows\Temp\"
 $AGENT_PATH = Join-Path ${env:ProgramFiles} "JumpCloud"
 $AGENT_BINARY_NAME = "jumpcloud-agent.exe"
 $AGENT_INSTALLER_URL = "https://cdn02.jumpcloud.com/production/jcagent-msi-signed.msi"
-$AGENT_INSTALLER_PATH = "C:\windows\Temp\jcagent-msi-signed.msi"
+$AGENT_INSTALLER_PATH = Join-Path $TempPath "jcagent-msi-signed.msi"
 # JumpCloud Agent Installation Functions
 Function InstallAgent() {
-    msiexec /i $AGENT_INSTALLER_PATH /quiet /norestart JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey`" /L*V "$TempPath\jcUpdate.log"
+    $arguments = @(
+        "/i",
+        "`"$AGENT_INSTALLER_PATH`"",
+        "/quiet",
+        "/norestart",
+        "JCINSTALLERARGUMENTS=`"-k $JumpCloudConnectKey`"",
+        "/L*V",
+        "`"$TempPath\jcUpdate.log`""
+    )
+    Start-Process -FilePath "msiexec.exe" -ArgumentList $arguments -Wait -NoNewWindow
 }
 Function DownloadAgentInstaller() {
     (New-Object System.Net.WebClient).DownloadFile("${AGENT_INSTALLER_URL}", "${AGENT_INSTALLER_PATH}")
