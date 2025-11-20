@@ -49,10 +49,9 @@ else
 
 fi
 
-#Create Temp Folder
-DATE=$(date '+%Y-%m-%d-%H-%M-%S')
-
-TempFolder="Download-$DATE"
+# Create A Unique Temp Folder
+UUID=$(uuidgen)
+TempFolder="Download-$UUID"
 
 mkdir /tmp/$TempFolder
 
