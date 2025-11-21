@@ -17,10 +17,10 @@ JumpCloud.SDK.DirectoryInsights.Models.IGet200ApplicationJsonItemsItem
 .Link
 https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkReport.md
 #>
-Function Get-JCReport {
+function Get-JCReport {
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IGet200ApplicationJsonItemsItem])]
     [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
-    Param(
+    param(
         [Parameter()]
         [ArgumentCompleter([JumpCloud.SDK.DirectoryInsights.Support.Sort])]
         [JumpCloud.SDK.DirectoryInsights.Category('Query')]
@@ -35,7 +35,7 @@ Function Get-JCReport {
         [ValidateSet('json', 'csv')]
         [String]$Type
     )
-    Begin {
+    begin {
         Connect-JCOnline -force | Out-Null
         $Results = @()
         $headers = @{
@@ -44,7 +44,7 @@ Function Get-JCReport {
             "x-org-id"  = $Env:JCOrgId
         }
     }
-    Process {
+    process {
         switch ($PSCmdlet.ParameterSetName) {
             List {
                 $Results = JumpCloud.SDK.DirectoryInsights\Get-JcSdkReport @PSBoundParameters
@@ -93,12 +93,16 @@ Function Get-JCReport {
                 if ($ReportGenerationFailure -eq $true) {
                     $Results = $Report
                 } else {
-                    $Results = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+                    if ($global:JCEnvironment -eq 'EU') {
+                        $Results = Invoke-RestMethod -Uri "https://api.eu.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+                    } else {
+                        $Results = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+                    }
                 }
             }
         }
     }
-    End {
-        Return $Results
+    end {
+        return $Results
     }
 }
