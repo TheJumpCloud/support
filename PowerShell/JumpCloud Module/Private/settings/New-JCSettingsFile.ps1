@@ -15,14 +15,17 @@ function New-JCSettingsFile {
 
         # Define Default Settings for the Config file
         $config = @{
-            'moduleBanner' = @{
-                'Message'      = @{value = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'; write = $false; copy = $false };
+            'moduleBanner'  = @{
+                'Message'      = @{value = 'JumpCloud PowerShell Module now supports EU based organizations. Use `Set-JCSettingsFile -JCEnvironmentLocation "EU"` or `Connect-JCOnline -JumpCloudAPIKey "APIKEY" -JCEnvironment "EU"` to update'; write = $false; copy = $false };
                 'MessageCount' = @{value = 0; write = $true; copy = $false }
             }
-            'parallel'     = @{
+            'parallel'      = @{
                 'Eligible'   = @{value = Get-JCParallelValidation; write = $false; copy = $true }
                 'Override'   = @{value = $false; write = $true; copy = $true }
                 'Calculated' = @{value = $false; write = $false; copy = $true }
+            }
+            'JCEnvironment' = @{
+                'Location' = @{value = { if ($global:JCEnvironment -eq 'STANDARD' -or [System.String]::IsNullOrEmpty($global:JCEnvironment)) { 'STANDARD' } else { $global:JCEnvironment } }; write = $true; copy = $true }
             }
             # TODO: in future version, add the updates hash and limit update frequency
             # 'updates'  = @{
