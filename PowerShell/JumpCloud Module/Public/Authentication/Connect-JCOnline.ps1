@@ -30,7 +30,7 @@ function Connect-JCOnline () {
             'Type'                            = [System.String];
             'Position'                        = 3;
             'ValueFromPipelineByPropertyName' = $true;
-            'ValidateNotNullOrEmpty'          = $false;
+            'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
             'ValidateSet'                     = ('STANDARD', 'staging', 'EU');
         }
