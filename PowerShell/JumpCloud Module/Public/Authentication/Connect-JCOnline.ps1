@@ -85,7 +85,7 @@ function Connect-JCOnline () {
         try {
             #Region Set environment variables that can be used by other scripts
             # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
-            if ($JCConfig.JCEnvironment.Location -ne 'US') {
+            if ($JCConfig.JCEnvironment.Location -ne 'STANDARD') {
                 $JCEnvironment = $JCConfig.JCEnvironment.Location
             }
             if (-not [System.String]::IsNullOrEmpty($JCEnvironment)) {
