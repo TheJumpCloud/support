@@ -30,9 +30,9 @@ function Connect-JCOnline () {
             'Type'                            = [System.String];
             'Position'                        = 3;
             'ValueFromPipelineByPropertyName' = $true;
-            'ValidateNotNullOrEmpty'          = $true;
-            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "production".';
-            'ValidateSet'                     = ('US', 'staging', 'EU');
+            'ValidateNotNullOrEmpty'          = $false;
+            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
+            'ValidateSet'                     = ('STANDARD', 'staging', 'EU');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
@@ -48,7 +48,7 @@ function Connect-JCOnline () {
         if (-not [System.String]::IsNullOrEmpty($env:JCEnvironment)) {
             $Param_JCEnvironment.Add('Default', $env:JCEnvironment);
         } else {
-            $Param_JCEnvironment.Add('Default', 'US');
+            $Param_JCEnvironment.Add('Default', 'STANDARD');
         }
         # Build output
         # Build parameter array
@@ -85,13 +85,17 @@ function Connect-JCOnline () {
         try {
             #Region Set environment variables that can be used by other scripts
             # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
+            if ($JCConfig.JCEnvironment.Location -ne 'US') {
+                $JCEnvironment = $JCConfig.JCEnvironment.Location
+            }
             if (-not [System.String]::IsNullOrEmpty($JCEnvironment)) {
                 # Set $env:JCEnvironment
                 $env:JCEnvironment = $JCEnvironment
                 $global:JCEnvironment = $env:JCEnvironment
+                Set-JCSettingsFile -JCEnvironmentLocation $JCEnvironment
             }
             $global:JCUrlBasePath = switch ($JCEnvironment) {
-                'US' {
+                'STANDARD' {
                     "https://console.jumpcloud.com"
                 }
                 'staging' {
@@ -101,7 +105,7 @@ function Connect-JCOnline () {
                     "https://console.eu.jumpcloud.com"
                 }
                 default {
-                    Write-Error ('Unknown value for $JCEnvironment.')
+                    "https://console.jumpcloud.com"
                 }
             }
             # If "$JumpCloudApiKey" is populated set $env:JCApiKey
