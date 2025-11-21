@@ -101,6 +101,14 @@ then
     cp -r /var/log/jumpcloud-loginwindow $baseDir/jumpcloud_logs/
 fi
 
+## gather proxy configuration if present
+if [ -f /etc/jcagent-proxy.conf ]; then
+    collectionLog "Proxy configuration file detected; collecting /etc/jcagent-proxy.conf"
+    cp /etc/jcagent-proxy.conf $baseDir/jumpcloud_logs/
+else
+    collectionLog "No proxy configuration file (/etc/jcagent-proxy.conf) found"
+fi
+
 ## Set permissions for gathered logs
 chmod -R 777 $baseDir
 

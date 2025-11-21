@@ -122,6 +122,14 @@ cp /opt/jc/jcagentInstall.log $baseDir/jumpcloudLogs/
 cp /opt/jc/version.txt $baseDir/jumpcloudInfo/
 cp -R /opt/jc/policies $baseDir/jumpcloudInfo/
 
+## gather proxy configuration if present
+if [ -f /etc/jcagent-proxy.conf ]; then
+    collectionLog "Proxy configuration file detected; collecting /etc/jcagent-proxy.conf"
+    cp /etc/jcagent-proxy.conf $baseDir/jumpcloudLogs/
+else
+    collectionLog "No proxy configuration file (/etc/jcagent-proxy.conf) found"
+fi
+
 # Password Manager logs
 for USER in $(ls /home/); do
     homeDir="/home/$USER"
