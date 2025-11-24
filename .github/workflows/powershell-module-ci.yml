@@ -98,9 +98,9 @@ jobs:
               'PlatyPS'                               = @{Repository = 'PSGallery'; RequiredVersion = '0.14.2' }
               'AWS.Tools.Common'                      = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
               'AWS.Tools.CodeArtifact'                = @{Repository = 'PSGallery'; RequiredVersion = '4.1.122' }
-              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
-              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
-              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = 'latest'}
+              'JumpCloud.SDK.V1'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.1.1'}
+              'JumpCloud.SDK.V2'                      = @{Repository = 'PSGallery'; RequiredVersion = '0.1.1'}
+              'JumpCloud.SDK.DirectoryInsights'       = @{Repository = 'PSGallery'; RequiredVersion = '0.1.1'}
               'powershell-yaml'                       = @{Repository = 'PSGallery'; RequiredVersion = '0.4.7'}
           }
 
