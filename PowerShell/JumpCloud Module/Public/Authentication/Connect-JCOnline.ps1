@@ -91,28 +91,25 @@ function Connect-JCOnline () {
                 $global:JCEnvironment = $env:JCEnvironment
                 # Set-JCSettingsFile -JCEnvironmentLocation $JCEnvironment
             }
-            # if ($JCConfig.JCEnvironment.Location -ne 'STANDARD') {
-            #     $JCEnvironment = $JCConfig.JCEnvironment.Location
-            # }
-            switch ($JCEnvironment) {
+
+            switch ($env:JCEnvironment) {
                 'STANDARD' {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
-                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
-                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
+                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                 }
                 'staging' {
                     $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
-
                 }
                 'EU' {
                     $global:JCUrlBasePath = "https://console.eu.jumpcloud.com"
-                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
-                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
+                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
+                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                 }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
-                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
-                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
+                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                 }
             }
             # If "$JumpCloudApiKey" is populated set $env:JCApiKey
