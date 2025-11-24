@@ -20,6 +20,7 @@ Describe -Tag "JCSettingsFile" -Name "Set JCSettings Tests" {
         # Check that the setting was modified
         $oldConfig.parallel.override | Should -Not -Be $modifiedConfig.parallel.override
         $oldConfig.JCEnvironment.location | Should -Not -Be $modifiedConfig.JCEnvironment.location
+        $env:JCEnvironment | Should -Be $modifiedConfig.JCEnvironment.location
         # Get last modified date, this should be different from the file at the start of the test
         $lastModifiedDate = (Get-Item "$PSScriptRoot\..\..\..\Config.json").LastWriteTime
         # Test that new config file is actually modified
