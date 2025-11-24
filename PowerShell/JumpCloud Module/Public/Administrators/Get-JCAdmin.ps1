@@ -53,7 +53,7 @@ function Get-JCAdmin {
                 $orgId = $_.orgId
                 $headers.Add("x-org-id", $orgId)
 
-                $response = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/users' -Method GET -Headers $headers
+                $response = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/users" -Method GET -Headers $headers
 
                 # For some reason an admin's organization is not set, manually set
                 $response.results | ForEach-Object {

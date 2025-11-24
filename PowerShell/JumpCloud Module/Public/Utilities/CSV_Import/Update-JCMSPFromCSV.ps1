@@ -1,4 +1,4 @@
-Function Update-JCMSPFromCSV () {
+function Update-JCMSPFromCSV () {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
     (
@@ -61,7 +61,7 @@ Function Update-JCMSPFromCSV () {
             # check for duplicate orgs
             $orgDup = $orgNameCheck | Group-Object Name
 
-            ForEach ($U in $orgDup) {
+            foreach ($U in $orgDup) {
                 if ($U.count -gt 1) {
                     Write-Host "Organization: $($U.Name) is duplicated in update file."
                     throw "Duplicate organization name: $($U.Name) in update file. organiztion name already exists."
@@ -81,7 +81,7 @@ Function Update-JCMSPFromCSV () {
             if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                 Connect-JCOnline
             }
-            if (-Not $Env:JCProviderID) {
+            if (-not $Env:JCProviderID) {
                 $PID = Read-Host "Please enter your Provider ID"
                 $Env:JCProviderID = $PID
             }
@@ -96,7 +96,7 @@ Function Update-JCMSPFromCSV () {
                                                   MSP Update
 "@
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
         }
@@ -110,7 +110,7 @@ Function Update-JCMSPFromCSV () {
 
             Write-Host $Banner -ForegroundColor Green
             Write-Host ""
-            Write-host "Update Summary:"
+            Write-Host "Update Summary:"
             $orgNameCheck | Format-Table
 
             # PromptForChoice Args
@@ -167,8 +167,8 @@ Function Update-JCMSPFromCSV () {
                     if ($response) {
                         Clear-Variable -Name response
                     }
-                    Try {
-                        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$($ENV:JCProviderID)/organizations/$($OrgUpdate.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
+                    try {
+                        $response = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/v2/providers/$($ENV:JCProviderID)/organizations/$($OrgUpdate.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
                         # Add to result array
                         $ResultsArrayList.Add(
                             [PSCustomObject]@{
@@ -178,7 +178,7 @@ Function Update-JCMSPFromCSV () {
                                 'status'         = 'Updated'
                             }) | Out-Null
                     } catch {
-                        If ($errMsg.Message) {
+                        if ($errMsg.Message) {
                             $Status = $errMsg.Message
                         } elseif ($errMsg.ErrorDetails) {
                             $Status = $errMsg.ErrorDetails

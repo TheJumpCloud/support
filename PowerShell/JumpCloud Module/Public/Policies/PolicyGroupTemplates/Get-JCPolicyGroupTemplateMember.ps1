@@ -1,4 +1,4 @@
-Function Get-JCPolicyGroupTemplateMember {
+function Get-JCPolicyGroupTemplateMember {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -40,10 +40,10 @@ Function Get-JCPolicyGroupTemplateMember {
                 } catch {
                     throw "Could not find policy group template with name: $name"
                 }
-                "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
+                "$global:JCUrlBasePath/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
             }
             "ById" {
-                "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
+                "$global:JCUrlBasePath/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID/members"
             }
         }
         $response = Invoke-JCApi -Method:('Get') -Paginate:($true) -Url:($URL)

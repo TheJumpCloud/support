@@ -1,4 +1,4 @@
-Function New-JCMSPImportTemplate() {
+function New-JCMSPImportTemplate() {
     [CmdletBinding()]
 
     param
@@ -83,7 +83,7 @@ Function New-JCMSPImportTemplate() {
             $ConfirmUpdateVsNew = 'N'
         } elseif ($type -eq 'Update') {
             $ConfirmUpdateVsNew = 'U'
-        } Else {
+        } else {
 
             # PromptForChoice Args
             $Title = "Do you want to create an import CSV template for creating new MSP orgs or updating existing MSP orgs?"
@@ -130,9 +130,9 @@ Function New-JCMSPImportTemplate() {
                 $skip = 0
                 $limit = 10
 
-                Do {
+                do {
                     # get results
-                    $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/organizations?limit=$($limit)&skip=$($skip)&sortIgnoreCase=settings.name&fields%5B0%5D=id&fields%5B1%5D=displayName&fields%5B2%5D=systemsCount&fields%5B3%5D=systemUsersCount&fields%5B4%5D=highWaterMarkLastMonth&fields%5B5%5D=entitlement&fields%5B6%5D=maxSystemUsers" -Method GET -Headers $orgHeaders
+                    $response = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/organizations?limit=$($limit)&skip=$($skip)&sortIgnoreCase=settings.name&fields%5B0%5D=id&fields%5B1%5D=displayName&fields%5B2%5D=systemsCount&fields%5B3%5D=systemUsersCount&fields%5B4%5D=highWaterMarkLastMonth&fields%5B5%5D=entitlement&fields%5B6%5D=maxSystemUsers" -Method GET -Headers $orgHeaders
 
                     # add results to the ExistingOrgs
                     foreach ($item in $response.results) {
@@ -169,24 +169,24 @@ Function New-JCMSPImportTemplate() {
         if ($PSCmdlet.ParameterSetName -eq 'force') {
             if (!$ExportPath ) {
                 Write-Host ""
-                $CSV | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                $CSV | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             } else {
                 Write-Warning "The file $fileName already exists, overwriting..."
-                $CSV | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                $CSV | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             }
-        } Else {
+        } else {
             if (!$ExportPath ) {
                 Write-Host ""
-                $CSV | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file'  -NoNewline
+                $CSV | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file' -NoNewline
                 Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
@@ -194,8 +194,8 @@ Function New-JCMSPImportTemplate() {
                 Write-Host ""
                 Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
                 Write-Host ""
-                $CSV | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                $CSV | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
@@ -217,7 +217,7 @@ Function New-JCMSPImportTemplate() {
             # Action based on the choice
             switch ($Choice) {
                 0 {
-                    Invoke-Item -path "$ExportLocation/$FileName"
+                    Invoke-Item -Path "$ExportLocation/$FileName"
                 }
                 1 {
                     $ConfirmUpdateVsNew = 'U'

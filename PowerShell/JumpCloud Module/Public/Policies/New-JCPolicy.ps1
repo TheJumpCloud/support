@@ -25,7 +25,7 @@ function New-JCPolicy {
         [System.String]
         $Notes
     )
-    DynamicParam {
+    dynamicparam {
         if ($PSBoundParameters["TemplateID"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
             $ParameterAttribute.Mandatory = $false
@@ -52,7 +52,7 @@ function New-JCPolicy {
             }
         }
 
-        if ($templateObject.objectMap -And ($PSBoundParameters["TemplateName"] -OR $PSBoundParameters["TemplateID"])) {
+        if ($templateObject.objectMap -and ($PSBoundParameters["TemplateName"] -or $PSBoundParameters["TemplateID"])) {
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
             # Foreach key in the supplied config file:
             foreach ($key in $templateObject.objectMap) {
@@ -85,12 +85,12 @@ function New-JCPolicy {
                         $paramType = [system.object[]]
                     }
                     'exclude' {
-                        Continue
+                        continue
                     }
                     'multilist' {
                         $paramType = [system.object[]]
                     }
-                    Default {
+                    default {
                         $paramType = 'string'
                     }
                 }
@@ -132,7 +132,7 @@ function New-JCPolicy {
         $requiredSet = @('TemplateID', 'TemplateName', 'Name' , 'Values')
         foreach ($parameter in $paramterSet) {
             $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
-            if ($parameterComparison | Where-Object { ( $_.sideindicator -eq "=>") -And ($_.InputObject -ne "Notes") }) {
+            if ($parameterComparison | Where-Object { ( $_.sideindicator -eq "=>") -and ($_.InputObject -ne "Notes") }) {
                 $DynamicParamSet = $true
                 break
             }
@@ -198,7 +198,7 @@ function New-JCPolicy {
                                 }
                                 $RegProperties | ForEach-Object {
                                     if ($_.Name -notin $ObjectProperties) {
-                                        Throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                        throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
                                     }
                                 }
                                 # reg type validation
@@ -298,7 +298,7 @@ function New-JCPolicy {
                                 $templateObject.objectMap[$i].value = $keyValue
                             }
                         }
-                        Default {
+                        default {
                             $templateObject.objectMap[$i].value = $($keyValue)
                         }
                     }
@@ -335,7 +335,7 @@ function New-JCPolicy {
                 # User selects edit individual field
                 elseif ($initialUserInput.fieldSelection -ne 'C' -or $initialUserInput.fieldSelection -ne 'A') {
                     $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $initialUserInput.fieldSelection
-                    Do {
+                    do {
                         # Hide option to edit all fields
                         $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true
                         $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection
@@ -372,7 +372,7 @@ function New-JCPolicy {
             'x-org-id'     = $env:JCOrgId
             'content-type' = "application/json"
         }
-        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
+        $response = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/v2/policies/" -Method POST -Headers $headers -ContentType 'application/json' -Body $body
         if ($response) {
             $response | Add-Member -MemberType NoteProperty -Name "templateID" -Value $response.template.id
         }

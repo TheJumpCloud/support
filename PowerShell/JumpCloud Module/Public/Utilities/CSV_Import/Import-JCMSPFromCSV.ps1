@@ -1,4 +1,4 @@
-Function Import-JCMSPFromCSV () {
+function Import-JCMSPFromCSV () {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
     (
@@ -57,7 +57,7 @@ Function Import-JCMSPFromCSV () {
 
             $orgDup = $orgNameCheck | Group-Object Name
 
-            ForEach ($U in $orgDup) {
+            foreach ($U in $orgDup) {
                 if ($U.count -gt 1) {
                     Write-Host "Organization: $($U.Name) is duplicated in import file."
                     throw "Duplicate organization name: $($U.Name) in import file. organiztion name already exists."
@@ -77,7 +77,7 @@ Function Import-JCMSPFromCSV () {
             if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
                 Connect-JCOnline
             }
-            if (-Not $Env:JCProviderID) {
+            if (-not $Env:JCProviderID) {
                 $PID = Read-Host "Please enter your Provider ID"
                 $Env:JCProviderID = $PID
             }
@@ -92,7 +92,7 @@ Function Import-JCMSPFromCSV () {
                                                   MSP Update
 "@
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
         }
@@ -163,8 +163,8 @@ Function Import-JCMSPFromCSV () {
                     if ($response) {
                         Clear-Variable -Name response
                     }
-                    Try {
-                        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/providers/$($ENV:JCProviderID)/organizations" -Method POST -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
+                    try {
+                        $response = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/v2/providers/$($ENV:JCProviderID)/organizations" -Method POST -Headers $headers -ContentType 'application/json' -Body $body -ErrorVariable errMsg
                         # Add to result array
                         $ResultsArrayList.Add(
                             [PSCustomObject]@{
@@ -174,7 +174,7 @@ Function Import-JCMSPFromCSV () {
                                 'status'         = 'Imported'
                             }) | Out-Null
                     } catch {
-                        If ($errMsg.Message) {
+                        if ($errMsg.Message) {
                             $Status = $errMsg.Message
                         } elseif ($errMsg.ErrorDetails) {
                             $Status = $errMsg.ErrorDetails

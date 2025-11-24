@@ -1,4 +1,4 @@
-Function Set-JCPolicyGroup {
+function Set-JCPolicyGroup {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -56,7 +56,7 @@ Function Set-JCPolicyGroup {
             $foundPolicyGroup.Description
         }
 
-        $URL = "https://console.jumpcloud.com/api/v2/policygroups/$($foundPolicyGroup.id)"
+        $URL = "$global:JCUrlBasePath/api/v2/policygroups/$($foundPolicyGroup.id)"
         $BODY = @{
             name        = "$NameFromProcess"
             description = "$DescriptionFromProcess"
