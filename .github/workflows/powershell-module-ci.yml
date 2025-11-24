@@ -194,6 +194,8 @@ jobs:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
           PESTER_ORGID: ${{ secrets.PESTER_ORGID }}
           PESTER_MSP_APIKEY: ${{ secrets.PESTER_MSP_APIKEY }}
+          PESTER_EU_APIKEY: ${{ secrets.PESTER_EU_APIKEY }}
+          PESTER_EU_ORGID: ${{ secrets.PESTER_EU_ORGID }}
         run: |
           # Setup Variables for Pester Run
           $env:job_group = ${{ matrix.job_group }}
@@ -206,7 +208,8 @@ jobs:
             }
           }
           Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
-
+          Set-Variable -Name PesterParams_EU_ApiKey -Value "$env:PESTER_EU_APIKEY" -Scope Global
+          Set-Variable -Name PesterParams_EU_OrgID -Value "$env:PESTER_EU_ORGID" -Scope Global
           # Import JC Module
           Import-Module "${{github.workspace}}/PowerShell/JumpCloud Module/JumpCloud.psd1"
 
