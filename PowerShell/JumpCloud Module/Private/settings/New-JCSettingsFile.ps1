@@ -25,7 +25,7 @@ function New-JCSettingsFile {
                 'Calculated' = @{value = $false; write = $false; copy = $true }
             }
             'JCEnvironment' = @{
-                'Location' = @{value = { if ($global:JCEnvironment -eq 'STANDARD' -or [System.String]::IsNullOrEmpty($global:JCEnvironment)) { 'STANDARD' } else { $global:JCEnvironment } }; write = $true; copy = $true }
+                'Location' = @{value = 'STANDARD'; write = $true; copy = $true }
             }
             # TODO: in future version, add the updates hash and limit update frequency
             # 'updates'  = @{
