@@ -2,11 +2,11 @@ function Set-JCSettingsFile {
     [CmdletBinding()]
     param (
     )
-    DynamicParam {
+    dynamicparam {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
-        if (test-path -path $configFilePath) {
+        if (Test-Path -Path $configFilePath) {
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -52,14 +52,14 @@ function Set-JCSettingsFile {
     }
     begin {
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JCOnline -Force | Out-Null
+            Connect-JCOnline -force | Out-Null
         }
 
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
-        if (test-path -path $configFilePath) {
+        if (Test-Path -Path $configFilePath) {
             $config = Get-Content -Path $configFilePath | ConvertFrom-Json
         } else {
             New-JCSettingsFile
@@ -81,13 +81,17 @@ function Set-JCSettingsFile {
             }
         }
         # Re-Calculate Parallel Settings:
-        if (($config.'parallel'.'Override' -eq $true) -And (($config.'parallel'.'Eligible' -eq $true))) {
+        if (($config.'parallel'.'Override' -eq $true) -and (($config.'parallel'.'Eligible' -eq $true))) {
             $config.'parallel'.'Calculated' = $false
-        } elseif (($config.'parallel'.'Override'.'value' -eq $false) -And (($config.'parallel'.'Eligible'.'value' -eq $true))) {
+        } elseif (($config.'parallel'.'Override'.'value' -eq $false) -and (($config.'parallel'.'Eligible'.'value' -eq $true))) {
             $config.'parallel'.'Calculated'.'value' = $true
         } else {
             $config.'parallel'.'Calculated'.'value' = $false
         }
+
+        # Set the env variable for JCEnvironment
+        $env:JCEnvironment = $config.'JCEnvironment'.'Location'.value
+        $global:JCEnvironment = $env:JCEnvironment
     }
 
     end {
