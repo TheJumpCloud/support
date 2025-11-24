@@ -13,6 +13,7 @@ function New-JCSettingsFile {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
+        $JCEnvironmentValue = if ($env:JCEnvironment -eq 'STANDARD' -or [System.String]::IsNullOrEmpty($env:JCEnvironment)) { 'STANDARD' } else { $env:JCEnvironment }
         # Define Default Settings for the Config file
         $config = @{
             'moduleBanner'  = @{
@@ -25,7 +26,7 @@ function New-JCSettingsFile {
                 'Calculated' = @{value = $false; write = $false; copy = $true }
             }
             'JCEnvironment' = @{
-                'Location' = @{value = 'STANDARD'; write = $true; copy = $true }
+                'Location' = @{value = $JCEnvironmentValue; write = $true; copy = $true }
             }
             # TODO: in future version, add the updates hash and limit update frequency
             # 'updates'  = @{
