@@ -64,7 +64,7 @@ jobs:
         run: |
           # validate release type variables
           $env:RELEASE_TYPE |  Should -BeIn @('major','minor','patch','manual')
-  Setup-Build-Dependancies:
+  Setup-Build-Dependencies:
     needs: ["Filter-Branch", "Check-PR-Labels", "Validate-Env-Variables"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -75,7 +75,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Dependencies
       - name: Install dependencies
         if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
@@ -116,7 +116,7 @@ jobs:
           }
 
   Validate-Module:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -128,14 +128,14 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Dependencies
       - env:
           RELEASE_TYPE: ${{ needs.Check-PR-Labels.outputs.RELEASE_TYPE }}
         shell: pwsh
         run: |
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -ModuleValidation
   Setup-Org:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     name: Setup Org Upload Variable Artifact
     steps:
@@ -147,7 +147,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Dependencies
       - name: Setup Org Variables
         shell: pwsh
         env:
@@ -167,7 +167,7 @@ jobs:
           name: jumpcloud-vars
           path: /home/runner/.local/share/powershell/Modules/PesterVariables.json
   Test-Module:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels", "Setup-Org"]
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels", "Setup-Org"]
     runs-on: ubuntu-latest
     timeout-minutes: 75
     strategy:
@@ -184,7 +184,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Dependencies
       - uses: actions/download-artifact@v4
         with:
           name: jumpcloud-vars
@@ -219,7 +219,7 @@ jobs:
           # Invoke Pester
           . "./PowerShell/JumpCloud Module/Tests/InvokePester.ps1" -JumpCloudApiKey "$env:PESTER_APIKEY" -ExcludeTagList "ModuleValidation", "JCDeployment", "MSP", "JCModule" -IncludeTagList "*" -RequiredModulesRepo "PSGallery"
   Test-Module-MSP:
-    needs: ["Setup-Build-Dependancies", "Check-PR-Labels"]
+    needs: ["Setup-Build-Dependencies", "Check-PR-Labels"]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -231,7 +231,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: "/home/runner/.local/share/powershell/Modules/"
-          key: PS-Dependancies
+          key: PS-Dependencies
       - shell: pwsh
         env:
           PESTER_APIKEY: ${{ secrets.PESTER_APIKEY }}
