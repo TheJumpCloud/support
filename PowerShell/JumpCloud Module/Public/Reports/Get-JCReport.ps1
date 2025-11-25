@@ -22,9 +22,7 @@ function Get-JCReport {
     [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
     param(
         [Parameter()]
-        [ArgumentCompleter([JumpCloud.SDK.DirectoryInsights.Support.Sort])]
         [JumpCloud.SDK.DirectoryInsights.Category('Query')]
-        [JumpCloud.SDK.DirectoryInsights.Support.Sort]
         # Sort type and direction.
         # Default sort is descending, prefix with - to sort ascending.
         ${Sort},
