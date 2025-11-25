@@ -51,10 +51,6 @@ function Set-JCSettingsFile {
         }
     }
     begin {
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JCOnline -force | Out-Null
-        }
-
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
         $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
