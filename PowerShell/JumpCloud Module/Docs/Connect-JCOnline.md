@@ -70,7 +70,7 @@ Specific to JumpCloud development team to connect to staging dev environment.
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: production, staging
+Accepted values: STANDARD, staging, EU
 
 Required: False
 Position: 3
