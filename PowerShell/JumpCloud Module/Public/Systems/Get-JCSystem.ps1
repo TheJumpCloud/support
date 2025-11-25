@@ -1,4 +1,4 @@
-Function Get-JCSystem () {
+function Get-JCSystem () {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
@@ -153,12 +153,12 @@ Function Get-JCSystem () {
             ValueFromPipelineByPropertyName,
             ParameterSetName = 'SearchFilter',
             HelpMessage = 'Allows you to return select properties on JumpCloud system objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''active'', ''agentVersion'', ''allowMultiFactorAuthentication'', ''allowPublicKeyAuthentication'', ''allowSshPasswordAuthentication'', ''allowSshRootLogin'', ''arch'', ''created'', ''displayName'', ''hostname'', ''lastContact'', ''modifySSHDConfig'', ''organization'', ''os'', ''remoteIP'', ''serialNumber'', ''sshdParams'', ''systemTimezone'', ''templateName'', ''version'', ''hwVendor'',''secureLogin'',''displayManager'',''amazonInstanceID'',''archFamily'',''builtInCommands'',''description'',''osVersionDetail'',''policyStats'',''desktopCapable'', ''sshRootEnabled'', ''agentHasFullDiskAccess''')]
-        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'primarySystemUser', 'provisionMetadata', 'remoteAssistAgentVersion', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'templateName', 'userMetrics', 'usernameHashes', 'version', 'hwVendor', 'secureLogin', 'displayManager', 'amazonInstanceID', 'archFamily', 'builtInCommands', 'description', 'osVersionDetail', 'policyStats', 'desktopCapable', 'sshRootEnabled', 'isPolicyBound', 'agentHasFullDiskAccess')]
+        [ValidateSet('acknowledged', 'active', 'agentVersion', 'allowMultiFactorAuthentication', 'allowPublicKeyAuthentication', 'allowSshPasswordAuthentication', 'allowSshRootLogin', 'arch', 'attributes', 'azureAdJoined', 'connectionHistory', 'created', 'displayName', 'domainInfo', 'fde', 'fileSystem', 'hasServiceAccount', 'hostname', 'lastContact', 'mdm', 'modifySSHDConfig', 'networkInterfaces', 'organization', 'os', 'osFamily', 'primarySystemUser', 'provisionMetadata', 'remoteAssistAgentVersion', 'remoteIP', 'serialNumber', 'serviceAccountState', 'sshdParams', 'systemInsights', 'systemTimezone', 'templateName', 'userMetrics', 'usernameHashes', 'version', 'hwVendor', 'secureLogin', 'displayManager', 'amazonInstanceID', 'archFamily', 'builtInCommands', 'description', 'osVersionDetail', 'policyStats', 'desktopCapable', 'sshRootEnabled', 'isPolicyBound', 'agentHasFullDiskAccess')]
         [String[]]$returnProperties
     )
 
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $filterDateProperty = 'created'
         }
         if ($filterDateProperty) {
@@ -444,7 +444,7 @@ Function Get-JCSystem () {
         $pipelineLength, $functions = Get-PipelineDetails -line $MyInvocation.Line
         $setAfterGet = Get-PipelinePositionBefore -before "Get-JCSystem" -after "Set-JCSystem" -functionArray $functions
         if ($pipelineLength -gt 1) {
-            if (($resultsArrayList.Count -ne 0) -And ($setAfterGet -eq $true)) {
+            if (($resultsArrayList.Count -ne 0) -and ($setAfterGet -eq $true)) {
                 foreach ($item in $resultsArrayList) {
                     $itemSysInsightsState = switch ($item.systemInsights.state) {
                         'enabled' {
