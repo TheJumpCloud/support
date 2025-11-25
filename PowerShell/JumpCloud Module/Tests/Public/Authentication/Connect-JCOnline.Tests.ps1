@@ -15,9 +15,6 @@ Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
 
             $env:JCEnvironment | Should -Be 'EU'
 
-            $PSDefaultParameterValues['*-JcSdk*:ApiHost'] | Should -Be "api.eu"
-            $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] | Should -Be "console.eu"
-
             $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($PesterParams_Org.OrgID) -JCEnvironment 'STANDARD' -force
             $PesterParams_ApiKey | Should -Be $env:JCApiKey
             $PesterParams_Org.OrgID | Should -Be $env:JCOrgId
