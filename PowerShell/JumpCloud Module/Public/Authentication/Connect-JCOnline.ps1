@@ -103,21 +103,25 @@ function Connect-JCOnline () {
             switch ($env:JCEnvironment) {
                 'STANDARD' {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
-                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
-                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
+$env:JCEnvironment = 'STANDARD'
                 }
                 'staging' {
                     $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
                 }
                 'EU' {
+Write-Host "Setting JumpCloud Environment to EU Region" -ForegroundColor Green
                     $global:JCUrlBasePath = "https://console.eu.jumpcloud.com"
-                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
-                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
+$env:JCEnvironment = 'EU'
                 }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
-                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
-                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
+$env:JCEnvironment = 'STANDARD'
                 }
             }
             # If "$JumpCloudApiKey" is populated set $env:JCApiKey
