@@ -9,7 +9,7 @@ Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
     }
     Context 'EU Org Tests' {
         It ('Should connect using the EU JumpCloudApiKey and JumpCloudOrgId parameters.') {
-            $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_EU_ApiKey) -JumpCloudOrgId:($PesterParams_EU_OrgID) -force
+            $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_EU_ApiKey) -JumpCloudOrgId:($PesterParams_EU_OrgID) -JCEnvironment 'EU' -force
             $PesterParams_EU_ApiKey | Should -Be $env:JCApiKey
             $PesterParams_EU_OrgID | Should -Be $env:JCOrgId
 
