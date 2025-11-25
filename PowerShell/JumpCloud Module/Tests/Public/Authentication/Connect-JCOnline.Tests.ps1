@@ -15,10 +15,12 @@ Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
 
             $env:JCEnvironment | Should -Be 'EU'
 
-            $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] | Should -Be "api.eu"
-            $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] | Should -Be "console.eu"
-            # $Connect.JCOrgId | Should -Be $env:JCOrgId
-            # $Connect.JCOrgId | Should -Be $PesterParams_EU_Org.OrgID
+            $PSDefaultParameterValues['*-JcSdk*:ApiHost'] | Should -Be "api.eu"
+            $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] | Should -Be "console.eu"
+
+            $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($PesterParams_Org.OrgID) -JCEnvironment 'STANDARD' -force
+            $PesterParams_ApiKey | Should -Be $env:JCApiKey
+            $PesterParams_Org.OrgID | Should -Be $env:JCOrgId
         }
     }
     Context 'Single Org Tests' {
