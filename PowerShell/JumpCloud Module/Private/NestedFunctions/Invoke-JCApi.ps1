@@ -40,9 +40,13 @@ function Invoke-JCApi {
     process {
         try {
             $Results = @()
-            # If ([System.String]::IsNullOrEmpty($JCUrlBasePath)) {
-            #     $JCUrlBasePath = 'https://console.jumpcloud.com'
-            # }
+            if ([System.String]::IsNullOrEmpty($global:JCUrlBasePath)) {
+                if ($env:JCEnvironment -eq 'EU') {
+                    $JCUrlBasePath = 'https://console.eu.jumpcloud.com'
+                } else {
+                    $JCUrlBasePath = 'https://console.jumpcloud.com'
+                }
+            }
             if ($Url -notlike ('*' + $JCUrlBasePath + '*')) {
                 $Url = $JCUrlBasePath + $Url
             }
