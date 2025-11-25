@@ -84,20 +84,14 @@ function Connect-JCOnline () {
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
         try {
             #Region Set environment variables that can be used by other scripts
-            # If "$JCEnvironment" is populated or if "$env:JCEnvironment" is not set
-            if ($JCConfig.JCEnvironment.Location -ne 'STANDARD') {
-                $env:JCEnvironment = $JCConfig.JCEnvironment.Location
+            if ([System.String]::IsNullOrEmpty($JCEnvironment)) {
+                $env:JCEnvironment = $JCConfig.JCEnvironment.location
                 $global:JCEnvironment = $env:JCEnvironment
             } else {
-                if (-not [System.String]::IsNullOrEmpty($JCEnvironment)) {
-                    # Set $env:JCEnvironment
-                    $env:JCEnvironment = $JCEnvironment
-                    $global:JCEnvironment = $env:JCEnvironment
-                    Set-JCSettingsFile -JCEnvironmentLocation $JCEnvironment
-                } else {
-                    $env:JCEnvironment = 'STANDARD'
-                    $global:JCEnvironment = $env:JCEnvironment
-                }
+                # Set $env:JCEnvironment
+                $env:JCEnvironment = $JCEnvironment
+                $global:JCEnvironment = $env:JCEnvironment
+                Set-JCSettingsFile -JCEnvironmentLocation $JCEnvironment
             }
 
             switch ($env:JCEnvironment) {
@@ -105,23 +99,22 @@ function Connect-JCOnline () {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
-$env:JCEnvironment = 'STANDARD'
+                    $env:JCEnvironment = 'STANDARD'
                 }
                 'staging' {
                     $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
                 }
                 'EU' {
-Write-Host "Setting JumpCloud Environment to EU Region" -ForegroundColor Green
                     $global:JCUrlBasePath = "https://console.eu.jumpcloud.com"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
-$env:JCEnvironment = 'EU'
+                    $env:JCEnvironment = 'EU'
                 }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
-$env:JCEnvironment = 'STANDARD'
+                    $env:JCEnvironment = 'STANDARD'
                 }
             }
             # If "$JumpCloudApiKey" is populated set $env:JCApiKey
