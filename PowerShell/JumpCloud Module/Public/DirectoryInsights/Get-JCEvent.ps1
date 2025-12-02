@@ -41,7 +41,7 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [Skip <Int64?>]: optional offset into the result set to start with when returning
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
-https://github.com/TheJumpCloud/jcapi-powershell/tree/CUT-4908_userGroupDeviceGroupFilters/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
+https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
 #>
 Function Get-JCEvent {
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem])]
