@@ -1,4 +1,4 @@
-Function New-RandomString () {
+function New-RandomString () {
     [CmdletBinding()]
 
     param(
@@ -13,11 +13,11 @@ Function New-RandomString () {
     process {
         $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | ForEach-Object { [char]$_ })
     }
-    end { Return $Random }
+    end { return $Random }
 
 
 }
-Function New-RandomUser  () {
+function New-RandomUser  () {
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
     (
@@ -70,7 +70,7 @@ Function New-RandomUser  () {
 
     return $NewRandomUser
 }
-Function New-RandomUserCustom  () {
+function New-RandomUserCustom  () {
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
     (
@@ -123,7 +123,7 @@ Function New-RandomUserCustom  () {
 
     return $NewRandomUser
 }
-Function New-RandomStringLower () {
+function New-RandomStringLower () {
     [CmdletBinding()]
     param(
 
@@ -137,7 +137,7 @@ Function New-RandomStringLower () {
     process {
         $Random = -join ((65..90) + (97..122) | Get-Random -Count $NumberOfChars | ForEach-Object { [char]$_ })
     }
-    end { Return $Random.ToLower() }
+    end { return $Random.ToLower() }
 }
 
 function Create-RadiusServerTryCatch {

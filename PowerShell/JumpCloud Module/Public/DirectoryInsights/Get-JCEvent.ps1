@@ -47,13 +47,6 @@ Function Get-JCEvent {
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
-        [Parameter(Mandatory)]
-        [JumpCloud.SDK.DirectoryInsights.Category('Uri')]
-        [System.String]
-        # Region for JumpCloud API host.
-        # Use 'api' for US or 'api.eu' for EU.
-        ${ApiHost},
-        
         [Parameter(ParameterSetName='GetExpanded', Mandatory)]
         [AllowEmptyCollection()]
         [JumpCloud.SDK.DirectoryInsights.Category('Body')]

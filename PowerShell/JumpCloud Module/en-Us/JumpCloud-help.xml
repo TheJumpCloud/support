@@ -5356,6 +5356,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ExactMatch</maml:name>
+          <maml:description>
+            <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Fields</maml:name>
           <maml:description>
             <maml:para>optional list of fields to return from query</maml:para>
@@ -5521,6 +5533,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
         <dev:type>
           <maml:name>System.DateTime</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ExactMatch</maml:name>
+        <maml:description>
+          <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -5828,6 +5852,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ExactMatch</maml:name>
+          <maml:description>
+            <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Fields</maml:name>
           <maml:description>
             <maml:para>optional list of fields to return from query</maml:para>
@@ -5986,6 +6022,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ExactMatch</maml:name>
+        <maml:description>
+          <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Fields</maml:name>
         <maml:description>
           <maml:para>optional list of fields to return from query</maml:para>
@@ -6132,7 +6180,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Int64</maml:name>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventCount</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>

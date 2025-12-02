@@ -14,10 +14,10 @@ Query the API for a count of matching events
 
 ### GetExpanded (Default)
 ```
-Get-JCEventCount -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-Fields <String[]>]
- [-Q <String>] [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>] [-SearchTermNot <Hashtable>]
- [-SearchTermOr <Hashtable>] [-Sort <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Get-JCEventCount -Service <String[]> -StartTime <DateTime> [-EndTime <DateTime>] [-ExactMatch <String>]
+ [-Fields <String[]>] [-Q <String>] [-SearchAfter <String[]>] [-SearchTermAnd <Hashtable>]
+ [-SearchTermNot <Hashtable>] [-SearchTermOr <Hashtable>] [-Sort <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Get
@@ -82,6 +82,21 @@ optional query end time, UTC in RFC3339 format
 
 ```yaml
 Type: System.DateTime
+Parameter Sets: GetExpanded
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExactMatch
+optional string for specifying exact match query, do not use with full text query
+
+```yaml
+Type: System.String
 Parameter Sets: GetExpanded
 Aliases:
 
@@ -267,7 +282,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 ### JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
 ## OUTPUTS
 
-### System.Int64
+### JumpCloud.SDK.DirectoryInsights.Models.IEventCount
 ## NOTES
 COMPLEX PARAMETER PROPERTIES
 

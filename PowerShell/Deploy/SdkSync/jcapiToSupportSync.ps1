@@ -113,10 +113,10 @@ $PSD1_Module = Test-ModuleManifest -Path:("$FilePath_psd1")
 
 Get-Module -Refresh -ListAvailable -All | Out-Null
 $Modules = Get-Module -Name:($Psd1.RequiredModules | Where-Object { $_ -in $ApprovedFunctions.Keys })
-If (-not [System.String]::IsNullOrEmpty($Modules)) {
-    ForEach ($Module In $Modules) {
+if (-not [System.String]::IsNullOrEmpty($Modules)) {
+    foreach ($Module in $Modules) {
         $ModuleName = $Module.Name
-        ForEach ($Function In $ApprovedFunctions.$ModuleName) {
+        foreach ($Function in $ApprovedFunctions.$ModuleName) {
             $FunctionName = $Function.Name
             $FunctionDestination = $Function.Destination
             $OutputPath = Join-Path -Path $JumpCloudModulePath -ChildPath $FunctionDestination #"$JumpCloudModulePath/$FunctionDestination"
@@ -128,7 +128,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 # Get content from sdk function
                 $CommandFilePath = $individualCommand.ScriptBlock.File
                 $CommandFilePathContent = Get-Content -Path:($CommandFilePath) -Raw
-                $FunctionContent = If ($CommandFilePath -like '*ProxyCmdletDefinitions.ps1') {
+                $FunctionContent = if ($CommandFilePath -like '*ProxyCmdletDefinitions.ps1') {
                     <# When the autorest generated module has been installed and imported from the PSGallery all the
                     cmdlets will exist in a single ProxyCmdletDefinitions.ps1 file. We need to parse
                     out the specific function in order to gather the parts we need to copy over. #>
@@ -140,7 +140,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                             $functionSplit
                         }
                     }
-                } Else {
+                } else {
                     <# When the autorest generated module has been imported from a local psd1 module the function will
                     remain in their individual files. #>
                     $CommandFilePathContent
@@ -148,7 +148,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 # Extract the sections we want to copy over to our new function.
                 $PSScriptInfo = ($FunctionContent | Select-String -Pattern:([regex]'(?s)(<#)(.*?)(#>)')).Matches.Value
                 $Params = $FunctionContent | Select-String -Pattern:([regex]'(?s)(    \[Parameter)(.*?)(\})') -AllMatches
-                $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' })
+                $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' -and $_ -notlike '*${apiHost}*' -and $_ -notlike '*${consoleHost}*' })
 
                 # Check if there is only one parameter
                 if ($ParameterContent -is [string]) {
@@ -166,7 +166,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 # declare param here string
                 $paramString = @"
 "@
-                ForEach ($line in $($ParameterContent -split "`n")) {
+                foreach ($line in $($ParameterContent -split "`n")) {
                     # for the last item don't add a new line:
                     if ($line -eq $($ParameterContent -split "`n")[-1] ) {
                         $line = $line -replace '(^\s+|\s+$)', ''
@@ -183,7 +183,7 @@ If (-not [System.String]::IsNullOrEmpty($Modules)) {
                 }
                 $OutputType = (($FunctionContent | Select-String -Pattern:([regex]'(\[OutputType)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
                 $CmdletBinding = (($FunctionContent | Select-String -Pattern:([regex]'(\[CmdletBinding)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
-                If (-not [System.String]::IsNullOrEmpty($PSScriptInfo)) {
+                if (-not [System.String]::IsNullOrEmpty($PSScriptInfo)) {
                     $PSScriptInfo = $PSScriptInfo.Replace($SdkPrefix, $JumpCloudModulePrefix)
                     $PSScriptInfo = $PSScriptInfo.Replace("$NewCommandName.md", "$FunctionName.md")
                 }
@@ -226,14 +226,14 @@ $paramString
                 $NewScript | Out-File -FilePath:($OutputFilePath) -Force
                 # Validate script syntax
                 $ScriptAnalyzerResult = Invoke-ScriptAnalyzer -Path:($OutputFilePath) -Recurse -ExcludeRule PSShouldProcess, PSAvoidTrailingWhitespace, PSAvoidUsingWMICmdlet, PSAvoidUsingPlainTextForPassword, PSAvoidUsingUsernameAndPasswordParams, PSAvoidUsingInvokeExpression, PSUseDeclaredVarsMoreThanAssignments, PSUseSingularNouns, PSAvoidGlobalVars, PSUseShouldProcessForStateChangingFunctions, PSAvoidUsingWriteHost, PSAvoidUsingPositionalParameters
-                If ($ScriptAnalyzerResult) {
+                if ($ScriptAnalyzerResult) {
                     $ScriptAnalyzerResults += $ScriptAnalyzerResult
                 }
 
                 # Copy tests?
                 # Copy-Item -Path:($AutoRest_Tests) -Destination:($JCModule_Tests) -Force
                 # Update .Psd1 file
-                If ($NewCommandName -notin $PSD1_Module.ExportedFunctions.keys) {
+                if ($NewCommandName -notin $PSD1_Module.ExportedFunctions.keys) {
                     $Psd1.FunctionsToExport += $NewCommandName
                     Update-ModuleManifest -Path:($FilePath_psd1) -FunctionsToExport:($Psd1.FunctionsToExport)
                 }
@@ -241,6 +241,6 @@ $paramString
             }
         }
     }
-} Else {
+} else {
     Write-Error ('No modules found!')
 }
