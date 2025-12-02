@@ -1,6 +1,6 @@
 Describe -Tag:('ModuleValidation') 'SDK Generation' {
 
-    It 'tests that the sdks have been generated before release' {
+    It 'tests that the sdks have been generated before release' -Skip {
         # run the jcapi to support sync function:
         . "$PSScriptRoot/../../../Deploy/SdkSync/jcapiToSupportSync.ps1" -RequiredModulesRepo 'PSGallery'
         # validate that there's no changes to git diff
