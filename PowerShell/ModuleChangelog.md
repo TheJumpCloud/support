@@ -1,6 +1,6 @@
 ## 2.19.0
 
-Release Date: November 25, 2025
+Release Date: December 2, 2025
 
 #### RELEASE NOTES
 

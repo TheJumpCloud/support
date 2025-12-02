@@ -12,37 +12,9 @@ Query the API for Directory Insights events
 curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events' -H 'Content-Type: application/json' -H 'x-api-key: REPLACE_KEY_VALUE' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
 ```
 .Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:((Get-date).AddDays(-30))
-
-Pull all event records from the last thirty days
+Get-JCEvent -Service:(<string[]>) -StartTime:(<datetime>) -EndTime:(<datetime>) -ExactMatch:(<string>) -Fields:(<string[]>) -Limit:(<long>) -Q:(<string>) -SearchAfter:(<string[]>) -SearchTermAnd:(<hashtable>) -SearchTermNot:(<hashtable>) -SearchTermOr:(<hashtable>) -Skip:(<long>) -Sort:(<string>)
 .Example
-PS C:\> Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddHours(-1)) -Limit:('10')
-
-Get directory results from the last hour limit to the last 10 results in the time range
-.Example
-PS C:\> Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Sort:("DESC") -EndTime:((Get-date).AddDays(-5))
-
-Get directory results between 30 and 5 days ago, sort timestamp by descending value
-.Example
-PS C:\> Get-JCEvent -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -Limit:('10') -searchTermAnd:@{"event_type" = "group_create"}
-
-Get only group_create from the last thirty days
-.Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermOr @{"initiated_by.username" = @("user.1", "user.2")}
-
-Get login events initiated by either "user.1" or "user.2" between a universal time zone range
-.Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "admin_login_attempt"; "resource.email" = "admin.user@adminbizorg.com"}
-
-Get all events between a date range and match event_type = admin_login_attempt and resource.email = admin.user@adminbizorg.com
-.Example
-PS C:\> Get-JCEvent -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')  -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"initiated_by.username" = "user.1"}
-
-Get sso events with the search term initiated_by: username with value "user.1"
-.Example
-PS C:\> Get-JCEvent -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "organization_update"}
-
-Get all events filtered by organization_update term between a date range
+Get-JCEvent -Body:(<JumpCloud.SDK.DirectoryInsights.Models.EventQuery>)
 
 .Inputs
 JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
@@ -54,25 +26,34 @@ COMPLEX PARAMETER PROPERTIES
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
-  Service <String[]>: service name to query.
+  Service <List<String>>: service name to query.
   StartTime <DateTime>: query start time, UTC in RFC3339 format
   [EndTime <DateTime?>]: optional query end time, UTC in RFC3339 format
-  [Fields <String[]>]: optional list of fields to return from query
+  [ExactMatch <String>]: optional string for specifying exact match query, do not use with full text query
+  [Fields <List<String>>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
   [Q <String>]: optional string for specifying a full text query
-  [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
+  [SearchAfter <List<String>>]: Specific query to search after, see x-* response headers for next values
   [SearchTermAnd <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
     [(Any) <Object>]: This indicates any property can be added to this object.
   [SearchTermNot <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
   [SearchTermOr <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
+  [Skip <Int64?>]: optional offset into the result set to start with when returning
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
-https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
+https://github.com/TheJumpCloud/jcapi-powershell/tree/CUT-4908_userGroupDeviceGroupFilters/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEvent.md
 #>
 Function Get-JCEvent {
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPost200ApplicationJsonItemsItem])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
+        [Parameter(Mandatory)]
+        [JumpCloud.SDK.DirectoryInsights.Category('Uri')]
+        [System.String]
+        # Region for JumpCloud API host.
+        # Use 'api' for US or 'api.eu' for EU.
+        ${ApiHost},
+        
         [Parameter(ParameterSetName='GetExpanded', Mandatory)]
         [AllowEmptyCollection()]
         [JumpCloud.SDK.DirectoryInsights.Category('Body')]
@@ -91,6 +72,12 @@ Function Get-JCEvent {
         [System.DateTime]
         # optional query end time, UTC in RFC3339 format
         ${EndTime},
+        
+        [Parameter(ParameterSetName='GetExpanded')]
+        [JumpCloud.SDK.DirectoryInsights.Category('Body')]
+        [System.String]
+        # optional string for specifying exact match query, do not use with full text query
+        ${ExactMatch},
         
         [Parameter(ParameterSetName='GetExpanded')]
         [AllowEmptyCollection()]
@@ -149,7 +136,6 @@ Function Get-JCEvent {
         [JumpCloud.SDK.DirectoryInsights.Category('Body')]
         [JumpCloud.SDK.DirectoryInsights.Models.IEventQuery]
         # EventQuery is the users' command to search our auth logs
-        # To construct, see NOTES section for BODY properties and create a hash table.
         ${Body}
     )
     Begin {
