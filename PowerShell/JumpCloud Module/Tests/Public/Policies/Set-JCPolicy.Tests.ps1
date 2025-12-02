@@ -169,8 +169,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $intPolicy = New-JCPolicy -Name "Pester - Integer" -templateID $templateId -timeout $intValue
             $updatedIntValue = 55
             $updatedStringPolicy = Set-JCPolicy -policyID $intPolicy.id -timeout $updatedIntValue
+            $intPolicyTimeoutValue = $updatedStringPolicy.Values | Where-Object { $_.ConfigFieldName -eq 'timeout' }
             # Should not be null
-            $updatedStringPolicy.values.value | Should -Be $updatedIntValue
+            $intPolicyTimeoutValue.value | Should -Be $updatedIntValue
         }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }
@@ -334,8 +335,9 @@ Describe -Tag:('JCPolicy') 'Set-JCPolicy' {
             $stringPolicy = New-JCPolicy -Name "Pester - Integer byName" -templateID $templateId -timeout $intValue
             $updatedIntValue = 55
             $updatedStringPolicy = Set-JCPolicy -PolicyName $stringPolicy.Name -timeout $updatedIntValue
+            $intPolicyTimeoutValue = $updatedStringPolicy.Values | Where-Object { $_.ConfigFieldName -eq 'timeout' }
             # Should not be null
-            $updatedStringPolicy.values.value | Should -Be $updatedIntValue
+            $intPolicyTimeoutValue.value | Should -Be $updatedIntValue
         }
         It 'Sets a policy with a boolean, multi select and string type dynamic parameter' {
             $policyTemplate = $policyTemplates | Where-Object { $_.name -eq "app_notifications_darwin" }

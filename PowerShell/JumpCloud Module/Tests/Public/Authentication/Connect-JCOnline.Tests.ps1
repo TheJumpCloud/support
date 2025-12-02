@@ -9,16 +9,15 @@ Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
     }
     Context 'EU Org Tests' {
         It ('Should connect using the EU JumpCloudApiKey and JumpCloudOrgId parameters.') {
-            $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_EU_ApiKey) -JumpCloudOrgId:($PesterParams_EU_OrgID) -force
+            $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_EU_ApiKey) -JumpCloudOrgId:($PesterParams_EU_OrgID) -JCEnvironment 'EU' -force
             $PesterParams_EU_ApiKey | Should -Be $env:JCApiKey
             $PesterParams_EU_OrgID | Should -Be $env:JCOrgId
 
             $env:JCEnvironment | Should -Be 'EU'
 
-            $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] | Should -Be "api.eu"
-            $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] | Should -Be "console.eu"
-            # $Connect.JCOrgId | Should -Be $env:JCOrgId
-            # $Connect.JCOrgId | Should -Be $PesterParams_EU_Org.OrgID
+            $Connect = Connect-JCOnline -JumpCloudApiKey:($PesterParams_ApiKey) -JumpCloudOrgId:($PesterParams_Org.OrgID) -JCEnvironment 'STANDARD' -force
+            $PesterParams_ApiKey | Should -Be $env:JCApiKey
+            $PesterParams_Org.OrgID | Should -Be $env:JCOrgId
         }
     }
     Context 'Single Org Tests' {

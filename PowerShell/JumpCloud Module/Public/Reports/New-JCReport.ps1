@@ -26,14 +26,12 @@ INPUTOBJECT <IDirectoryInsightsApiIdentity>: Identity Parameter
 .Link
 https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/New-JcSdkReport.md
 #>
-Function New-JCReport {
+function New-JCReport {
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IPathsE6Q3GdReportsReportTypePostResponses202ContentApplicationJsonSchema])]
     [CmdletBinding(DefaultParameterSetName = 'Create', PositionalBinding = $false, SupportsShouldProcess, ConfirmImpact = 'Medium')]
-    Param(
+    param(
         [Parameter(ParameterSetName = 'Create', Mandatory)]
-        [ArgumentCompleter([JumpCloud.SDK.DirectoryInsights.Support.ReportType1])]
         [JumpCloud.SDK.DirectoryInsights.Category('Path')]
-        [JumpCloud.SDK.DirectoryInsights.Support.ReportType1]
         [ValidateSet("browser-patch-policy", "os-patch-policy", "users-to-devices", "users-to-directories", "users-to-ldap-servers", "users-to-radius-servers", "users-to-sso-applications", "users-to-user-groups")]
         # Report Type
         ${ReportType},
@@ -45,14 +43,14 @@ Function New-JCReport {
         # To construct, see NOTES section for INPUTOBJECT properties and create a hash table.
         ${InputObject}
     )
-    Begin {
+    begin {
         Connect-JCOnline -force | Out-Null
         $Results = @()
     }
-    Process {
+    process {
         $Results = JumpCloud.SDK.DirectoryInsights\New-JcSdkReport @PSBoundParameters
     }
-    End {
-        Return $Results
+    end {
+        return $Results
     }
 }

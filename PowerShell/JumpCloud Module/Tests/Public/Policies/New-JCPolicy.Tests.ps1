@@ -18,7 +18,8 @@ Describe -Tag:('JCPolicy') 'New-JCPolicy' {
             $templateId = $policyTemplate.id
             $intValue = 45
             $intPolicy = New-JCPolicy -Name "Pester - Integer Dynamic" -templateID $templateId -timeout $intValue
-            $intPolicy.values.value | Should -Be $intValue
+            $intPolicyTimeoutValue = $intPolicy.Values | Where-Object { $_.ConfigFieldName -eq 'timeout' }
+            $intPolicyTimeoutValue.value | Should -Be $intValue
         }
 
         It 'Creates a new policy that tests boolean' {

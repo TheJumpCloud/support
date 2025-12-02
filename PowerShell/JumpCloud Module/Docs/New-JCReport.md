@@ -14,7 +14,7 @@ Request a JumpCloud report to be generated asynchronously
 
 ### Create (Default)
 ```
-New-JCReport -ReportType <ReportType1> [-WhatIf] [-Confirm]
+New-JCReport -ReportType <Object> [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -65,7 +65,7 @@ Accept wildcard characters: False
 Report Type
 
 ```yaml
-Type: JumpCloud.SDK.DirectoryInsights.Support.ReportType1
+Type: System.Object
 Parameter Sets: Create
 Aliases:
 
