@@ -11,18 +11,22 @@ function New-JCSettingsFile {
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
+        $JCEnvironmentValue = if ($env:JCEnvironment -eq 'STANDARD' -or [System.String]::IsNullOrEmpty($env:JCEnvironment)) { 'STANDARD' } else { $env:JCEnvironment }
         # Define Default Settings for the Config file
         $config = @{
-            'moduleBanner' = @{
-                'Message'      = @{value = 'JumpCloud PowerShell Module now processes Get requests in parallel, to disable this functionailty run: Set-JCSettingsFile -parallelOverride $true'; write = $false; copy = $false };
+            'moduleBanner'  = @{
+                'Message'      = @{value = 'JumpCloud PowerShell Module now supports EU based organizations. Use `Set-JCSettingsFile -JCEnvironmentLocation "EU"` or `Connect-JCOnline -JumpCloudAPIKey "APIKEY" -JCEnvironment "EU"` to update'; write = $false; copy = $false };
                 'MessageCount' = @{value = 0; write = $true; copy = $false }
             }
-            'parallel'     = @{
+            'parallel'      = @{
                 'Eligible'   = @{value = Get-JCParallelValidation; write = $false; copy = $true }
                 'Override'   = @{value = $false; write = $true; copy = $true }
                 'Calculated' = @{value = $false; write = $false; copy = $true }
+            }
+            'JCEnvironment' = @{
+                'Location' = @{value = $JCEnvironmentValue; write = $true; copy = $true }
             }
             # TODO: in future version, add the updates hash and limit update frequency
             # 'updates'  = @{
@@ -34,9 +38,9 @@ function New-JCSettingsFile {
 
     process {
         # Calculate the Parallel Setting Field:
-        if (($config.parallel.Override.value -eq $true) -And ($config.parallel.Eligible.value -eq $true)) {
+        if (($config.parallel.Override.value -eq $true) -and ($config.parallel.Eligible.value -eq $true)) {
             $config.parallel.Calculated.value = $false
-        } elseif (($config.parallel.Override.value -eq $false) -And ($config.parallel.Eligible.value -eq $true)) {
+        } elseif (($config.parallel.Override.value -eq $false) -and ($config.parallel.Eligible.value -eq $true)) {
             $config.parallel.Calculated.value = $true
         } else {
             $config.parallel.Calculated.value = $false
@@ -54,7 +58,7 @@ function New-JCSettingsFile {
     }
 
     end {
-        if ((test-path -Path $configFilePath) -And ($force)) {
+        if ((Test-Path -Path $configFilePath) -and ($force)) {
             $config | ConvertTo-Json | Out-File -FilePath $configFilePath
         } else {
             $config | ConvertTo-Json | Out-File -FilePath $configFilePath

@@ -1,3 +1,19 @@
+## 3.0.0
+
+Release Date: December 2, 2025
+
+#### RELEASE NOTES
+
+```
+Introduced support for EU based organizations with Connect-JCOnline
+```
+
+#### FEATURES:
+
+- Introduces the `-JCEnvironment` parameter for `Connect-JCOnline`
+  - This now allows organizations based in the EU datacenter to run PowerShell commands
+- Refactored hardcoded endpoint URLs to use a variable depending on which datacenter the module is connected to
+
 ## 2.18.2
 
 Release Date: September 8, 2025
@@ -10,7 +26,7 @@ Fixed an issue with excluding properties for Update-JCDeviceFromCSV when using P
 
 #### BUG FIXES:
 
-* Address a bug impacting Update-JCDeviceFromCSV
+- Address a bug impacting Update-JCDeviceFromCSV
 
 ## 2.18.1
 
@@ -24,7 +40,7 @@ Implements fix for errors in module directory path resolution
 
 #### BUG FIXES:
 
-* Addresses a bug that impacted module directory paths.
+- Addresses a bug that impacted module directory paths.
 
 ## 2.18.0
 
@@ -39,15 +55,17 @@ Introduces the primarySystemUser parameter to Set-JCSystem and Update-JCDeviceFr
 ```
 
 #### FEATURES:
+
 - Introduces support for passing list of objects (uriList) for Custom MDM (OMA-URI) policy with New/Set-JCPolicy
   - Dynamic param added `-uriList`
   - Menu for `Set-JCPolicy` to edit uriList - create/update/add/remove
+
 * Added the primarySystemUser parameter to Set-JCSystem
 * Update-JCDeviceFromCSV supports the primarySystemUser param that was added to Set-JCSystem
 
 #### BUG FIXES:
 
-* Added an Alias of GroupID to the ByID parameter for Get-JCUserGroupMember
+- Added an Alias of GroupID to the ByID parameter for Get-JCUserGroupMember
 
 ## 2.17.0
 

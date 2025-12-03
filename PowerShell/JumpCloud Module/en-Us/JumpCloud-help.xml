@@ -2471,8 +2471,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <maml:para>Specific to JumpCloud development team to connect to staging dev environment.</maml:para>
           </maml:description>
           <command:parameterValueGroup>
-            <command:parameterValue required="false" command:variableLength="false">production</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">STANDARD</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">staging</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">EU</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -4546,6 +4547,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <maml:para>Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: 'command', 'name','commandType', 'launchType','listensTo','schedule','trigger','scheduleRepeatType','organization'</maml:para>
           </maml:description>
           <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">aiGenerated</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">command</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">name</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">launchType</command:parameterValue>
@@ -5354,6 +5356,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ExactMatch</maml:name>
+          <maml:description>
+            <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Fields</maml:name>
           <maml:description>
             <maml:para>optional list of fields to return from query</maml:para>
@@ -5519,6 +5533,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameterValue required="true" variableLength="false">System.DateTime</command:parameterValue>
         <dev:type>
           <maml:name>System.DateTime</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ExactMatch</maml:name>
+        <maml:description>
+          <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -5826,6 +5852,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ExactMatch</maml:name>
+          <maml:description>
+            <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Fields</maml:name>
           <maml:description>
             <maml:para>optional list of fields to return from query</maml:para>
@@ -5984,6 +6022,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ExactMatch</maml:name>
+        <maml:description>
+          <maml:para>optional string for specifying exact match query, do not use with full text query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Fields</maml:name>
         <maml:description>
           <maml:para>optional list of fields to return from query</maml:para>
@@ -6130,7 +6180,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Int64</maml:name>
+          <maml:name>JumpCloud.SDK.DirectoryInsights.Models.IEventCount</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -8044,9 +8094,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <maml:description>
             <maml:para>Sort type and direction. Default sort is descending, prefix with - to sort ascending.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Support.Sort</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
-            <maml:name>JumpCloud.SDK.DirectoryInsights.Support.Sort</maml:name>
+            <maml:name>System.Object</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -8084,9 +8134,9 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <maml:description>
           <maml:para>Sort type and direction. Default sort is descending, prefix with - to sort ascending.</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Support.Sort</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
-          <maml:name>JumpCloud.SDK.DirectoryInsights.Support.Sort</maml:name>
+          <maml:name>System.Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -8538,6 +8588,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
             <command:parameterValue required="false" command:variableLength="false">allowSshPasswordAuthentication</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">allowSshRootLogin</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">arch</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">attributes</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">azureAdJoined</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">connectionHistory</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">created</command:parameterValue>
@@ -13161,9 +13212,9 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
           <maml:description>
             <maml:para>Report Type</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Support.ReportType1</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
-            <maml:name>JumpCloud.SDK.DirectoryInsights.Support.ReportType1</maml:name>
+            <maml:name>System.Object</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -13211,9 +13262,9 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         <maml:description>
           <maml:para>Report Type</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.DirectoryInsights.Support.ReportType1</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
-          <maml:name>JumpCloud.SDK.DirectoryInsights.Support.ReportType1</maml:name>
+          <maml:name>System.Object</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -20315,6 +20366,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:syntaxItem>
         <maml:name>Set-JCSettingsFile</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>JCEnvironmentLocation</maml:name>
+          <maml:description>
+            <maml:para>sets the System.Management.Automation.PSCustomObject Location=@{write=True; copy=True; value=STANDARD} settings for the System.Management.Automation.PSCustomObject JCEnvironment=@{Location=} feature</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Management.Automation.PSObject</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>moduleBannerMessageCount</maml:name>
           <maml:description>
             <maml:para>sets the messageCount settings for the moduleBanner feature</maml:para>
@@ -20342,6 +20405,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>JCEnvironmentLocation</maml:name>
+        <maml:description>
+          <maml:para>sets the System.Management.Automation.PSCustomObject Location=@{write=True; copy=True; value=STANDARD} settings for the System.Management.Automation.PSCustomObject JCEnvironment=@{Location=} feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>moduleBannerMessageCount</maml:name>
         <maml:description>

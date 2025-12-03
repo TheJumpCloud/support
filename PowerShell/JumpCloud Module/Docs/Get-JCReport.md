@@ -14,12 +14,12 @@ Ordered list of report metadata
 
 ### List (Default)
 ```
-Get-JCReport [-Sort <Sort>] [<CommonParameters>]
+Get-JCReport [-Sort <Object>] [<CommonParameters>]
 ```
 
 ### Report
 ```
-Get-JCReport [-Sort <Sort>] -ReportID <String> -Type <String>
+Get-JCReport [-Sort <Object>] -ReportID <String> -Type <String>
  [<CommonParameters>]
 ```
 
@@ -80,7 +80,7 @@ Sort type and direction.
 Default sort is descending, prefix with - to sort ascending.
 
 ```yaml
-Type: JumpCloud.SDK.DirectoryInsights.Support.Sort
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 

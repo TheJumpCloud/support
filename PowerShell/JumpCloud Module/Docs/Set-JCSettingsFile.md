@@ -15,7 +15,7 @@ Updates the JumpCloud Module Settings File
 
 ```
 Set-JCSettingsFile [-parallelOverride <PSObject>]
- [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
+ [-JCEnvironmentLocation <PSObject>] [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +33,21 @@ PS C:\> Set-JCSettingsFile -ParallelOverride $true
 Disables parallel processing of results in the JumpCloud PowerShell Module
 
 ## PARAMETERS
+
+### -JCEnvironmentLocation
+sets the System.Management.Automation.PSCustomObject Location=@{write=True; copy=True; value=STANDARD} settings for the System.Management.Automation.PSCustomObject JCEnvironment=@{Location=} feature
+
+```yaml
+Type: System.Management.Automation.PSObject
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -moduleBannerMessageCount
 

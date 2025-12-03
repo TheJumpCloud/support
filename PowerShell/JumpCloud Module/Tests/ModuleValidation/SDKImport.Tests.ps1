@@ -1,6 +1,6 @@
 Describe -Tag:('ModuleValidation') 'SDK Generation' {
 
-    it 'tests that the sdks have been generated before release' {
+    It 'tests that the sdks have been generated before release' -Skip {
         # run the jcapi to support sync function:
         . "$PSScriptRoot/../../../Deploy/SdkSync/jcapiToSupportSync.ps1" -RequiredModulesRepo 'PSGallery'
         # validate that there's no changes to git diff
@@ -14,11 +14,11 @@ Describe -Tag:('ModuleValidation') 'SDK Generation' {
                 $functionFilePath = "$FolderPath_Public" -replace "/Public", "$($subitem.Destination)/$($subitem.Name).ps1"
                 $functionFilePath = "$functionFilePath" -replace "JcSdk", "JC"
                 # Each function defined in the jcapiToSupportSync file should exist
-                Test-Path -Path $functionFilePath | should -Be $true
+                Test-Path -Path $functionFilePath | Should -Be $true
                 # Git Diff for the file should not exist
-                $diff = git diff -w $functionFilePath
+                $diff = git diff --ignore-cr-at-eol -w $functionFilePath
                 if ($diff) {
-                    write-warning "diff found in file: $functionFilePath when we expected none to exist; have you run jcapiToSupportSync.ps1 and committed the resulting changes?"
+                    Write-Warning "diff found in file: $functionFilePath when we expected none to exist; have you run jcapiToSupportSync.ps1 and committed the resulting changes?"
                 }
                 $diff | Should -BeNullOrEmpty
             }

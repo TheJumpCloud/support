@@ -3,13 +3,19 @@ Describe -Tag:('JCAssociation') "Association Tests" {
         # Generate possible associations
         $JCAssociationTypes = Get-JCType | Where-Object { $_.Category -eq 'JumpCloud' } # | Get-Random -Count 1 # remove when not testing
         $EmptySources = @()
-        ForEach ($JCAssociationType In $JCAssociationTypes) {
-            $Source = Get-JCObject -Type:($JCAssociationType.TypeName.TypeNameSingular) | Select-Object -First 1 # | Get-Random
-            $AssociationDataSet = If ($Source) {
-                ForEach ($TargetSingular In $Source.Targets.TargetSingular) {
-                    If ( $TargetSingular -notin $EmptySources) {
+        foreach ($JCAssociationType in $JCAssociationTypes) {
+            if ($JCAssociationType.TypeName.TypeNameSingular -eq 'user') {
+                $NewUser = New-RandomUser -domain "association.$(New-RandomString -NumberOfChars 5)" | New-JCUser
+                $Source = $NewUser
+
+            } else {
+                $Source = Get-JCObject -Type:($JCAssociationType.TypeName.TypeNameSingular) | Select-Object -First 1 # | Get-Random
+            }
+            $AssociationDataSet = if ($Source) {
+                foreach ($TargetSingular in $Source.Targets.TargetSingular) {
+                    if ( $TargetSingular -notin $EmptySources) {
                         $Target = Get-JCObject -Type:($TargetSingular) | Get-Random -Count 1 # | Select-Object -First 1 # | Get-Random
-                        If ($Target) {
+                        if ($Target) {
                             @{
                                 'SourceType'  = $Source.TypeName.TypeNameSingular;
                                 'SourceId'    = $Source.($Source.ById);
@@ -21,7 +27,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                                 'Target'      = $Target;
                                 'ValidRecord' = $true;
                             }
-                        } Else {
+                        } else {
                             $EmptySources += $TargetSingular
                             @{
                                 'SourceType'  = $Source.TypeName.TypeNameSingular;
@@ -37,7 +43,7 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                         }
                     }
                 }
-            } Else {
+            } else {
                 $EmptySources += $JCAssociationType.TypeName.TypeNameSingular
                 $JCAssociationType.Targets | ForEach-Object {
                     @{
@@ -152,10 +158,10 @@ Describe -Tag:('JCAssociation') "Association Tests" {
                     Write-Host("Test Object" + $Associations_Test)
                     $Associations_Test | Should -Not -BeNullOrEmpty
                     ($Associations_Test | Measure-Object).Count | Should -BeGreaterThan 0
-                    If ($value -match '-Raw') {
+                    if ($value -match '-Raw') {
                         $TestParam.TargetId | Should -BeIn $Associations_Test.Id
                         $TestParam.TargetType | Should -BeIn $Associations_Test.Type
-                    } Else {
+                    } else {
                         $TestParam.TargetId | Should -BeIn $Associations_Test.TargetId
                         $TestParam.TargetType | Should -BeIn $Associations_Test.TargetType
                         $TestParam.SourceId | Should -BeIn $Associations_Test.Id

@@ -1,4 +1,4 @@
-Function Remove-JCPolicyGroup {
+function Remove-JCPolicyGroup {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -49,9 +49,9 @@ Function Remove-JCPolicyGroup {
         }
     }
     process {
-        if (-NOT [System.String]::IsNullOrEmpty($PolicyGroupID)) {
-            $URL = "https://console.jumpcloud.com/api/v2/policygroups/$PolicyGroupID"
-            if (-NOT $Force) {
+        if (-not [System.String]::IsNullOrEmpty($PolicyGroupID)) {
+            $URL = "$global:JCUrlBasePath/api/v2/policygroups/$PolicyGroupID"
+            if (-not $Force) {
                 Write-Warning "Are you sure you wish to delete policy group: `'$($foundPolicy.Name)`'?" -WarningAction Inquire
             }
             try {

@@ -1,12 +1,12 @@
 {
     "cSpell.language": "en",
     "cSpell.enabled": true,
-    "cSpell.enableFiletypes": [
-    "latex",
-    "markdown",
-    "plaintext",
-    "powershell"
-    ],
+    "cSpell.enabledFileTypes": {
+        "latex": true,
+        "markdown": true,
+        "plaintext": true,
+        "powershell": true
+    },
     // todo highlight settings:
     "todohighlight.isEnable": true,
     "todohighlight.isCaseSensitive": true,
@@ -65,7 +65,25 @@
     "editor.formatOnSave": true,
     "files.trimTrailingWhitespace": true,
     // powershell settings
-    "powershell.codeFormatting.preset": "OTBS",
+	"powershell.codeFormatting.addWhitespaceAroundPipe": true,
+	"powershell.codeFormatting.alignPropertyValuePairs": true,
+	"powershell.codeFormatting.autoCorrectAliases": true,
+	"powershell.codeFormatting.avoidSemicolonsAsLineTerminators": false,
+	"powershell.codeFormatting.ignoreOneLineBlock": true,
+	"powershell.codeFormatting.newLineAfterCloseBrace": true,
+	"powershell.codeFormatting.newLineAfterOpenBrace": true,
+	"powershell.codeFormatting.openBraceOnSameLine": true,
+	"powershell.codeFormatting.pipelineIndentationStyle": "IncreaseIndentationForFirstPipeline",
+	"powershell.codeFormatting.preset": "OTBS",
+	"powershell.codeFormatting.trimWhitespaceAroundPipe": true,
+	"powershell.codeFormatting.useConstantStrings": false,
+	"powershell.codeFormatting.useCorrectCasing": true,
+	"powershell.codeFormatting.whitespaceAfterSeparator": true,
+	"powershell.codeFormatting.whitespaceAroundOperator": true,
+	"powershell.codeFormatting.whitespaceBeforeOpenBrace": true,
+	"powershell.codeFormatting.whitespaceBeforeOpenParen": true,
+	"powershell.codeFormatting.whitespaceBetweenParameters": true,
+	"powershell.codeFormatting.whitespaceInsideBrace": true,
     "powershell.scriptAnalysis.enable": true,
     "powershell.scriptAnalysis.settingsPath": "PowerShell/JumpCloud Module/Tests/ModuleValidation/PSScriptAnalyzerSettings.psd1",
 }

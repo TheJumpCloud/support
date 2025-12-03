@@ -10,7 +10,7 @@ function Get-JCPolicyTemplateConfigField {
         $headers = @{}
         $headers.Add("x-api-key", $env:JCApiKey)
         $headers.Add("x-org-id", $env:JCOrgId)
-        $template = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policytemplates/$templateID" -Method GET -Headers $headers
+        $template = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/v2/policytemplates/$templateID" -Method GET -Headers $headers
         # define policy config field mapping
         $PolicyConfigMapping = @{
             checkbox       = 'boolean'
@@ -71,7 +71,7 @@ function Get-JCPolicyTemplateConfigField {
                 value           = $null
                 defaultValue    = $field.defaultValue
             }
-            $objectMap.Add($templateObject) | out-null
+            $objectMap.Add($templateObject) | Out-Null
         }
         # Build object to return, including template displayname
         $templateObject = [PSCustomObject]@{

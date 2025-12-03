@@ -31,30 +31,32 @@ Get only group_create event counts the last thirty days
 .Inputs
 JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
 .Outputs
-System.Int64
+JumpCloud.SDK.DirectoryInsights.Models.IEventCount
 .Notes
 COMPLEX PARAMETER PROPERTIES
 
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
-  Service <String[]>: service name to query.
+  Service <List<String>>: service name to query.
   StartTime <DateTime>: query start time, UTC in RFC3339 format
   [EndTime <DateTime?>]: optional query end time, UTC in RFC3339 format
-  [Fields <String[]>]: optional list of fields to return from query
+  [ExactMatch <String>]: optional string for specifying exact match query, do not use with full text query
+  [Fields <List<String>>]: optional list of fields to return from query
   [Limit <Int64?>]: Max number of rows to return
   [Q <String>]: optional string for specifying a full text query
-  [SearchAfter <String[]>]: Specific query to search after, see x-* response headers for next values
+  [SearchAfter <List<String>>]: Specific query to search after, see x-* response headers for next values
   [SearchTermAnd <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
     [(Any) <Object>]: This indicates any property can be added to this object.
   [SearchTermNot <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
   [SearchTermOr <ITermConjunction>]: TermConjunction represents a conjunction (and/or)         NOTE: the validator limits what the operator can be, not the object         for future-proof-ness         and a list of sub-values
+  [Skip <Int64?>]: optional offset into the result set to start with when returning
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
 https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
 #>
 Function Get-JCEventCount {
-    [OutputType([System.Int64])]
+    [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IEventCount])]
     [CmdletBinding(DefaultParameterSetName='GetExpanded', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
         [Parameter(ParameterSetName='GetExpanded', Mandatory)]
@@ -75,6 +77,12 @@ Function Get-JCEventCount {
         [System.DateTime]
         # optional query end time, UTC in RFC3339 format
         ${EndTime},
+        
+        [Parameter(ParameterSetName='GetExpanded')]
+        [JumpCloud.SDK.DirectoryInsights.Category('Body')]
+        [System.String]
+        # optional string for specifying exact match query, do not use with full text query
+        ${ExactMatch},
         
         [Parameter(ParameterSetName='GetExpanded')]
         [AllowEmptyCollection()]
@@ -127,7 +135,6 @@ Function Get-JCEventCount {
         [JumpCloud.SDK.DirectoryInsights.Category('Body')]
         [JumpCloud.SDK.DirectoryInsights.Models.IEventQuery]
         # EventQuery is the users' command to search our auth logs
-        # To construct, see NOTES section for BODY properties and create a hash table.
         ${Body}
     )
     Begin {

@@ -28,7 +28,7 @@ function Set-JCPolicy {
         [System.String]
         $Notes
     )
-    DynamicParam {
+    dynamicparam {
 
         if ($PSBoundParameters["PolicyID"]) {
             $ParameterAttribute = New-Object System.Management.Automation.ParameterAttribute
@@ -57,7 +57,7 @@ function Set-JCPolicy {
             }
         }
         # If policy is identified, get the dynamic policy set
-        if ($foundPolicy.id -And ($PSBoundParameters["PolicyName"] -OR $PSBoundParameters["PolicyID"])) {
+        if ($foundPolicy.id -and ($PSBoundParameters["PolicyName"] -or $PSBoundParameters["PolicyID"])) {
             # Set the policy template object based on policy
             $templateObject = Get-JCPolicyTemplateConfigField -templateID $foundPolicy.Template.Id
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -95,9 +95,9 @@ function Set-JCPolicy {
                         $paramType = [system.object[]]
                     }
                     'exclude' {
-                        Continue
+                        continue
                     }
-                    Default {
+                    default {
                         $paramType = 'string'
                     }
                 }
@@ -145,7 +145,7 @@ function Set-JCPolicy {
     }
     process {
         # Get Existing Policy Data if not set through dynamic param
-        if (([string]::IsNullOrEmpty($foundPolicy.ID)) -And ($policyID)) {
+        if (([string]::IsNullOrEmpty($foundPolicy.ID)) -and ($policyID)) {
             # Get the policy by ID
             $foundPolicy = Get-JCPolicy -PolicyID $PolicyID
             if ([string]::IsNullOrEmpty($foundPolicy.ID)) {
@@ -168,15 +168,15 @@ function Set-JCPolicy {
         $requiredSet = @('PolicyID', 'PolicyName', 'NewName' , 'Values')
         foreach ($parameter in $paramterSet) {
             $parameterComparison = Compare-Object -ReferenceObject $requiredSet -DifferenceObject $parameter
-            if ($parameterComparison | Where-Object { ( $_.sideindicator -eq "=>") -And ($_.InputObject -ne "Notes") }) {
+            if ($parameterComparison | Where-Object { ( $_.sideindicator -eq "=>") -and ($_.InputObject -ne "Notes") }) {
                 $DynamicParamSet = $true
                 break
             }
         }
 
         # only update newName or Notes:
-        if ((("NewName" -in $params.keys) -AND ("Values" -notin $params.Keys)) -OR
-            (("Notes" -in $params.keys) -AND ("Values" -notin $params.Keys))) {
+        if ((("NewName" -in $params.keys) -and ("Values" -notin $params.Keys)) -or
+            (("Notes" -in $params.keys) -and ("Values" -notin $params.Keys))) {
             $Values = $foundPolicy.values
         }
         # get the notes if it's not in the param set
@@ -233,7 +233,7 @@ function Set-JCPolicy {
                                 }
                                 $RegProperties | ForEach-Object {
                                     if ($_.Name -notin $ObjectProperties) {
-                                        Throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                        throw "Custom Registry Tables require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
                                     }
                                 }
                                 # reg type validation
@@ -262,7 +262,7 @@ function Set-JCPolicy {
                                 }
                                 $uriListProperties | ForEach-Object {
                                     if ($_.Name -notin $ObjectProperties) {
-                                        Throw "Custom Windows MDM Policy require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
+                                        throw "Custom Windows MDM Policy require a `"$($_.Name)`" data string. The following data types were found: $($ObjectProperties)"
                                     }
                                 }
                                 # uriList type validation
@@ -350,7 +350,7 @@ function Set-JCPolicy {
                                 $templateObject.objectMap[$i].value = $keyValue
                             }
                         }
-                        Default {
+                        default {
                             $templateObject.objectMap[$i].value = $($keyValue)
                         }
                     }
@@ -423,7 +423,7 @@ function Set-JCPolicy {
                             $_ | Add-Member -MemberType NoteProperty -Name "label" -Value $templateObject.objectMap[$templateObject.objectMap.configFieldID.IndexOf($($_.configFieldID))].label
                         }
                     }
-                    Do {
+                    do {
                         # Hide option to edit all fields
                         $userInput = Show-JCPolicyValues -policyObject $updatedPolicyObject -HideAll $true -policyValues $foundPolicy.values
                         $updatedPolicyObject = Set-JCPolicyConfigField -templateObject $templateObject.objectMap -fieldIndex $userInput.fieldSelection -policyValues $foundPolicy.values
@@ -451,7 +451,7 @@ function Set-JCPolicy {
             'x-org-id'     = $env:JCOrgId
             'content-type' = "application/json"
         }
-        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/policies/$($foundPolicy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
+        $response = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/v2/policies/$($foundPolicy.id)" -Method PUT -Headers $headers -ContentType 'application/json' -Body $body
         if ($response) {
             $response | Add-Member -MemberType NoteProperty -Name "templateID" -Value $response.template.id
         }

@@ -1,4 +1,4 @@
-Param(
+param(
     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Name of module')][ValidateNotNullOrEmpty()][System.String]$ModuleName = 'JumpCloud'
     , [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Path to module root')][ValidateNotNullOrEmpty()][System.String]$ModulePath = './PowerShell/JumpCloud Module' # $PSScriptRoot
     , [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, HelpMessage = 'Which parameter set to be used for New-MarkdownHelp')][ValidateNotNullOrEmpty()][ValidateSet('FromCommand', 'FromModule')][System.String]$NewMarkdownHelpParamSet = 'FromCommand'
@@ -61,7 +61,7 @@ $FolderPath_Docs = "$ModulePath/Docs"
 $FolderPath_enUS = "$ModulePath/$Locale"
 $FilePath_ModulePagePath = "$FolderPath_Docs/$ModuleName.md"
 Write-Host ("[status]Creating/Updating help files")
-Try {
+try {
     Write-Host ("[status]Installing module: PlatyPS")
     Install-Module -Repository:('PSGallery') -Name:('PlatyPS') -Force
     # Import module
@@ -74,7 +74,7 @@ Try {
     #########################################################
     ############### Adding Comment based help ###############
     #########################################################
-    If ($AddCommentBasedHelp) {
+    if ($AddCommentBasedHelp) {
         $FolderPath_Public = "$ModulePath/Public"
         # Move the help contents from docs files to ps1 files
         $DocFiles = Get-ChildItem $FolderPath_Docs
@@ -88,15 +88,15 @@ Try {
                     $description = ".Description`r`n" + ($help.description.text).Trim()
                     $examples = $help.examples.example | ForEach-Object {
                         $Example = $_
-                        $ExampleCode = If ($Example.code -like '*C:\>*') {
+                        $ExampleCode = if ($Example.code -like '*C:\>*') {
                             ($Example.code).split(">")[1]
-                        } Else {
+                        } else {
                             $Example.code
                         }
                         (".Example`r`n" + ($ExampleCode).Trim() + "`r`n`r`n" + ($Example.remarks.text).Trim())
                     }
-                    $notes = If ($help.alertSet.alert.text) { ".Notes`r`n" + ($help.alertSet.alert.text).Trim() }
-                    $link = If ($help.relatedLinks.navigationLink.uri) { ".Link`r`n" + ($help.relatedLinks.navigationLink.uri).Trim() }
+                    $notes = if ($help.alertSet.alert.text) { ".Notes`r`n" + ($help.alertSet.alert.text).Trim() }
+                    $link = if ($help.relatedLinks.navigationLink.uri) { ".Link`r`n" + ($help.relatedLinks.navigationLink.uri).Trim() }
                     Set-Content $file.FullName -Value "<#", $synopsis, $description, $examples, $notes, $link, "#>"
                     Add-Content $file.FullName -Value $content
                 }
@@ -110,16 +110,16 @@ Try {
     #########################################################
     #########################################################
     # If not exist create: .\Docs\about_$ModuleName.md
-    If (-not (Test-Path -Path:("$($FolderPath_Docs)/about_$($ModuleName).md"))) {
+    if (-not (Test-Path -Path:("$($FolderPath_Docs)/about_$($ModuleName).md"))) {
         Write-Host ("[status]Creating New-MarkdownAboutHelp")
         New-MarkdownAboutHelp -OutputFolder:($FolderPath_Docs) -AboutName:($ModuleName)
     }
     # Creating help files: .\Docs\*.md
     Write-Host ("[status]Creating help files: .\Docs\*.md")
-    Switch ($NewMarkdownHelpParamSet) {
+    switch ($NewMarkdownHelpParamSet) {
         'FromCommand' {
             $Psd1.FunctionsToExport | ForEach-Object {
-                If (-not (Test-Path -Path:("$($FolderPath_Docs)/$($_).md"))) {
+                if (-not (Test-Path -Path:("$($FolderPath_Docs)/$($_).md"))) {
                     $parameters = @{
                         Command               = $_
                         Force                 = $true
@@ -133,6 +133,7 @@ Try {
                         # Session               = '<PSSession>'
                         # Metadata              = '<Hashtable>'
                     }
+                    Write-Host ("[status]Creating help file for command: $($_)")
                     New-MarkdownHelp @parameters
                 }
             }
@@ -155,9 +156,10 @@ Try {
                 # Session               = '<PSSession>'
                 # Metadata              = '<Hashtable>'
             }
+            Write-Host ("[status]Creating help file for command: $($_)")
             New-MarkdownHelp @parameters
         }
-        Default {
+        default {
             Write-Error ("Unknown `$NewMarkdownHelpParamSet value: $NewMarkdownHelpParamSet")
         }
     }
@@ -171,13 +173,15 @@ Try {
         UpdateInputOutput     = $true
         Force                 = $true
         ExcludeDontShow       = $true
-        # LogPath               = "$FolderPath_Docs\PlatyPS.log"
-        # LogAppend             = $true
+        LogPath               = "$FolderPath_Docs\PlatyPS.log"
+        LogAppend             = $true
         # Encoding              = '<Encoding>'
         # Session               = '<PSSession>'
     }
+    Write-Host ("[status]Updating help files: .\Docs\*.md")
     Update-MarkdownHelpModule @parameters
     # Manually updating specific feilds within JumpCloud.md
+    Write-Host ("[status]Updating JumpCloud.md")
     $ModulePageContent = Get-Content -Path:($FilePath_ModulePagePath) -Raw
     $ModulePageContent = $ModulePageContent.Replace("`r", '')
     $ModulePageContent = $ModulePageContent.Replace("## Description`n{{ Fill in the Description }}", "## Description`n$($Psd1.Description)")
@@ -223,7 +227,7 @@ Try {
     (Get-Content -Path "$FolderPath_enUS/$ModuleName-help.xml" -Raw).Replace($ProgressActionXML1, '') | Set-Content "$FolderPath_enUS/$ModuleName-help.xml"
     (Get-Content -Path "$FolderPath_enUS/$ModuleName-help.xml" -Raw).Replace($ProgressActionXML2, '') | Set-Content "$FolderPath_enUS/$ModuleName-help.xml"
 
-} Catch {
+} catch {
     Write-Error ($_)
 }
 

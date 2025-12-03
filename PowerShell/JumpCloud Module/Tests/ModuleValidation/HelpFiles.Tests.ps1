@@ -1,5 +1,5 @@
 Describe -Tag:('ModuleValidation') 'Help File Tests' {
-    Function Get-HelpFilesTestCases {
+    function Get-HelpFilesTestCases {
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
         $ModuleRootFullName = $ModuleRoot.FullName
         $Regex_FillInThe = '(\{\{)(.*?)(\}\})'
@@ -14,11 +14,11 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
                 Regex_FillInThePester = $Regex_FillInThePester
             }
         }
-        Return $HelpFilesTestCases
+        return $HelpFilesTestCases
     }
     Context ('Validating help file fields have been populated') {
         It ('The file "<Path>" needs to be populated on line number "<LineNumber>" where "<Line>" exists.') -TestCases:(Get-HelpFilesTestCases) {
-            If ($Path) {
+            if ($Path) {
                 $Path | Should -Not -FileContentMatch ($Regex_FillInThePester)
             }
         }
@@ -30,7 +30,7 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
             $ModulePathLocation = "$PSScriptRoot/../../../JumpCloud Module"
             # run the Build-HelpFiles function to generate new docs:
             Start-Job -Name BuildHelpFiles -ScriptBlock { . $using:BuildHelpFilesLocation -ModuleName "JumpCloud" -ModulePath $using:ModulePathLocation }
-            Wait-Job -Name  BuildHelpFiles
+            Wait-Job -Name BuildHelpFiles
             # validate that there's no changes to git diff
 
             $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent
@@ -46,7 +46,7 @@ Describe -Tag:('ModuleValidation') 'Help File Tests' {
                 Test-Path -Path $_.FullName | Should -Be $true
 
                 # Git Diff for the file should not exist
-                $diff = git diff -- $_.FullName
+                $diff = git diff --ignore-cr-at-eol -- $_.FullName
                 if ($diff) {
                     Write-Warning "Diff found in the file $($_.FullName) when we expected none to exist; Please run Build-HelpFiles and commit the results"
                 }
