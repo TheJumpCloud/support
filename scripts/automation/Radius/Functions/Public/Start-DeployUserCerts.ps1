@@ -99,8 +99,9 @@ function Start-DeployUserCerts {
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
                     # set the consoleHost/ apiHost parameters from the global settings
-                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
-                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
+                    $env:JCEnvironment = $using:JCEnvironment
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
 
 
                     # Import the private functions
@@ -192,8 +193,9 @@ function Start-DeployUserCerts {
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
                     # set the consoleHost/ apiHost parameters from the global settings
-                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
-                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
+                    $env:JCEnvironment = $using:JCEnvironment
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
 
                     # set the required global variables
                     $global:JCRConfig = @{
