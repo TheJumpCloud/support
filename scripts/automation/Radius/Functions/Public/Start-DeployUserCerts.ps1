@@ -94,6 +94,9 @@ function Start-DeployUserCerts {
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
                 $userArray | ForEach-Object -ThrottleLimit 20 -Parallel {
+                    Write-Warning "Processing user: $($_.username)"
+                    Write-Warning "consoleHost: $($PSDefaultParameterValues['*-JcSdk*:ConsoleHost'])"
+                    Write-Warning "apiHost: $($PSDefaultParameterValues['*-JcSdk*:ApiHost'])"
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
