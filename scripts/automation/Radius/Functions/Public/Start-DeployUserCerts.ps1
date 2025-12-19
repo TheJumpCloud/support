@@ -83,7 +83,7 @@ function Start-DeployUserCerts {
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
                         $invokeCommands = Get-ResponsePrompt -message "Would you like to invoke commands after they've been generated?"
-                        if (($invokeCommands -ne $true) -And ($invokeCommands -ne $false)) {
+                        if (($invokeCommands -ne $true) -and ($invokeCommands -ne $false)) {
                             return
                         }
                     }
@@ -93,18 +93,22 @@ function Start-DeployUserCerts {
                 $resultArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
-                $userArray | Foreach-Object -ThrottleLimit 20 -Parallel {
+                $userArray | ForEach-Object -ThrottleLimit 20 -Parallel {
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
+                    # set the consoleHost/ apiHost parameters from the global settings
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
+
 
                     # Import the private functions
                     $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse )
                     foreach ($Import in $Private) {
-                        Try {
+                        try {
                             . $Import.FullName
-                        } Catch {
+                        } catch {
                             Write-Error -Message "Failed to import function $($Import.FullName): $_"
                         }
                     }
@@ -169,12 +173,12 @@ function Start-DeployUserCerts {
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
                         $invokeCommands = Get-ResponsePrompt -message "Would you like to invoke commands after they've been generated?"
-                        if (($invokeCommands -ne $true) -And ($invokeCommands -ne $false)) {
+                        if (($invokeCommands -ne $true) -and ($invokeCommands -ne $false)) {
                             return
                         }
                     }
                 }
-                if (-Not $usersWithoutLatestCert) {
+                if (-not $usersWithoutLatestCert) {
                     $usersWithoutLatestCert = Get-UsersThatNeedCertWork -userData $userArray
                 }
 
@@ -182,11 +186,14 @@ function Start-DeployUserCerts {
                 $resultArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 # foreach user:
-                $usersWithoutLatestCert | Foreach-Object -ThrottleLimit 20 -Parallel {
+                $usersWithoutLatestCert | ForEach-Object -ThrottleLimit 20 -Parallel {
                     # set the required variables
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
+                    # set the consoleHost/ apiHost parameters from the global settings
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
 
                     # set the required global variables
                     $global:JCRConfig = @{
@@ -216,9 +223,9 @@ function Start-DeployUserCerts {
                     # Import the private functions
                     $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse )
                     foreach ($Import in $Private) {
-                        Try {
+                        try {
                             . $Import.FullName
-                        } Catch {
+                        } catch {
                             Write-Error -Message "Failed to import function $($Import.FullName): $_"
                         }
                     }
