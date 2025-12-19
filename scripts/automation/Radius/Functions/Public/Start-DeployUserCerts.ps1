@@ -94,7 +94,7 @@ function Start-DeployUserCerts {
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
 
                 $userArray | ForEach-Object -ThrottleLimit 20 -Parallel {
-                    # set the consoleHost/ apiHost parameters from the global settings FIRST before any function calls
+                    # set the consoleHost/ apiHost parameters from the global settings
                     $ENV:JCEnvironment = $using:JCEnvironment
                     $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
                     $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
@@ -103,10 +103,6 @@ function Start-DeployUserCerts {
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
-
-                    Write-Warning "Processing user: $($_.username)"
-                    Write-Warning "consoleHost: $($PSDefaultParameterValues['*-JcSdk*:ConsoleHost'])"
-                    Write-Warning "apiHost: $($PSDefaultParameterValues['*-JcSdk*:ApiHost'])"
 
                     # Import the private functions
                     $Private = @( Get-ChildItem -Path "$JCRScriptRoot/Functions/Private/*.ps1" -Recurse )
@@ -192,6 +188,7 @@ function Start-DeployUserCerts {
                 $workDoneArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()
                 # foreach user:
                 $usersWithoutLatestCert | ForEach-Object -ThrottleLimit 20 -Parallel {
+                    # set the consoleHost/ apiHost parameters from the global settings
                     $ENV:JCEnvironment = $using:JCEnvironment
                     $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
                     $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
@@ -199,10 +196,6 @@ function Start-DeployUserCerts {
                     $JCAPIKEY = $using:JCAPIKEY
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
-
-                    Write-Warning "Processing user: $($_.username)"
-                    Write-Warning "consoleHost: $($PSDefaultParameterValues['*-JcSdk*:ConsoleHost'])"
-                    Write-Warning "apiHost: $($PSDefaultParameterValues['*-JcSdk*:ApiHost'])"
 
                     # set the required global variables
                     $global:JCRConfig = @{
