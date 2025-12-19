@@ -100,8 +100,8 @@ function Start-DeployUserCerts {
                     $JCRScriptRoot = $using:JCRScriptRoot
                     # set the consoleHost/ apiHost parameters from the global settings
                     $ENV:JCEnvironment = 'STANDARD'
-                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'console'
-                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'api'
+                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api'
+                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console'
                     Write-Warning "Processing user: $($_.username)"
                     Write-Warning "consoleHost: $($PSDefaultParameterValues['*-JcSdk*:ConsoleHost'])"
                     Write-Warning "apiHost: $($PSDefaultParameterValues['*-JcSdk*:ApiHost'])"
@@ -197,8 +197,8 @@ function Start-DeployUserCerts {
                     $JCRScriptRoot = $using:JCRScriptRoot
                     # set the consoleHost/ apiHost parameters from the global settings
                     $ENV:JCEnvironment = 'STANDARD'
-                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'console'
-                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'api'
+                    $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api'
+                    $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console'
                     Write-Warning "Processing user: $($_.username)"
                     Write-Warning "consoleHost: $($PSDefaultParameterValues['*-JcSdk*:ConsoleHost'])"
                     Write-Warning "apiHost: $($PSDefaultParameterValues['*-JcSdk*:ApiHost'])"
