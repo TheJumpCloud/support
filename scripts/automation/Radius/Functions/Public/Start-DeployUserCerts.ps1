@@ -99,7 +99,7 @@ function Start-DeployUserCerts {
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
                     # set the consoleHost/ apiHost parameters from the global settings
-                    $env:JCEnvironment = $using:JCEnvironment
+                    $ENV:JCEnvironment = 'STANDARD'
                     $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'console'
                     $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'api'
 
@@ -193,7 +193,7 @@ function Start-DeployUserCerts {
                     $JCORGID = $using:JCORGID
                     $JCRScriptRoot = $using:JCRScriptRoot
                     # set the consoleHost/ apiHost parameters from the global settings
-                    $env:JCEnvironment = $using:JCEnvironment
+                    $ENV:JCEnvironment = 'STANDARD'
                     $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'console'
                     $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'api'
 
