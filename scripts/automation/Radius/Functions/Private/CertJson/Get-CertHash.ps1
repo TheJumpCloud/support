@@ -7,7 +7,15 @@ function Get-CertHash {
         $resultsArrayP = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
     }
     process {
-        $allCerts | Foreach-Object -ThrottleLimit 5 -Parallel {
+        $allCerts | ForEach-Object -ThrottleLimit 5 -Parallel {
+            $ENV:JCEnvironment = $using:JCEnvironment
+            $global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ApiHost']
+            $global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = $using:PSDefaultParameterValues['*-JcSdk*:ConsoleHost']
+            # set the required variables
+            $JCAPIKEY = $using:JCAPIKEY
+            $JCORGID = $using:JCORGID
+            $JCRScriptRoot = $using:JCRScriptRoot
+
             $resultsArrayP = $using:resultsArrayP
             ${function:Get-CertBySHA} = $using:shaFuncDef
             ${function:New-DeploymentTable} = $using:deploymentTableDef
