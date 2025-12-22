@@ -1,3 +1,13 @@
+## 2.1.7
+
+Release Date: Dec 19, 2025
+
+#### RELEASE NOTES
+
+```
+This patch addresses an issue where the module would prompt for the dependant modules 'consoleHost' and 'apiHost' parameters when running in parallel. This has been resolved by ensuring that the global default parameter values are set correctly within each parallel runspace.
+```
+
 ## 2.1.6
 
 Release Date: August 29, 2025
