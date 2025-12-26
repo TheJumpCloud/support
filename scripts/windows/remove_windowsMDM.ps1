@@ -1,12 +1,30 @@
+<#
+  =============================================================================
+  MDM Cleanup Tool
+
+  What this does:
+  It aggressively hunts down broken/partial MDM enrollments and removes the leftover pieces.
+
+  The logic:
+  1. Check Task Scheduler first for GUIDs. (Stuck devices usually have tasks left behind).
+  2. Scrape the Registry for known Enrollment IDs.
+  3. Perform a targeted cleanup of the IDs we found.
+  4. CleanSweep: Go to specific registry locations and remove an orphaned GUIDs
+  =============================================================================
+#>
+
 #### Edit to output verbose messages ####
-# Set $Script:AdminDebug to $true to enable verbose logging
+# Flip this to $true if you want to see everything happening in the console window.
 $Script:AdminDebug = $false
 #### End Edit ####
 
+# Just grabbing the system drive (usually C:) so we aren't hardcoding paths.
 Function Get-WindowsDrive {
     $drive = (Get-WmiObject Win32_OperatingSystem).SystemDrive
     return $drive
 }
+
+# Standard logging wrapper.
 Function Write-ToLog {
     [CmdletBinding()]
     Param
@@ -16,62 +34,75 @@ Function Write-ToLog {
         , [Parameter(Mandatory = $false)][ValidateSet("Error", "Warn", "Info", "Verbose")][string]$Level = "Info"
     )
     Begin {
-        # Set VerbosePreference to Continue so that verbose messages are displayed.
         $VerbosePreference = 'Continue'
     }
     Process {
-        # If attempting to write to a log file in a folder/path that doesn't exist create the file including the path.
+        # Make sure the log file actually exists before we write to it
         If (!(Test-Path $Path)) {
             Write-Verbose "Creating $Path."
             New-Item $Path -Force -ItemType File | Out-Null
         }
-        # Format Date for our Log File
         $FormattedDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-        # Write message to error, warning, or verbose pipeline and specify $LevelText
+
+        # Decide how much noise to make in the console
         if ($Script:AdminDebug) {
             Switch ($Level) {
-                'Error' {
-                    Write-Error $Message
-                    $LevelText = 'ERROR:'
-                }
-                'Warn' {
-                    Write-Warning $Message
-                    $LevelText = 'WARNING:'
-                }
-                'Info' {
-                    Write-Verbose $Message
-                    $LevelText = 'INFO:'
-                }
-                'Verbose' {
-                    Write-Verbose $Message
-                    $LevelText = 'INFO:'
-                }
+                'Error' { Write-Error $Message; $LevelText = 'ERROR:' }
+                'Warn' { Write-Warning $Message; $LevelText = 'WARNING:' }
+                'Info' { Write-Verbose $Message; $LevelText = 'INFO:' }
+                'Verbose' { Write-Verbose $Message; $LevelText = 'INFO:' }
             }
         } else {
+            # Quiet mode: only errors show up in console, but we still tag the log file correctly
             Switch ($Level) {
-                'Error' {
-                    Write-Error $Message
-                    $LevelText = 'ERROR:'
-                }
-                'Warn' {
-                    $LevelText = 'WARNING:'
-                }
-                'Info' {
-                    $LevelText = 'INFO:'
-                }
-                'Verbose' {
-                    Write-Verbose $Message
-                    $LevelText = 'INFO:'
+                'Error' { Write-Error $Message; $LevelText = 'ERROR:' }
+                'Warn' { $LevelText = 'WARNING:' }
+                'Info' { $LevelText = 'INFO:' }
+                'Verbose' { Write-Verbose $Message; $LevelText = 'INFO:' }
+            }
+        }
+        # Dump the line into the text file
+        Add-Content -Value "$FormattedDate $LevelText $Message" -Path $Path -Encoding utf8
+    }
+}
+
+# This is our primary way to find the GUID.
+# We look at the "EnterpriseMgmt" folder in Task Scheduler.
+function Get-MdmEnrollmentGuidFromTaskScheduler {
+    [CmdletBinding()]
+    param()
+
+    Write-ToLog "Searching for MDM enrollment GUIDs in Task Scheduler folder: \Microsoft\Windows\EnterpriseMgmt\"
+    $taskPathBase = "\Microsoft\Windows\EnterpriseMgmt\"
+    # Looking for that standard GUID format (8-4-4-4-12 chars)
+    $guidPattern = '([A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12})'
+    $foundGuids = @()
+
+    try {
+        # Using SilentlyContinue because if the folder is missing, Powershell throws a fit.
+        $mdmTasks = Get-ScheduledTask -TaskPath "$taskPathBase*" -ErrorAction SilentlyContinue
+        if (-not $mdmTasks) {
+            Write-ToLog "No scheduled tasks found in the EnterpriseMgmt folder." -Level Info
+            return $foundGuids
+        }
+        # Iterate through the tasks to pull the GUID out of the folder path
+        $mdmTasks | ForEach-Object {
+            $taskPath = $_.TaskPath
+            if ($taskPath -match $guidPattern) {
+                $guid = $Matches[1]
+                if ($guid -notin $foundGuids) {
+                    $foundGuids += $guid
+                    Write-ToLog "Found GUID from scheduled task path: $guid" -Level Verbose
                 }
             }
         }
-        # Write log entry to $Path
-        Add-Content -Value "$FormattedDate $LevelText $Message" -Path $Path -Encoding utf8
+    } catch {
+        Write-ToLog "Error accessing Scheduled Tasks: $($_.Exception.Message)" -Level Error
     }
-    End {
-
-    }
+    return $foundGuids | Sort-Object -Unique
 }
+
+# Helper to verify if our cleanup worked at the end.
 function Get-MdmEnrollmentInfo {
     [CmdletBinding()]
     param (
@@ -82,18 +113,17 @@ function Get-MdmEnrollmentInfo {
     Write-ToLog "Checking for MDM Enrollment Key at: $MdmEnrollmentKey"
     if (!(Test-Path $MdmEnrollmentKey)) {
         Write-ToLog "MDM enrollment key: '$MdmEnrollmentKey' not found." -Level Warn
-        return # Exit the function if the base key doesn't exist
+        return
     }
 
     $enrollmentGuids = Get-ChildItem $MdmEnrollmentKey -ErrorAction SilentlyContinue
     if (!$enrollmentGuids) {
-        Write-ToLog "MDM enrollment key exists at '$MdmEnrollmentKey', but no specific enrollment GUIDs (subkeys) were found under it."
-        return # Exit if no subkeys
+        Write-ToLog "MDM enrollment key exists, but no specific enrollment GUIDs were found."
+        return
     }
 
-    Write-ToLog "MDM Enrollment Keys Found. Checking for ProviderID and UPN..."
     $foundDetails = $false
-
+    # We only care about subkeys that look like GUIDs and have actual data (ProviderID/UPN)
     foreach ($guidItem in $enrollmentGuids) {
         if ($guidItem.PSChildName -match '^[A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}$') {
             $enrollmentPropertiesPath = $guidItem.PSPath
@@ -102,7 +132,6 @@ function Get-MdmEnrollmentInfo {
 
             if ($providerID -and $upn) {
                 Write-ToLog "Found ProviderID '$providerID' and UPN '$upn' for enrollment $($guidItem.PSChildName)."
-                # Output the object
                 [PSCustomObject]@{
                     EnrollmentGUID = $guidItem.PSChildName
                     ProviderID     = $providerID
@@ -110,176 +139,217 @@ function Get-MdmEnrollmentInfo {
                 }
                 $foundDetails = $true
             }
-        } else {
-            Write-ToLog "Skipping non-GUID subkey: $($guidItem.PSChildName)"
         }
     }
-
     if (-not $foundDetails) {
         Write-ToLog "No enrollments found with both ProviderID and UPN under '$MdmEnrollmentKey'."
         return $null
     }
 }
 
+# ==========================================
+# LET'S GET STARTED
+# ==========================================
 try {
     Write-ToLog "Script execution started: $(Get-Date)" -Level Verbose
     Write-ToLog "Logging to: C:\Windows\Temp\jcMDMCleanup.log" -Level Verbose
     Write-ToLog "-----------------------------------------" -Level Verbose
 
-    ###Initialize an array to store Enrollment IDs###
     $valueName = "ProviderID"
-    $EnrollIDs = @()
-    $mdmEnrollmentKey = "HKLM:\SOFTWARE\Microsoft\Enrollments" # Define the key path
+    $mdmEnrollmentKey = "HKLM:\SOFTWARE\Microsoft\Enrollments"
+    $GuidsToProcess = @()
 
-    ###Check if the registry path exists###
     if (-not (Test-Path -Path $mdmEnrollmentKey)) {
         Write-ToLog "Registry path 'HKLM:\SOFTWARE\Microsoft\Enrollments\' does not exist. Exiting." -Level Error
-        exit 1 # Exit if the base key isn't there
+        exit 1
     }
 
-    $mdmInfo = Get-MdmEnrollmentInfo | Format-Table -AutoSize
-    if ($mdmInfo) {
-        Write-ToLog "MDM Enrollment Information: $($mdmInfo | Out-String)" -Level Verbose
-    }
-    $entraStatus = dsregcmd /Status
-    # Get deviceId
-    $deviceId = $entraStatus | Select-String -Pattern "DeviceId" | ForEach-Object { $_.ToString().Split(":")[1].Trim() }
+    # --- Phase 1: GUIDs Discovery ---
+    Write-ToLog "####### Discovery Phase #######" -Level Verbose
 
-    if ($deviceId) {
-        Write-ToLog "DeviceId: $deviceId" -Level Verbose
+    # Try Task Scheduler first.
+    $taskSchedulerGuids = Get-MdmEnrollmentGuidFromTaskScheduler
+    if ($taskSchedulerGuids.Count -gt 0) {
+        Write-ToLog "Using GUIDs discovered via Task Scheduler."
+        $GuidsToProcess = $taskSchedulerGuids
     } else {
-        Write-ToLog "DeviceId not found in dsregcmd output." -Level Warn
-    }
-
-
-    # PowerShell script snippet to check for UPN and ProviderID in MDM enrollments
-    # Get MDM Details
-    Write-ToLog "####### Cleaning up MDM Enrollment in the Registry #######" -Level Verbose
-    # Process only direct children that look like GUIDs
-    Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Enrollments\" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
-        $currentItemPath = $_.PsPath
-        $EnrollID = $_.PSChildName # Get the GUID directly
-
-        ###Check if the registry key has the ProviderID property###
-        if ($item = Get-ItemProperty -LiteralPath $currentItemPath -Name $valueName -ErrorAction SilentlyContinue) {
-
-            # Output the UPN and ProviderID if they exist
-            $providerIdValue = Get-ItemProperty -LiteralPath $currentItemPath -Name "ProviderID" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ProviderID -ErrorAction SilentlyContinue
-            $upnValue = Get-ItemProperty -LiteralPath $currentItemPath -Name "UPN" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty UPN -ErrorAction SilentlyContinue
-
-            if ($providerIdValue) {
-                Write-ToLog "ProviderID: $providerIdValue"
-            } else {
-                Write-ToLog "ProviderID not found for $EnrollID"
-            }
-            if ($upnValue) {
-                Write-ToLog "UPN: $upnValue"
-                Write-ToLog "UPN not found for $EnrollID"
-            }
-
-            ###Add the enrollment ID to the array###
-            $EnrollIDs += $EnrollID
-
-            ###Output the enrollment ID for each iteration###
-            Write-ToLog "Processing Enrollment ID: $EnrollID"
-
-            ###Removing Associated Scheduled Tasks###
-            if ($EnrollID -match '\w{8}-\w{4}-\w{4}-\w{4}-\w{12}') {
-                Write-ToLog "Found EnrollID - $EnrollID"
-            } else {
-                Write-ToLog "Error parsing EnrollID. Stopping"
-                Break
-            }
-
-            Write-ToLog "Looking for scheduled tasks associated with $EnrollID"
-            $Tasks = Get-ScheduledTask | Where-Object { $psitem.TaskPath -like "\Microsoft\Windows\EnterpriseMgmt\*" }
-            if ($Tasks) {
-                Write-ToLog "Removing scheduled tasks for $EnrollID"
-                Try {
-                    $Tasks | ForEach-Object {
-                        $taskName = $_.TaskName
-                        Write-ToLog "Removing task: $taskName"
-                        Unregister-ScheduledTask -InputObject $psitem -Confirm:$false -ErrorAction Stop # Add -ErrorAction Stop
+        # Fallback to Registry scan if no tasks exist.
+        Write-ToLog "No GUIDs found in Task Scheduler. Falling back to Registry discovery." -Level Warn
+        Get-ChildItem -Path "HKLM:\SOFTWARE\Microsoft\Enrollments\" -Recurse -ErrorAction SilentlyContinue | ForEach-Object {
+            $EnrollID = $_.PSChildName
+            if ($EnrollID -match '^[A-Fa-f0-9]{8}-([A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}$') {
+                if (Get-ItemProperty -LiteralPath $_.PsPath -Name $valueName -ErrorAction SilentlyContinue) {
+                    if ($EnrollID -notin $GuidsToProcess) {
+                        $GuidsToProcess += $EnrollID
                     }
-                    Write-ToLog "Successfully removed scheduled tasks for $EnrollID."
-                } catch {
-                    Write-ToLog "Error removing task: $($taskName) associated with $EnrollID. Error: $($_.Exception.Message)" -Level Error
                 }
-                Write-ToLog "Trying to remove tasks folder for $EnrollID"
-                $TaskFolder = Test-Path "C:\windows\System32\Tasks\Microsoft\Windows\EnterpriseMgmt\$EnrollID"
-                try {
-                    if ($TaskFolder) {
-                        Remove-Item -Path "C:\windows\System32\Tasks\Microsoft\Windows\EnterpriseMgmt\$EnrollID" -Force
-                    }
-                } catch {
-                    Write-ToLog "Error removing task folder: $($TaskFolder) associated with $EnrollID. Error: $($_.Exception.Message)" -Level Error
-                    Throw $_.Exception.Message
-                }
-            } else {
-                Write-ToLog "No scheduled tasks found for $EnrollID."
             }
-
-            ### Removing Associated Reg Keys ###
-            Write-ToLog "Removing Enrollment registry keys associated with $EnrollID" -Level Verbose
-            ### Removing Associated Reg Keys ###
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Enrollments\Status\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Enrollments\Status\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\PolicyManager\AdmxInstalled\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\PolicyManager\AdmxInstalled\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\PolicyManager\Providers\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\PolicyManager\Providers\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Logger\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Logger\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Sessions\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Sessions\$EnrollID -Recurse -Force
-            }
-            $EnrollmentReg = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Enrollments\$EnrollID
-            if ($EnrollmentReg) {
-                Remove-Item -Path HKLM:\SOFTWARE\Microsoft\Enrollments\$EnrollID -Recurse -Force
-            }
-            Write-ToLog "Finished removing registry keys for the Enrollment ID $EnrollID" -Level Verbose
-            Write-ToLog "-----------------------------------------" -Level Verbose
         }
-    } # End ForEach-Object (looping through enrollment GUIDs)
-
-    ###List Removed Enrollment GUIDs###
-    if ($EnrollIDs.Count -gt 0) {
-        Write-ToLog "Attempted cleanup for the following MDM GUIDs: $($EnrollIDs -join ', ')"
-    } else {
-        Write-ToLog "No MDM Enrollments with a 'ProviderID' property were found to process."
     }
 
-    # Validate that no MDM enrollment keys remain
+    if ($GuidsToProcess.Count -eq 0) {
+        Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Moving to Scorched Earth sweep." -Level Info
+    }
+
+    # --- Phase 2: Targeted Cleanup ---
+    Write-ToLog "####### Targeted Cleanup Phase #######" -Level Verbose
+
+    foreach ($EnrollID in $GuidsToProcess) {
+        Write-ToLog "Processing Enrollment ID: $EnrollID"
+
+        # Grab ProviderID for Cert cleanup later
+        $regPath = "HKLM:\SOFTWARE\Microsoft\Enrollments\$EnrollID"
+        $providerIdValue = $null
+        if (Test-Path $regPath) {
+            $providerIdValue = Get-ItemProperty -LiteralPath $regPath -Name "ProviderID" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ProviderID -ErrorAction SilentlyContinue
+            if ($providerIdValue) { Write-ToLog "ProviderID associated with this enrollment: $providerIdValue" }
+        }
+
+        # 1. Kill the Scheduled Tasks
+        Write-ToLog "--- Step 1: Removing Scheduled Tasks ---"
+        $Tasks = Get-ScheduledTask | Where-Object { $psitem.TaskPath -like "*$EnrollID*" -and $psitem.TaskPath -like "\Microsoft\Windows\EnterpriseMgmt\*" }
+        if ($Tasks) {
+            Try {
+                $Tasks | ForEach-Object {
+                    $taskName = $_.TaskName
+                    Write-ToLog "Removing task: $taskName"
+                    Unregister-ScheduledTask -InputObject $psitem -Confirm:$false -ErrorAction Stop
+                }
+                Write-ToLog "Successfully removed scheduled tasks."
+            } catch {
+                Write-ToLog "Error removing task: $($taskName). Error: $($_.Exception.Message)" -Level Error
+            }
+        } else {
+            Write-ToLog "No active scheduled tasks objects found."
+        }
+
+        # 2. Delete the Task Folder
+        Write-ToLog "--- Step 2: Removing Task Folders ---"
+        $TaskFolder = "C:\windows\System32\Tasks\Microsoft\Windows\EnterpriseMgmt\$EnrollID"
+        try {
+            if (Test-Path $TaskFolder) {
+                Remove-Item -Path $TaskFolder -Force -Recurse
+                Write-ToLog "Removed Task Folder: $TaskFolder"
+            }
+        } catch {
+            Write-ToLog "Error removing task folder. Error: $($_.Exception.Message)" -Level Error
+        }
+
+        # 3. Clean up the known Registry Keys
+        Write-ToLog "--- Step 3: Removing Registry Keys ---"
+        $keysToRemove = @(
+            "HKLM:\SOFTWARE\Microsoft\Enrollments\Status\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\Enrollments\Context\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\EnterpriseResourceManager\Tracked\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\PolicyManager\AdmxInstalled\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\PolicyManager\Providers\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Logger\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Sessions\$EnrollID",
+            "HKLM:\SOFTWARE\Microsoft\Enrollments\$EnrollID"
+        )
+
+        foreach ($key in $keysToRemove) {
+            if (Test-Path -Path $key) {
+                try {
+                    Remove-Item -Path $key -Recurse -Force -ErrorAction Stop
+                    Write-ToLog "Removed key: $key"
+                } catch {
+                    Write-ToLog "Failed to remove key: $key. Error: $($_.Exception.Message)" -Level Error
+                }
+            }
+        }
+
+        # 4. Remove WNS References
+        Write-ToLog "--- Step 4: Removing Push Notification Keys ---"
+        $pushKeyBase = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications\Applications\Windows.SystemToast.Background.Management"
+        if (Test-Path $pushKeyBase) {
+            Get-ChildItem $pushKeyBase -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.PSChildName -eq $EnrollID } | ForEach-Object {
+                try {
+                    Write-ToLog "Removing WNS Push Key: $($_.PSPath)"
+                    Remove-Item -Path $_.PSPath -Recurse -Force -ErrorAction Stop
+                } catch {
+                    Write-ToLog "Failed to remove WNS key. Error: $($_.Exception.Message)" -Level Warn
+                }
+            }
+        }
+
+        # 5. Delete Client Certificates
+        Write-ToLog "--- Step 5: Checking for Client Certificates ---"
+        if ($providerIdValue) {
+            try {
+                $certs = Get-ChildItem -Path Cert:\LocalMachine\My -Recurse | Where-Object { $_.Issuer -match $providerIdValue }
+                if ($certs) {
+                    foreach ($cert in $certs) {
+                        Write-ToLog "Removing Certificate associated with Provider $providerIdValue. Subject: $($cert.Subject)"
+                        Remove-Item -Path $cert.PSPath -Force -ErrorAction Stop
+                    }
+                } else {
+                    Write-ToLog "No certificates found matching ProviderID: $providerIdValue"
+                }
+            } catch {
+                Write-ToLog "Error processing certificates: $($_.Exception.Message)" -Level Warn
+            }
+        } else {
+            Write-ToLog "Skipping certificate removal (No ProviderID found to match against)."
+        }
+
+        Write-ToLog "Finished processing Enrollment ID $EnrollID" -Level Verbose
+        Write-ToLog "-----------------------------------------" -Level Verbose
+
+    } # End of the targeted loop
+
+    # --- Phase 3: Clean Sweep ---
+    # This checks specific registry locations for ANY orphaned keys with a GUID format.
+    Write-ToLog "####### Phase 3: Clean Sweep - Generic GUID Sweep #######" -Level Verbose
+
+    # 3. Sweep standard GUID keys
+    $sweepLocations = @(
+        "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts",
+        "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Logger",
+        "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Sessions"
+    )
+
+    # Regex for standard GUID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    $guidRegex = '^[0-9A-Fa-f]{8}-([0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$'
+
+    foreach ($parentPath in $sweepLocations) {
+        Write-ToLog "Sweeping path for orphaned GUIDs: $parentPath"
+        if (Test-Path $parentPath) {
+            # Get all subkeys
+            $subKeys = Get-ChildItem -Path $parentPath -ErrorAction SilentlyContinue
+
+            foreach ($key in $subKeys) {
+                # Check if the folder name is a GUID
+                if ($key.PSChildName -match $guidRegex) {
+                    Write-ToLog "Found orphaned GUID key in sweep: $($key.PSChildName). Force removing."
+                    try {
+                        Remove-Item -Path $key.PSPath -Recurse -Force -ErrorAction Stop
+                        Write-ToLog "Deleted: $($key.PSPath)"
+                    } catch {
+                        if ($parentPath -match "TaskCache") {
+                            Write-ToLog "Skipped locked key in TaskCache: $($key.PSChildName) (Expected/Ignorable)" -Level Verbose
+                        } else {
+                            Write-ToLog "Failed to delete $($key.PSPath). Error: $($_.Exception.Message)" -Level Error
+                        }
+                    }
+                }
+            }
+        } else {
+            Write-ToLog "Path not found (skipping): $parentPath" -Level Info
+        }
+    }
+
+    # --- Phase 4: Final Verification ---
     $mdmEnrollmentDetails = Get-MdmEnrollmentInfo
     if ($mdmEnrollmentDetails) {
-        Write-ToLog "MDM enrollment keys still exist after cleanup. Please check the log for details." -Level Verbose
+        Write-ToLog "MDM enrollment keys still exist after cleanup. Please check the log for details." -Level Warn
     } else {
         Write-ToLog "####### No MDM enrollment keys found after cleanup. Cleanup was successful! ######" -Level Verbose
     }
     Write-ToLog "-----------------------------------------" -Level Verbose
     Write-ToLog "Script execution finished: $(Get-Date)" -Level Verbose
-} # End try block
-catch {
-    # Log any terminating errors that occurred in the main try block
+} catch {
     Write-ToLog "A terminating error occurred: $($_.Exception.Message)" -Level Error
-    Write-ToLog "Error Details: $($_.ToString())" -Level Error
     Write-ToLog "Script execution failed: $(Get-Date)" -Level Error
-    Write-ToLog "-----------------------------------------" -Level Error
 }
