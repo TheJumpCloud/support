@@ -2,14 +2,14 @@
   =============================================================================
   MDM Cleanup Tool
 
-  What this does:
-  It aggressively hunts down broken/partial MDM enrollments and removes the leftover pieces.
+  What this script does:
+  It locates broken/partial MDM enrollments and removes the leftover pieces.
 
   The logic:
   1. Check Task Scheduler first for GUIDs. (Stuck devices usually have tasks left behind).
   2. Scrape the Registry for known Enrollment IDs.
   3. Perform a targeted cleanup of the IDs we found.
-  4. CleanSweep: Go to specific registry locations and remove any orphaned GUIDs
+  4. CleanSweep: Go to specific registry locations and remove an orphaned GUIDs
   =============================================================================
 #>
 
@@ -44,7 +44,7 @@ Function Write-ToLog {
         }
         $FormattedDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
-        # Decide how much noise to make in the console
+        # Decide how much information to output to the console
         if ($Script:AdminDebug) {
             Switch ($Level) {
                 'Error' { Write-Error $Message; $LevelText = 'ERROR:' }
@@ -79,7 +79,6 @@ function Get-MdmEnrollmentGuidFromTaskScheduler {
     $foundGuids = @()
 
     try {
-        # Using SilentlyContinue because if the folder is missing, Powershell throws a fit.
         $mdmTasks = Get-ScheduledTask -TaskPath "$taskPathBase*" -ErrorAction SilentlyContinue
         if (-not $mdmTasks) {
             Write-ToLog "No scheduled tasks found in the EnterpriseMgmt folder." -Level Info
@@ -188,7 +187,7 @@ try {
     }
 
     if ($GuidsToProcess.Count -eq 0) {
-        Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Moving to final sweep." -Level Info
+        Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Moving to Scorched Earth sweep." -Level Info
     }
 
     # --- Phase 2: Targeted Cleanup ---
@@ -205,7 +204,7 @@ try {
             if ($providerIdValue) { Write-ToLog "ProviderID associated with this enrollment: $providerIdValue" }
         }
 
-        # 1. Kill the Scheduled Tasks
+        # 1. Remove the Scheduled Tasks
         Write-ToLog "--- Step 1: Removing Scheduled Tasks ---"
         $Tasks = Get-ScheduledTask | Where-Object { $psitem.TaskPath -like "*$EnrollID*" -and $psitem.TaskPath -like "\Microsoft\Windows\EnterpriseMgmt\*" }
         if ($Tasks) {
@@ -303,7 +302,7 @@ try {
     # This checks specific registry locations for ANY orphaned keys with a GUID format.
     Write-ToLog "####### Phase 3: Clean Sweep - Generic GUID Sweep #######" -Level Verbose
 
-    # Sweep standard GUID keys
+    # 3. Sweep standard GUID keys
     $sweepLocations = @(
         "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts",
         "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Logger",
