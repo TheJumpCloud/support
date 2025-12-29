@@ -188,7 +188,7 @@ try {
     }
 
     if ($GuidsToProcess.Count -eq 0) {
-        Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Moving to Scorched Earth sweep." -Level Info
+        Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Moving to final sweep." -Level Info
     }
 
     # --- Phase 2: Targeted Cleanup ---
