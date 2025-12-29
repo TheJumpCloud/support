@@ -9,7 +9,7 @@
   1. Check Task Scheduler first for GUIDs. (Stuck devices usually have tasks left behind).
   2. Scrape the Registry for known Enrollment IDs.
   3. Perform a targeted cleanup of the IDs we found.
-  4. CleanSweep: Go to specific registry locations and remove an orphaned GUIDs
+  4. CleanSweep: Go to specific registry locations and remove any orphaned GUIDs
   =============================================================================
 #>
 
