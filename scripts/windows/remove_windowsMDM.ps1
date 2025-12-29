@@ -303,7 +303,7 @@ try {
     # This checks specific registry locations for ANY orphaned keys with a GUID format.
     Write-ToLog "####### Phase 3: Clean Sweep - Generic GUID Sweep #######" -Level Verbose
 
-    # 3. Sweep standard GUID keys
+    # Sweep standard GUID keys
     $sweepLocations = @(
         "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts",
         "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Logger",
