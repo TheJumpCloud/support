@@ -11,10 +11,21 @@ foreach ($Import in @($Public + $Private)) {
 
 # Check to see if parallel processing is available for the session
 $global:JCConfig = Get-JCSettingsFile
-$PSDefaultParameterValues = $global:PSDefaultParameterValues.Clone()
+# $PSDefaultParameterValues = $global:PSDefaultParameterValues.Clone()
 if ($global:JCConfig['JCEnvironment'].Location) {
     Write-Host "Setting JCEnvironment to: $($global:JCConfig['JCEnvironment'].Location) from JCModule settings file" -ForegroundColor Green
     $env:JCEnvironment = $global:JCConfig['JCEnvironment'].Location
+}
+switch ($env:JCEnvironment) {
+    'STANDARD' {
+        $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api'
+        $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console'
+    }
+    'EU' {
+        $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.eu'
+        $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.eu'
+    }
+    default {}
 }
 # set the JCEnvironment from the settings file if it exists
 
