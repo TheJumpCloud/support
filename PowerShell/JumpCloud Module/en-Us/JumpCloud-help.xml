@@ -10296,6 +10296,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
             <command:parameterValue required="false" command:variableLength="false">allow_public_key</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">attributes</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">alternateEmail</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">delegatedAuthority</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">recoveryEmail</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">managedAppleId</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">manager</command:parameterValue>
