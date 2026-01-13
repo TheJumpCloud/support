@@ -1,4 +1,4 @@
-Function Get-JCUser () {
+function Get-JCUser () {
     [CmdletBinding(DefaultParameterSetName = 'SearchFilter')]
 
     param
@@ -72,8 +72,8 @@ Function Get-JCUser () {
         [ValidateSet('created', 'password_expiration_date')]
         [String]$filterDateProperty,
 
-        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''alternateEmail'',''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''managedAppleId'',''manager'',''username'',''suspended'',''recoveryEmail'',''systemUsername'',''relationships'',''public_key'',''external_password_expiration_date'',''disableDeviceMaxLoginAttempts'',''password'',''state''')]
-        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'alternateEmail', 'recoveryEmail', 'managedAppleId', 'manager', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa', 'recoveryEmail', 'systemUsername', 'relationships', 'public_key', 'external_password_expiration_date', 'disableDeviceMaxLoginAttempts', 'password', 'state', 'restrictedFields')]
+        [Parameter(ValueFromPipelineByPropertyName, ParameterSetName = 'SearchFilter', HelpMessage = 'Allows you to return select properties on JumpCloud user objects. Specifying what properties are returned can drastically increase the speed of the API call with a large data set. Valid properties that can be returned are: ''created'', ''password_expiration_date'', ''account_locked'', ''activated'', ''addresses'', ''allow_public_key'', ''attributes'', ''alternateEmail'',''delegatedAuthority'',''email'', ''enable_managed_uid'', ''enable_user_portal_multifactor'', ''externally_managed'', ''firstname'', ''lastname'', ''ldap_binding_user'', ''passwordless_sudo'', ''password_expired'', ''password_never_expires'', ''phoneNumbers'', ''samba_service_user'', ''ssh_keys'', ''sudo'', ''totp_enabled'', ''unix_guid'', ''unix_uid'', ''managedAppleId'',''manager'',''username'',''suspended'',''recoveryEmail'',''systemUsername'',''relationships'',''public_key'',''external_password_expiration_date'',''disableDeviceMaxLoginAttempts'',''password'',''state''')]
+        [ValidateSet('created', 'password_expiration_date', 'account_locked', 'activated', 'addresses', 'allow_public_key', 'attributes', 'alternateEmail', 'delegatedAuthority', 'recoveryEmail', 'managedAppleId', 'manager', 'email', 'enable_managed_uid', 'enable_user_portal_multifactor', 'externally_managed', 'firstname', 'lastname', 'ldap_binding_user', 'passwordless_sudo', 'password_expired', 'password_never_expires', 'phoneNumbers', 'samba_service_user', 'ssh_keys', 'sudo', 'totp_enabled', 'unix_guid', 'unix_uid', 'username', 'middlename', 'displayname', 'jobTitle', 'employeeIdentifier', 'department', 'costCenter', 'company', 'employeeType', 'description', 'location', 'external_source_type', 'external_dn', 'suspended', 'mfa', 'recoveryEmail', 'systemUsername', 'relationships', 'public_key', 'external_password_expiration_date', 'disableDeviceMaxLoginAttempts', 'password', 'state', 'restrictedFields')]
         [String[]]$returnProperties,
 
         #New parameters as of 1.8 release
@@ -127,8 +127,8 @@ Function Get-JCUser () {
         [String]$recoveryEmail
     )
 
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $filterDateProperty = 'created'
         }
         if ($filterDateProperty) {
@@ -377,18 +377,18 @@ Function Get-JCUser () {
 
                     if (($param.Value -match '.+?\*$') -and ($param.Value -match '^\*.+?')) {
                         # Front and back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))" })
                     } elseif ($param.Value -match '.+?\*$') {
                         # Back wildcard
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)^$([regex]::Escape($Value))" })
                     } elseif ($param.Value -match '^\*.+?') {
                         # Front wild card
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)$([regex]::Escape($Value))`$" })
                     } elseif ($param.Value -match '^[-+]?\d+$') {
                         # Check for integer value
-                            (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
+                        (($Search.filter).GetEnumerator()).add($param.Key, $([regex]::Escape($Value)))
                     } else {
-                            (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
+                        (($Search.filter).GetEnumerator()).add($param.Key, @{'$regex' = "(?i)(^$([regex]::Escape($Value))`$)" })
                     }
 
                 } # End foreach
@@ -400,7 +400,7 @@ Function Get-JCUser () {
                     (($Search.filter).GetEnumerator()).add('recoveryEmail.address', $recoveryEmail )
                 }
                 if ($stateValue) {
-                        (($Search.filter).GetEnumerator()).add('state', $stateValue )
+                    (($Search.filter).GetEnumerator()).add('state', $stateValue )
                 }
 
                 $SearchJSON = $Search | ConvertTo-Json -Compress -Depth 4

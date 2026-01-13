@@ -1,3 +1,13 @@
+## 3.0.1
+
+Release Date: December 31, 2025
+
+#### RELEASE NOTES
+
+```
+Resolves an issue with importing the SDKs fo the EU region
+```
+
 ## 3.0.0
 
 Release Date: December 2, 2025
