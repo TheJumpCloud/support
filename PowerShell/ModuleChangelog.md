@@ -1,3 +1,15 @@
+## 3.0.2
+
+Release Date: January 22, 2026
+
+#### RELEASE NOTES
+
+```
+Adds new property to Get-JCCommand returnProperties param
+Fixes results for Get-JCConfiguredTemplatePolicy
+Fixes to module test suite
+```
+
 ## 3.0.1
 
 Release Date: December 31, 2025

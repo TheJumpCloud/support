@@ -3,8 +3,8 @@ BeforeAll {
     $ErrorActionPreference = 'Stop' # Continue (Default), Ignore, Inquire, SilentlyContinue, Stop, Suspend
 }
 # TODO: Waiting on the API team to fix an issue with the authorized_key endpoint marking CUT-4892 as the card to revert these changes
-Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" -Skip {
-    Function Get-JCSystemInsightsTestCases($System) {
+Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" {
+    function Get-JCSystemInsightsTestCases($System) {
         # Retrieve objects to test with
         $SystemInsightsPrefix = 'Get-JcSdkSystemInsight';
         $SystemInsightsDataSet = [Ordered]@{}
@@ -14,10 +14,10 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" -Skip {
             $HelpDescription = $Help.Description.Text
             $FilterDescription = ($Help.parameters.parameter | Where-Object { $_.Name -eq 'filter' }).Description.Text
             $FilterNames = ($HelpDescription | Select-String -Pattern:([Regex]'(?<=\ `)(.*?)(?=\`)') -AllMatches).Matches.Value
-            $Operators = ($FilterDescription -Replace ('Supported operators are: ', '')).Trim()
-            If ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators)) {
+            $Operators = ($FilterDescription -replace ('Supported operators are: ', '')).Trim()
+            if ([System.String]::IsNullOrEmpty($HelpDescription) -or [System.String]::IsNullOrEmpty($FilterNames) -or [System.String]::IsNullOrEmpty($Operators)) {
                 Write-Error ('Get-JCSystemInsights parameter help info is missing.')
-            } Else {
+            } else {
                 $Filters = $FilterNames | ForEach-Object {
                     $FilterName = $_
                     $Operators | ForEach-Object {
@@ -47,7 +47,7 @@ Describe -Tag:('JCSystemInsights') "Get-JCSystemInsights Tests" -Skip {
             #     Command         = "Get-JCSystemInsights -Table:('$TableName') -Filter:('$($Filter)');"
             # }
         }
-        Return $SystemInsightsTestCases
+        return $SystemInsightsTestCases
     }
     It '<testDescription>' -TestCases:(Get-JCSystemInsightsTestCases -System:($PesterParams_SystemLinux, $PesterParams_SystemMac, $PesterParams_SystemWindows)) {
         # Write-Host ("Command: $Command")
