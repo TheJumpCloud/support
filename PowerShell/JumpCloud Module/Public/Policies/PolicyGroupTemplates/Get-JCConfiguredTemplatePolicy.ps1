@@ -1,4 +1,4 @@
-Function Get-JCConfiguredTemplatePolicy {
+function Get-JCConfiguredTemplatePolicy {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param (
         [Parameter(
@@ -50,8 +50,8 @@ Function Get-JCConfiguredTemplatePolicy {
         }
     }
     end {
-        if ($response.records) {
-            return $response.records
+        if ($response.results) {
+            return $response.results
 
         } else {
             return $response
