@@ -319,6 +319,31 @@ function Remove-WindowsMDMProvider {
 
             } # End of the targeted loop
 
+            Write-ToLog "--- Step 6: Set MmpcEnrollmentFlag Key ---"
+            $MmpcEnrollmentFlagKeyBase = "HKLM:\SOFTWARE\Microsoft\Enrollments"
+            if (Test-Path $MmpcEnrollmentFlagKeyBase) {
+                $currentValue = Get-ItemProperty -Path $MmpcEnrollmentFlagKeyBase -Name "MmpcEnrollmentFlag" -ErrorAction SilentlyContinue
+                if ($null -ne $currentValue) {
+                    Write-ToLog "Current MmpcEnrollmentFlag is: $($currentValue.MmpcEnrollmentFlag)"
+                    # 3. If the value is NOT 0, set it to 0
+                    if ($currentValue.MmpcEnrollmentFlag -ne 0) {
+                        Write-ToLog "Value is not 0. Resetting to 0..."
+                        try {
+                            Set-ItemProperty -Path $MmpcEnrollmentFlagKeyBase -Name "MmpcEnrollmentFlag" -Value 0 -Type DWord
+                            Write-ToLog "Successfully set MmpcEnrollmentFlag to 0."
+                        } catch {
+                            Write-ToLog "Failed to set registry value. Ensure you are running as Administrator." -Level Error
+                        }
+                    } else {
+                        Write-ToLog "MmpcEnrollmentFlag is already 0. No action needed."
+                    }
+                } else {
+                    Write-ToLog "Value 'MmpcEnrollmentFlag' does not exist in $MmpcEnrollmentFlagKeyBase. Nothing to reset."
+                }
+            } else {
+                Write-ToLog "Registry path $MmpcEnrollmentFlagKeyBase not found." -Level Warn
+            }
+
             # --- Phase 3: Force Prune Sweep ---
             if ($ForcePrune) {
                 # This checks specific registry locations for ANY orphaned keys with a GUID format.
