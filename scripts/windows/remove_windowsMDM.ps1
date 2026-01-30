@@ -160,10 +160,6 @@ function Remove-WindowsMDMProvider {
         [switch]$ForcePrune
     )
     begin {
-        Write-ToLog "Script execution started: $(Get-Date)" -Level Verbose
-        Write-ToLog "Logging to: C:\Windows\Temp\jcMDMCleanup.log" -Level Verbose
-        Write-ToLog "-----------------------------------------" -Level Verbose
-
         $valueName = "ProviderID"
         $mdmEnrollmentKey = "HKLM:\SOFTWARE\Microsoft\Enrollments"
         $GuidsToProcess = @()
@@ -404,4 +400,7 @@ function Remove-WindowsMDMProvider {
 # ==========================================
 # LET'S GET STARTED
 # ==========================================
+Write-ToLog "Script execution started: $(Get-Date)" -Level Verbose
+Write-ToLog "Logging to: C:\Windows\Temp\jcMDMCleanup.log" -Level Verbose
+Write-ToLog "-----------------------------------------" -Level Verbose
 Remove-WindowsMDMProvider -ForcePrune
