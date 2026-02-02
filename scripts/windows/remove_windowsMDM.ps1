@@ -104,8 +104,8 @@ function Get-MdmEnrollmentGuidFromTaskScheduler {
 #endregion Get-MdmEnrollmentGuidFromTaskScheduler
 
 # Helper to verify if our cleanup worked at the end.
-#startregion Get-MdmEnrollmentInfo
-function Get-MdmEnrollmentInfo {
+#startregion Get-WindowsMDMProvider
+function Get-WindowsMDMProvider {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $false)]
@@ -148,7 +148,7 @@ function Get-MdmEnrollmentInfo {
         return $null
     }
 }
-#endregion Get-MdmEnrollmentInfo
+#endregion Get-WindowsMDMProvider
 
 #startregion Remove-WindowsMDMProvider
 function Remove-WindowsMDMProvider {
@@ -385,7 +385,7 @@ function Remove-WindowsMDMProvider {
     }
     end {
         # --- Phase 4: Final Verification ---
-        $mdmEnrollmentDetails = Get-MdmEnrollmentInfo
+        $mdmEnrollmentDetails = Get-WindowsMDMProvider
         if ($mdmEnrollmentDetails) {
             Write-ToLog "MDM enrollment keys still exist after cleanup. Please check the log for details." -Level Warn
         } else {
