@@ -163,6 +163,7 @@ function Remove-WindowsMDMProvider {
         $valueName = "ProviderID"
         $mdmEnrollmentKey = "HKLM:\SOFTWARE\Microsoft\Enrollments"
         $GuidsToProcess = @()
+        $HadError = $false
 
         if (-not (Test-Path -Path $mdmEnrollmentKey)) {
             Write-ToLog "Registry path 'HKLM:\SOFTWARE\Microsoft\Enrollments\' does not exist. Exiting." -Level Error
@@ -379,11 +380,15 @@ function Remove-WindowsMDMProvider {
                 }
             }
         } catch {
+            $HadError = $true
             Write-ToLog "A terminating error occurred: $($_.Exception.Message)" -Level Error
             Write-ToLog "Script execution failed: $(Get-Date)" -Level Error
         }
     }
     end {
+        if ($HadError) {
+            return
+        }
         # --- Phase 4: Final Verification ---
         $mdmEnrollmentDetails = Get-WindowsMDMProvider
         if ($mdmEnrollmentDetails) {
