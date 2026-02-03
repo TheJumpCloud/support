@@ -167,7 +167,7 @@ function Remove-WindowsMDMProvider {
 
         if (-not (Test-Path -Path $mdmEnrollmentKey)) {
             Write-ToLog "Registry path 'HKLM:\SOFTWARE\Microsoft\Enrollments\' does not exist. Exiting." -Level Error
-            exit 1
+            return
         }
     }
     process {
@@ -204,7 +204,7 @@ function Remove-WindowsMDMProvider {
                         Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Moving to ForcePrune sweep." -Level Info
                     } else {
                         Write-ToLog "No MDM Enrollment GUIDs found via Tasks or Registry. Exiting." -Level Info
-                        exit 0
+                        return
                     }
                 }
             }
