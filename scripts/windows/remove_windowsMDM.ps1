@@ -167,7 +167,7 @@ function Remove-WindowsMDMProvider {
 
         if (-not (Test-Path -Path $mdmEnrollmentKey)) {
             Write-ToLog "Registry path 'HKLM:\SOFTWARE\Microsoft\Enrollments\' does not exist. Exiting." -Level Error
-            return
+            throw "Registry path 'HKLM:\SOFTWARE\Microsoft\Enrollments\' does not exist."
         }
     }
     process {
