@@ -172,6 +172,26 @@ function Remove-WindowsMDMProvider {
     }
     process {
         try {
+            # --- Step 0: Reset MmpcEnrollmentFlag first (device may still consider itself MDM enrolled if non-zero; runs in all code paths including early return) ---
+            Write-ToLog "--- Step 0: Reset MmpcEnrollmentFlag ---"
+            $currentValue = Get-ItemProperty -Path $mdmEnrollmentKey -Name "MmpcEnrollmentFlag" -ErrorAction SilentlyContinue
+            if ($null -ne $currentValue) {
+                Write-ToLog "Current MmpcEnrollmentFlag is: $($currentValue.MmpcEnrollmentFlag)"
+                if ($currentValue.MmpcEnrollmentFlag -ne 0) {
+                    Write-ToLog "Value is not 0. Resetting to 0..."
+                    try {
+                        Set-ItemProperty -Path $mdmEnrollmentKey -Name "MmpcEnrollmentFlag" -Value 0 -Type DWord
+                        Write-ToLog "Successfully set MmpcEnrollmentFlag to 0."
+                    } catch {
+                        Write-ToLog "Failed to set registry value. Ensure you are running as Administrator." -Level Error
+                    }
+                } else {
+                    Write-ToLog "MmpcEnrollmentFlag is already 0. No action needed."
+                }
+            } else {
+                Write-ToLog "Value 'MmpcEnrollmentFlag' does not exist in $mdmEnrollmentKey. Nothing to reset."
+            }
+
             if ($EnrollmentGUID) {
                 $GuidsToProcess += $EnrollmentGUID
                 Write-ToLog "Specific Enrollment GUID provided: $EnrollmentGUID. Proceeding with targeted cleanup." -Level Info
@@ -315,27 +335,6 @@ function Remove-WindowsMDMProvider {
                 Write-ToLog "-----------------------------------------" -Level Verbose
 
             } # End of the targeted loop
-
-            # 6. Reset MmpcEnrollmentFlag if needed
-            Write-ToLog "--- Step 6: Set MmpcEnrollmentFlag Key ---"
-            $currentValue = Get-ItemProperty -Path $mdmEnrollmentKey -Name "MmpcEnrollmentFlag" -ErrorAction SilentlyContinue
-            if ($null -ne $currentValue) {
-                Write-ToLog "Current MmpcEnrollmentFlag is: $($currentValue.MmpcEnrollmentFlag)"
-                # 3. If the value is NOT 0, set it to 0
-                if ($currentValue.MmpcEnrollmentFlag -ne 0) {
-                    Write-ToLog "Value is not 0. Resetting to 0..."
-                    try {
-                        Set-ItemProperty -Path $mdmEnrollmentKey -Name "MmpcEnrollmentFlag" -Value 0 -Type DWord
-                        Write-ToLog "Successfully set MmpcEnrollmentFlag to 0."
-                    } catch {
-                        Write-ToLog "Failed to set registry value. Ensure you are running as Administrator." -Level Error
-                    }
-                } else {
-                    Write-ToLog "MmpcEnrollmentFlag is already 0. No action needed."
-                }
-            } else {
-                Write-ToLog "Value 'MmpcEnrollmentFlag' does not exist in $mdmEnrollmentKey. Nothing to reset."
-            }
 
             # --- Phase 3: Force Prune Sweep ---
             if ($ForcePrune) {
