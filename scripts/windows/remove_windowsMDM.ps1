@@ -56,7 +56,7 @@ function Write-ToLog {
             # Quiet mode: only errors show up in console, but we still tag the log file correctly
             switch ($Level) {
                 'Error' { Write-Error $Message; $LevelText = 'ERROR:' }
-                'Warn' { $LevelText = 'WARNING:' }
+                'Warning' { $LevelText = 'WARNING:' }
                 'Info' { $LevelText = 'INFO:' }
                 'Verbose' { Write-Verbose $Message; $LevelText = 'INFO:' }
             }
