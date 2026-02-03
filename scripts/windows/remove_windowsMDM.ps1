@@ -14,7 +14,7 @@
 #>
 
 #### Edit to output verbose messages ####
-# Flip this to $true if you want to see everything happening in the console window.
+# Flip this to $true if you want to see everything happening in the console window
 $Script:AdminDebug = $false
 #### End Edit ####
 
