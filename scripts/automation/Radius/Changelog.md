@@ -1,3 +1,13 @@
+## 2.1.8
+
+Release Date: Feb 24, 2026
+
+#### RELEASE NOTES
+
+```
+This release addresses an issue for EU region JumpCloud users, where the tool would never generate or report on users correctly.
+```
+
 ## 2.1.7
 
 Release Date: Dec 19, 2025
