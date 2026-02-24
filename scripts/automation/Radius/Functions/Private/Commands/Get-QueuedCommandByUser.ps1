@@ -24,7 +24,7 @@ function Get-QueuedCommandByUser {
     }
 
     process {
-        $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommand/workflows?&skip=$skip&limit=$limit&search[fields][0]=name&search[searchTerm]=RadiusCert-Install:${username}:" -Method GET -Headers $headers
+        $response = Invoke-RestMethod -Uri "https://$($PSDefaultParameterValues['*-JcSdk*:ConsoleHost']).jumpcloud.com/api/v2/queuedcommand/workflows?&skip=$skip&limit=$limit&search[fields][0]=name&search[searchTerm]=RadiusCert-Install:${username}:" -Method GET -Headers $headers
     }
 
     end {

@@ -512,13 +512,14 @@ function Get-JCQueuedCommands {
         $resultsArray = @()
     }
     process {
+        $endpoints = Get-JCRApiEndpoints
         while (($resultsArray.results).Count -ge $skip) {
-            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
+            $response = Invoke-RestMethod -Uri "$($endpoints.Console)/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
             $skip += $limit
             $resultsArray += $response.results
         }
         foreach ($queue in $resultsArray) {
-            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/commands/$($queue.command)?fields=name" -Method GET -Headers $headers
+            $response = Invoke-RestMethod -Uri "$($endpoints.Console)/api/commands/$($queue.command)?fields=name" -Method GET -Headers $headers
             $queue | Add-Member -MemberType "NoteProperty" -Name "Name" -Value $response.name
         }
     }
@@ -532,7 +533,8 @@ $headers = @{
     "x-org-id"  = $Env:JCOrgId
 }
 $queuedCommands = Get-JCQueuedCommands
+$endpoints = Get-JCRApiEndpoints
 foreach ($queue in $queuedCommands.id) {
-    $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/commandqueue/$($queue)" -Method DELETE -Headers $headers
+    $response = Invoke-RestMethod -Uri "$($endpoints.Console)/api/v2/commandqueue/$($queue)" -Method DELETE -Headers $headers
 }
 ```

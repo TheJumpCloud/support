@@ -1,4 +1,4 @@
-Function Get-LatestUserToDeviceReport {
+function Get-LatestUserToDeviceReport {
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -17,12 +17,12 @@ Function Get-LatestUserToDeviceReport {
 
     }
     process {
-        $reportList = Get-JCsdkReport -Sort 'CREATED_AT'
+        $reportList = Get-JcSdkReport -Sort 'CREATED_AT'
         $userAndDeviceReports = $reportList | Where-Object { $_.Type -eq "ods-users-to-devices" }
         if ($userAndDeviceReports) {
             # get the first report
             $firstUAndDReport = $userAndDeviceReports | Select-Object -First 1
-            $timespan = New-TimeSpan -end $utcTimeNow -start $firstUAndDReport.Created_At
+            $timespan = New-TimeSpan -End $utcTimeNow -Start $firstUAndDReport.Created_At
             # if time between now and the last generated report is >=24, create a new report
             if ($timespan.Minutes -ge $minutes) {
                 # write-host "last report generated $($timespan.Minutes) minutes ago; generating new user to device report"
@@ -45,7 +45,7 @@ Function Get-LatestUserToDeviceReport {
         # download json
         $artifactID = ($latestReport.artifacts | Where-Object { $_.format -eq 'json' }).id
         $reportID = $latestReport.id
-        $reportContent = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+        $reportContent = Invoke-RestMethod -Uri "https://$($PSDefaultParameterValues['*-JcSdk*:ApiHost']).jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
     }
     end {
         # return the latest user report

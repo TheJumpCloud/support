@@ -14,11 +14,11 @@ function Get-JCQueuedCommands {
     }
     process {
         if ($workflow) {
-            $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommands?filter=workflow:eq:$workflow&skip=$skip&limit=$limit" -Method GET -Headers $headers
+            $response = Invoke-RestMethod -Uri "https://$($PSDefaultParameterValues['*-JcSdk*:ConsoleHost']).jumpcloud.com/api/v2/queuedcommands?filter=workflow:eq:$workflow&skip=$skip&limit=$limit" -Method GET -Headers $headers
             $resultsArray += $response.results
         } else {
             while (($resultsArray.results).Count -ge $skip) {
-                $response = Invoke-RestMethod -Uri "https://console.jumpcloud.com/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
+                $response = Invoke-RestMethod -Uri "https://$($PSDefaultParameterValues['*-JcSdk*:ConsoleHost']).jumpcloud.com/api/v2/queuedcommand/workflows?limit=$limit&skip=$skip" -Method GET -Headers $headers
                 $skip += $limit
                 $resultsArray += $response.results
             }

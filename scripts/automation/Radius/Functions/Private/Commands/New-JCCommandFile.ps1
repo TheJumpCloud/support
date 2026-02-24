@@ -18,7 +18,7 @@ function New-JCCommandFile {
 
     }
     process {
-        $CommandFile = Invoke-RestMethod -Uri 'https://console.jumpcloud.com/api/files' -Method POST -Headers $headers -Body $body
+        $CommandFile = Invoke-RestMethod -Uri "https://$($PSDefaultParameterValues['*-JcSdk*:ConsoleHost']).jumpcloud.com/api/files" -Method POST -Headers $headers -Body $body
     }
     end {
         return $CommandFile._id

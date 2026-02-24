@@ -69,6 +69,11 @@ function Deploy-UserCertificate {
             }
         }
         $global:JCRConfig = Get-JCRConfig -asObject
+        $script:agentSnapshotUrl = if ($global:JCEnvironment -eq 'EU') {
+            'https://agent.eu.jumpcloud.com/systeminsights/snapshots/certificates'
+        } else {
+            'https://agent.jumpcloud.com/systeminsights/snapshots/certificates'
+        }
     }
 
     process {
@@ -117,11 +122,11 @@ function Deploy-UserCertificate {
 
                         }
                         $false {
-                            if ((-Not $workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
+                            if ((-not $workToBeDone.macOSCommandID) -and ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
                                 # set the existing command IDs:
                                 # There is a potential for this to be a bug, if duplicate commands with the same SHA1 trigger exist, this code just selects the first one and removes the second in the next iteration
                                 $workToBeDone.macOSCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "MacOSX" }).Id | Select-Object -First 1
-                            } elseif (($workToBeDone.macOSCommandID) -AND ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
+                            } elseif (($workToBeDone.macOSCommandID) -and ($maOSRadiusCommand.trigger -eq $certInfo.sha1)) {
                                 # add the duplicate command to the list to remove
                                 $workToBeDone.commandIDsToRemove.Add($maOSRadiusCommand.Id) | Out-Null
                             } else {
@@ -143,11 +148,11 @@ function Deploy-UserCertificate {
                             $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
                         }
                         $false {
-                            if ((-Not $workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
+                            if ((-not $workToBeDone.windowsCommandID) -and ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
                                 # set the existing command IDs:
                                 # There is a potential for this to be a bug, if duplicate commands with the same SHA1 trigger exist, this code just selects the first one and removes the second in the next iteration
                                 $workToBeDone.windowsCommandID = ($radiusCommandsByUser | Where-Object { $_.Name -match "Windows" }).Id | Select-Object -First 1
-                            } elseif (($workToBeDone.windowsCommandID) -AND ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
+                            } elseif (($workToBeDone.windowsCommandID) -and ($windowsOSRadiusCommands.trigger -eq $certInfo.sha1)) {
                                 # add the duplicate command to the list to remove
                                 $workToBeDone.commandIDsToRemove.Add($windowsOSRadiusCommands.Id) | Out-Null
                             } else {
@@ -230,23 +235,23 @@ function Deploy-UserCertificate {
             if ($userCertHashData) {
                 # set the remaining systems that don't have the cert:
                 # macOS
-                $workToBeDone.remainingMacOSDevices = $user.systemAssociations | Where-Object { ($_.systemID -notin $userCertHashData.systemId ) -And ($_.osFamily) -eq "macOS" }
+                $workToBeDone.remainingMacOSDevices = $user.systemAssociations | Where-Object { ($_.systemID -notin $userCertHashData.systemId ) -and ($_.osFamily) -eq "macOS" }
                 # windows
-                $workToBeDone.remainingWindowsSDevices = $user.systemAssociations | Where-Object { ($_.systemID -notin $userCertHashData.systemId ) -And ($_.osFamily) -eq "Windows" }
+                $workToBeDone.remainingWindowsSDevices = $user.systemAssociations | Where-Object { ($_.systemID -notin $userCertHashData.systemId ) -and ($_.osFamily) -eq "Windows" }
 
                 # if there's work to be done but not a valid cert command, generate the command
-                if (($workToBeDone.remainingMacOSDevices) -AND (-Not $workToBeDone.macOSCommandID)) {
+                if (($workToBeDone.remainingMacOSDevices) -and (-not $workToBeDone.macOSCommandID)) {
                     $workToBeDone.forceGenerateMacOSCommands = $true
                 }
                 # if there's work to be done but not a valid cert command, generate the command
-                if (($workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
+                if (($workToBeDone.remainingWindowsSDevices) -and (-not $workToBeDone.windowsCommandID)) {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
                 # regenerate the cert to keep it on the console:
-                if ((-Not $workToBeDone.remainingMacOSDevices) -AND (-Not $workToBeDone.macOSCommandID)) {
+                if ((-not $workToBeDone.remainingMacOSDevices) -and (-not $workToBeDone.macOSCommandID)) {
                     $workToBeDone.forceGenerateMacOSCommands = $true
                 }
-                if ((-Not $workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
+                if ((-not $workToBeDone.remainingWindowsSDevices) -and (-not $workToBeDone.windowsCommandID)) {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
             } else {
@@ -256,47 +261,47 @@ function Deploy-UserCertificate {
                 # Windows
                 $workToBeDone.remainingWindowsSDevices = $user.systemAssociations | Where-Object { ($_.osFamily) -eq "Windows" }
                 # if there's work to be done but not a valid cert command, generate the command
-                if (($workToBeDone.remainingMacOSDevices) -AND (-Not $workToBeDone.macOSCommandID)) {
+                if (($workToBeDone.remainingMacOSDevices) -and (-not $workToBeDone.macOSCommandID)) {
                     $workToBeDone.forceGenerateMacOSCommands = $true
                 }
                 # if there's work to be done but not a valid cert command, generate the command
-                if (($workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
+                if (($workToBeDone.remainingWindowsSDevices) -and (-not $workToBeDone.windowsCommandID)) {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
                 # regenerate the cert to keep it on the console:
-                if ((-Not $workToBeDone.remainingMacOSDevices) -AND (-Not $workToBeDone.macOSCommandID)) {
+                if ((-not $workToBeDone.remainingMacOSDevices) -and (-not $workToBeDone.macOSCommandID)) {
                     $workToBeDone.forceGenerateMacOSCommands = $true
                 }
-                if ((-Not $workToBeDone.remainingWindowsSDevices) -AND (-Not $workToBeDone.windowsCommandID)) {
+                if ((-not $workToBeDone.remainingWindowsSDevices) -and (-not $workToBeDone.windowsCommandID)) {
                     $workToBeDone.forceGenerateWindowsCommands = $true
                 }
             }
             # now clear out the user command associations from users.json
             $user.commandAssociations = @()
 
-            If (-Not $certInfo) {
-                Write-host "$($user.username) did not have a certificate generated"
+            if (-not $certInfo) {
+                Write-Host "$($user.username) did not have a certificate generated"
                 $status_commandGenerated = $false
                 $result_deployed = $false
                 continue
             } else {
                 # explicitly validate that the subject header exists
-                if (-Not $certInfo.subject) {
-                    Write-host "$($user.username) has a certificate file but no subject was found"
+                if (-not $certInfo.subject) {
+                    Write-Host "$($user.username) has a certificate file but no subject was found"
                     $status_commandGenerated = $false
                     $result_deployed = $false
                     continue
                 }
                 # explicitly validate that the serial number exists
-                if (-Not $certInfo.serial) {
-                    Write-host "$($user.username) has a certificate file but no serial number was found"
+                if (-not $certInfo.serial) {
+                    Write-Host "$($user.username) has a certificate file but no serial number was found"
                     $status_commandGenerated = $false
                     $result_deployed = $false
                     continue
                 }
             }
 
-            if (($workToBeDone.forceGenerateMacOSCommands) -OR ($workToBeDone.forceGenerateWindowsCommands)) {
+            if (($workToBeDone.forceGenerateMacOSCommands) -or ($workToBeDone.forceGenerateWindowsCommands)) {
                 # determine certType
                 switch ($($global:JCRConfig.certType.value)) {
                     'EmailSAN' {
@@ -513,7 +518,7 @@ if [[ "`$currentUser" ==  "`$userCompare" ]]; then
 
     # post
     curl --cert `$certLocation --key `$keyLocation --cacert `$caCertLocation \
-    -X POST 'https://agent.jumpcloud.com/systeminsights/snapshots/certificates' \
+    -X POST "$($script:agentSnapshotUrl)" \
     -H "x-system-id: `$systemKey" \
     -H "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" \
     -H 'Content-Type: application/json' \
@@ -575,7 +580,7 @@ fi
                 }
             }
 
-            if (-Not ($workToBeDone.forceGenerateMacOSCommands) -And ($workToBeDone.macOSCommandID)) {
+            if (-not ($workToBeDone.forceGenerateMacOSCommands) -and ($workToBeDone.macOSCommandID)) {
                 $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "macOS")
 
                 $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:mac")
@@ -591,7 +596,7 @@ fi
 
             }
 
-            if (($invokeCommands) -And ($workToBeDone.remainingMacOSDevices)) {
+            if (($invokeCommands) -and ($workToBeDone.remainingMacOSDevices)) {
                 try {
                     $commandStart = Start-JcSdkCommand -Id $workToBeDone.macOSCommandID -SystemIds $workToBeDone.remainingMacOSDevices.systemId | Out-Null
                     $result_deployed = $true
@@ -600,7 +605,7 @@ fi
                 }
             }
             # set the command associations
-            if (($workToBeDone.remainingMacOSDevices) -And ($workToBeDone.macOSCommandID)) {
+            if (($workToBeDone.remainingMacOSDevices) -and ($workToBeDone.macOSCommandID)) {
 
                 $workToBeDone.remainingMacOSDevices | ForEach-Object {
                     try {
@@ -722,7 +727,7 @@ if (Test-Path -Path `$curlPath) {
     `$certJsonFile = "C:\Windows\Temp\jsonFile.txt"
     `$certsText | Out-File -FilePath `$certJsonFile -Force -Encoding utf8
     # submit the request
-    C:\ProgramData\chocolatey\bin\curl.exe --cert "`$certLocation" --key "`$keyLocation" --cacert "`$caCertLocation" --header "x-system-id: `$systemKey" --header "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" --header "Content-type:application/json " -d @C:\Windows\Temp\jsonFile.txt --url 'https://agent.jumpcloud.com/systeminsights/snapshots/certificates'
+    C:\ProgramData\chocolatey\bin\curl.exe --cert "`$certLocation" --key "`$keyLocation" --cacert "`$caCertLocation" --header "x-system-id: `$systemKey" --header "x-ssl-client-dn: /CN=`$certUUID/O=JumpCloud" --header "Content-type:application/json " -d @C:\Windows\Temp\jsonFile.txt --url "$($script:agentSnapshotUrl)"
     # remove the temp file
     Remove-Item -Path `$certJsonFile
 } else {
@@ -774,7 +779,7 @@ exit 4
                     $status_commandGenerated = $true
                 }
             }
-            if (-Not ($workToBeDone.forceGenerateWindowsCommands) -And ($workToBeDone.windowsCommandID)) {
+            if (-not ($workToBeDone.forceGenerateWindowsCommands) -and ($workToBeDone.windowsCommandID)) {
                 $systemIds = (Get-SystemsThatNeedCertWork -userData $user -osType "windows")
 
                 $Command = Get-JcSdkCommand -Filter @("trigger:eq:$($certInfo.sha1)", "commandType:eq:windows")
@@ -789,7 +794,7 @@ exit 4
                 $user.commandAssociations += $CommandTable
 
             }
-            if (($invokeCommands) -AND ($workToBeDone.remainingWindowsSDevices)) {
+            if (($invokeCommands) -and ($workToBeDone.remainingWindowsSDevices)) {
                 try {
                     $commandStart = Start-JcSdkCommand -Id $workToBeDone.windowsCommandID -SystemIds $workToBeDone.remainingWindowsSDevices.systemId | Out-Null
                     $result_deployed = $true
@@ -798,7 +803,7 @@ exit 4
                 }
             }
             # set the command associations
-            if (($workToBeDone.remainingWindowsSDevices) -And ($workToBeDone.windowsCommandID)) {
+            if (($workToBeDone.remainingWindowsSDevices) -and ($workToBeDone.windowsCommandID)) {
                 $workToBeDone.remainingWindowsSDevices | ForEach-Object {
                     try {
                         $commandAssociation = Set-JcSdkCommandAssociation -CommandId:("$($workToBeDone.windowsCommandID)") -Op 'add' -Type:('system') -Id:("$($_.systemId)") | Out-Null
@@ -817,14 +822,14 @@ exit 4
                 if ($user.commandAssociations) {
                     $user.commandAssociations | ForEach-Object { $_.commandPreviouslyRun = $true }
                     # set the deployed status to true, set the date
-                    if (Get-Member -inputObject $user.certInfo -name "deployed" -MemberType Properties) {
+                    if (Get-Member -InputObject $user.certInfo -Name "deployed" -MemberType Properties) {
                         # if ($userObjectFromTable.certInfo.deployed) {
                         $user.certInfo.deployed = $true
                     } else {
                         $user.certInfo | Add-Member -Name 'deployed' -Type NoteProperty -Value $false
 
                     }
-                    if (Get-Member -inputObject $user.certInfo -name "deploymentDate" -MemberType Properties) {
+                    if (Get-Member -InputObject $user.certInfo -Name "deploymentDate" -MemberType Properties) {
                         # if ($userObjectFromTable.certInfo.deploymentDate) {
                         $user.certInfo.deploymentDate = (Get-Date -Format "o")
 
@@ -836,7 +841,7 @@ exit 4
             $false {
                 $result_deployed = $false
             }
-            Default {
+            default {
             }
 
 
