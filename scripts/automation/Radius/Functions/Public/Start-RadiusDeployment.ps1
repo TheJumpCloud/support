@@ -1,8 +1,8 @@
 function Start-RadiusDeployment {
     # Import Global Config:
     Write-Verbose 'Verifying JCAPI Key'
-    if ($JCAPIKEY.length -ne 40) {
-        Connect-JCOnline -force
+    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Connect-JCOnline
     }
 
     # validate the setting from the module have been set

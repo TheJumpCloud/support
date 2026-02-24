@@ -1,4 +1,4 @@
-Function Start-MonitorCertDeployment {
+function Start-MonitorCertDeployment {
 
 
     ################################################################################
@@ -9,8 +9,6 @@ Function Start-MonitorCertDeployment {
     # Define jsonData file
     $jsonFile = "$JCRScriptRoot/users.json"
 
-
-
     # Show user selection
     do {
         Show-CertDeploymentMenu
@@ -20,7 +18,7 @@ Function Start-MonitorCertDeployment {
                 $data = Get-UserJsonData
                 $certResults = Get-InstalledCertsFromUsersJson -userData $data
                 $certResults | Format-Table
-                pause
+                Pause
             } '2' {
                 Get-CommandObjectTable -Detailed -jsonFile $jsonFile
                 Pause

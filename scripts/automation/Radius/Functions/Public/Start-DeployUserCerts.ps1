@@ -20,6 +20,10 @@ function Start-DeployUserCerts {
         [switch]
         $forceGenerateCommands
     )
+    Write-Verbose 'Verifying JCAPI Key'
+    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Connect-JCOnline
+    }
 
     if ($Global:JCRSettings.sessionImport -eq $false) {
         Get-JCRGlobalVars

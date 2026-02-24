@@ -1,4 +1,4 @@
-Function Start-GenerateRootCert {
+function Start-GenerateRootCert {
     [CmdletBinding(DefaultParameterSetName = 'gui')]
     param (
         # Cert Key Password
@@ -16,6 +16,11 @@ Function Start-GenerateRootCert {
 
 
     )
+
+    Write-Verbose 'Verifying JCAPI Key'
+    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Connect-JCOnline
+    }
 
     if ($Global:JCRSettings.sessionImport -eq $false) {
         Get-JCRGlobalVars
@@ -100,7 +105,7 @@ Function Start-GenerateRootCert {
                                 # Loop until the passwords match
                                 do {
                                     # Prompt for password
-                                    Write-Host "NOTE: Please save your root certificate password in a password manager" -foregroundcolor Yellow
+                                    Write-Host "NOTE: Please save your root certificate password in a password manager" -ForegroundColor Yellow
                                     $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
 
                                     # Reprompt for password
@@ -112,9 +117,9 @@ Function Start-GenerateRootCert {
 
                                     # Validate that the passwords match
                                     if ($plainCertKeyPass -ne $plainCertKeyPassReEntry) {
-                                        Write-Host "Passwords do not match. Please try again." -foregroundcolor Red
+                                        Write-Host "Passwords do not match. Please try again." -ForegroundColor Red
                                     } else {
-                                        Write-Host "Password set successfully" -foregroundcolor Green
+                                        Write-Host "Password set successfully" -ForegroundColor Green
                                         $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                                     }
                                 } while ($plainCertKeyPass -ne $plainCertKeyPassReEntry)
@@ -172,7 +177,7 @@ Function Start-GenerateRootCert {
                         # Loop until the passwords match
                         do {
                             # Prompt for password
-                            Write-Host "NOTE: Please save your root certificate password in a password manager" -foregroundcolor Yellow
+                            Write-Host "NOTE: Please save your root certificate password in a password manager" -ForegroundColor Yellow
                             $secureCertKeyPass = Read-Host -Prompt "Enter a password for the certificate key" -AsSecureString
 
                             # Reprompt for password
@@ -184,9 +189,9 @@ Function Start-GenerateRootCert {
 
                             # Validate that the passwords match
                             if ($plainCertKeyPass -ne $plainCertKeyPassReEntry) {
-                                Write-Host "Passwords do not match. Please try again." -foregroundcolor Red
+                                Write-Host "Passwords do not match. Please try again." -ForegroundColor Red
                             } else {
-                                Write-Host "Password set successfully" -foregroundcolor Green
+                                Write-Host "Password set successfully" -ForegroundColor Green
                                 $certKeyPass = ConvertFrom-SecureString $secureCertKeyPass -AsPlainText
                             }
                         } while ($plainCertKeyPass -ne $plainCertKeyPassReEntry)
