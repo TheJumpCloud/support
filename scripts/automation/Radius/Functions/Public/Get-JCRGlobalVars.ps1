@@ -16,8 +16,8 @@ function Get-JCRGlobalVars {
     )
     begin {
         Write-Verbose 'Verifying JCAPI Key'
-        if ($JCAPIKEY.length -ne 40) {
-            Connect-JCOnline -force
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
         }
         # ensure the data directory exists to cache the json files:
         if (-not (Test-Path "$JCRScriptRoot/data")) {
@@ -25,7 +25,7 @@ function Get-JCRGlobalVars {
             New-Item -ItemType Directory -Path "$JCRScriptRoot/data"
         }
 
-        if (-Not $global:JCRConfig) {
+        if (-not $global:JCRConfig) {
             $global:JCRConfig = Get-JCRConfig
         }
 
@@ -150,7 +150,7 @@ function Get-JCRGlobalVars {
                     # create the hashtable:
                     $userAssociationList = New-Object System.Collections.Hashtable
                     foreach ($item in $reportContent) {
-                        if ($item.user_object_id -And $item.resource_object_id) {
+                        if ($item.user_object_id -and $item.resource_object_id) {
                             if (-not $userAssociationList[$item.user_object_id]) {
                                 $userAssociationList.add(
                                     $item.user_object_id, @{
@@ -198,7 +198,7 @@ function Get-JCRGlobalVars {
                 if ($associationUsername) {
                     $userAssociationList = Get-Content -Raw -Path "$JCRScriptRoot/data/associationHash.json" | ConvertFrom-Json -Depth 6 -AsHashtable
                     $matchedUser = $radiusMemberList | Where-Object { $_.username -eq $associationUsername }
-                    if (-Not $matchedUser) {
+                    if (-not $matchedUser) {
                         Write-Warning "user not found"
                     } else {
                         $userSystemMembership = Get-JcSdkUserTraverseSystem -UserId $matchedUser.userID

@@ -17,6 +17,11 @@ function Start-GenerateUserCerts {
         $forceReplaceCerts
     )
 
+    Write-Verbose 'Verifying JCAPI Key'
+    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Connect-JCOnline
+    }
+
     if ($Global:JCRSettings.sessionImport -eq $false) {
         Get-JCRGlobalVars
         $Global:JCRSettings.sessionImport = $true
@@ -60,7 +65,7 @@ function Start-GenerateUserCerts {
     }
     #### end function setup
 
-    Do {
+    do {
         switch ($PSCmdlet.ParameterSetName) {
             'gui' {
                 Show-GenerationMenu
@@ -152,7 +157,7 @@ function Start-GenerateUserCerts {
                             }
                         }
                     }
-                    Show-RadiusProgress -completedItems $userObject.count  -totalItems $userObject.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
+                    Show-RadiusProgress -completedItems $userObject.count -totalItems $userObject.count -ActionText "Generating Radius Certificates" -previousOperationResult $result
                 }
                 switch ($PSCmdlet.ParameterSetName) {
                     'gui' {
