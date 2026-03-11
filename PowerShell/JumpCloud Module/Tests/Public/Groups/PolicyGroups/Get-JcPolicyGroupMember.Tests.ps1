@@ -11,18 +11,27 @@ Describe -Tag:('JcPolicyGroupMember') 'Get-JCPolicyGroupMember and Set-JCPolicyG
         if ($TestGroup) { Remove-JCPolicyGroup -PolicyGroupID $TestGroup.id -Force | Out-Null }
     }
     It 'Returns null when there are no members of the policy group' {
-        $members = Get-JCPolicyGroupMember -PolicyGroupID $TestGroup.id
+        $members = Get-JCPolicyGroupMember -GroupId $TestGroup.id
         $members | Should -BeNullOrEmpty
     }
     It 'Adds a policy to the group and Get-JCPolicyGroupMember returns it' {
         Set-JCPolicyGroupMember -GroupId $TestGroup.id -Op "add" -Id $TestPolicy.id | Out-Null
-        $members = Get-JCPolicyGroupMember -PolicyGroupID $TestGroup.id
+        $members = Get-JCPolicyGroupMember -GroupId $TestGroup.id
         $members | Should -Not -BeNullOrEmpty
         $TestPolicy.Name | Should -BeIn $members.Name
     }
     It 'Removes a policy from the group and Get-JCPolicyGroupMember returns empty' {
         Set-JCPolicyGroupMember -GroupId $TestGroup.id -Op "remove" -Id $TestPolicy.id | Out-Null
-        $members = Get-JCPolicyGroupMember -PolicyGroupID $TestGroup.id
+        $members = Get-JCPolicyGroupMember -GroupId $TestGroup.id
         $members | Should -BeNullOrEmpty
+    }
+    It 'Returns groups for a policy using -PolicyId' {
+        # Add policy to group
+        Set-JCPolicyGroupMember -GroupId $TestGroup.id -Op "add" -Id $TestPolicy.id | Out-Null
+        $groups = Get-JCPolicyGroupMember -PolicyId $TestPolicy.id
+        $groups | Should -Not -BeNullOrEmpty
+        $TestGroupName | Should -BeIn $groups.Name
+        # Remove policy from group for cleanup
+        Set-JCPolicyGroupMember -GroupId $TestGroup.id -Op "remove" -Id $TestPolicy.id | Out-Null
     }
 }

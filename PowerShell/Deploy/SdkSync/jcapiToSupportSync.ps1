@@ -41,7 +41,7 @@ $ApprovedFunctions = [Ordered]@{
         [PSCustomObject]@{
             Name        = 'New-JcSdkPolicyGroup';
             Destination = '/Public/Groups/PolicyGroups';
-        };
+        },
         [PSCustomObject]@{
             Name        = 'Remove-JcSdkPolicyGroup';
             Destination = '/Public/Groups/PolicyGroups';

@@ -1,7 +1,7 @@
 Describe -Tag:('JcPolicyGroup') 'Get-JcPolicyGroup' {
     BeforeAll {
         $TestGroupName = "SdkTestPolicyGroup-$(Get-Random)"
-        $TestGroup = New-JCPolicyGroup -Name $TestGroupName -Description "SDK Test Group"
+        $TestGroup = New-JCPolicyGroup -Name $TestGroupName
     }
     AfterAll {
         if ($TestGroup -and $TestGroup.id) {
