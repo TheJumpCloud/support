@@ -9,21 +9,21 @@ Describe -Tag:('JcUserGroup') 'Get-JCUserGroup' {
     It 'Get returns all user groups' {
         $groups = Get-JCUserGroup
         $groups | Should -Not -BeNullOrEmpty
-        $groups.GroupName | Should -Contain $TestGroupName
+        $groups.Name | Should -Contain $TestGroupName
     }
     It 'Get by ID returns single group' {
-        $group = Get-JCUserGroup -GroupID $TestGroup.id
+        $group = Get-JCUserGroup -Id $TestGroup.id
         $group | Should -Not -BeNullOrEmpty
-        $group.GroupName | Should -Be $TestGroupName
+        $group.Name | Should -Be $TestGroupName
     }
     It 'Get by name returns expected result' {
-        $filtered = Get-JCUserGroup -GroupName $TestGroupName
+        $filtered = Get-JCUserGroup -Filter "name:eq:$TestGroupName"
         $filtered | Should -Not -BeNullOrEmpty
-        $filtered.GroupName | Should -Be $TestGroupName
+        $filtered.Name | Should -Be $TestGroupName
     }
     It 'Get by non-existent name returns nothing or error' {
         $nonExistentName = "DefinitelyNotARealGroupName-$(Get-Random)"
-        $result = Get-JCUserGroup -GroupName $nonExistentName
+        $result = Get-JCUserGroup -Filter "name:eq:$nonExistentName"
         $result | Should -BeNullOrEmpty
     }
 }
