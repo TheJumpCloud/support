@@ -4,7 +4,9 @@ Describe -Tag:('JcPolicyGroup') 'Get-JcPolicyGroup' {
         $TestGroup = New-JCPolicyGroup -Name $TestGroupName -Description "SDK Test Group"
     }
     AfterAll {
-        Remove-JCPolicyGroup -PolicyGroupID $TestGroup.id -Force
+        if ($TestGroup -and $TestGroup.id) {
+            Remove-JCPolicyGroup -PolicyGroupID $TestGroup.id -Force
+        }
     }
     It 'Get returns all policy groups' {
         $groups = Get-JCPolicyGroup
