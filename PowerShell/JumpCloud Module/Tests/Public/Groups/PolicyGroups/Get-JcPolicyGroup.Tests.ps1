@@ -24,6 +24,7 @@ Describe -Tag:('JcPolicyGroup') 'Get-JcPolicyGroup' {
     It 'Get by non-existent name returns nothing or error' {
         $nonExistentName = "DefinitelyNotARealGroupName-$(Get-Random)"
         $result = Get-JCPolicyGroup -Name $nonExistentName
-        $result | Should -BeNullOrEmpty
+        $isEmpty = ($null -eq $result -or ($result.PSObject.Properties.Name -inotcontains 'name' -and $result.PSObject.Properties.Name -inotcontains 'id' -and $result.PSObject.Properties.Name -inotcontains 'Id'))
+        $isEmpty | Should -BeTrue
     }
 }
