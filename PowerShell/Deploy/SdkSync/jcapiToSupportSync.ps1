@@ -53,10 +53,6 @@ $ApprovedFunctions = [Ordered]@{
         [PSCustomObject]@{
             Name        = 'Set-JcSdkPolicyGroupMember';
             Destination = '/Public/Groups/PolicyGroups';
-        },
-        [PSCustomObject]@{
-            Name        = 'Set-JcSDKPolicyGroupMember';
-            Destination = '/Public/Groups/PolicyGroups';
         }
     )
 }
