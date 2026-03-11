@@ -12,21 +12,9 @@ Query the API for a count of matching events
 curl -X POST 'https://api.jumpcloud.com/insights/directory/v1/events/count' -H 'Content-Type: application/json' -H 'x-api-key: REPLACE_KEY_VALUE' --data '{\"service\": [\"all\"], \"start_time\": \"2021-07-14T23:00:00Z\", \"end_time\": \"2021-07-28T14:00:00Z\", \"sort\": \"DESC\", \"fields\": [\"timestamp\", \"event_type\", \"initiated_by\", \"success\", \"client_ip\", \"provider\", \"organization\"]}'
 ```
 .Example
-PS C:\> Get-JCEventCount -Service:('all') -StartTime:((Get-date).AddDays(-30))
-
-Pull all event records from a specified time and count the results
+Get-JCEventCount -Service:(<string[]>) -StartTime:(<datetime>) -EndTime:(<datetime>) -ExactMatch:(<string>) -Fields:(<string[]>) -Q:(<string>) -SearchAfter:(<string[]>) -SearchTermAnd:(<hashtable>) -SearchTermNot:(<hashtable>) -SearchTermOr:(<hashtable>) -Sort:(<string>)
 .Example
-PS C:\> Get-JCEventCount -Service:('sso') -StartTime:('2020-04-14T00:00:00Z')
-
-Pull all SSO event records from a specified time and count the results
-.Example
-PS C:\> Get-JCEventCount -Service:('all') -StartTime:('2020-04-14T00:00:00Z') -EndTime:('2020-04-20T23:00:00Z') -SearchTermAnd @{"event_type" = "admin_login_attempt"; "resource.email" = "admin.user@adminbizorg.com"}
-
-Get all events counts between a date range and match event_type = admin_login_attempt and resource.email = admin.user@adminbizorg.com
-.Example
-PS C:\> Get-JCEventCount -Service:('directory') -StartTime:((Get-date).AddDays(-30)) -searchTermAnd:@{"event_type" = "group_create"}
-
-Get only group_create event counts the last thirty days
+Get-JCEventCount -Body:(<JumpCloud.SDK.DirectoryInsights.Models.EventQuery>)
 
 .Inputs
 JumpCloud.SDK.DirectoryInsights.Models.IEventQuery
@@ -53,7 +41,7 @@ BODY <IEventQuery>: EventQuery is the users' command to search our auth logs
   [Skip <Int64?>]: optional offset into the result set to start with when returning
   [Sort <String>]: ASC or DESC order for timestamp
 .Link
-https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
+https://github.com/TheJumpCloud/jcapi-powershell/tree/CUT-4981_v2EUSupport/SDKs/PowerShell/JumpCloud.SDK.DirectoryInsights/docs/exports/Get-JcSdkEventCount.md
 #>
 Function Get-JCEventCount {
     [OutputType([JumpCloud.SDK.DirectoryInsights.Models.IEventCount])]

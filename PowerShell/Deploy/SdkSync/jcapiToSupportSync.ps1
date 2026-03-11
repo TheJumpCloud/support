@@ -25,56 +25,36 @@ $ApprovedFunctions = [Ordered]@{
         #         Destination = '/Public/Reports';
         #     }
     );
-    #'JumpCloud.SDK.V2'                = @(
-    #     [PSCustomObject]@{
-    #         Name        = 'Get-JcSdkAppleMdm';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Remove-JcSdkAppleMdm';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Set-JcSdkAppleMdm';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Get-JcSdkAppleMdmCsr';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Get-JcSdkAppleMdmDepKey';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Clear-JcSdkAppleMdmDevice';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Get-JcSdkAppleMdmDevice';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Lock-JcSdkAppleMdmDevice';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Restart-JcSdkAppleMdmDevice';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Stop-JcSdkAppleMdmDevice';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Sync-JcSdkAppleMdmDevice';
-    #         Destination = '/Public/AppleMdm';
-    #     },
-    #     [PSCustomObject]@{
-    #         Name        = 'Get-JcSdkAppleMdmEnrollmentProfile';
-    #         Destination = '/Public/AppleMdm';
-    #     }
-    #)
+    'JumpCloud.SDK.V2'                = @(
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkSystemGroup';
+            Destination = '/Public/Groups/SystemGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkUserGroup';
+            Destination = '/Public/Groups/UserGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkPolicyGroup';
+            Destination = '/Public/Groups/PolicyGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'New-JcSdkPolicyGroup';
+            Destination = '/Public/Groups/PolicyGroups';
+        };
+        [PSCustomObject]@{
+            Name        = 'Remove-JcSdkPolicyGroup';
+            Destination = '/Public/Groups/PolicyGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkPolicyGroupMember';
+            Destination = '/Public/Groups/PolicyGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Set-JcSdkPolicyGroupMember';
+            Destination = '/Public/Groups/PolicyGroups';
+        }
+    )
 }
 $SdkPrefix = 'JcSdk'
 $JumpCloudModulePrefix = 'JC'
