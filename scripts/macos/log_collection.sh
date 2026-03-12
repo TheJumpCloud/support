@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2.7
+version=1.2.8
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -135,11 +135,17 @@ fi
 ## Only run if a user is actually logged in
 if [[ $localuser ]]; then
 
+    # Get the UID for your specific local user
+    USER_ID=$(id -u "$localuser")
+
     ## pull additional patch management information
     sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com.github.macadmins.Nudge.plist 2>&1
 
     ## list jumpcloud services currently running on the system
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
+
+    ## Collect SoftwareUpdateDeviceID relating to DDM / MDM based patch management.
+    sudo launchctl asuser "$USER_ID" /usr/libexec/mdmclient QueryDeviceInformation | grep "SoftwareUpdateDeviceID" | sort -u > $baseDir/systemInfo/SoftwareUpdateDeviceID.txt
 
 else
     collectionLog "No user is currently logged in. Skipping user-specific information."
