@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RS Clare & Co Ltd - Network Topology Diagram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1f4e 0%, #0d1233 100%);
+            border-bottom: 2px solid #2a3a8a;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 {
+            font-size: 22px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .header h1 span { color: #4a90d9; }
+        .header .subtitle {
+            font-size: 13px;
+            color: #8899cc;
+            margin-top: 4px;
+        }
+        .header .badge {
+            background: #1a2a5a;
+            border: 1px solid #3a5a9a;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: #7aa3d4;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 14px 40px;
+            background: #0d1133;
+            border-bottom: 1px solid #1a2255;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #8899bb;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+        .diagram-container {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+        svg {
+            max-width: 1400px;
+            width: 100%;
+            height: auto;
+        }
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: #1a2050;
+            border: 1px solid #3a5a9a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 12px;
+            color: #c0d0f0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            max-width: 280px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .tooltip.visible { opacity: 1; }
+        .tooltip h4 { color: #fff; margin-bottom: 6px; font-size: 13px; }
+        .tooltip p { line-height: 1.5; }
+        .site-info {
+            display: flex;
+            gap: 30px;
+            padding: 0 40px 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .site-card {
+            background: linear-gradient(135deg, #121840 0%, #0d1233 100%);
+            border: 1px solid #1e2a5a;
+            border-radius: 10px;
+            padding: 18px 22px;
+            min-width: 220px;
+            flex: 1;
+            max-width: 280px;
+        }
+        .site-card h3 {
+            font-size: 14px;
+            color: #4a90d9;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .site-card ul {
+            list-style: none;
+            font-size: 12px;
+            color: #8899bb;
+        }
+        .site-card ul li {
+            padding: 3px 0;
+            border-bottom: 1px solid #151d40;
+        }
+        .site-card ul li:last-child { border: none; }
+        .site-card .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .dot-green { background: #2ecc71; }
+        .dot-blue { background: #3498db; }
+        .dot-orange { background: #e67e22; }
+        .dot-purple { background: #9b59b6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>RS Clare & Co Ltd <span>|</span> Network Topology</h1>
+            <div class="subtitle">Global Network Infrastructure - HQ Liverpool, UK | Subsidiaries: Switzerland, Germany, Austria, USA</div>
+        </div>
+        <div class="badge">CONFIDENTIAL - Internal Use Only</div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><div class="legend-color" style="background:#2ecc71"></div> Core Infrastructure</div>
+        <div class="legend-item"><div class="legend-color" style="background:#3498db"></div> Server / Services</div>
+        <div class="legend-item"><div class="legend-color" style="background:#e67e22"></div> User Networks / Wi-Fi</div>
+        <div class="legend-item"><div class="legend-color" style="background:#9b59b6"></div> Remote / VPN Sites</div>
+        <div class="legend-item"><div class="legend-color" style="background:#e74c3c"></div> Security / Firewall</div>
+        <div class="legend-item"><div class="legend-color" style="background:#1abc9c"></div> Cloud Services</div>
+        <div class="legend-item">
+            <svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="#3a5a9a" stroke-width="2"/></svg> Physical Link
+        </div>
+        <div class="legend-item">
+            <svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="#9b59b6" stroke-width="2" stroke-dasharray="5,3"/></svg> VPN Tunnel
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <svg viewBox="0 0 1400 1050" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="shadow">
+                    <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
+                </filter>
+                <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#0d1233"/>
+                    <stop offset="100%" style="stop-color:#0a0e27"/>
+                </linearGradient>
+                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#3a5a9a"/>
+                </marker>
+            </defs>
+
+            <!-- Background -->
+            <rect width="1400" height="1050" fill="url(#bgGrad)"/>
+
+            <!-- ==================== INTERNET CLOUD ==================== -->
+            <g class="node" data-tooltip="Internet|Public internet connection via dual ISP links for redundancy. Primary: Leased line. Secondary: Business broadband failover.">
+                <ellipse cx="700" cy="55" rx="120" ry="35" fill="#0f1940" stroke="#1abc9c" stroke-width="1.5" opacity="0.8"/>
+                <text x="700" y="52" text-anchor="middle" fill="#1abc9c" font-size="13" font-weight="600">INTERNET</text>
+                <text x="700" y="67" text-anchor="middle" fill="#5a8aaa" font-size="9">Dual ISP / Leased Line</text>
+            </g>
+
+            <!-- ==================== CLOUD SERVICES (RIGHT) ==================== -->
+            <g class="node" data-tooltip="Cloud Services|Microsoft 365 (Exchange Online, SharePoint, Teams), Azure AD for identity management, and cloud-hosted backup/DR services.">
+                <rect x="1080" y="20" width="200" height="70" rx="10" fill="#0f1940" stroke="#1abc9c" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="1180" y="45" text-anchor="middle" fill="#1abc9c" font-size="12" font-weight="600">Cloud Services</text>
+                <text x="1180" y="60" text-anchor="middle" fill="#5a8aaa" font-size="9">M365 / Azure AD / Backup</text>
+                <text x="1180" y="73" text-anchor="middle" fill="#5a8aaa" font-size="9">ERP Cloud (SAP/Sage)</text>
+            </g>
+            <line x1="820" y1="55" x2="1080" y2="55" stroke="#1abc9c" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+            <!-- ==================== PERIMETER FIREWALL ==================== -->
+            <line x1="700" y1="90" x2="700" y2="130" stroke="#3a5a9a" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+            <g class="node" data-tooltip="Perimeter Firewall|Dual HA firewall cluster (e.g. FortiGate/Sophos). Handles NAT, IPS/IDS, web filtering, SSL inspection, and site-to-site VPN tunnels to subsidiary offices.">
+                <rect x="610" y="130" width="180" height="55" rx="8" fill="#1a0a0a" stroke="#e74c3c" stroke-width="2" filter="url(#shadow)"/>
+                <text x="700" y="153" text-anchor="middle" fill="#e74c3c" font-size="12" font-weight="600">Perimeter Firewall</text>
+                <text x="700" y="168" text-anchor="middle" fill="#cc8888" font-size="9">HA Cluster / IPS / VPN Gateway</text>
+            </g>
+
+            <!-- ==================== CORE SWITCH ==================== -->
+            <line x1="700" y1="185" x2="700" y2="225" stroke="#3a5a9a" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+            <g class="node" data-tooltip="Core Switch Stack|Layer 3 core switch stack providing inter-VLAN routing, link aggregation, and 10GbE backbone. Central switching fabric for all Liverpool HQ network segments.">
+                <rect x="590" y="225" width="220" height="55" rx="8" fill="#0f1a30" stroke="#2ecc71" stroke-width="2" filter="url(#shadow)"/>
+                <text x="700" y="248" text-anchor="middle" fill="#2ecc71" font-size="13" font-weight="700">CORE SWITCH STACK</text>
+                <text x="700" y="264" text-anchor="middle" fill="#5aaa7a" font-size="9">L3 / 10GbE / Inter-VLAN Routing</text>
+            </g>
+
+            <!-- ==================== HQ ZONE LABEL ==================== -->
+            <rect x="30" y="210" width="1340" height="560" rx="12" fill="none" stroke="#1a2a55" stroke-width="1" stroke-dasharray="8,4" opacity="0.5"/>
+            <text x="55" y="235" fill="#2a4a7a" font-size="11" font-weight="600">LIVERPOOL HQ - 8-14 Stanhope Street, L8 5RQ</text>
+
+            <!-- ==================== CONNECTIONS FROM CORE ==================== -->
+
+            <!-- Left branch: Server VLAN -->
+            <line x1="640" y1="280" x2="200" y2="340" stroke="#3a5a9a" stroke-width="1.5"/>
+            <!-- Center-left: Manufacturing / OT -->
+            <line x1="670" y1="280" x2="460" y2="340" stroke="#3a5a9a" stroke-width="1.5"/>
+            <!-- Center: DMZ -->
+            <line x1="700" y1="280" x2="700" y2="340" stroke="#3a5a9a" stroke-width="1.5"/>
+            <!-- Center-right: User LAN -->
+            <line x1="730" y1="280" x2="940" y2="340" stroke="#3a5a9a" stroke-width="1.5"/>
+            <!-- Right: Wi-Fi -->
+            <line x1="760" y1="280" x2="1200" y2="340" stroke="#3a5a9a" stroke-width="1.5"/>
+
+            <!-- ==================== SERVER VLAN (VLAN 10) ==================== -->
+            <g class="node" data-tooltip="Server VLAN 10 (10.10.10.0/24)|Hosts on-premise servers: Domain Controllers (AD), file server, print server, DHCP/DNS, monitoring (PRTG/Zabbix), and local backup appliance.">
+                <rect x="70" y="340" width="260" height="55" rx="8" fill="#0f1a30" stroke="#3498db" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="200" y="360" text-anchor="middle" fill="#3498db" font-size="12" font-weight="600">Server VLAN 10</text>
+                <text x="200" y="375" text-anchor="middle" fill="#5a8aaa" font-size="9">10.10.10.0/24</text>
+            </g>
+
+            <!-- Server sub-items -->
+            <line x1="130" y1="395" x2="130" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="200" y1="395" x2="200" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="270" y1="395" x2="270" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+
+            <g class="node" data-tooltip="Domain Controllers|Windows Server AD DS domain controllers providing authentication, Group Policy, and directory services for all HQ users and devices.">
+                <rect x="65" y="430" width="130" height="48" rx="6" fill="#0d1530" stroke="#2980b9" stroke-width="1" filter="url(#shadow)"/>
+                <text x="130" y="450" text-anchor="middle" fill="#4aa3df" font-size="10" font-weight="600">DC01 / DC02</text>
+                <text x="130" y="463" text-anchor="middle" fill="#5a7a9a" font-size="8">AD / DNS / DHCP</text>
+            </g>
+
+            <g class="node" data-tooltip="File & Print Server|Centralized file shares for departments (Finance, R&D, Operations, Quality) and managed print services. Data backed up to local NAS and cloud.">
+                <rect x="205" y="430" width="130" height="48" rx="6" fill="#0d1530" stroke="#2980b9" stroke-width="1" filter="url(#shadow)"/>
+                <text x="270" y="450" text-anchor="middle" fill="#4aa3df" font-size="10" font-weight="600">File / Print</text>
+                <text x="270" y="463" text-anchor="middle" fill="#5a7a9a" font-size="8">Shared Drives / DFS</text>
+            </g>
+
+            <!-- Second row of servers -->
+            <line x1="130" y1="478" x2="130" y2="505" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="270" y1="478" x2="270" y2="505" stroke="#2a4a7a" stroke-width="1"/>
+
+            <g class="node" data-tooltip="Monitoring & Backup|Network monitoring (PRTG/Zabbix), SIEM log collection, and on-premise backup appliance with offsite cloud replication for disaster recovery.">
+                <rect x="65" y="505" width="130" height="48" rx="6" fill="#0d1530" stroke="#2980b9" stroke-width="1" filter="url(#shadow)"/>
+                <text x="130" y="525" text-anchor="middle" fill="#4aa3df" font-size="10" font-weight="600">Monitoring</text>
+                <text x="130" y="538" text-anchor="middle" fill="#5a7a9a" font-size="8">PRTG / SIEM / Backup</text>
+            </g>
+
+            <g class="node" data-tooltip="ERP Application Server|On-premise ERP system (Sage/SAP) component for manufacturing operations, inventory management, quality control, and supply chain.">
+                <rect x="205" y="505" width="130" height="48" rx="6" fill="#0d1530" stroke="#2980b9" stroke-width="1" filter="url(#shadow)"/>
+                <text x="270" y="525" text-anchor="middle" fill="#4aa3df" font-size="10" font-weight="600">ERP Server</text>
+                <text x="270" y="538" text-anchor="middle" fill="#5a7a9a" font-size="8">Sage / SAP / MRP</text>
+            </g>
+
+            <!-- ==================== MANUFACTURING / OT VLAN (VLAN 20) ==================== -->
+            <g class="node" data-tooltip="Manufacturing OT VLAN 20 (10.10.20.0/24)|Isolated network segment for Operational Technology: SCADA/HMI systems, PLCs, lubricant blending line controls, lab instruments in the Technical Centre, and building management system.">
+                <rect x="360" y="340" width="200" height="55" rx="8" fill="#0f1a30" stroke="#e67e22" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="460" y="360" text-anchor="middle" fill="#e67e22" font-size="12" font-weight="600">OT / Manufacturing VLAN 20</text>
+                <text x="460" y="375" text-anchor="middle" fill="#aa7a4a" font-size="9">10.10.20.0/24 (Isolated)</text>
+            </g>
+
+            <line x1="400" y1="395" x2="400" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="520" y1="395" x2="520" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+
+            <g class="node" data-tooltip="SCADA / HMI|Supervisory Control and Data Acquisition systems controlling lubricant production lines, blending equipment, and filling machinery. Air-gapped from corporate network with firewall rules.">
+                <rect x="350" y="430" width="100" height="48" rx="6" fill="#1a1500" stroke="#d35400" stroke-width="1" filter="url(#shadow)"/>
+                <text x="400" y="450" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="600">SCADA/HMI</text>
+                <text x="400" y="463" text-anchor="middle" fill="#aa7a4a" font-size="8">Production Lines</text>
+            </g>
+
+            <g class="node" data-tooltip="Lab & BMS|Technical Centre lab instruments (analytical, mechanical testing) and Building Management System controlling HVAC, heat recovery, and energy monitoring systems. Completed in the new £1.6M Technical Centre.">
+                <rect x="465" y="430" width="110" height="48" rx="6" fill="#1a1500" stroke="#d35400" stroke-width="1" filter="url(#shadow)"/>
+                <text x="520" y="450" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="600">Lab / BMS</text>
+                <text x="520" y="463" text-anchor="middle" fill="#aa7a4a" font-size="8">Technical Centre</text>
+            </g>
+
+            <!-- OT Firewall -->
+            <line x1="460" y1="340" x2="460" y2="320" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,2"/>
+            <text x="540" y="318" fill="#e74c3c" font-size="8">OT Firewall Rules</text>
+
+            <!-- ==================== DMZ (VLAN 30) ==================== -->
+            <g class="node" data-tooltip="DMZ VLAN 30 (10.10.30.0/24)|Demilitarized zone hosting public-facing services: web server (rsclare.com), email gateway/spam filter, and reverse proxy. Segregated from internal network.">
+                <rect x="600" y="340" width="200" height="55" rx="8" fill="#1a0a0a" stroke="#e74c3c" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="700" y="360" text-anchor="middle" fill="#e74c3c" font-size="12" font-weight="600">DMZ VLAN 30</text>
+                <text x="700" y="375" text-anchor="middle" fill="#cc7777" font-size="9">10.10.30.0/24</text>
+            </g>
+
+            <line x1="650" y1="395" x2="650" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="750" y1="395" x2="750" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+
+            <g class="node" data-tooltip="Web Server|Hosts rsclare.com corporate website and customer portal. Behind WAF and reverse proxy.">
+                <rect x="595" y="430" width="110" height="48" rx="6" fill="#1a0a0a" stroke="#c0392b" stroke-width="1" filter="url(#shadow)"/>
+                <text x="650" y="450" text-anchor="middle" fill="#e74c3c" font-size="10" font-weight="600">Web Server</text>
+                <text x="650" y="463" text-anchor="middle" fill="#aa6666" font-size="8">rsclare.com</text>
+            </g>
+
+            <g class="node" data-tooltip="Mail Gateway|Email security gateway providing spam filtering, anti-malware scanning, DKIM/SPF/DMARC enforcement before routing to Microsoft 365 Exchange Online.">
+                <rect x="715" y="430" width="110" height="48" rx="6" fill="#1a0a0a" stroke="#c0392b" stroke-width="1" filter="url(#shadow)"/>
+                <text x="770" y="450" text-anchor="middle" fill="#e74c3c" font-size="10" font-weight="600">Mail Gateway</text>
+                <text x="770" y="463" text-anchor="middle" fill="#aa6666" font-size="8">Spam / AV Filter</text>
+            </g>
+
+            <!-- ==================== USER LAN (VLAN 40) ==================== -->
+            <g class="node" data-tooltip="User LAN VLAN 40 (10.10.40.0/24)|Corporate wired network for staff workstations across departments: Finance, Sales, R&D, Marketing, Operations, Quality, and HR. Approximately 100-150 endpoints.">
+                <rect x="840" y="340" width="200" height="55" rx="8" fill="#0f1a30" stroke="#e67e22" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="940" y="360" text-anchor="middle" fill="#e67e22" font-size="12" font-weight="600">User LAN VLAN 40</text>
+                <text x="940" y="375" text-anchor="middle" fill="#aa7a4a" font-size="9">10.10.40.0/24</text>
+            </g>
+
+            <line x1="880" y1="395" x2="880" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="1000" y1="395" x2="1000" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+
+            <g class="node" data-tooltip="Office Workstations|Desktop PCs and laptops for office staff across departments. Domain-joined, managed via Group Policy and potentially Intune/SCCM.">
+                <rect x="825" y="430" width="110" height="48" rx="6" fill="#0d1530" stroke="#d35400" stroke-width="1" filter="url(#shadow)"/>
+                <text x="880" y="450" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="600">Workstations</text>
+                <text x="880" y="463" text-anchor="middle" fill="#aa7a4a" font-size="8">~100-150 Endpoints</text>
+            </g>
+
+            <g class="node" data-tooltip="VoIP Phones|IP telephony system for internal and external communications. May use dedicated Voice VLAN for QoS prioritisation.">
+                <rect x="945" y="430" width="110" height="48" rx="6" fill="#0d1530" stroke="#d35400" stroke-width="1" filter="url(#shadow)"/>
+                <text x="1000" y="450" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="600">VoIP / Phones</text>
+                <text x="1000" y="463" text-anchor="middle" fill="#aa7a4a" font-size="8">IP Telephony</text>
+            </g>
+
+            <!-- ==================== WIRELESS (VLAN 50) ==================== -->
+            <g class="node" data-tooltip="Wireless VLAN 50 (10.10.50.0/24)|Managed Wi-Fi network with multiple SSIDs: RSClare-Corp (802.1X authenticated, full access), RSClare-Guest (isolated, internet-only), RSClare-IoT (restricted, for sensors/devices).">
+                <rect x="1100" y="340" width="200" height="55" rx="8" fill="#0f1a30" stroke="#e67e22" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="1200" y="360" text-anchor="middle" fill="#e67e22" font-size="12" font-weight="600">Wireless VLAN 50</text>
+                <text x="1200" y="375" text-anchor="middle" fill="#aa7a4a" font-size="9">10.10.50.0/24</text>
+            </g>
+
+            <line x1="1150" y1="395" x2="1150" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+            <line x1="1250" y1="395" x2="1250" y2="430" stroke="#2a4a7a" stroke-width="1"/>
+
+            <g class="node" data-tooltip="Corporate Wi-Fi|802.1X enterprise WPA3 authenticated wireless for company laptops and mobile devices. Full network access with certificate-based auth.">
+                <rect x="1095" y="430" width="110" height="48" rx="6" fill="#0d1530" stroke="#d35400" stroke-width="1" filter="url(#shadow)"/>
+                <text x="1150" y="450" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="600">Corp Wi-Fi</text>
+                <text x="1150" y="463" text-anchor="middle" fill="#aa7a4a" font-size="8">802.1X / WPA3</text>
+            </g>
+
+            <g class="node" data-tooltip="Guest Wi-Fi|Isolated guest wireless network for visitors. Internet-only access with captive portal authentication. No access to internal resources.">
+                <rect x="1215" y="430" width="110" height="48" rx="6" fill="#0d1530" stroke="#d35400" stroke-width="1" filter="url(#shadow)"/>
+                <text x="1270" y="450" text-anchor="middle" fill="#e67e22" font-size="10" font-weight="600">Guest Wi-Fi</text>
+                <text x="1270" y="463" text-anchor="middle" fill="#aa7a4a" font-size="8">Captive Portal</text>
+            </g>
+
+            <!-- ==================== VPN TUNNELS TO SUBSIDIARIES ==================== -->
+            <!-- VPN label area -->
+            <rect x="30" y="790" width="1340" height="240" rx="12" fill="none" stroke="#6a3a9a" stroke-width="1" stroke-dasharray="8,4" opacity="0.4"/>
+            <text x="55" y="815" fill="#8a5aba" font-size="11" font-weight="600">REMOTE SITES - Site-to-Site IPsec VPN via Internet</text>
+
+            <!-- VPN Lines from Firewall to remote sites -->
+            <!-- Zurich -->
+            <path d="M 610,157 Q 250,600 200,830" fill="none" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="6,3"/>
+            <!-- Germany -->
+            <path d="M 630,185 Q 420,600 470,830" fill="none" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="6,3"/>
+            <!-- Austria -->
+            <path d="M 770,185 Q 800,600 760,830" fill="none" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="6,3"/>
+            <!-- USA -->
+            <path d="M 790,157 Q 1050,600 1050,830" fill="none" stroke="#9b59b6" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+            <!-- ==================== ZURICH SITE ==================== -->
+            <g class="node" data-tooltip="Igralub HQ - Zurich, Switzerland|Acquired in January 2023. Igralub's headquarters providing railway lubrication technology, trainborne application systems, and monitoring technology. Connected via IPsec VPN tunnel to Liverpool HQ.">
+                <rect x="80" y="830" width="240" height="80" rx="8" fill="#150a25" stroke="#9b59b6" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="200" y="855" text-anchor="middle" fill="#9b59b6" font-size="12" font-weight="700">Igralub HQ - Zurich</text>
+                <text x="200" y="872" text-anchor="middle" fill="#7a5a9a" font-size="9">Switzerland</text>
+                <text x="200" y="888" text-anchor="middle" fill="#5a4a7a" font-size="8">IPsec VPN | Local LAN / Servers</text>
+                <text x="200" y="901" text-anchor="middle" fill="#5a4a7a" font-size="8">Railway Lubrication R&D</text>
+            </g>
+
+            <!-- ==================== GERMANY SITE ==================== -->
+            <g class="node" data-tooltip="Igralub Germany Branch|German subsidiary office handling Central European sales, technical support, and local customer deployments. Connected to Liverpool HQ via site-to-site VPN.">
+                <rect x="350" y="830" width="240" height="80" rx="8" fill="#150a25" stroke="#9b59b6" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="470" y="855" text-anchor="middle" fill="#9b59b6" font-size="12" font-weight="700">Igralub - Germany</text>
+                <text x="470" y="872" text-anchor="middle" fill="#7a5a9a" font-size="9">Branch Office</text>
+                <text x="470" y="888" text-anchor="middle" fill="#5a4a7a" font-size="8">IPsec VPN | Sales & Support</text>
+                <text x="470" y="901" text-anchor="middle" fill="#5a4a7a" font-size="8">Central Europe Operations</text>
+            </g>
+
+            <!-- ==================== AUSTRIA SITE ==================== -->
+            <g class="node" data-tooltip="Igralub Austria Branch|Austrian subsidiary handling Alpine region sales and cog-rail specialist applications. Connected via site-to-site VPN to Liverpool HQ.">
+                <rect x="630" y="830" width="240" height="80" rx="8" fill="#150a25" stroke="#9b59b6" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="750" y="855" text-anchor="middle" fill="#9b59b6" font-size="12" font-weight="700">Igralub - Austria</text>
+                <text x="750" y="872" text-anchor="middle" fill="#7a5a9a" font-size="9">Branch Office</text>
+                <text x="750" y="888" text-anchor="middle" fill="#5a4a7a" font-size="8">IPsec VPN | Cog-Rail Specialist</text>
+                <text x="750" y="901" text-anchor="middle" fill="#5a4a7a" font-size="8">Alpine Region Operations</text>
+            </g>
+
+            <!-- ==================== USA SITE ==================== -->
+            <g class="node" data-tooltip="Igralub North America JV|North American joint venture handling US and Canadian railway markets. Connected via site-to-site VPN to Liverpool HQ. Sales, support, and local logistics.">
+                <rect x="920" y="830" width="240" height="80" rx="8" fill="#150a25" stroke="#9b59b6" stroke-width="1.5" filter="url(#shadow)"/>
+                <text x="1040" y="855" text-anchor="middle" fill="#9b59b6" font-size="12" font-weight="700">Igralub - North America</text>
+                <text x="1040" y="872" text-anchor="middle" fill="#7a5a9a" font-size="9">Joint Venture / USA</text>
+                <text x="1040" y="888" text-anchor="middle" fill="#5a4a7a" font-size="8">IPsec VPN | Sales & Logistics</text>
+                <text x="1040" y="901" text-anchor="middle" fill="#5a4a7a" font-size="8">US & Canada Markets</text>
+            </g>
+
+            <!-- ==================== ADDITIONAL DETAILS ==================== -->
+            <!-- VLAN Table -->
+            <rect x="70" y="590" width="300" height="155" rx="8" fill="#0d1530" stroke="#1a2a55" stroke-width="1" filter="url(#shadow)"/>
+            <text x="220" y="612" text-anchor="middle" fill="#4a90d9" font-size="11" font-weight="700">VLAN Summary</text>
+            <line x1="85" y1="620" x2="355" y2="620" stroke="#1a2a55" stroke-width="1"/>
+
+            <text x="90" y="638" fill="#5a8aaa" font-size="9" font-weight="600">VLAN</text>
+            <text x="145" y="638" fill="#5a8aaa" font-size="9" font-weight="600">Name</text>
+            <text x="260" y="638" fill="#5a8aaa" font-size="9" font-weight="600">Subnet</text>
+
+            <text x="90" y="656" fill="#7a9abb" font-size="9">10</text>
+            <text x="145" y="656" fill="#7a9abb" font-size="9">Servers</text>
+            <text x="260" y="656" fill="#7a9abb" font-size="9">10.10.10.0/24</text>
+
+            <text x="90" y="672" fill="#7a9abb" font-size="9">20</text>
+            <text x="145" y="672" fill="#7a9abb" font-size="9">OT / Manufacturing</text>
+            <text x="260" y="672" fill="#7a9abb" font-size="9">10.10.20.0/24</text>
+
+            <text x="90" y="688" fill="#7a9abb" font-size="9">30</text>
+            <text x="145" y="688" fill="#7a9abb" font-size="9">DMZ</text>
+            <text x="260" y="688" fill="#7a9abb" font-size="9">10.10.30.0/24</text>
+
+            <text x="90" y="704" fill="#7a9abb" font-size="9">40</text>
+            <text x="145" y="704" fill="#7a9abb" font-size="9">User LAN</text>
+            <text x="260" y="704" fill="#7a9abb" font-size="9">10.10.40.0/24</text>
+
+            <text x="90" y="720" fill="#7a9abb" font-size="9">50</text>
+            <text x="145" y="720" fill="#7a9abb" font-size="9">Wireless</text>
+            <text x="260" y="720" fill="#7a9abb" font-size="9">10.10.50.0/24</text>
+
+            <text x="90" y="736" fill="#7a9abb" font-size="9">99</text>
+            <text x="145" y="736" fill="#7a9abb" font-size="9">Management</text>
+            <text x="260" y="736" fill="#7a9abb" font-size="9">10.10.99.0/24</text>
+
+            <!-- Security Policies Box -->
+            <rect x="410" y="590" width="280" height="155" rx="8" fill="#0d1530" stroke="#1a2a55" stroke-width="1" filter="url(#shadow)"/>
+            <text x="550" y="612" text-anchor="middle" fill="#e74c3c" font-size="11" font-weight="700">Security Policies</text>
+            <line x1="425" y1="620" x2="675" y2="620" stroke="#1a2a55" stroke-width="1"/>
+
+            <text x="425" y="638" fill="#cc8888" font-size="9">- OT/IT network segmentation enforced</text>
+            <text x="425" y="656" fill="#cc8888" font-size="9">- All VPN tunnels use AES-256/SHA-256</text>
+            <text x="425" y="674" fill="#cc8888" font-size="9">- Guest Wi-Fi isolated from corp network</text>
+            <text x="425" y="692" fill="#cc8888" font-size="9">- IPS/IDS active on perimeter firewall</text>
+            <text x="425" y="710" fill="#cc8888" font-size="9">- Azure AD Conditional Access policies</text>
+            <text x="425" y="728" fill="#cc8888" font-size="9">- MFA enforced for all remote access</text>
+
+            <!-- WAN Links Box -->
+            <rect x="730" y="590" width="280" height="155" rx="8" fill="#0d1530" stroke="#1a2a55" stroke-width="1" filter="url(#shadow)"/>
+            <text x="870" y="612" text-anchor="middle" fill="#1abc9c" font-size="11" font-weight="700">WAN / Cloud Links</text>
+            <line x1="745" y1="620" x2="995" y2="620" stroke="#1a2a55" stroke-width="1"/>
+
+            <text x="745" y="638" fill="#5aaa8a" font-size="9">- Primary: Leased Line (100 Mbps)</text>
+            <text x="745" y="656" fill="#5aaa8a" font-size="9">- Secondary: FTTC Broadband (80 Mbps)</text>
+            <text x="745" y="674" fill="#5aaa8a" font-size="9">- M365: Exchange, SharePoint, Teams</text>
+            <text x="745" y="692" fill="#5aaa8a" font-size="9">- Azure AD: Identity & MFA</text>
+            <text x="745" y="710" fill="#5aaa8a" font-size="9">- Cloud Backup / DR Replication</text>
+            <text x="745" y="728" fill="#5aaa8a" font-size="9">- 4x Site-to-Site IPsec VPN Tunnels</text>
+
+            <!-- Remote Access Box -->
+            <rect x="1050" y="590" width="230" height="155" rx="8" fill="#0d1530" stroke="#1a2a55" stroke-width="1" filter="url(#shadow)"/>
+            <text x="1165" y="612" text-anchor="middle" fill="#9b59b6" font-size="11" font-weight="700">Remote Access</text>
+            <line x1="1065" y1="620" x2="1265" y2="620" stroke="#1a2a55" stroke-width="1"/>
+
+            <text x="1065" y="638" fill="#8a6aaa" font-size="9">- SSL VPN for remote workers</text>
+            <text x="1065" y="656" fill="#8a6aaa" font-size="9">- Always-On VPN for laptops</text>
+            <text x="1065" y="674" fill="#8a6aaa" font-size="9">- MFA via Authenticator app</text>
+            <text x="1065" y="692" fill="#8a6aaa" font-size="9">- Conditional Access enforced</text>
+            <text x="1065" y="710" fill="#8a6aaa" font-size="9">- Split tunnelling disabled</text>
+            <text x="1065" y="728" fill="#8a6aaa" font-size="9">- ~14 IT staff managing infra</text>
+
+        </svg>
+    </div>
+
+    <!-- Site summary cards -->
+    <div class="site-info">
+        <div class="site-card">
+            <h3><span class="dot dot-green"></span> Liverpool HQ</h3>
+            <ul>
+                <li>8-14 Stanhope Street, L8 5RQ</li>
+                <li><span class="dot dot-blue"></span> Core network + all VLANs</li>
+                <li><span class="dot dot-orange"></span> Manufacturing + Technical Centre</li>
+                <li><span class="dot dot-blue"></span> ~100-150 user endpoints</li>
+                <li><span class="dot dot-green"></span> 14 IT staff</li>
+            </ul>
+        </div>
+        <div class="site-card">
+            <h3><span class="dot dot-purple"></span> Zurich (Igralub HQ)</h3>
+            <ul>
+                <li>Switzerland - Acquired Jan 2023</li>
+                <li><span class="dot dot-purple"></span> IPsec VPN to Liverpool</li>
+                <li><span class="dot dot-blue"></span> Railway R&D + Monitoring Tech</li>
+                <li><span class="dot dot-orange"></span> Local LAN + Servers</li>
+            </ul>
+        </div>
+        <div class="site-card">
+            <h3><span class="dot dot-purple"></span> Germany (Branch)</h3>
+            <ul>
+                <li>Igralub Subsidiary</li>
+                <li><span class="dot dot-purple"></span> IPsec VPN to Liverpool</li>
+                <li><span class="dot dot-blue"></span> Sales & Technical Support</li>
+                <li><span class="dot dot-orange"></span> Central Europe Operations</li>
+            </ul>
+        </div>
+        <div class="site-card">
+            <h3><span class="dot dot-purple"></span> Austria (Branch)</h3>
+            <ul>
+                <li>Igralub Subsidiary</li>
+                <li><span class="dot dot-purple"></span> IPsec VPN to Liverpool</li>
+                <li><span class="dot dot-blue"></span> Cog-Rail Specialist</li>
+                <li><span class="dot dot-orange"></span> Alpine Region Operations</li>
+            </ul>
+        </div>
+        <div class="site-card">
+            <h3><span class="dot dot-purple"></span> North America (JV)</h3>
+            <ul>
+                <li>Igralub Joint Venture - USA</li>
+                <li><span class="dot dot-purple"></span> IPsec VPN to Liverpool</li>
+                <li><span class="dot dot-blue"></span> Sales & Logistics</li>
+                <li><span class="dot dot-orange"></span> US & Canada Markets</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tooltip element -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const tooltip = document.getElementById('tooltip');
+        const nodes = document.querySelectorAll('.node');
+
+        nodes.forEach(node => {
+            node.style.cursor = 'pointer';
+
+            node.addEventListener('mouseenter', (e) => {
+                const data = node.getAttribute('data-tooltip');
+                if (!data) return;
+
+                const [title, ...descParts] = data.split('|');
+                const desc = descParts.join('|');
+
+                tooltip.innerHTML = `<h4>${title}</h4><p>${desc}</p>`;
+                tooltip.classList.add('visible');
+            });
+
+            node.addEventListener('mousemove', (e) => {
+                const x = e.clientX + 15;
+                const y = e.clientY + 15;
+                const rect = tooltip.getBoundingClientRect();
+
+                tooltip.style.left = (x + rect.width > window.innerWidth ? e.clientX - rect.width - 15 : x) + 'px';
+                tooltip.style.top = (y + rect.height > window.innerHeight ? e.clientY - rect.height - 15 : y) + 'px';
+            });
+
+            node.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('visible');
+            });
+        });
+    </script>
+</body>
+</html>
