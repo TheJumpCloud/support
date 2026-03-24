@@ -26,6 +26,44 @@ DownloadYamlFileUrl="https://cdn.pwm.jumpcloud.com/DA/release/latest-mac.yml"
 # Detect device architecture
 DeviceArchitecture=$(uname -m)
 
+# JumpCloud managed users list (only these accounts receive install/update)
+MANAGED_USERS_FILE="/opt/jc/managedUsers.json"
+managed_usernames=()
+
+load_managed_usernames() {
+    managed_usernames=()
+    if [[ ! -f "$MANAGED_USERS_FILE" ]] || [[ ! -r "$MANAGED_USERS_FILE" ]]; then
+        echo "Error: Managed users file not found or not readable: $MANAGED_USERS_FILE" >&2
+        return 1
+    fi
+
+    if command -v jq >/dev/null 2>&1; then
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            [[ -n "$line" ]] && managed_usernames+=("$line")
+        done < <(jq -r '.[] | select(.username != null and .username != "") | .username' "$MANAGED_USERS_FILE" 2>/dev/null)
+    else
+        # Fallback without jq: extract "username":"..." (does not support escaped quotes inside usernames)
+        while IFS= read -r line || [[ -n "$line" ]]; do
+            [[ -n "$line" ]] && managed_usernames+=("$line")
+        done < <(grep -oe '"username"[[:space:]]*:[[:space:]]*"[^"]*"' "$MANAGED_USERS_FILE" 2>/dev/null | sed -E 's/^"username"[[:space:]]*:[[:space:]]*"([^"]*)".*$/\1/')
+    fi
+
+    if [[ ${#managed_usernames[@]} -eq 0 ]]; then
+        echo "Error: No managed usernames could be parsed from $MANAGED_USERS_FILE" >&2
+        return 1
+    fi
+}
+
+is_managed_user() {
+    local u="$1"
+    printf '%s\n' "${managed_usernames[@]}" | grep -Fxq -- "$u"
+}
+
+list_local_users() {
+    dscl . list /Users | grep -vE 'root|daemon|nobody|^_'
+}
+
+load_managed_usernames || exit 1
 
 if [ "$DeviceArchitecture" = "arm64" ]; then
     DownloadUrl="https://cdn.pwm.jumpcloud.com/DA/release/arm64/JumpCloud-Password-Manager-latest.dmg"
@@ -95,8 +133,12 @@ LatestAppVersion=$(curl -s "$DownloadYamlFileUrl" | \
 # Array to track users who need update/reinstall
 users_need_update=()
 if [ "$UpdateToLatest" = true ]; then
-    for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
+    for user in $(list_local_users)
     do
+        if ! is_managed_user "$user"; then
+            echo "Skipping $user (not listed in $MANAGED_USERS_FILE)."
+            continue
+        fi
         APP_PATH="/Users/$user/Applications/JumpCloud Password Manager.app"
         InstalledAppVersion=$(mdls -name kMDItemVersion "$APP_PATH" 2>/dev/null | awk -F '"' '{print $2}')
         if [ -z "$InstalledAppVersion" ]; then
@@ -124,6 +166,20 @@ fi
 if [ "$UpdateToLatest" = true ] && [ ${#users_need_update[@]} -eq 0 ]; then
     echo "All users are up to date, exiting."
     exit 0
+fi
+
+if [ "$UpdateToLatest" = false ]; then
+    any_managed_home=false
+    for user in $(list_local_users); do
+        if is_managed_user "$user" && [[ -d "/Users/$user" ]]; then
+            any_managed_home=true
+            break
+        fi
+    done
+    if [ "$any_managed_home" = false ]; then
+        echo "No local accounts match managed users in $MANAGED_USERS_FILE; nothing to install."
+        exit 0
+    fi
 fi
 
 echo "Downloading JumpCloud Password Manager from $DownloadUrl"
@@ -182,7 +238,7 @@ echo "Located DMG Mount Point: $DMGMountPoint"
 
 cd "$DMGVolume"
 
-AppName="$(ls | Grep .app)"
+AppName="$(ls | grep '\.app$')"
 
 cd ~
 
@@ -193,8 +249,12 @@ DMGAppPath=$(find "$DMGVolume" -name "*.app" -depth 1)
 
 userInstall=false
 
-for user in $(dscl . list /Users | grep -vE 'root|daemon|nobody|^_')
+for user in $(list_local_users)
 do
+    if ! is_managed_user "$user"; then
+        echo "Skipping $user (not listed in $MANAGED_USERS_FILE)."
+        continue
+    fi
     APP_PATH="/Users/$user/Applications/JumpCloud Password Manager.app"
     if [[ -d /Users/$user ]]; then
         # Create ~/Applications folder
@@ -254,7 +314,8 @@ echo "Used hdiutil to detach $DMGFile from $DMGMountPoint"
 
 err=$?
 if [ ${err} -ne 0 ]; then
-    abort "Could not detach DMG: $DMGMountPoint Error: ${err}"
+    echo "Could not detach DMG: $DMGMountPoint Error: ${err}" >&2
+    exit 1
 fi
 
 # Remove Temp Folder and download
