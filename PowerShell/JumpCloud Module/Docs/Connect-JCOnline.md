@@ -8,6 +8,7 @@ schema: 2.0.0
 # Connect-JCOnline
 
 ## SYNOPSIS
+
 The Connect-JCOnline function sets the global variable $JCAPIKEY
 
 ## SYNTAX
@@ -18,18 +19,23 @@ Connect-JCOnline [-force] [-JumpCloudApiKey] <String>
 ```
 
 ## DESCRIPTION
+
 By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key.
 Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update available.
 To prevent the module update check the '-force' parameter can be used.
+Use the '-JCEnvironment' parameter to specify your environment location (STANDARD or EU), STANDARD is the current default.
+You can also change the location in your PowerShell Module settings by using the 'Set-JCSettingsFile' function
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382
 ```
 
 ### Example 2
+
 ```powershell
 Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 ```
@@ -37,6 +43,7 @@ Connect-JCOnline lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -force
 Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
 ### Example 3
+
 ```powershell
 Connect-JCOnline -JumpCloudAPIKey lu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JumpCloudOrgID 5b5o13o06tsand0c29a0t3s6 -force
 ```
@@ -45,9 +52,18 @@ Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to
 
 Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
+### Example 4
+
+```powershell
+Connect-JCOnline -JumpCloudAPIKey eu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JCEnvironment 'EU'
+```
+
+Use the "-JCEnvironment" parameter to change the environment location ("STANDARD" or "EU")
+
 ## PARAMETERS
 
 ### -force
+
 Using the "-Force" parameter the module update check is skipped.
 The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.
 
@@ -64,7 +80,8 @@ Accept wildcard characters: False
 ```
 
 ### -JCEnvironment
-Specific to JumpCloud development team to connect to staging dev environment.
+
+Specific to JumpCloud development team to connect to staging dev environment. [More Information Here.](https://jumpcloud.com/support/jumpcloud-data-centers-login-urls-and-service-endpoints)
 
 ```yaml
 Type: System.String
@@ -80,6 +97,7 @@ Accept wildcard characters: False
 ```
 
 ### -JumpCloudApiKey
+
 Please enter your JumpCloud API key.
 This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
 
@@ -96,6 +114,7 @@ Accept wildcard characters: False
 ```
 
 ### -JumpCloudOrgId
+
 Organization Id can be found in the Settings page within the admin console.
 Only needed for multi tenant admins.
 
@@ -112,14 +131,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
