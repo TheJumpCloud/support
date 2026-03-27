@@ -1,0 +1,112 @@
+## Enter your command within the @' '@
+## Use single quotes ' not double quotes " for all variables
+## Example multi-line command below
+##
+## Enable Windows Quick Recovery for Windows 11 in JumpCloud
+## Platform agostic - works with Windows 11 on all platform variants (x86/x64, Windows on ARM, etc.)
+## Free for use by all JumpCloud customers
+## Release date: March 10, 2026
+## Reed Savory, rsavory@arcadiafunds.com
+## Arcadia Funds, LLC
+## https://arcadiafunds.com 
+## ======================================================================================================
+##  REFERENCE: COMMON QMR XML VARIANTS + THEIR BASE64 ENCODINGS
+##  These are ready to use. Replace the $xmlB64 value with any of these if you want that configuration.
+##
+##  All XML follows this Microsoft-documented schema:
+##    <WindowsRE>
+##       <CloudRemediation state="1 or 0"/>
+##       <AutoRemediation state="1 or 0" totalwaittime="NNNN" waitinterval="NNNN"/>
+##     </WindowsRE>
+##
+##  Source of schema: Microsoft Quick Machine Recovery docs (XML shape appears in REAgentC output) [1] (https://techcommunity.microsoft.com/blog/Windows-ITPro-blog/scalable-windows-resiliency-with-new-recovery-tools/4470659)
+##  REAgentC accepted values & usage documented here: [2](https://support.microsoft.com/en-gb/windows/quick-machine-recovery-in-windows-aa2852f4-e04e-4af4-9508-0addda165304)
+## ======================================================================================================
+## ----------------------------------------------------------------------------------
+## 0) QMR ENABLED, AutoRemediation DISABLED (state="0")
+##    ("Automatically check for solutions" = OFF)
+##
+##    <CloudRemediation state="1"/>
+##    <AutoRemediation state="0" totalwaittime="2400" waitinterval="720"/>
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMCIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSI3MjAiLz48L1dpbmRvd3NSRT4=
+## ----------------------------------------------------------------------------------
+## 1) NEVER check for solutions (waitinterval = 0)
+##    Note: Microsoft does not explicitly document “0” = Never, but WinRE treats
+##          waitinterval="0" as “no retry schedule”.
+##
+##    <CloudRemediation state="1"/>
+##    <AutoRemediation state="1" totalwaittime="2400" waitinterval="0"/>
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSIwIi8+PC9XaW5kb3dzUkU+
+## ----------------------------------------------------------------------------------
+## 2) Every 10 minutes (waitinterval = 10)
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSIxMCIvPjwvV2luZG93c1JFPg==
+## ----------------------------------------------------------------------------------
+## 3) Every 30 minutes (waitinterval = 30)
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSIzMCIvPjwvV2luZG93c1JFPg==
+## ----------------------------------------------------------------------------------
+## 4) Every 1 hour (60 minutes)
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSI2MCIvPjwvV2luZG93c1JFPg==
+## ----------------------------------------------------------------------------------
+## 5) Every 2 hours (120 minutes)
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSIxMjAiLz48L1dpbmRvd3NSRT4=
+## ----------------------------------------------------------------------------------
+## 6) Every 3 hours (180 minutes)
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSIxODAiLz48L1dpbmRvd3NSRT4=
+## ----------------------------------------------------------------------------------
+## 7) Every 6 hours (360 minutes)
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSIzNjAiLz48L1dpbmRvd3NSRT4=
+## ----------------------------------------------------------------------------------
+## 8) Every 12 hours (720 minutes) — CURRENT DEFAULT IN YOUR SCRIPT
+##
+## Base64:
+## PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSI3MjAiLz48L1dpbmRvd3NSRT4=
+## ----------------------------------------------------------------------------------
+$64BitCommand = @'
+# Resolve reagentc
+$reagentSysnative = Join-Path $env:WINDIR 'Sysnative\reagentc.exe'
+$reagentSystem32  = Join-Path $env:WINDIR 'System32\reagentc.exe'
+$r = if (Test-Path $reagentSysnative) { $reagentSysnative } else { $reagentSystem32 }
+
+# Base64 XML for QMR settings
+$xmlB64 = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48V2luZG93c1JFPjxDbG91ZFJlbWVkaWF0aW9uIHN0YXRlPSIxIi8+PEF1dG9SZW1lZGlhdGlvbiBzdGF0ZT0iMSIgdG90YWx3YWl0dGltZT0iMjQwMCIgd2FpdGludGVydmFsPSI3MjAiLz48L1dpbmRvd3NSRT4='
+$xml     = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($xmlB64))
+$xmlPath = Join-Path $env:TEMP 'qmr.xml'
+Set-Content -Path $xmlPath -Value $xml -Encoding UTF8
+
+# --- CRITICAL: USE EXACT invocation pattern that works in JumpCloud ---
+
+& $r /enable
+$code1 = $LASTEXITCODE
+
+& $r /setrecoverysettings /path "$xmlPath"
+$code2 = $LASTEXITCODE
+
+# -----------------------------------------------------------
+
+# Return final result for JumpCloud (0 = TRUE, 1 = FALSE)
+if ($code1 -eq 0 -and $code2 -eq 0) {
+    'TRUE'
+    exit 0
+} else {
+    'FALSE STEP1=' + $code1 + ' STEP2=' + $code2
+    exit 1
+}
+'@
+#------ Do not modify below this line ---------------
+& (Join-Path ($PSHOME -replace 'syswow64', 'sysnative') powershell.exe) -Command "& {$64BitCommand}"
