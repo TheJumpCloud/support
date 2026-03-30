@@ -32,10 +32,19 @@ PS C:\> Set-JCSettingsFile -ParallelOverride $true
 
 Disables parallel processing of results in the JumpCloud PowerShell Module
 
+### Example 2
+
+```powershell
+PS C:\> Set-JCSettingsFile -JCEnvironmentLocation "EU"
+```
+
+Changes the location for the PowerShell Module to use the EU Datacenter
+
 ## PARAMETERS
 
 ### -JCEnvironmentLocation
-sets the System.Management.Automation.PSCustomObject Location=@{write=True; copy=True; value=STANDARD} settings for the System.Management.Automation.PSCustomObject JCEnvironment=@{Location=} feature
+
+Sets the Environment Location settings to allow connection to the [region-specific datacenters](https://jumpcloud.com/support/jumpcloud-data-centers-login-urls-and-service-endpoints)
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -82,14 +91,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
