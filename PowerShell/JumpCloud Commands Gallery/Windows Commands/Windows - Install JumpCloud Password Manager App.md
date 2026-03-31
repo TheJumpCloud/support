@@ -1,8 +1,6 @@
 #### Name
 
-
-Windows - Install and Update JumpCloud Password Manager App | v2.0.0 JCCG
-
+Windows - Install and Update JumpCloud Password Manager App | v2.0.1 JCCG
 
 #### commandType
 
@@ -22,6 +20,13 @@ $updateToLatest = $true
 $loggedUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
 $loggedUser = $loggedUser -replace '.*\\'
 
+# Get managed users list
+$managedUsers = Get-Content -Path "$env:ProgramFiles\JumpCloud\Plugins\Contrib\managedUsers.json" | ConvertFrom-Json
+if ($managedUsers.username -notcontains $loggedUser) {
+    Write-Output "User $loggedUser is not a managed user, exiting."
+    exit 1
+}
+
 # Construct the Registry path using the user's SID
 $userSID = (New-Object System.Security.Principal.NTAccount($loggedUser)).Translate([System.Security.Principal.SecurityIdentifier]).Value
 $registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$userSID"
@@ -34,14 +39,12 @@ Write-Output "Logged On User Profile Path: $loggedOnUserProfileImagePath"
 $appDataPath = "$loggedOnUserProfileImagePath\AppData\Local\jcpwm"
 
 $installerURL = 'https://cdn.pwm.jumpcloud.com/DA/release/JumpCloud-Password-Manager-latest.exe'
-$yamlFileURL =  'https://cdn.pwm.jumpcloud.com/DA/release/latest.yml'
+$yamlFileURL = 'https://cdn.pwm.jumpcloud.com/DA/release/latest.yml'
 
 # If user already has the app installed and admin wants to update to latest
 if ((Test-Path "$appDataPath") -and ($updateToLatest -eq $true)) {
     $folderPrefix = "app-"
-    $versionFolders = Get-ChildItem -Path $appDataPath -Directory |
-                  Where-Object { $_.Name -like "$($folderPrefix)*" } |
-                  Sort-Object Name -Descending
+    $versionFolders = Get-ChildItem -Path $appDataPath -Directory | Where-Object { $_.Name -like "$($folderPrefix)*" } | Sort-Object Name -Descending
 
     if ($versionFolders.Count -gt 0) {
         # Get the name of the top (latest) matching folder (app-x.x.x)
@@ -60,10 +63,9 @@ if (Test-Path "$loggedOnUserProfileImagePath\AppData\Local\Temp" ) {
     $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
     $yamlFileTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\jcpwm-latest.yml"
     Write-Output "Installer Location: $installerTempLocation"
-}
-else {
+} else {
     Write-Output "Unable to determine user profile folder"
-    Exit 1
+    exit 1
 }
 
 if ($updateToLatest -eq $true) {
@@ -78,7 +80,7 @@ if ($updateToLatest -eq $true) {
             try {
                 Invoke-WebRequest -Uri $yamlFileURL -OutFile $yamlFileTempLocation
             } catch {
-                Write-Error "Unable to download Password Manager latest yml file to $yamlFileTempLocation."
+                Write-Output "Unable to download Password Manager latest yml file to $yamlFileTempLocation."
                 exit 1
             }
             Write-Output 'Finished downloading Password Manager installer.'
@@ -91,15 +93,15 @@ if ($updateToLatest -eq $true) {
     Write-Output "Checking for version in YAML file: $yamlFileTempLocation"
     Write-Output "Version Line: $versionLine"
     if ($versionLine) {
-    # Extract the version number from the matched line
-    # The 'Groups[1]' captures the content after 'version: '
-    [System.Version]$latestVersion = $versionLine.Matches[0].Groups[1].Value.Trim()
-    Write-Output "Latest version: $latestVersion"
-    # If the admin has previously installed the dogfood/beta version of the app for the users
-    # it might be greater than the version found under the $installerURL.
-    if ($currentInstalledAppVersion -ge $latestVersion) {
+        # Extract the version number from the matched line
+        # The 'Groups[1]' captures the content after 'version: '
+        [System.Version]$latestVersion = $versionLine.Matches[0].Groups[1].Value.Trim()
+        Write-Output "Latest version: $latestVersion"
+        # If the admin has previously installed the dogfood/beta version of the app for the users
+        # it might be greater than the version found under the $installerURL.
+        if ($currentInstalledAppVersion -ge $latestVersion) {
             Write-Output "App is already up to date, exiting."
-            Exit 0
+            exit 0
         }
     } else {
         Write-Warning "Could not find 'version' in the YAML file, falling back to full download."
@@ -120,7 +122,7 @@ if (-not(Test-Path -Path $installerTempLocation -PathType Leaf)) {
         try {
             Invoke-WebRequest -Uri $installerURL -OutFile $installerTempLocation
         } catch {
-            Write-Error "Unable to download Password Manager installer to $InstallerTempLocation."
+            Write-Output "Unable to download Password Manager installer to $installerTempLocation."
             exit 1
         }
         Write-Output 'Finished downloading Password Manager installer.'
@@ -152,7 +154,7 @@ $Command = {
     $LaunchPasswordManager = $true
     $installerTempLocation = "$loggedOnUserProfileImagePath\AppData\Local\Temp\JumpCloud-Password-Manager-latest.exe"
     if ($LaunchPasswordManager -eq $false) {
-        $env:QUIT_PWM_AFTER_INITIAL_INSTALL="true"
+        $env:QUIT_PWM_AFTER_INITIAL_INSTALL = "true"
     }
     . $installerTempLocation
 
@@ -182,7 +184,7 @@ $Command = {
         $startMenuShortcut.WorkingDirectory = "$appDataPath"
         $startMenuShortcut.Save()
         Write-Output "Start Menu Shortcut created."
-     }
+    }
 }
 
 $Source = @'
