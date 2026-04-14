@@ -17,11 +17,13 @@ Describe -Tag:('JCPolicy') 'Registry File Tests' {
                 switch ($regKey.customRegType) {
                     DWORD {
                         $regKey.customValueName | Should -Be "DWORDValue"
-                        $regKey.customData | Should -Be 0
+                        $regKey.customData | Should -BeOfType [string]
+                        $regKey.customData | Should -Be '0'
                     }
                     QWORD {
                         $regKey.customValueName | Should -Be "QWORDValue"
-                        $regKey.customData | Should -Be 16
+                        $regKey.customData | Should -BeOfType [string]
+                        $regKey.customData | Should -Be '16'
                     }
                     multiString {
                         $regKey.customValueName | Should -Be "MULTISZValue"
