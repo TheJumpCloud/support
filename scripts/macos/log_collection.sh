@@ -11,7 +11,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.2.8
+version=1.2.9
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -60,7 +60,7 @@ baseDir="${hostDir}JumpCloudLogCollect"
 sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
 ## Create directories for log collection
-mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs,$baseDir/DiagnosticReports}
+mkdir -p {$baseDir/jumpcloud_logs,$baseDir/systemLogs,$baseDir/systemLogs/patchManagement,$baseDir/systemInfo,$baseDir/userLogs,$baseDir/DiagnosticReports}
 
 # Setup Log output for Log Collection Script
 collectionLogFile="${baseDir}/collection.log"
@@ -74,7 +74,6 @@ collectionLog "Log Collection Version: $version"
 
 
 ## Change directory to save log archive depending on active user state
-
 if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
     localuser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }')
     collectionLog "User $localuser is currently logged in."
@@ -84,8 +83,8 @@ else
     archiveTargetDir="/private/var/tmp/"
 fi
 
-
 collectionLog "Gathering all JumpCloud agent and process Logs..."
+
 
 ## gather JumpCloud system logs (agent, install, patch management)
 for f in /var/log/jc*.log*
@@ -120,17 +119,35 @@ log show --last ${days}d --predicate="eventMessage CONTAINS[c] 'jumpcloud'" > $b
 log show --last ${days}d --debug --info --style compact --predicate 'senderImagePath CONTAINS[c] "JCLoginPlugin"' > $baseDir/systemLogs/SSAP_LoginWindow_events.log
 log show --last ${days}d --predicate="process CONTAINS[c] 'DurtService' || process CONTAINS[c] 'JumpCloudGo'" > $baseDir/systemLogs/JumpCloudGo_events.log
 
+
 ## pull patch management logs
-collectionLog "Gathering profiles & OS Patch Management settings"
-profiles show -o stdout > $baseDir/installedProfiles.txt
+collectionLog "Gathering MDM profiles & OS Patch Management settings"
 
-softwareupdate --list > $baseDir/systemInfo/SoftwareUpdateList.txt 2>&1
+profiles show -o stdout > $baseDir/systemInfo/installedProfiles.txt 2>&1
+softwareupdate --list > $baseDir/systemLogs/patchManagement/SoftwareUpdateList.txt 2>&1
 
-defaults read /Library/Preferences/com.apple.SoftwareUpdate > $baseDir/com.apple.SoftwareUpdate.plist 2>&1
+## pull patch management related log entries from the system logs
+log show --last ${days}d --debug --predicate='eventMessage CONTAINS[c] "SoftwareUpdateMacController"' > $baseDir/systemLogs/patchManagement/SoftwareUpdateMacController.log
+
+
+patchFiles=(
+    "/Library/Preferences/com.apple.SoftwareUpdate.plist"
+    "/var/db/softwareupdate/SoftwareUpdateDDMStatePersistence.plist"
+)
+
+for patchFile in "${patchFiles[@]}"; do
+    if [ -e "$patchFile" ]; then
+        defaults read "$patchFile" > "$baseDir/systemLogs/patchManagement/$(basename $patchFile)" 2>&1
+    else
+        collectionLog "Patch management file $(basename $patchFile) not found; skipping."
+    fi
+done
+
 
 if [ -e /Library/Preferences/com.jumpcloud.Nudge.json ]; then
-    cp /Library/Preferences/com.jumpcloud.Nudge.json $baseDir/systemInfo/com.jumpcloud.Nudge.json
+    cp /Library/Preferences/com.jumpcloud.Nudge.json $baseDir/systemLogs/patchManagement/com.jumpcloud.Nudge.json
 fi
+
 
 ## Only run if a user is actually logged in
 if [[ $localuser ]]; then
@@ -139,13 +156,13 @@ if [[ $localuser ]]; then
     USER_ID=$(id -u "$localuser")
 
     ## pull additional patch management information
-    sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/com.github.macadmins.Nudge.plist 2>&1
+    sudo -u $localuser defaults read com.github.macadmins.Nudge.plist > $baseDir/systemLogs/patchManagement/com.github.macadmins.Nudge.plist 2>&1
 
     ## list jumpcloud services currently running on the system
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
 
     ## Collect SoftwareUpdateDeviceID relating to DDM / MDM based patch management.
-    sudo launchctl asuser "$USER_ID" /usr/libexec/mdmclient QueryDeviceInformation | grep "SoftwareUpdateDeviceID" | sort -u > $baseDir/systemInfo/SoftwareUpdateDeviceID.txt
+    sudo launchctl asuser "$USER_ID" /usr/libexec/mdmclient QueryDeviceInformation | grep "SoftwareUpdateDeviceID" | sort -u > $baseDir/systemLogs/patchManagement/SoftwareUpdateDeviceID.txt
 
 else
     collectionLog "No user is currently logged in. Skipping user-specific information."
