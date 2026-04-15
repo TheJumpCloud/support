@@ -77,7 +77,7 @@ To set all of the settings at once, run the `Set-JCRConfig` cmdlet with a hashta
 $settings = @{
     radiusDirectory                   = "/Users/username/RADIUS"
     certType                          = "UsernameCn"
-    certSubjectHeader @{
+    certSubjectHeader = @{
         CountryCode      = "Your_Country_Code"
         StateCode        = "Your_State_Code"
         Locality         = "Your_City"
