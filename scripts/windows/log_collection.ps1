@@ -225,12 +225,6 @@ function Gather-Logs {
                         }
                     }
 
-                    # Fallback for Native Messaging log for Current User
-                    $currentUserNativeLog = Join-Path $env:TEMP "jc-native-messaging-host.log"
-                    if (Test-Path $currentUserNativeLog) {
-                        Copy-Item -Path $currentUserNativeLog -Destination "$tempDir\CurrentUser-jc-native-messaging-host.log" -ErrorAction SilentlyContinue
-                    }
-
                     # Getting JumpCloud TrayApp logs
                     $trayAppLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\TrayApp\" -Recurse -Filter "jumpcloudtray.log" -ErrorAction SilentlyContinue
                     foreach ($log in $trayAppLogs) {
