@@ -189,6 +189,20 @@ function Gather-Logs {
                         }
                     }
 
+                    # Getting JumpCloud Tray logs from user-specific directories
+                    $trayUserLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\Tray\" -Recurse -Filter "*.log" -ErrorAction SilentlyContinue
+                    foreach ($log in $trayUserLogs) {
+                        try {
+                            $parentFolder = Split-Path $log.DirectoryName -Leaf
+                            $logFileName = $log.Name
+                            $destName = "$tempDir\$parentFolder-$logFileName"
+                            Copy-Item -Path $log.FullName -Destination $destName -ErrorAction Stop
+                            $copyLog += "SUCCESS: $($log.FullName) -> $destName"
+                        } catch {
+                            $copyLog += "FAILED: $($log.FullName) - $($_.Exception.Message)"
+                        }
+                    }
+
                     # Getting local security policy export
                     try {
                         secedit /export /cfg "$tempDir\secpol_backup.inf"
