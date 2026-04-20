@@ -1,4 +1,4 @@
-##################### Do Not Modify Below ######################
+ ##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
 $automate = $false
 
@@ -191,7 +191,7 @@ function Gather-Logs {
                                 GUID         = $id
                                 DLLPath      = $dll
                             }
-                        } | Sort-Object Status -Descending | Format-Table -AutoSize | Out-String -Width 4096 | Out-File -FilePath "$tempDir\CredentialProviders.txt"
+                        } | Sort-Object Status | Format-Table -AutoSize | Out-String -Width 4096 | Out-File -FilePath "$tempDir\CredentialProviders.txt"
                         $copyLog += "SUCCESS: Gathered Credential Providers to CredentialProviders.txt"
                     } catch {
                         $copyLog += "FAILED: Gathering Credential Providers - $($_.Exception.Message)"
@@ -200,6 +200,19 @@ function Gather-Logs {
                     # Getting per-user logs
                     $allUsers = Get-LocalUser
                     foreach ($user in $allUsers) {
+                        # Getting Jumpcloud TrayApp Log
+                        $trayLog = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray.log"
+                        if (Test-Path $trayLog) {
+                            try {
+                                $destName = "$tempDir\$($user.Name)-tray.log"
+                                Copy-Item -Path $trayLog -Destination $destName -ErrorAction Stop
+                                $copyLog += "SUCCESS: $trayLog -> $destName"
+                            } catch {
+                                $copyLog += "FAILED: $trayLog - $($_.Exception.Message)"
+                            }
+                        }
+
+                        # Getting Profile-Specific Logs
                         if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
                             $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
                             $profileImagePath = $profilePath.ProfileImagePath
@@ -207,9 +220,8 @@ function Gather-Logs {
                             $jcUserAgentLog = "$profileImagePath\AppData\Local\Temp\jc-user-agent.log"
                             $jcUpdateLog = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
                             $jcNativeMsgLog = "$profileImagePath\AppData\Local\Temp\jc-native-messaging-host.log"
-                            $trayLog = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray.log"
 
-                            foreach ($file in @($jcUserAgentLog, $jcUpdateLog, $jcNativeMsgLog, $trayLog)) {
+                            foreach ($file in @($jcUserAgentLog, $jcUpdateLog, $jcNativeMsgLog)) {
                                 if (Test-Path $file) {
                                     try {
                                         $destName = "$tempDir\$($user.Name)-$(Split-Path $file -Leaf)"
@@ -225,7 +237,7 @@ function Gather-Logs {
                         }
                     }
 
-                    # Getting JumpCloud TrayApp logs
+                    # Getting JumpCloud Legacy TrayApp logs
                     $trayAppLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\TrayApp\" -Recurse -Filter "jumpcloudtray.log" -ErrorAction SilentlyContinue
                     foreach ($log in $trayAppLogs) {
                         try {
@@ -311,8 +323,8 @@ function Gather-Logs {
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Jumpcloud\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\ADIntegrationSyncAgent.reg" /y
                     }
-                    Import-Module ActiveDirectory -ErrorAction SilentlyContinue
-                    if (Get-Module -Name ActiveDirectory) {
+                    if (Get-Module -ListAvailable ActiveDirectory) {
+                        Import-Module ActiveDirectory -ErrorAction SilentlyContinue
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
                     }
