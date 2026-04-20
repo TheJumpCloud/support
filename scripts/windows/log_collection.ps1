@@ -201,7 +201,7 @@ function Gather-Logs {
                     $allUsers = Get-LocalUser
                     foreach ($user in $allUsers) {
                         # Getting Jumpcloud TrayApp Log
-                        $trayLog = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray.log"
+                        $trayLog = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray*.log"
                         if (Test-Path $trayLog) {
                             try {
                                 $destName = "$tempDir\$($user.Name)-tray.log"
@@ -238,15 +238,18 @@ function Gather-Logs {
                     }
 
                     # Getting JumpCloud Legacy TrayApp logs
-                    $trayAppLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\TrayApp\" -Recurse -Filter "jumpcloudtray.log" -ErrorAction SilentlyContinue
-                    foreach ($log in $trayAppLogs) {
-                        try {
-                            $parentFolder = Split-Path $log.DirectoryName -Leaf
-                            $destName = "$tempDir\$parentFolder-jumpcloudtray.log"
-                            Copy-Item -Path $log.FullName -Destination $destName -ErrorAction Stop
-                            $copyLog += "SUCCESS: $($log.FullName) -> $destName"
-                        } catch {
-                            $copyLog += "FAILED: $($log.FullName) - $($_.Exception.Message)"
+                    $trayLogPath = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray*.log"
+                    $foundTrayLogs = Get-ChildItem -Path $trayLogPath -ErrorAction SilentlyContinue
+
+                    if ($foundTrayLogs) {
+                        foreach ($logFile in $foundTrayLogs) {
+                            try {
+                                $destName = "$tempDir\$($user.Name)-$($logFile.Name)"
+                                Copy-Item -Path $logFile.FullName -Destination $destName -ErrorAction Stop
+                                $copyLog += "SUCCESS: $($logFile.FullName) -> $destName"
+                            } catch {
+                                $copyLog += "FAILED: $($logFile.FullName) - $($_.Exception.Message)"
+                            }
                         }
                     }
 
@@ -323,8 +326,8 @@ function Gather-Logs {
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Jumpcloud\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\ADIntegrationSyncAgent.reg" /y
                     }
-                    if (Get-Module -ListAvailable ActiveDirectory) {
-                        Import-Module ActiveDirectory -ErrorAction SilentlyContinue
+                    Import-Module ActiveDirectory -ErrorAction SilentlyContinue
+                    if (Get-Module -Name ActiveDirectory) {
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
                     }
@@ -413,4 +416,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-}
+} 
