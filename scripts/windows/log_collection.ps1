@@ -174,10 +174,10 @@ function Gather-Logs {
                         $copyLog += "FAILED: Gathering Local Users - $($_.Exception.Message)"
                     }
 
-                    # Gather Credential Providers Information
+                    # Gather Credential Providers Information (With Space between Active and Available)
                     try {
                         $LastUsedGUID = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI").LastLoggedOnProvider
-                        Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers" | 
+                        $providers = Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers" | 
                         ForEach-Object {
                             $id = $_.PSChildName
                             $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\$id"
@@ -191,7 +191,16 @@ function Gather-Logs {
                                 GUID         = $id
                                 DLLPath      = $dll
                             }
-                        } | Sort-Object Status | Format-Table -AutoSize | Out-String -Width 4096 | Out-File -FilePath "$tempDir\CredentialProviders.txt"
+                        }
+
+                        $active = $providers | Where-Object { $_.Status -eq "Active (Last Used)" }
+                        $available = $providers | Where-Object { $_.Status -ne "Active (Last Used)" } | Sort-Object ProviderName
+
+                        $credLogContent = $active | Format-Table -AutoSize | Out-String -Width 4096
+                        $credLogContent += "`r`n" # Blank Line
+                        $credLogContent += $available | Format-Table -AutoSize | Out-String -Width 4096
+                        
+                        $credLogContent | Out-File -FilePath "$tempDir\CredentialProviders.txt"
                         $copyLog += "SUCCESS: Gathered Credential Providers to CredentialProviders.txt"
                     } catch {
                         $copyLog += "FAILED: Gathering Credential Providers - $($_.Exception.Message)"
@@ -200,19 +209,23 @@ function Gather-Logs {
                     # Getting per-user logs
                     $allUsers = Get-LocalUser
                     foreach ($user in $allUsers) {
-                        # Getting Jumpcloud TrayApp Log
-                        $trayLog = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray*.log"
-                        if (Test-Path $trayLog) {
-                            try {
-                                $destName = "$tempDir\$($user.Name)-tray.log"
-                                Copy-Item -Path $trayLog -Destination $destName -ErrorAction Stop
-                                $copyLog += "SUCCESS: $trayLog -> $destName"
-                            } catch {
-                                $copyLog += "FAILED: $trayLog - $($_.Exception.Message)"
+                        # 1. gETTING Tray Log (Outside Profile Guard)
+                        $trayLogPath = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray*.log"
+                        $foundTrayLogs = Get-ChildItem -Path $trayLogPath -ErrorAction SilentlyContinue
+
+                        if ($foundTrayLogs) {
+                            foreach ($logFile in $foundTrayLogs) {
+                                try {
+                                    $destName = "$tempDir\$($user.Name)-$($logFile.Name)"
+                                    Copy-Item -Path $logFile.FullName -Destination $destName -ErrorAction Stop
+                                    $copyLog += "SUCCESS: $($logFile.FullName) -> $destName"
+                                } catch {
+                                    $copyLog += "FAILED: $($logFile.FullName) - $($_.Exception.Message)"
+                                }
                             }
                         }
 
-                        # Getting Profile-Specific Logs
+                        # 2. Getting Profile-Specific Logs
                         if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
                             $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
                             $profileImagePath = $profilePath.ProfileImagePath
@@ -238,18 +251,15 @@ function Gather-Logs {
                     }
 
                     # Getting JumpCloud Legacy TrayApp logs
-                    $trayLogPath = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray*.log"
-                    $foundTrayLogs = Get-ChildItem -Path $trayLogPath -ErrorAction SilentlyContinue
-
-                    if ($foundTrayLogs) {
-                        foreach ($logFile in $foundTrayLogs) {
-                            try {
-                                $destName = "$tempDir\$($user.Name)-$($logFile.Name)"
-                                Copy-Item -Path $logFile.FullName -Destination $destName -ErrorAction Stop
-                                $copyLog += "SUCCESS: $($logFile.FullName) -> $destName"
-                            } catch {
-                                $copyLog += "FAILED: $($logFile.FullName) - $($_.Exception.Message)"
-                            }
+                    $trayAppLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\TrayApp\" -Recurse -Filter "jumpcloudtray.log" -ErrorAction SilentlyContinue
+                    foreach ($log in $trayAppLogs) {
+                        try {
+                            $parentFolder = Split-Path $log.DirectoryName -Leaf
+                            $destName = "$tempDir\$parentFolder-jumpcloudtray.log"
+                            Copy-Item -Path $log.FullName -Destination $destName -ErrorAction Stop
+                            $copyLog += "SUCCESS: $($log.FullName) -> $destName"
+                        } catch {
+                            $copyLog += "FAILED: $($log.FullName) - $($_.Exception.Message)"
                         }
                     }
 
@@ -416,4 +426,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-} 
+}
