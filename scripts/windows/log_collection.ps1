@@ -1,4 +1,4 @@
-##################### Do Not Modify Below ######################
+ ##################### Do Not Modify Below ######################
 # set to $true if running via a JumpCloud command (recommended)
 $automate = $false
 
@@ -64,10 +64,10 @@ function Gather-Logs {
         New-Item -ItemType Directory -Path $tempDir > $null
 
         # Gather Windows Version Information
-        $winVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
-        $winVersion += " - Version " + (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
         $winVersionFile = Join-Path $tempDir "WinVersion.txt"
-        $winVersion | Out-File -FilePath $winVersionFile -ErrorAction SilentlyContinue
+        Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" | 
+            Select-Object ProductName, DisplayVersion, CurrentBuild, UBR | 
+            Out-File -FilePath $winVersionFile -ErrorAction SilentlyContinue
 
         # List of Log Files and Event Logs to Gather
         $fileList = @{
@@ -150,33 +150,106 @@ function Gather-Logs {
                     $files += $fileList["AgentLogs"]
                     $eventLogs += $eventLogList["EssentialEvents"]
 
-                    # Getting jc-user-agent.log and jcupdate.log per user
+                    # Gather Local User and Group Membership Information
+                    try {
+                        Get-LocalUser | ForEach-Object {
+                            $user = $_
+                            $userSID = $user.SID
+                            $memberOf = Get-LocalGroup | Where-Object {
+                                try {
+                                    $members = Get-LocalGroupMember -Group $_.Name -ErrorAction SilentlyContinue
+                                    $members.SID -contains $userSID
+                                } catch { $false }
+                            }
+                            [PSCustomObject]@{
+                                UserName    = $user.Name
+                                SID         = $userSID.Value
+                                Description = $user.Description
+                                Groups      = ($memberOf.Name -join ", ")
+                                Enabled     = $user.Enabled
+                            }
+                        } | Sort-Object UserName | Format-Table -AutoSize | Out-String -Width 4096 | Out-File -FilePath "$tempDir\SystemUsers.log"
+                        $copyLog += "SUCCESS: Gathered Local Users to SystemUsers.log"
+                    } catch {
+                        $copyLog += "FAILED: Gathering Local Users - $($_.Exception.Message)"
+                    }
+
+                    # Gather Credential Providers Information
+                    try {
+                        $LastUsedGUID = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\LogonUI").LastLoggedOnProvider
+                        $providers = Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers" | 
+                        ForEach-Object {
+                            $id = $_.PSChildName
+                            $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Authentication\Credential Providers\$id"
+                            $clsidPath = "HKLM:\Software\Classes\CLSID\$id\InprocServer32"
+                            $name = (Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue)."(default)"
+                            $dll = (Get-ItemProperty -Path $clsidPath -ErrorAction SilentlyContinue)."(default)"
+                            $Status = if ($id -eq $LastUsedGUID) { "Active (Last Used)" } else { "Available" }
+                            [PSCustomObject]@{
+                                Status       = $Status
+                                ProviderName = if ($name) { $name } else { "Windows Internal / Generic" }
+                                GUID         = $id
+                                DLLPath      = $dll
+                            }
+                        }
+
+                        $active = $providers | Where-Object { $_.Status -eq "Active (Last Used)" }
+                        $available = $providers | Where-Object { $_.Status -ne "Active (Last Used)" } | Sort-Object ProviderName
+
+                        $credLogContent = $active | Format-Table -AutoSize | Out-String -Width 4096
+                        $credLogContent += "`r`n" # Blank Line
+                        $credLogContent += $available | Format-Table -AutoSize | Out-String -Width 4096
+                        
+                        $credLogContent | Out-File -FilePath "$tempDir\CredentialProviders.txt"
+                        $copyLog += "SUCCESS: Gathered Credential Providers to CredentialProviders.txt"
+                    } catch {
+                        $copyLog += "FAILED: Gathering Credential Providers - $($_.Exception.Message)"
+                    }
+
+                    # Getting per-user logs
                     $allUsers = Get-LocalUser
                     foreach ($user in $allUsers) {
+                        # 1. Capture Tray Log variants (Outside Profile Guard)
+                        $trayLogPath = "C:\ProgramData\JumpCloud\Tray\$($user.Name)\tray*.log"
+                        $foundTrayLogs = Get-ChildItem -Path $trayLogPath -ErrorAction SilentlyContinue
+                        if ($foundTrayLogs) {
+                            foreach ($logFile in $foundTrayLogs) {
+                                try {
+                                    $destName = "$tempDir\$($user.Name)-$($logFile.Name)"
+                                    Copy-Item -Path $logFile.FullName -Destination $destName -ErrorAction Stop
+                                    $copyLog += "SUCCESS: $($logFile.FullName) -> $destName"
+                                } catch {
+                                    $copyLog += "FAILED: $($logFile.FullName) - $($_.Exception.Message)"
+                                }
+                            }
+                        }
+
+                        # Getting Profile-Specific Logs
                         if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
-                            $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
-                            $profileImagePath = $profilePath.ProfileImagePath
+                            $profilePath = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)").ProfileImagePath
+                            
+                            $logPatterns = @(
+                                "$profilePath\AppData\Local\Temp\jc-user-agent.log",
+                                "$profilePath\AppData\Local\Temp\jcupdate.log",
+                                "$profilePath\AppData\Local\Temp\jc-native-messaging-host*.log"
+                            )
 
-                            $jcUserAgentLog = "$profileImagePath\AppData\Local\Temp\jc-user-agent.log"
-                            $jcUpdateLog = "$profileImagePath\AppData\Local\Temp\jcupdate.log"
-
-                            foreach ($file in @($jcUserAgentLog, $jcUpdateLog)) {
-                                if (Test-Path $file) {
+                            foreach ($pattern in $logPatterns) {
+                                $matchedFiles = Get-ChildItem -Path $pattern -ErrorAction SilentlyContinue
+                                foreach ($file in $matchedFiles) {
                                     try {
-                                        $destName = "$tempDir\$($user.Name)-$(Split-Path $file -Leaf)"
-                                        Copy-Item -Path $file -Destination $destName -ErrorAction Stop
-                                        $copyLog += "SUCCESS: $file -> $destName"
+                                        $destName = "$tempDir\$($user.Name)-$($file.Name)"
+                                        Copy-Item -Path $file.FullName -Destination $destName -ErrorAction Stop
+                                        $copyLog += "SUCCESS: $($file.FullName) -> $destName"
                                     } catch {
-                                        $copyLog += "FAILED: $file - $($_.Exception.Message)"
+                                        $copyLog += "FAILED: $($file.FullName) - $($_.Exception.Message)"
                                     }
-                                } else {
-                                    $copyLog += "FAILED: $file - File does not exist"
                                 }
                             }
                         }
                     }
 
-                    # Getting JumpCloud TrayApp logs
+                    # Getting JumpCloud Legacy TrayApp logs
                     $trayAppLogs = Get-ChildItem -Path "C:\ProgramData\JumpCloud\TrayApp\" -Recurse -Filter "jumpcloudtray.log" -ErrorAction SilentlyContinue
                     foreach ($log in $trayAppLogs) {
                         try {
@@ -218,12 +291,11 @@ function Gather-Logs {
                     $allUsers = Get-LocalUser
                     foreach ($user in $allUsers) {
                         if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath" -ErrorAction SilentlyContinue) {
-                            $profilePath = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)" -Name "ProfileImagePath"
-                            $profileImagePath = $profilePath.ProfileImagePath
+                            $profilePath = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$($user.SID)").ProfileImagePath
 
                             foreach ($file in @(
-                                    "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log",
-                                    "$profileImagePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
+                                    "$profilePath\AppData\Roaming\JumpCloud Password Manager\logs\logs-live.log",
+                                    "$profilePath\AppData\Roaming\JumpCloud Password Manager\data\daemon\log\*.log"
                                 )) {
                                 if (Test-Path $file) {
                                     try {
@@ -276,8 +348,8 @@ function Gather-Logs {
                     if ( Get-ItemProperty -Path "HKLM:\SOFTWARE\Jumpcloud\AD Integration Sync Agent" -ErrorAction SilentlyContinue ) {
                         reg export "HKEY_LOCAL_MACHINE\SOFTWARE\JumpCloud\AD Integration Sync Agent" "$tempDir\ADIntegrationSyncAgent.reg" /y
                     }
-                    Import-Module ActiveDirectory -ErrorAction SilentlyContinue
-                    if (Get-Module -Name ActiveDirectory) {
+                    if (Get-Module -ListAvailable ActiveDirectory) {
+                        Import-Module ActiveDirectory -ErrorAction SilentlyContinue
                         $distinguishedName = (Get-ADDomain).DistinguishedName
                         $distinguishedName | Out-File -FilePath (Join-Path $tempDir "AD_DistinguishedName.txt")
                     }
@@ -355,7 +427,7 @@ if ($automate) {
     for ($i = 0; $i -lt $sections.Count; $i++) {
         $selectionPrompt += "$($i + 1). $($sections[$i])`n"
     }
-    $selectionPrompt += "Enter your selection (e.g., 1, 3, 5-7)"
+    $selectionPrompt += "Enter your selection (e.g., 1, 3, 5-7): "
 
     $input = Read-Host -Prompt $selectionPrompt
     $selectedIndexes = $input -split ",|-" | ForEach-Object { $_.Trim() } | Where-Object { $_ -match "^\d+$" } | ForEach-Object { [int]$_ - 1 }
@@ -366,4 +438,4 @@ if ($automate) {
         $selectedSections = $selectedIndexes | ForEach-Object { $sections[$_] } -ErrorAction SilentlyContinue
         Gather-Logs -selections $selectedSections
     }
-}
+} 
