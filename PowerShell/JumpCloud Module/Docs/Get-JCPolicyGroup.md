@@ -13,19 +13,23 @@ Returns all policy groups, policy groups by name or id.
 
 ## SYNTAX
 
-### ReturnAll (Default)
+### List (Default)
 ```
-Get-JCPolicyGroup [<CommonParameters>]
-```
-
-### ByName
-```
-Get-JCPolicyGroup -Name <String> [<CommonParameters>]
+Get-JCPolicyGroup [-Fields <System.Collections.Generic.List`1[System.String]>]
+ [-Filter <System.Collections.Generic.List`1[System.String]>]
+ [-Sort <System.Collections.Generic.List`1[System.String]>]
+ [<CommonParameters>]
 ```
 
-### ById
+### Get
 ```
-Get-JCPolicyGroup -PolicyGroupID <String> [<CommonParameters>]
+Get-JCPolicyGroup -Id <String> [<CommonParameters>]
+```
+
+### GetViaIdentity
+```
+Get-JCPolicyGroup -InputObject <IJumpCloudApiIdentity>
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -60,13 +64,56 @@ Returns the policy group with id '66c3a774294f1e9071f080c9'
 
 ## PARAMETERS
 
-### -Name
+### -Fields
+The comma separated fields included in the returned records.
+If omitted, the default list of fields will be returned.
 
-The Name of the JumpCloud policy group you wish to query.
+```yaml
+Type: System.Collections.Generic.List`1[System.String]
+Parameter Sets: List
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Filter
+A filter to apply to the query.
+
+**Filter structure**: `<field>:<operator>:<value>`.
+
+**field** = Populate with a valid field from an endpoint response.
+
+**operator** = Supported operators are: eq, ne, gt, ge, lt, le, between, search, in.
+_Note: v1 operators differ from v2 operators._
+
+**value** = Populate with the value you want to search for.
+Is case sensitive.
+Supports wild cards.
+
+**EX:** `GET /api/v2/groups?filter=name:eq:Test+Group`
+
+```yaml
+Type: System.Collections.Generic.List`1[System.String]
+Parameter Sets: List
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Id
+ObjectID of the Policy Group.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByName
+Parameter Sets: Get
 Aliases:
 
 Required: True
@@ -76,16 +123,31 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PolicyGroupID
-
-The ID of the JumpCloud policy group you wish to query
+### -InputObject
+Identity Parameter
 
 ```yaml
-Type: System.String
-Parameter Sets: ById
-Aliases: _id, id
+Type: JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity
+Parameter Sets: GetViaIdentity
+Aliases:
 
 Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Sort
+The comma separated fields used to sort the collection.
+Default sort is ascending, prefix with `-` to sort descending.
+
+```yaml
+Type: System.Collections.Generic.List`1[System.String]
+Parameter Sets: List
+Aliases:
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -97,10 +159,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity
 ## OUTPUTS
 
-### System.Object
+### JumpCloud.SDK.V2.Models.IPolicyGroup
 ## NOTES
 
 ## RELATED LINKS

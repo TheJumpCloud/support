@@ -13,14 +13,16 @@ This endpoint allows you to delete a Policy Group.
 
 ## SYNTAX
 
-### ByName
+### Delete (Default)
 ```
-Remove-JCPolicyGroup -Name <String> [-Force] [<CommonParameters>]
+Remove-JCPolicyGroup -Id <String> [-PassThru] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
-### ByID
+### DeleteViaIdentity
 ```
-Remove-JCPolicyGroup -PolicyGroupID <String> [-Force] [<CommonParameters>]
+Remove-JCPolicyGroup -InputObject <IJumpCloudApiIdentity> [-PassThru]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -55,9 +57,38 @@ Removes a policy group with id: "66ace9082dfb9356f460bee4", the cmdlet will not 
 
 ## PARAMETERS
 
-### -Force
+### -Id
+ObjectID of the Policy Group.
 
-A SwitchParameter which suppresses the warning message when removing a JumpCloud Policy.
+```yaml
+Type: System.String
+Parameter Sets: Delete
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputObject
+Identity Parameter
+
+```yaml
+Type: JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity
+Parameter Sets: DeleteViaIdentity
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -PassThru
+Returns true when the command succeeds
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
@@ -66,40 +97,38 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Name
-
-The Name of the JumpCloud policy group you wish to remove.
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: System.String
-Parameter Sets: ByName
-Aliases:
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PolicyGroupID
-
-The ID of the JumpCloud policy group you wish to remove.
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
 
 ```yaml
-Type: System.String
-Parameter Sets: ByID
-Aliases: _id, id
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
 
-Required: True
+Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -108,10 +137,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
+### JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity
 ## OUTPUTS
 
-### System.Object
+### JumpCloud.SDK.V2.Models.IPolicyGroup
 ## NOTES
 
 ## RELATED LINKS

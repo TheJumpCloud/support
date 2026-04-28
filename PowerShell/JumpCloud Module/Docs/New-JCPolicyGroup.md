@@ -13,14 +13,15 @@ This endpoint allows you to create a new Policy Group.
 
 ## SYNTAX
 
-### FromTemplateID
+### CreateExpanded (Default)
 ```
-New-JCPolicyGroup -TemplateID <String> [<CommonParameters>]
+New-JCPolicyGroup [-Name <String>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
-### Name
+### Create
 ```
-New-JCPolicyGroup -Name <String> [-Description <String>]
+New-JCPolicyGroup -Body <IPolicyGroupData> [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -48,19 +49,18 @@ Creates a policy group with name: "Windows Policy Group" and description: "Windo
 
 ## PARAMETERS
 
-### -Description
-
-The description of the policy group to create
+### -Body
+PolicyGroupData
 
 ```yaml
-Type: System.String
-Parameter Sets: Name
+Type: JumpCloud.SDK.V2.Models.IPolicyGroupData
+Parameter Sets: Create
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -70,27 +70,40 @@ The name of the policy group to create
 
 ```yaml
 Type: System.String
-Parameter Sets: Name
+Parameter Sets: CreateExpanded
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -TemplateID
-
-The Policy Template ID to apply to this MTP org.
-This parameter will only work in MTP organizations
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: System.String
-Parameter Sets: FromTemplateID
-Aliases:
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
-Required: True
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -102,10 +115,10 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
+### JumpCloud.SDK.V2.Models.IPolicyGroupData
 ## OUTPUTS
 
-### System.Object
+### JumpCloud.SDK.V2.Models.IPolicyGroup
 ## NOTES
 
 ## RELATED LINKS
