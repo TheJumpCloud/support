@@ -133,7 +133,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'JumpCloud', 'DaaS', 'Jump', 'Cloud', 'Directory'
+        Tags = 'JumpCloud','DaaS','Jump','Cloud','Directory'
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/TheJumpCloud/support/blob/master/PowerShell/LICENSE'
@@ -158,7 +158,7 @@ PrivateData = @{
 
     } # End of PSData hashtable
 
-} # End of PrivateData hashtable
+ } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
 HelpInfoURI = 'https://github.com/TheJumpCloud/support/wiki'
