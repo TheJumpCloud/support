@@ -107,7 +107,8 @@ FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget', 'Add-JCGsuiteMem
                'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer', 
                'Set-JCSettingsFile', 'Set-JCSystem', 'Set-JCSystemUser', 'Set-JCUser', 
                'Set-JCUserGroupLDAP', 'Update-JCDeviceFromCSV', 'Update-JCModule', 
-               'Update-JCMSPFromCSV', 'Update-JCUsersFromCSV'
+               'Update-JCMSPFromCSV', 'Update-JCUsersFromCSV', 'Set-JCUserGroup', 
+               'Set-JCSystemGroup', 'Set-JCPolicyGroup'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

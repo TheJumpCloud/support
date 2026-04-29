@@ -27,17 +27,33 @@ $ApprovedFunctions = [Ordered]@{
     );
     'JumpCloud.SDK.V2'                = @(
         [PSCustomObject]@{
-            Name        = 'Get-JcSdkSystemGroup';
-            Destination = '/Public/Groups/SystemGroups';
-        },
-        [PSCustomObject]@{
             Name        = 'Get-JcSdkUserGroup';
             Destination = '/Public/Groups/UserGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Get-JcSdkSystemGroup';
+            Destination = '/Public/Groups/SystemGroups';
         },
         [PSCustomObject]@{
             Name        = 'Get-JcSdkPolicyGroup';
             Destination = '/Public/Groups/PolicyGroups';
         },
+        [PSCustomObject]@{
+            Name        = 'Set-JcSdkUserGroup';
+            Destination = '/Public/Groups/UserGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Set-JcSdkSystemGroup';
+            Destination = '/Public/Groups/SystemGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Set-JcSdkPolicyGroup';
+            Destination = '/Public/Groups/PolicyGroups';
+        },
+        [PSCustomObject]@{
+            Name        = 'Set-JcSdkPolicyGroupMember';
+            Destination = '/Public/Groups/PolicyGroups';
+        }
         [PSCustomObject]@{
             Name        = 'New-JcSdkPolicyGroup';
             Destination = '/Public/Groups/PolicyGroups';
@@ -48,10 +64,6 @@ $ApprovedFunctions = [Ordered]@{
         },
         [PSCustomObject]@{
             Name        = 'Get-JcSdkPolicyGroupMember';
-            Destination = '/Public/Groups/PolicyGroups';
-        },
-        [PSCustomObject]@{
-            Name        = 'Set-JcSdkPolicyGroupMember';
             Destination = '/Public/Groups/PolicyGroups';
         }
     )

@@ -20188,10 +20188,22 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Set-JCPolicyGroup</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Description</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
           <maml:description>
-            <maml:para>The Description of the JumpCloud policy group you wish to set.</maml:para>
+            <maml:para>PolicyGroupData</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IPolicyGroupData</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IPolicyGroupData</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>ObjectID of the Policy Group.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -20200,7 +20212,95 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCPolicyGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>PolicyGroupData</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IPolicyGroupData</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IPolicyGroupData</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>InputObject</maml:name>
+          <maml:description>
+            <maml:para>Identity Parameter</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCPolicyGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>ObjectID of the Policy Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Name</maml:name>
           <maml:description>
             <maml:para>The Name of the JumpCloud policy group you wish to set.</maml:para>
@@ -20212,50 +20312,48 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>NewName</maml:name>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
           <maml:description>
-            <maml:para>The new name to set on the existing JumpCloud policy group. If left unspecified, the cmdlet will not rename the existing policy group.</maml:para>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
-
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Set-JCPolicyGroup</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-          <maml:name>Description</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>InputObject</maml:name>
           <maml:description>
-            <maml:para>The Description of the JumpCloud policy group you wish to set.</maml:para>
+            <maml:para>Identity Parameter</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>NewName</maml:name>
+          <maml:name>Name</maml:name>
           <maml:description>
-            <maml:para>The new name to set on the existing JumpCloud policy group. If left unspecified, the cmdlet will not rename the existing policy group.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
-          <maml:name>PolicyGroupID</maml:name>
-          <maml:description>
-            <maml:para>The Id of the JumpCloud policy group you wish to set.</maml:para>
+            <maml:para>The Name of the JumpCloud policy group you wish to set.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -20265,13 +20363,47 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
 
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
-        <maml:name>Description</maml:name>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
         <maml:description>
-          <maml:para>The Description of the JumpCloud policy group you wish to set.</maml:para>
+          <maml:para>PolicyGroupData</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IPolicyGroupData</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IPolicyGroupData</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>ObjectID of the Policy Group.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -20280,7 +20412,19 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>InputObject</maml:name>
+        <maml:description>
+          <maml:para>Identity Parameter</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Name</maml:name>
         <maml:description>
           <maml:para>The Name of the JumpCloud policy group you wish to set.</maml:para>
@@ -20292,36 +20436,44 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>NewName</maml:name>
-        <maml:description>
-          <maml:para>The new name to set on the existing JumpCloud policy group. If left unspecified, the cmdlet will not rename the existing policy group.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="_id, id">
-        <maml:name>PolicyGroupID</maml:name>
-        <maml:description>
-          <maml:para>The Id of the JumpCloud policy group you wish to set.</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>System.String</maml:name>
+          <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IPolicyGroupData</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -20331,7 +20483,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>JumpCloud.SDK.V2.Models.IPolicyGroup</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -22035,6 +22187,685 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCSystem</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-JCSystemGroup</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCSystemGroup</command:noun>
+      <maml:description>
+        <maml:para>This endpoint allows you to do a full set of the System Group.</maml:para>
+        <maml:para>See the \ Dynamic Group Configuration KB article\ (https://jumpcloud.com/support/configure-dynamic-device-groups)for more details on maintaining a Dynamic Group.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This endpoint allows you to do a full set of the System Group.</maml:para>
+      <maml:para>See the \ Dynamic Group Configuration KB article\ (https://jumpcloud.com/support/configure-dynamic-device-groups)for more details on maintaining a Dynamic Group.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCSystemGroup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Attributes</maml:name>
+          <maml:description>
+            <maml:para>The graph attributes.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Description of a System Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:description>
+            <maml:para>Email address of a System Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>ObjectID of the System Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryExemptions</maml:name>
+          <maml:description>
+            <maml:para>Array of GraphObjects exempted from the query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IGraphObject[]</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IGraphObject[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQuerySearchFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryType</maml:name>
+          <maml:description>
+            <maml:para>.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MembershipMethod</maml:name>
+          <maml:description>
+            <maml:para>The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED.Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices).Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberSuggestionsNotify</maml:name>
+          <maml:description>
+            <maml:para>True if notification emails are to be sent for membership suggestions.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Display name of a System Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCSystemGroup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Attributes</maml:name>
+          <maml:description>
+            <maml:para>The graph attributes.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Description of a System Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:description>
+            <maml:para>Email address of a System Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>InputObject</maml:name>
+          <maml:description>
+            <maml:para>Identity Parameter</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryExemptions</maml:name>
+          <maml:description>
+            <maml:para>Array of GraphObjects exempted from the query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IGraphObject[]</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IGraphObject[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQuerySearchFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryType</maml:name>
+          <maml:description>
+            <maml:para>.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MembershipMethod</maml:name>
+          <maml:description>
+            <maml:para>The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED.Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices).Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberSuggestionsNotify</maml:name>
+          <maml:description>
+            <maml:para>True if notification emails are to be sent for membership suggestions.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Display name of a System Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCSystemGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>SystemGroupPut</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.ISystemGroupPut</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.ISystemGroupPut</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>ObjectID of the System Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCSystemGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>SystemGroupPut</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.ISystemGroupPut</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.ISystemGroupPut</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>InputObject</maml:name>
+          <maml:description>
+            <maml:para>Identity Parameter</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Attributes</maml:name>
+        <maml:description>
+          <maml:para>The graph attributes.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:description>
+          <maml:para>SystemGroupPut</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.ISystemGroupPut</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.ISystemGroupPut</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Description</maml:name>
+        <maml:description>
+          <maml:para>Description of a System Group</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Email</maml:name>
+        <maml:description>
+          <maml:para>Email address of a System Group</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>ObjectID of the System Group.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>InputObject</maml:name>
+        <maml:description>
+          <maml:para>Identity Parameter</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQueryExemptions</maml:name>
+        <maml:description>
+          <maml:para>Array of GraphObjects exempted from the query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IGraphObject[]</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IGraphObject[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQueryFilters</maml:name>
+        <maml:description>
+          <maml:para>For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQuerySearchFilters</maml:name>
+        <maml:description>
+          <maml:para>For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQueryType</maml:name>
+        <maml:description>
+          <maml:para>.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MembershipMethod</maml:name>
+        <maml:description>
+          <maml:para>The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED.Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices).Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberSuggestionsNotify</maml:name>
+        <maml:description>
+          <maml:para>True if notification emails are to be sent for membership suggestions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Display name of a System Group.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.ISystemGroupPut</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.ISystemGroup</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>COMPLEX PARAMETER PROPERTIES</maml:para>
+        <maml:para>To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.</maml:para>
+        <maml:para>BODY &lt;ISystemGroupPut&gt;: SystemGroupPut Name &lt;String&gt;: Display name of a System Group. [Attributes &lt;IGraphAttributes&gt;]: The graph attributes. [(Any) &lt;Object&gt;]: This indicates any property can be added to this object. [Description &lt;String&gt;]: Description of a System Group [Email &lt;String&gt;]: Email address of a System Group [MemberQueryExemptions &lt;List&lt;IGraphObject&gt;&gt;]: Array of GraphObjects exempted from the query Id &lt;String&gt;: The ObjectID of the graph object. Type &lt;String&gt;: The type of graph object. [Attributes &lt;IGraphAttributes&gt;]: The graph attributes. [MemberQueryFilters &lt;List&lt;String&gt;&gt;]: For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware. [MemberQuerySearchFilters &lt;String&gt;]: For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware. [MemberQueryType &lt;String&gt;]: [MemberSuggestionsNotify &lt;Boolean?&gt;]: True if notification emails are to be sent for membership suggestions. [MembershipMethod &lt;String&gt;]: The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED. Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices). Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+        <maml:para>INPUTOBJECT &lt;IJumpCloudApiIdentity&gt;: Identity Parameter [AccountId &lt;String&gt;]: [ActivedirectoryId &lt;String&gt;]: [AdministratorId &lt;String&gt;]: [AgentId &lt;String&gt;]: [AppleMdmId &lt;String&gt;]: [ApplicationId &lt;String&gt;]: ObjectID of the Application. [ApprovalFlowId &lt;String&gt;]: [CommandId &lt;String&gt;]: ObjectID of the Command. [CustomEmailType &lt;String&gt;]: [DeviceId &lt;String&gt;]: [GroupId &lt;String&gt;]: ObjectID of the Policy Group. [GsuiteId &lt;String&gt;]: ObjectID of the G Suite instance. [Id &lt;String&gt;]: ObjectID of this Active Directory instance. [JobId &lt;String&gt;]: [LdapserverId &lt;String&gt;]: ObjectID of the LDAP Server. [Office365Id &lt;String&gt;]: ObjectID of the Office 365 instance. [PolicyId &lt;String&gt;]: ObjectID of the Policy. [ProviderId &lt;String&gt;]: [PushEndpointId &lt;String&gt;]: [RadiusserverId &lt;String&gt;]: ObjectID of the Radius Server. [SoftwareAppId &lt;String&gt;]: ObjectID of the Software App. [SystemId &lt;String&gt;]: ObjectID of the System. [UserId &lt;String&gt;]: ObjectID of the User. [WorkdayId &lt;String&gt;]:</maml:para>
+        <maml:para>MEMBERQUERYEXEMPTIONS &lt;IGraphObject[]&gt;: Array of GraphObjects exempted from the query Id &lt;String&gt;: The ObjectID of the graph object. Type &lt;String&gt;: The type of graph object. [Attributes &lt;IGraphAttributes&gt;]: The graph attributes. [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Set-JCSystemGroup -Id:(&lt;string&gt;) -Body:(&lt;JumpCloud.SDK.V2.Models.SystemGroupPut&gt;)</dev:code>
+        <dev:remarks>
+          <maml:para>---</maml:para>
+          <maml:para>Attributes JumpCloud.SDK.V2.Models.GraphAttributes Description String Email String Id String MemberQueryExemptions JumpCloud.SDK.V2.Models.GraphObject[] MemberQueryFilters JumpCloud.SDK.V2.Models.Any[] MemberQueryType String MembershipMethod String MemberSuggestionsNotify Boolean Name String Type String</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Set-JCSystemGroup -Id:(&lt;string&gt;) -Name:(&lt;string&gt;) -Attributes:(&lt;hashtable&gt;) -Description:(&lt;string&gt;) -Email:(&lt;string&gt;) -MemberQueryExemptions:(&lt;JumpCloud.SDK.V2.Models.GraphObject[]&gt;) -MemberQueryFilters:(&lt;JumpCloud.SDK.V2.Models.Any[]&gt;) -MemberQueryType:(&lt;string&gt;) -MemberSuggestionsNotify:(&lt;switch&gt;) -MembershipMethod:(&lt;string&gt;)</dev:code>
+        <dev:remarks>
+          <maml:para>---</maml:para>
+          <maml:para>Attributes JumpCloud.SDK.V2.Models.GraphAttributes Description String Email String Id String MemberQueryExemptions JumpCloud.SDK.V2.Models.GraphObject[] MemberQueryFilters JumpCloud.SDK.V2.Models.Any[] MemberQueryType String MembershipMethod String MemberSuggestionsNotify Boolean Name String Type String</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.V2/docs/exports/Set-JcSdkSystemGroup.md</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.V2/docs/exports/Set-JcSdkSystemGroup.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>
@@ -25155,6 +25986,685 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <maml:navigationLink>
         <maml:linkText>Online Version:</maml:linkText>
         <maml:uri>https://github.com/TheJumpCloud/support/wiki/Set-JCUser</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Set-JCUserGroup</command:name>
+      <command:verb>Set</command:verb>
+      <command:noun>JCUserGroup</command:noun>
+      <maml:description>
+        <maml:para>This endpoint allows you to do a full set of the User Group.</maml:para>
+        <maml:para>See the \ Dynamic Group Configuration KB article\ (https://jumpcloud.com/support/configure-dynamic-device-groups)for more details on maintaining a Dynamic Group.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>This endpoint allows you to do a full set of the User Group.</maml:para>
+      <maml:para>See the \ Dynamic Group Configuration KB article\ (https://jumpcloud.com/support/configure-dynamic-device-groups)for more details on maintaining a Dynamic Group.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Set-JCUserGroup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Attributes</maml:name>
+          <maml:description>
+            <maml:para>The graph attributes for a UserGroup.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Description of a User Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:description>
+            <maml:para>Email address of a User Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>ObjectID of the User Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryExemptions</maml:name>
+          <maml:description>
+            <maml:para>Array of GraphObjects exempted from the query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IGraphObject[]</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IGraphObject[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQuerySearchFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryType</maml:name>
+          <maml:description>
+            <maml:para>.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MembershipMethod</maml:name>
+          <maml:description>
+            <maml:para>The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED.Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices).Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberSuggestionsNotify</maml:name>
+          <maml:description>
+            <maml:para>True if notification emails are to be sent for membership suggestions.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Display name of a User Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCUserGroup</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Attributes</maml:name>
+          <maml:description>
+            <maml:para>The graph attributes for a UserGroup.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Description</maml:name>
+          <maml:description>
+            <maml:para>Description of a User Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Email</maml:name>
+          <maml:description>
+            <maml:para>Email address of a User Group</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>InputObject</maml:name>
+          <maml:description>
+            <maml:para>Identity Parameter</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryExemptions</maml:name>
+          <maml:description>
+            <maml:para>Array of GraphObjects exempted from the query</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IGraphObject[]</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IGraphObject[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQuerySearchFilters</maml:name>
+          <maml:description>
+            <maml:para>For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberQueryType</maml:name>
+          <maml:description>
+            <maml:para>.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MembershipMethod</maml:name>
+          <maml:description>
+            <maml:para>The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED.Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices).Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>MemberSuggestionsNotify</maml:name>
+          <maml:description>
+            <maml:para>True if notification emails are to be sent for membership suggestions.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>Display name of a User Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCUserGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>UserGroupPut</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IUserGroupPut</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IUserGroupPut</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Id</maml:name>
+          <maml:description>
+            <maml:para>ObjectID of the User Group.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Set-JCUserGroup</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>Body</maml:name>
+          <maml:description>
+            <maml:para>UserGroupPut</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IUserGroupPut</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IUserGroupPut</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+          <maml:name>InputObject</maml:name>
+          <maml:description>
+            <maml:para>Identity Parameter</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+          <dev:type>
+            <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+          <maml:name>Confirm</maml:name>
+          <maml:description>
+            <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+          <maml:name>WhatIf</maml:name>
+          <maml:description>
+            <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Attributes</maml:name>
+        <maml:description>
+          <maml:para>The graph attributes for a UserGroup.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>Body</maml:name>
+        <maml:description>
+          <maml:para>UserGroupPut</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IUserGroupPut</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IUserGroupPut</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Description</maml:name>
+        <maml:description>
+          <maml:para>Description of a User Group</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Email</maml:name>
+        <maml:description>
+          <maml:para>Email address of a User Group</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Id</maml:name>
+        <maml:description>
+          <maml:para>ObjectID of the User Group.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
+        <maml:name>InputObject</maml:name>
+        <maml:description>
+          <maml:para>Identity Parameter</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQueryExemptions</maml:name>
+        <maml:description>
+          <maml:para>Array of GraphObjects exempted from the query</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">JumpCloud.SDK.V2.Models.IGraphObject[]</command:parameterValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IGraphObject[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQueryFilters</maml:name>
+        <maml:description>
+          <maml:para>For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQuerySearchFilters</maml:name>
+        <maml:description>
+          <maml:para>For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberQueryType</maml:name>
+        <maml:description>
+          <maml:para>.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MembershipMethod</maml:name>
+        <maml:description>
+          <maml:para>The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED.Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices).Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>MemberSuggestionsNotify</maml:name>
+        <maml:description>
+          <maml:para>True if notification emails are to be sent for membership suggestions.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>Display name of a User Group.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="cf">
+        <maml:name>Confirm</maml:name>
+        <maml:description>
+          <maml:para>Prompts you for confirmation before running the cmdlet.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="wi">
+        <maml:name>WhatIf</maml:name>
+        <maml:description>
+          <maml:para>Shows what would happen if the cmdlet runs. The cmdlet is not run.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IUserGroupPut</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>JumpCloud.SDK.V2.Models.IUserGroup</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>COMPLEX PARAMETER PROPERTIES</maml:para>
+        <maml:para>To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.</maml:para>
+        <maml:para>BODY &lt;IUserGroupPut&gt;: UserGroupPut Name &lt;String&gt;: Display name of a User Group. [Attributes &lt;IGroupAttributesUserGroup&gt;]: The graph attributes for a UserGroup. [(Any) &lt;Object&gt;]: This indicates any property can be added to this object. [SudoEnabled &lt;Boolean?&gt;]: Enables sudo [SudoWithoutPassword &lt;Boolean?&gt;]: Enable sudo without password (requires 'enabled' to be true) [LdapGroups &lt;List&lt;ILdapGroup&gt;&gt;]: [Name &lt;String&gt;]: [PosixGroups &lt;List&lt;IGraphAttributePosixGroupsItem&gt;&gt;]: Id &lt;Int32&gt;: Name &lt;String&gt;: [RadiusReply &lt;List&lt;IGraphAttributeRadiusReplyItem&gt;&gt;]: Name &lt;String&gt;: Value &lt;String&gt;: [SambaEnabled &lt;Boolean?&gt;]: [Description &lt;String&gt;]: Description of a User Group [Email &lt;String&gt;]: Email address of a User Group [MemberQueryExemptions &lt;List&lt;IGraphObject&gt;&gt;]: Array of GraphObjects exempted from the query Id &lt;String&gt;: The ObjectID of the graph object. Type &lt;String&gt;: The type of graph object. [Attributes &lt;IGraphAttributes&gt;]: The graph attributes. [(Any) &lt;Object&gt;]: This indicates any property can be added to this object. [MemberQueryFilters &lt;List&lt;String&gt;&gt;]: For queryType 'Filter', this is a stringified JSON filter array that will be validated by API middleware. [MemberQuerySearchFilters &lt;String&gt;]: For queryType 'Search', this is a stringified JSON filter object that will be validated by API middleware. [MemberQueryType &lt;String&gt;]: [MemberSuggestionsNotify &lt;Boolean?&gt;]: True if notification emails are to be sent for membership suggestions. [MembershipMethod &lt;String&gt;]: The type of membership method for this group. Valid values include NOTSET, STATIC, DYNAMIC_REVIEW_REQUIRED, and DYNAMIC_AUTOMATED. Note DYNAMIC_AUTOMATED and DYNAMIC_REVIEW_REQUIRED group rules will supersede any group enrollment for \ group-associated MDM-enrolled devices\ (https://jumpcloud.com/support/change-a-default-device-group-for-apple-devices). Use caution when creating dynamic device groups with MDM-enrolled devices to avoid creating conflicting rule sets.</maml:para>
+        <maml:para>INPUTOBJECT &lt;IJumpCloudApiIdentity&gt;: Identity Parameter [AccountId &lt;String&gt;]: [ActivedirectoryId &lt;String&gt;]: [AdministratorId &lt;String&gt;]: [AgentId &lt;String&gt;]: [AppleMdmId &lt;String&gt;]: [ApplicationId &lt;String&gt;]: ObjectID of the Application. [ApprovalFlowId &lt;String&gt;]: [CommandId &lt;String&gt;]: ObjectID of the Command. [CustomEmailType &lt;String&gt;]: [DeviceId &lt;String&gt;]: [GroupId &lt;String&gt;]: ObjectID of the Policy Group. [GsuiteId &lt;String&gt;]: ObjectID of the G Suite instance. [Id &lt;String&gt;]: ObjectID of this Active Directory instance. [JobId &lt;String&gt;]: [LdapserverId &lt;String&gt;]: ObjectID of the LDAP Server. [Office365Id &lt;String&gt;]: ObjectID of the Office 365 instance. [PolicyId &lt;String&gt;]: ObjectID of the Policy. [ProviderId &lt;String&gt;]: [PushEndpointId &lt;String&gt;]: [RadiusserverId &lt;String&gt;]: ObjectID of the Radius Server. [SoftwareAppId &lt;String&gt;]: ObjectID of the Software App. [SystemId &lt;String&gt;]: ObjectID of the System. [UserId &lt;String&gt;]: ObjectID of the User. [WorkdayId &lt;String&gt;]:</maml:para>
+        <maml:para>MEMBERQUERYEXEMPTIONS &lt;IGraphObject[]&gt;: Array of GraphObjects exempted from the query Id &lt;String&gt;: The ObjectID of the graph object. Type &lt;String&gt;: The type of graph object. [Attributes &lt;IGraphAttributes&gt;]: The graph attributes. [(Any) &lt;Object&gt;]: This indicates any property can be added to this object.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>Set-JCUserGroup -Id:(&lt;string&gt;) -Body:(&lt;JumpCloud.SDK.V2.Models.UserGroupPut&gt;)</dev:code>
+        <dev:remarks>
+          <maml:para>---</maml:para>
+          <maml:para>Attributes JumpCloud.SDK.V2.Models.GroupAttributesUserGroup Description String Email String Id String MemberQueryExemptions JumpCloud.SDK.V2.Models.GraphObject[] MemberQueryFilters JumpCloud.SDK.V2.Models.Any[] MemberQueryType String MembershipMethod String MemberSuggestionsNotify Boolean Name String SuggestionCountAdd Int SuggestionCountRemove Int SuggestionCountTotal Int Type String</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>Set-JCUserGroup -Id:(&lt;string&gt;) -Name:(&lt;string&gt;) -Attributes:(&lt;hashtable&gt;) -Description:(&lt;string&gt;) -Email:(&lt;string&gt;) -MemberQueryExemptions:(&lt;JumpCloud.SDK.V2.Models.GraphObject[]&gt;) -MemberQueryFilters:(&lt;JumpCloud.SDK.V2.Models.Any[]&gt;) -MemberQueryType:(&lt;string&gt;) -MemberSuggestionsNotify:(&lt;switch&gt;) -MembershipMethod:(&lt;string&gt;)</dev:code>
+        <dev:remarks>
+          <maml:para>---</maml:para>
+          <maml:para>Attributes JumpCloud.SDK.V2.Models.GroupAttributesUserGroup Description String Email String Id String MemberQueryExemptions JumpCloud.SDK.V2.Models.GraphObject[] MemberQueryFilters JumpCloud.SDK.V2.Models.Any[] MemberQueryType String MembershipMethod String MemberSuggestionsNotify Boolean Name String SuggestionCountAdd Int SuggestionCountRemove Int SuggestionCountTotal Int Type String</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/support/wiki/</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.V2/docs/exports/Set-JcSdkUserGroup.md</maml:linkText>
+        <maml:uri>https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.V2/docs/exports/Set-JcSdkUserGroup.md</maml:uri>
       </maml:navigationLink>
     </command:relatedLinks>
   </command:command>

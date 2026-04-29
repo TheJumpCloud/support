@@ -13,16 +13,28 @@ This endpoint allows you to do a full update of the Policy Group.
 
 ## SYNTAX
 
-### ByName
+### SetExpanded (Default)
 ```
-Set-JCPolicyGroup -Name <String> [-NewName <String>] [-Description <String>]
+Set-JCPolicyGroup -Id <String> [-Name <String>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
-### ByID
+### Set
 ```
-Set-JCPolicyGroup -PolicyGroupID <String> [-NewName <String>] [-Description <String>]
- [<CommonParameters>]
+Set-JCPolicyGroup -Id <String> -Body <IPolicyGroupData> [-WhatIf]
+ [-Confirm] [<CommonParameters>]
+```
+
+### SetViaIdentity
+```
+Set-JCPolicyGroup -InputObject <IJumpCloudApiIdentity> -Body <IPolicyGroupData>
+ [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### SetViaIdentityExpanded
+```
+Set-JCPolicyGroup -InputObject <IJumpCloudApiIdentity> [-Name <String>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -57,19 +69,48 @@ Sets the policy group with id: "671aa7190133c4000119e158" and it's description t
 
 ## PARAMETERS
 
-### -Description
+### -Body
+PolicyGroupData
 
-The Description of the JumpCloud policy group you wish to set.
+```yaml
+Type: JumpCloud.SDK.V2.Models.IPolicyGroupData
+Parameter Sets: Set, SetViaIdentity
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Id
+ObjectID of the Policy Group.
 
 ```yaml
 Type: System.String
-Parameter Sets: (All)
+Parameter Sets: SetExpanded, Set
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InputObject
+Identity Parameter
+
+```yaml
+Type: JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity
+Parameter Sets: SetViaIdentity, SetViaIdentityExpanded
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
@@ -79,23 +120,7 @@ The Name of the JumpCloud policy group you wish to set.
 
 ```yaml
 Type: System.String
-Parameter Sets: ByName
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -NewName
-
-The new name to set on the existing JumpCloud policy group. If left unspecified, the cmdlet will not rename the existing policy group.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
+Parameter Sets: SetExpanded, SetViaIdentityExpanded
 Aliases:
 
 Required: False
@@ -105,19 +130,33 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PolicyGroupID
-
-The Id of the JumpCloud policy group you wish to set.
+### -Confirm
+Prompts you for confirmation before running the cmdlet.
 
 ```yaml
-Type: System.String
-Parameter Sets: ByID
-Aliases: _id, id
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: cf
 
-Required: True
+Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhatIf
+Shows what would happen if the cmdlet runs. The cmdlet is not run.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases: wi
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -126,10 +165,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
+### JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity
+### JumpCloud.SDK.V2.Models.IPolicyGroupData
 ## OUTPUTS
 
-### System.Object
+### JumpCloud.SDK.V2.Models.IPolicyGroup
 ## NOTES
 
 ## RELATED LINKS

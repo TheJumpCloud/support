@@ -293,11 +293,21 @@ Updates the JumpCloud Module Settings File
 ### [Set-JCSystem](Set-JCSystem.md)
 Updates an existing JumpCloud System
 
+### [Set-JCSystemGroup](Set-JCSystemGroup.md)
+This endpoint allows you to do a full set of the System Group.
+
+See the \[Dynamic Group Configuration KB article\](https://jumpcloud.com/support/configure-dynamic-device-groups) for more details on maintaining a Dynamic Group.
+
 ### [Set-JCSystemUser](Set-JCSystemUser.md)
 Updates the permissions of a JumpCloud user on a JumpCloud system
 
 ### [Set-JCUser](Set-JCUser.md)
 Updates an existing JumpCloud User
+
+### [Set-JCUserGroup](Set-JCUserGroup.md)
+This endpoint allows you to do a full set of the User Group.
+
+See the \[Dynamic Group Configuration KB article\](https://jumpcloud.com/support/configure-dynamic-device-groups) for more details on maintaining a Dynamic Group.
 
 ### [Set-JCUserGroupLDAP](Set-JCUserGroupLDAP.md)
 The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the members to/from the JumpCloud LDAP directory.
