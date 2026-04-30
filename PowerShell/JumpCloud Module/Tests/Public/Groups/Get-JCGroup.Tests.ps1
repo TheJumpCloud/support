@@ -35,7 +35,7 @@ Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
             $OneGroup.Count | Should -Be 1
         } finally {
             if ($newPolicyGroup) {
-                Remove-JCPolicyGroup -PolicyGroupID $newPolicyGroup.id -Force | Out-Null
+                Remove-JCPolicyGroup -Id $newPolicyGroup.id | Out-Null
             }
         }
 
