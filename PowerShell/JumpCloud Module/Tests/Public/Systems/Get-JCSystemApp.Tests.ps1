@@ -26,7 +26,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
 
     It "Tests that given a systemID, SoftwareName, an app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
-        Get-JCSystemApp -SystemID $linux._id -name "curl" | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -SystemID $linux._id -name "jcagent" | Should -Not -BeNullOrEmpty
         # TODO: skipping since DI data is removed after 90 days
         # Get-JCSystemApp -SystemID $mac._id -name "Chess" | Should -Not -BeNullOrEmpty
         # Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge" | Should -Not -BeNullOrEmpty
@@ -34,10 +34,10 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests that given a name and version, app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
         $macApp = Get-JCSystemApp -SystemID $mac._id -name "Chess"
-        $linuxApp = Get-JCSystemApp -SystemID $linux._id -name "curl"
+        $linuxApp = Get-JCSystemApp -SystemID $linux._id -name "jcagent"
         $windowsApp = Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge"
         { Get-JCSystemApp -name "Chess" -version $macApp.bundleshortversion } | Should -Not -BeNullOrEmpty
-        { Get-JCSystemApp -name "curl" -version $linuxApp.version } | Should -Not -BeNullOrEmpty
+        { Get-JCSystemApp -name "jcagent" -version $linuxApp.version } | Should -Not -BeNullOrEmpty
         { Get-JCSystemApp -name "Microsoft Edge" -version $windowsApp.version } | Should -Not -BeNullOrEmpty
     }
     It "Tests that given a macOS systemID, SoftwareName, SoftwareVersion, an app is returned" {
@@ -64,13 +64,13 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     It "Tests that given a linux systemID, SoftwareName, SoftwareVersion, an app is returned" {
         #Linux
         #Windows
-        $linuxApp = Get-JCSystemApp -SystemID $linux._id -name "curl"
+        $linuxApp = Get-JCSystemApp -SystemID $linux._id -name "jcagent"
         # A null value version shouldn't be accepted
-        { Get-JCSystemApp -SystemID $linux._id -name "curl" -version "" } | Should -Throw
+        { Get-JCSystemApp -SystemID $linux._id -name "jcagent" -version "" } | Should -Throw
         # A null value Name shouldn't be accepted
         { Get-JCSystemApp -SystemID $linux._id -name "" } | Should -Throw
         # Using a version that doesn't exist should return nothing
-        Get-JCSystemApp -SystemID $linux._id -name "curl" -version "48.49.50.51" | Should -Be $null
+        Get-JCSystemApp -SystemID $linux._id -name "jcagent" -version "48.49.50.51" | Should -Be $null
     }
     # Create tests for Search
     It "Tests for search given SystemOs and SoftwareName for MacOS Systems" {
@@ -87,17 +87,17 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -Search -name "Chess" -SystemOs "MacOs" } | should -Not -Throw
     }
     It "Tests for search given SystemOs and SoftwareName for Linux Systems" {
-        # Curl is always installed on linux
+        # jcagent is always installed on linux
         { Get-JCSystemApp -Search | Should -Throw }
-        { Get-JCSystemApp -Search -name "Curl" -SystemID $linux._Id } | should -Not -Throw
-        { Get-JCSystemApp -Search -name "Curl" } | should -Not -Throw
-        { Get-JCSystemApp -Search -name "Curl" -SystemOs "linux" } | should -Not -Throw
+        { Get-JCSystemApp -Search -name "jcagent" -SystemID $linux._Id } | should -Not -Throw
+        { Get-JCSystemApp -Search -name "jcagent" } | should -Not -Throw
+        { Get-JCSystemApp -Search -name "jcagent" -SystemOs "linux" } | should -Not -Throw
         # A null value version shouldn't be accepted
-        { Get-JCSystemApp -Search -name "Curl" -SystemOs "" | Should -Throw }
+        { Get-JCSystemApp -Search -name "jcagent" -SystemOs "" | Should -Throw }
         # A null value version shouldn't be accepted
         { Get-JCSystemApp -Search -name "" -SystemOs "linux" | Should -Throw }
-        # Searching Curl on linux should return a result
-        { Get-JCSystemApp -Search -name "Curl" -SystemOs "linux" } | should -Not -Throw
+        # Searching jcagent on linux should return a result
+        { Get-JCSystemApp -Search -name "jcagent" -SystemOs "linux" } | should -Not -Throw
     }
     It "Tests for search given SystemOs and SoftwareName for Windows Systems" {
         # Microsoft Edge is always installed on windows
@@ -122,7 +122,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         # when search is used to find an app the results should not be null or empty
         # Get-JCSystemApp -name "chess" -Search | Should -Not -BeNullOrEmpty
         # Get-JCSystemApp -name "microsoft edge" -Search | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -name "curl" -Search | Should -Not -BeNullOrEmpty
+        Get-JCSystemApp -name "jcagent" -Search | Should -Not -BeNullOrEmpty
     }
 
     It "Tests the search param with systemID" {
@@ -196,9 +196,9 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     }
     It "Tests compatibility linux with the SDKs" {
         #Linux
-        $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:curl")
-        $moduleLinux = Get-JCSystemApp -SystemID $linux._id -name "curl"
-        $moduleLinuxSearch = Get-JCSystemApp -SystemID $linux._id -name "curl" -Search
+        $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:jcagent")
+        $moduleLinux = Get-JCSystemApp -SystemID $linux._id -name "jcagent"
+        $moduleLinuxSearch = Get-JCSystemApp -SystemID $linux._id -name "jcagent" -Search
         # SDK Results should look exactly like module results when exact name is specified
         $sdkLinux.id | Should -Be $moduleLinux.id
         $sdkLinux.name | Should -Be $moduleLinux.name
