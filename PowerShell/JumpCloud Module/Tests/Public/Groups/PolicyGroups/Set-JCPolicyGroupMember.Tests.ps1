@@ -8,7 +8,7 @@ Describe -Tag:('JcPolicyGroupMember') 'Set-JCPolicyGroupMember' {
     }
     AfterAll {
         if ($script:TestPolicy) {
-            Remove-JCPolicy -PolicyID $script:TestPolicy.Id -Force | Out-Null
+            Remove-JCPolicy -PolicyID $script:TestPolicy.Id -force | Out-Null
         }
         if ($script:PolicyGroup -and $script:PolicyGroup.id) {
             Remove-JCPolicyGroup -Id $script:PolicyGroup.id | Out-Null
@@ -18,7 +18,7 @@ Describe -Tag:('JcPolicyGroupMember') 'Set-JCPolicyGroupMember' {
         Set-JCPolicyGroupMember -GroupId $script:PolicyGroup.id -Op 'add' -Id $script:TestPolicy.id | Out-Null
         $members = Get-JCPolicyGroupMember -GroupId $script:PolicyGroup.id
         $members | Should -Not -BeNullOrEmpty
-        $script:TestPolicy.Name | Should -BeIn $members.Name
+        $script:TestPolicy.id | Should -BeIn $members.toId
     }
     It 'Set-JCPolicyGroupMember remove clears the policy from the group' {
         Set-JCPolicyGroupMember -GroupId $script:PolicyGroup.id -Op 'remove' -Id $script:TestPolicy.id | Out-Null
