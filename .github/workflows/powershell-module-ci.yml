@@ -208,6 +208,7 @@ jobs:
               Set-Variable -Name $_.Name -Value $_.Value -Scope Global
             }
           }
+          Set-Variable -Name PesterParams_Org -Value "$env:PESTER_ORGID" -Scope Global
           Set-Variable -Name PesterParams_ApiKey -Value "$env:PESTER_APIKEY" -Scope Global
           Set-Variable -Name PesterParams_EU_ApiKey -Value "$env:PESTER_EU_APIKEY" -Scope Global
           Set-Variable -Name PesterParams_EU_OrgID -Value "$env:PESTER_EU_ORGID" -Scope Global
