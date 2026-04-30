@@ -26,9 +26,10 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
 
     It "Tests that given a systemID, SoftwareName, an app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
-        Get-JCSystemApp -SystemID $mac._id -name "Chess" | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -SystemID $linux._id -name "curl" | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge" | Should -Not -BeNullOrEmpty
+        # TODO: skipping since DI data is removed after 90 days
+        # Get-JCSystemApp -SystemID $mac._id -name "Chess" | Should -Not -BeNullOrEmpty
+        # Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge" | Should -Not -BeNullOrEmpty
     }
     It "Tests that given a name and version, app is returned" {
         # Chess is always installed on MacOS and it CAN NOT be removed no matter what
@@ -112,14 +113,15 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -Search -name "Microsoft Edge" -SystemOs "windows" } | should -Not -Throw
     }
 
-    It "Tests the search functionatily of a software app" {
+    It "Tests the search functionality of a software app" {
         #Tests for each OS
+        # TODO: skipping since DI data is removed after 90 days
         # results with no data should be null or empty
-        Get-JCSystemApp -name "chess" | Should -BeNullOrEmpty
-        Get-JCSystemApp -name "microsoft edge" | Should -BeNullOrEmpty
+        # Get-JCSystemApp -name "chess" | Should -BeNullOrEmpty
+        # Get-JCSystemApp -name "microsoft edge" | Should -BeNullOrEmpty
         # when search is used to find an app the results should not be null or empty
-        Get-JCSystemApp -name "chess" -Search | Should -Not -BeNullOrEmpty
-        Get-JCSystemApp -name "microsoft edge" -Search | Should -Not -BeNullOrEmpty
+        # Get-JCSystemApp -name "chess" -Search | Should -Not -BeNullOrEmpty
+        # Get-JCSystemApp -name "microsoft edge" -Search | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -name "curl" -Search | Should -Not -BeNullOrEmpty
     }
 
@@ -132,8 +134,9 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $foundWindowsSystems = $windowsApps.systemid | Select-Object -Unique
         $foundLinuxSystems = $linuxApps.systemid | Select-Object -Unique
         # if you specify a systemID and Search, results should not contain multiple systems
-        $foundMacSystems.count | should -Be 1
-        $foundWindowsSystems.count | should -Be 1
+        # TODO: skipping since DI data is removed after 90 days
+        # $foundMacSystems.count | should -Be 1
+        # $foundWindowsSystems.count | should -Be 1
         $foundLinuxSystems.count | should -Be 1
     }
     It "Tests the search param with macos SystemOS" {
@@ -167,7 +170,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         }
     }
 
-    It "Tests compatability macOS with the SDKs" {
+    It "Tests compatibility macOS with the SDKs" {
         #MacOS
         $sdkMac = Get-JcSdkSystemInsightApp -filter @("system_id:eq:$($mac._id)", "name:eq:Chess.app")
         $moduleMac = Get-JCSystemApp -SystemID $mac._id -name "Chess"
@@ -179,7 +182,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $sdkMac.id | Should -Be $moduleMacSearch.id
         $moduleMacSearch.name | Should -Contain  $sdkMac.name
     }
-    It "Tests compatability windows with the SDKs" {
+    It "Tests compatibility windows with the SDKs" {
         #Windows
         $sdkWindows = Get-JcSdkSystemInsightProgram -filter @("system_id:eq:$($windows._id)", "name:eq:Microsoft Edge")
         $moduleWindows = Get-JCSystemApp -SystemID $windows._id -name "Microsoft Edge"
@@ -191,7 +194,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         $sdkWindows.id | Should -Be $moduleWindowsSearch.id
         $moduleWindowsSearch.name | Should -Contain $sdkWindows.name
     }
-    It "Tests compatability linux with the SDKs" {
+    It "Tests compatibility linux with the SDKs" {
         #Linux
         $sdkLinux = Get-JcSdkSystemInsightLinuxPackage -filter @("system_id:eq:$($linux._id)", "name:eq:curl")
         $moduleLinux = Get-JCSystemApp -SystemID $linux._id -name "curl"
@@ -214,7 +217,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCsystemApp -SystemID $mac._id -SystemOS "windows" -name "Chess" -version "1.2.3" } | Should -Throw
     }
 
-    It "Tests the exporability of a list of software apps" {
+    It "Tests the exportability of a list of software apps" {
         { Get-JCSystemApp -SystemOS linux | ConvertTo-Csv } | Should -Not -Throw
         # Should return mac apps for all systems in the org
         { Get-JCSystemApp -SystemOS macOS | ConvertTo-Csv } | Should -Not -Throw
@@ -224,7 +227,8 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -SystemID $windows._id | ConvertTo-Csv } | Should -Not -Throw
         { Get-JCSystemApp -SystemID $linux._id | ConvertTo-Csv } | Should -Not -Throw
     }
-    It "Tests macos functionatily to append .app to softwareName" {
+    It "Tests macOS functionality to append .app to softwareName" -Skip {
+        # TODO: skipping since DI data is removed after 90 days
         Get-JCSystemApp -SystemID $mac._id -name "Chess.app" | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -SystemID $mac._id -name "Chess.App" | Should -Not -BeNullOrEmpty
         Get-JCSystemApp -SystemID $mac._id -name "Chess" | Should -Not -BeNullOrEmpty
