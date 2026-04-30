@@ -25,7 +25,7 @@ Describe -Tag:('JCGroup') 'Get-JCGroup 1.0' {
     It 'Gets all JumpCloud Policy Groups' {
 
         $policyGroupName = "PesterPolicyGroup-$([guid]::NewGuid().ToString('N').Substring(0, 8))"
-        $newPolicyGroup = New-JCPolicyGroup -Name $policyGroupName -Description 'Pester generated policy group'
+        $newPolicyGroup = New-JCPolicyGroup -Name $policyGroupName
 
         try {
             $PolicyGroups = Get-JCGroup -Type Policy
