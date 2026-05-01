@@ -1,24 +1,8 @@
 <#
 .Synopsis
 This endpoint returns the details of a Policy Group.
-
-#### Sample Request
-```
-curl -X GET https://console.jumpcloud.com/api/v2/policygroups/{GroupID} \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-```
 .Description
 This endpoint returns the details of a Policy Group.
-
-#### Sample Request
-```
-curl -X GET https://console.jumpcloud.com/api/v2/policygroups/{GroupID} \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-```
 .Example
 PS C:\> Get-JCPolicyGroup -Fields:(<string[]>) -Filter:(<string[]>) -Sort:(<string[]>)
 
@@ -90,6 +74,8 @@ Function Get-JCPolicyGroup {
     [CmdletBinding(DefaultParameterSetName='List', PositionalBinding=$false)]
     Param(
         [Parameter(ParameterSetName='Get', Mandatory)]
+        
+        [Alias('_id', 'PolicyGroupID')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.

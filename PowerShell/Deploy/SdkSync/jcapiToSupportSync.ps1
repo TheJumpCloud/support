@@ -35,8 +35,20 @@ $ApprovedFunctions = [Ordered]@{
             Destination = '/Public/Groups/SystemGroups';
         },
         [PSCustomObject]@{
-            Name        = 'Get-JcSdkPolicyGroup';
-            Destination = '/Public/Groups/PolicyGroups';
+            Name              = 'Get-JcSdkPolicyGroup';
+            Destination       = '/Public/Groups/PolicyGroups';
+            IdentityParameter = @{
+                SdkName = 'Id'
+                Aliases = @('_id', 'PolicyGroupID')
+            }
+        },
+        [PSCustomObject]@{
+            Name              = 'Get-JcSdkPolicyGroupMember';
+            Destination       = '/Public/Groups/PolicyGroups';
+            IdentityParameter = @{
+                SdkName = 'GroupId'
+                Aliases = @('id,', '_id', 'PolicyGroupID')
+            }
         },
         [PSCustomObject]@{
             Name        = 'Set-JcSdkUserGroup';
@@ -47,24 +59,36 @@ $ApprovedFunctions = [Ordered]@{
             Destination = '/Public/Groups/SystemGroups';
         },
         [PSCustomObject]@{
-            Name        = 'Set-JcSdkPolicyGroup';
-            Destination = '/Public/Groups/PolicyGroups';
+            Name              = 'Set-JcSdkPolicyGroup';
+            Destination       = '/Public/Groups/PolicyGroups';
+            IdentityParameter = @{
+                SdkName = 'Id'
+                Aliases = @('_id', 'PolicyGroupID')
+            }
         },
         [PSCustomObject]@{
-            Name        = 'Set-JcSdkPolicyGroupMember';
-            Destination = '/Public/Groups/PolicyGroups';
+            Name              = 'Set-JcSdkPolicyGroupMember';
+            Destination       = '/Public/Groups/PolicyGroups';
+            IdentityParameter = @{
+                SdkName = 'GroupId'
+                Aliases = @('id,', '_id', 'PolicyGroupID')
+            }
         },
         [PSCustomObject]@{
-            Name        = 'New-JcSdkPolicyGroup';
-            Destination = '/Public/Groups/PolicyGroups';
+            Name              = 'New-JcSdkPolicyGroup';
+            Destination       = '/Public/Groups/PolicyGroups';
+            IdentityParameter = @{
+                SdkName = 'Id'
+                Aliases = @('_id', 'PolicyGroupID')
+            }
         },
         [PSCustomObject]@{
-            Name        = 'Remove-JcSdkPolicyGroup';
-            Destination = '/Public/Groups/PolicyGroups';
-        },
-        [PSCustomObject]@{
-            Name        = 'Get-JcSdkPolicyGroupMember';
-            Destination = '/Public/Groups/PolicyGroups';
+            Name              = 'Remove-JcSdkPolicyGroup';
+            Destination       = '/Public/Groups/PolicyGroups';
+            IdentityParameter = @{
+                SdkName = 'Id'
+                Aliases = @('_id', 'PolicyGroupID')
+            }
         }
     )
 }
@@ -139,6 +163,18 @@ if (-not [System.String]::IsNullOrEmpty($Modules)) {
                 }
                 # Extract the sections we want to copy over to our new function.
                 $PSScriptInfo = ($FunctionContent | Select-String -Pattern:([regex]'(?s)(<#)(.*?)(#>)')).Matches.Value
+                # Remove autorest/OpenAPI curl blocks (repeated under .Synopsis / .Description, etc.)
+                if (-not [System.String]::IsNullOrEmpty($PSScriptInfo)) {
+                    $PSScriptInfo = [regex]::Replace(
+                        $PSScriptInfo,
+                        '(?ms)^\s*#### Sample Request\s*\r?\n```[\s\S]*?```\s*',
+                        '')
+                    # .Link docs URL must track master, not whatever branch the SDK was built from.
+                    $PSScriptInfo = [regex]::Replace(
+                        $PSScriptInfo,
+                        '(https://github\.com/TheJumpCloud/jcapi-powershell/tree/)[^/\s\r\n]+(/)',
+                        '${1}master$2')
+                }
                 $Params = $FunctionContent | Select-String -Pattern:([regex]'(?s)(    \[Parameter)(.*?)(\})') -AllMatches
                 $ParameterContent = ($Params.Matches.Value | Where-Object { $_ -notlike '*DontShow*' -and $_ -notlike '${Limit}' -and $_ -notlike '*${Skip}*' -and $_ -notlike '*${apiHost}*' -and $_ -notlike '*${consoleHost}*' })
 
@@ -173,11 +209,61 @@ if (-not [System.String]::IsNullOrEmpty($Modules)) {
 "@
                     }
                 }
+                # Proxy/cmdlet sources sometimes emit the Param body as one long line; split attributes before Alias insert.
+                $paramString = [regex]::Replace($paramString, '(?<=\])\s{2,}(?=\[)', "`n        ")
+                $paramString = [regex]::Replace($paramString, '(?<=,)\s{2,}(?=\[Parameter)', "`n        `n        ")
+                # Optional: add [Alias(...)] on SDK identity param; if Name is set and differs from SdkName, rename ${SdkName} and splat to SDK cmdlet.
+                if ($Function.IdentityParameter -and $Function.IdentityParameter.SdkName) {
+                    $ip = $Function.IdentityParameter
+                    $sdkToken = '$' + '{' + $ip.SdkName + '}'
+                    $shouldRename = $ip.Name -and ($ip.Name -cne $ip.SdkName)
+                    if ($shouldRename) {
+                        $wrapToken = '$' + '{' + $ip.Name + '}'
+                        $paramString = $paramString.Replace($sdkToken, $wrapToken)
+                    }
+                    if ($ip.Aliases -and $ip.Aliases.Count -gt 0) {
+                        $aliasList = (($ip.Aliases | ForEach-Object { "'$_'" }) -join ', ')
+                        $aliasLine = "        [Alias($aliasList)]"
+                        $targetToken = if ($shouldRename) { '$' + '{' + $ip.Name + '}' } else { $sdkToken }
+                        $targetEscaped = [regex]::Escape($targetToken)
+                        # First Path + [System.String] + ${SdkName} only (excludes InputObject's IJumpCloudApiIdentity).
+                        $aliasBeforePathStringId = '(?s)((?:\s*\[Parameter[^\]]+\]\s*)+)(\[JumpCloud\.SDK\.V2\.Category\(''Path''\)\]\s*\[System\.String\]\s*(?:#[^\r\n]*)?\s*' + $targetEscaped + ')'
+                        $alreadyAliased = [regex]::Match($paramString, '(?s)\[Parameter[^\]]+\]\s*\[Alias\([^\]]+\)\]\s*\[JumpCloud\.SDK\.V2\.Category\(''Path''\)\]\s*\[System\.String\][\s\S]*?' + $targetEscaped).Success
+                        if (-not $alreadyAliased -and $paramString -match $aliasBeforePathStringId) {
+                            $paramString = [regex]::Replace($paramString, $aliasBeforePathStringId, "`$1`n$aliasLine`n        `$2", 1)
+                        }
+                    }
+                }
+                $identityParamRenamed = $false
+                if ($Function.IdentityParameter -and $Function.IdentityParameter.SdkName -and $Function.IdentityParameter.Name -and ($Function.IdentityParameter.Name -cne $Function.IdentityParameter.SdkName)) {
+                    $identityParamRenamed = $paramString -match ('\$\{' + [regex]::Escape($Function.IdentityParameter.Name) + '\}')
+                }
                 $OutputType = (($FunctionContent | Select-String -Pattern:([regex]'(\[OutputType)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
                 $CmdletBinding = (($FunctionContent | Select-String -Pattern:([regex]'(\[CmdletBinding)(.*?)(\]\s+)')).Matches.Value).TrimEnd()
                 if (-not [System.String]::IsNullOrEmpty($PSScriptInfo)) {
                     $PSScriptInfo = $PSScriptInfo.Replace($SdkPrefix, $JumpCloudModulePrefix)
                     $PSScriptInfo = $PSScriptInfo.Replace("$NewCommandName.md", "$FunctionName.md")
+                    if ($identityParamRenamed -and $Function.IdentityParameter.SdkName) {
+                        $ip = $Function.IdentityParameter
+                        $PSScriptInfo = $PSScriptInfo.Replace("-$($ip.SdkName):(", "-$($ip.Name):(")
+                    }
+                }
+
+                $processInvocation = if ($identityParamRenamed -and $Function.IdentityParameter.SdkName -and $Function.IdentityParameter.Name) {
+                    $ip = $Function.IdentityParameter
+                    @"
+        `$SdkParams = @{}
+        foreach (`$key in `$PSBoundParameters.Keys) {
+            if (`$key -eq '$($ip.Name)') {
+                `$SdkParams['$($ip.SdkName)'] = `$PSBoundParameters[`$key]
+            } else {
+                `$SdkParams[`$key] = `$PSBoundParameters[`$key]
+            }
+        }
+        `$Results = $($ModuleName)\$($CommandName) @SdkParams
+"@
+                } else {
+                    "        `$Results = $($ModuleName)\$($CommandName) @PSBoundParameters"
                 }
 
                 # Build $BeginContent, $ProcessContent, and $EndContent
@@ -201,7 +287,7 @@ $paramString
         `$Results = @()
     }
     Process {
-        `$Results = $($ModuleName)\$($CommandName) @PSBoundParameters
+$processInvocation
     }
     End {
         Return `$Results

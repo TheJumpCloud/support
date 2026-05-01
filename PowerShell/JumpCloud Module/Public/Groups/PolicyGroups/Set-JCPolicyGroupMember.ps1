@@ -1,34 +1,8 @@
 <#
 .Synopsis
 This endpoint allows you to manage the Policy members of a Policy Group.
-
-#### Sample Request
-```
-curl -X POST https://console.jumpcloud.com/api/v2/policygroups/{GroupID}/members \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}' \\
-  -d '{
-    \"op\": \"add\",
-    \"type\": \"policy\",
-    \"id\": \"{Policy_ID}\"
-  }'
-```
 .Description
 This endpoint allows you to manage the Policy members of a Policy Group.
-
-#### Sample Request
-```
-curl -X POST https://console.jumpcloud.com/api/v2/policygroups/{GroupID}/members \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}' \\
-  -d '{
-    \"op\": \"add\",
-    \"type\": \"policy\",
-    \"id\": \"{Policy_ID}\"
-  }'
-```
 .Example
 PS C:\> Set-JCPolicyGroupMember -GroupId:(<string>) -Body:(<JumpCloud.SDK.V2.Models.GraphOperationPolicyGroupMember>)
 
@@ -89,6 +63,8 @@ Function Set-JCPolicyGroupMember {
     Param(
         [Parameter(ParameterSetName='SetExpanded', Mandatory)]
         [Parameter(ParameterSetName='Set', Mandatory)]
+        
+        [Alias('id,', '_id', 'PolicyGroupID')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.

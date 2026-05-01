@@ -1,26 +1,8 @@
 <#
 .Synopsis
 This endpoint allows you to delete a Policy Group.
-
-#### Sample Request
-```
-curl -X DELETE https://console.jumpcloud.com/api/v2/policygroups/{GroupID} \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-
-```
 .Description
 This endpoint allows you to delete a Policy Group.
-
-#### Sample Request
-```
-curl -X DELETE https://console.jumpcloud.com/api/v2/policygroups/{GroupID} \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-
-```
 .Example
 PS C:\> Remove-JCPolicyGroup -Id:(<string>)
 
@@ -82,6 +64,8 @@ Function Remove-JCPolicyGroup {
     [CmdletBinding(DefaultParameterSetName='Delete', PositionalBinding=$false, SupportsShouldProcess, ConfirmImpact='Medium')]
     Param(
         [Parameter(ParameterSetName='Delete', Mandatory)]
+        
+        [Alias('_id', 'PolicyGroupID')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.

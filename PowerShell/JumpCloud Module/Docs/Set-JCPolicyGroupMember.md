@@ -96,7 +96,7 @@ ObjectID of the Policy Group.
 ```yaml
 Type: System.String
 Parameter Sets: SetExpanded, Set
-Aliases:
+Aliases: id,, _id, PolicyGroupID
 
 Required: True
 Position: Named

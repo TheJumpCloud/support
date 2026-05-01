@@ -1,26 +1,8 @@
 <#
 .Synopsis
 This endpoint returns all the Policy Groups a Policy is a member of.
-
-#### Sample Request
-```
-curl -X GET https://console.jumpcloud.com/api/v2/policies/{Policy_ID}/memberof \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-
-```
 .Description
 This endpoint returns all the Policy Groups a Policy is a member of.
-
-#### Sample Request
-```
-curl -X GET https://console.jumpcloud.com/api/v2/policies/{Policy_ID}/memberof \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-
-```
 .Example
 PS C:\> Get-JCPolicyGroupMember -PolicyId:(<string>) -Filter:(<string[]>) -Sort:(<string[]>) -Authorization:(<string>) -Date:(<string>)
 
@@ -108,6 +90,8 @@ Function Get-JCPolicyGroupMember {
         ${InputObject},
         
         [Parameter(ParameterSetName='List', Mandatory)]
+        
+        [Alias('id,', '_id', 'PolicyGroupID')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.

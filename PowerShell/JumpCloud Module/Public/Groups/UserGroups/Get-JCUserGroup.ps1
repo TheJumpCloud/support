@@ -1,24 +1,8 @@
 <#
 .Synopsis
 This endpoint returns the details of a User Group.
-
-#### Sample Request
-```
-curl -X GET https://console.jumpcloud.com/api/v2/usergroups/{GroupID} \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-```
 .Description
 This endpoint returns the details of a User Group.
-
-#### Sample Request
-```
-curl -X GET https://console.jumpcloud.com/api/v2/usergroups/{GroupID} \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}'
-```
 .Example
 PS C:\> Get-JCUserGroup -Fields:(<string[]>) -Filter:(<string[]>) -Sort:(<string[]>)
 

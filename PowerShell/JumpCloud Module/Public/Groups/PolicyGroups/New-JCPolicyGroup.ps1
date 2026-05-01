@@ -1,30 +1,8 @@
 <#
 .Synopsis
 This endpoint allows you to create a new Policy Group.
-
-#### Sample Request
-```
-curl -X POST https://console.jumpcloud.com/api/v2/policygroups \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}' \\
-  -d '{
-    \"name\": \"{Group_Name}\"
-  }'
-```
 .Description
 This endpoint allows you to create a new Policy Group.
-
-#### Sample Request
-```
-curl -X POST https://console.jumpcloud.com/api/v2/policygroups \\
-  -H 'Accept: application/json' \\
-  -H 'Content-Type: application/json' \\
-  -H 'x-api-key: {API_KEY}' \\
-  -d '{
-    \"name\": \"{Group_Name}\"
-  }'
-```
 .Example
 PS C:\> New-JCPolicyGroup -Name:(<string>)
 
