@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 3.0.2
+Help Version: 3.1.0
 Locale: en-Us
 ---
 
@@ -122,6 +122,9 @@ Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud Sy
 ### [Get-JCSystemApp](Get-JCSystemApp.md)
 Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.
 
+### [Get-JCSystemGroup](Get-JCSystemGroup.md)
+This endpoint returns the details of a System Group.
+
 ### [Get-JCSystemGroupMember](Get-JCSystemGroupMember.md)
 Returns the System Group members of a JumpCloud System Group.
 
@@ -137,6 +140,9 @@ Returns all JumpCloud Users associated with a JumpCloud System.
 
 ### [Get-JCUser](Get-JCUser.md)
 Returns all JumpCloud Users within a JumpCloud tenant or searches for a JumpCloud User by 'username', 'firstname', 'lastname', or 'email'.
+
+### [Get-JCUserGroup](Get-JCUserGroup.md)
+This endpoint returns the details of a User Group.
 
 ### [Get-JCUserGroupMember](Get-JCUserGroupMember.md)
 Returns the User Group members of a JumpCloud User Group.
@@ -272,6 +278,9 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 ### [Set-JCPolicyGroup](Set-JCPolicyGroup.md)
 This endpoint allows you to do a full update of the Policy Group.
 
+### [Set-JCPolicyGroupMember](Set-JCPolicyGroupMember.md)
+This endpoint allows you to manage the Policy members of a Policy Group.
+
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.
 
@@ -284,11 +293,21 @@ Updates the JumpCloud Module Settings File
 ### [Set-JCSystem](Set-JCSystem.md)
 Updates an existing JumpCloud System
 
+### [Set-JCSystemGroup](Set-JCSystemGroup.md)
+This endpoint allows you to do a full set of the System Group.
+
+See the \[Dynamic Group Configuration KB article\](https://jumpcloud.com/support/configure-dynamic-device-groups) for more details on maintaining a Dynamic Group.
+
 ### [Set-JCSystemUser](Set-JCSystemUser.md)
 Updates the permissions of a JumpCloud user on a JumpCloud system
 
 ### [Set-JCUser](Set-JCUser.md)
 Updates an existing JumpCloud User
+
+### [Set-JCUserGroup](Set-JCUserGroup.md)
+This endpoint allows you to do a full set of the User Group.
+
+See the \[Dynamic Group Configuration KB article\](https://jumpcloud.com/support/configure-dynamic-device-groups) for more details on maintaining a Dynamic Group.
 
 ### [Set-JCUserGroupLDAP](Set-JCUserGroupLDAP.md)
 The Set-JCUserGroupLDAP command adds or removes a JumpCloud user group and the members to/from the JumpCloud LDAP directory.

@@ -80,7 +80,7 @@ Note there are only two options - User and System.
 Type: System.String
 Parameter Sets: Type
 Aliases:
-Accepted values: User, System
+Accepted values: User, System, Policy
 
 Required: False
 Position: 0
