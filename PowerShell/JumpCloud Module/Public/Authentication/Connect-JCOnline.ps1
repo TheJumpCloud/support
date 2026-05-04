@@ -32,7 +32,7 @@ function Connect-JCOnline () {
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
-            'ValidateSet'                     = ('STANDARD', 'staging', 'EU');
+            'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
