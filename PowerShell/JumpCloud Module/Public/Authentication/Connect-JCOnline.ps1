@@ -103,8 +103,8 @@ function Connect-JCOnline () {
                 }
                 'STAGING' {
                     $global:JCUrlBasePath = "https://console.stg01.jumpcloud.com"
-                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.stg.01"
-                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.stg.01"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.stg01"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.stg01"
                 }
                 'EU' {
                     $global:JCUrlBasePath = "https://console.eu.jumpcloud.com"
