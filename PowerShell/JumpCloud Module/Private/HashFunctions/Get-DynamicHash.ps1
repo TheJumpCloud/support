@@ -1,10 +1,10 @@
-Function Get-DynamicHash () {
+function Get-DynamicHash () {
     [CmdletBinding()]
     param (
         [Parameter(Position = 0, Mandatory = $true)][ValidateSet('System', 'User', 'Command', 'Group')][string]$Object,
         [Parameter(Position = 1, Mandatory = $true)][ValidateNotNullOrEmpty()][string[]]$returnProperties
     )
-    DynamicParam {
+    dynamicparam {
         if ($Object -eq 'Group') {
             $paramDictionary = New-Object -Type System.Management.Automation.RuntimeDefinedParameterDictionary
             $paramAttributesCollect = New-Object -Type System.Collections.ObjectModel.Collection[System.Attribute]
@@ -12,7 +12,7 @@ Function Get-DynamicHash () {
             $paramAttributes = New-Object -Type System.Management.Automation.ParameterAttribute
             $paramAttributes.Mandatory = $true
             $paramAttributesCollect.Add($paramAttributes)
-            $paramAttributesCollect.Add((New-Object -Type System.Management.Automation.ValidateSetAttribute('System', 'User')))
+            $paramAttributesCollect.Add((New-Object -Type System.Management.Automation.ValidateSetAttribute('System', 'User', 'Policy')))
 
             $dynParam1 = New-Object -Type System.Management.Automation.RuntimeDefinedParameter("GroupType", [string], $paramAttributesCollect)
 
@@ -47,6 +47,9 @@ Function Get-DynamicHash () {
                     }
                     User {
                         $ResultsHash = Get-JCGroup -Type User | Select-Object -Property $returnProperties
+                    }
+                    Policy {
+                        $ResultsHash = Get-JCGroup -Type Policy | Select-Object -Property $returnProperties
                     }
                 }
             }

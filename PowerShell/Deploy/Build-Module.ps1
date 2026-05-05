@@ -2,12 +2,6 @@
 param (
     [Parameter()]
     [String]
-    $GitSourceBranch,
-    [Parameter()]
-    [String]
-    $GitSourceRepo,
-    [Parameter()]
-    [String]
     $ReleaseType,
     [Parameter()]
     [String]
@@ -19,7 +13,7 @@ param (
     [Boolean]
     $ManualModuleVersion
 )
-. "$PSScriptRoot/Get-Config.ps1" -GitSourceBranch:($GitSourceBranch) -GitSourceRepo:($GitSourceRepo) -ReleaseType:($ReleaseType) -RequiredModulesRepo:($RequiredModulesRepo)
+. "$PSScriptRoot/Get-Config.ps1" -ModuleName:($ModuleName) -ModuleFolderName:("JumpCloud Module") -DeployFolder:("/PowerShell/Deploy")
 # Region Checking PowerShell Gallery module version
 Write-Host ('[status]Check PowerShell Gallery for module version info')
 $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
@@ -27,7 +21,7 @@ $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($R
 if ($ManualModuleVersion) {
     $ManualModuleVersionRetrieval = Get-Content -Path:($FilePath_psd1) | Where-Object { $_ -like '*ModuleVersion*' }
     $SemanticRegex = [Regex]"[0-9]+.[0-9]+.[0-9]+"
-    $SemeanticVersion = Select-String -InputObject $ManualModuleVersionRetrieval -pattern ($SemanticRegex)
+    $SemeanticVersion = Select-String -InputObject $ManualModuleVersionRetrieval -Pattern ($SemanticRegex)
     $ModuleVersion = $SemeanticVersion[0].Matches.Value
 } else {
     $ModuleVersion = $PSGalleryInfo.NextVersion
@@ -45,7 +39,7 @@ New-JCModuleManifest -Path:($FilePath_psd1) `
 Write-Host ('[status]Updating module change log: "' + $FilePath_ModuleChangelog + '"')
 $ModuleChangelog = Get-Content -Path:($FilePath_ModuleChangelog)
 $NewModuleChangelogRecord = New-ModuleChangelog -LatestVersion:($ModuleVersion) -ReleaseNotes:('{{Fill in the Release Notes}}') -Features:('{{Fill in the Features}}') -Improvements:('{{Fill in the Improvements}}') -BugFixes('{{Fill in the Bug Fixes}}')
-If (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
+if (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
     ($NewModuleChangelogRecord + ($ModuleChangelog | Out-String)).Trim() | Set-Content -Path:($FilePath_ModuleChangelog) -Force
 }
 # EndRegion Updating module change log
