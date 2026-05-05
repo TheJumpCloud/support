@@ -1,5 +1,15 @@
 ## 3.0.2
 
+Release Date: May 05, 2026
+
+#### RELEASE NOTES
+
+```
+Update the .reg file import to support additional type of registry key values
+```
+
+## 3.0.2
+
 Release Date: January 22, 2026
 
 #### RELEASE NOTES
