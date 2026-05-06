@@ -6,16 +6,16 @@ Function Get-JCPolicyGroupMember {
             Mandatory = $true,
             HelpMessage = "The ID of the JumpCloud policy group to query and return members of"
         )]
-        [Alias('_id', 'id')]
-        [System.String]
-        $PolicyGroupID,
+        [Alias('_id')]
+        # Changed to $GroupId to maintain consistency across the module
+        [System.String]$GroupId,
+
         [Parameter(
             ParameterSetName = 'ByName',
             Mandatory = $true,
             HelpMessage = "The name of the JumpCloud policy group to query and return members of"
         )]
-        [System.String]
-        $Name
+        [System.String]$Name
     )
     begin {
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
@@ -27,17 +27,17 @@ Function Get-JCPolicyGroupMember {
                 try {
                     $policyGroup = Get-JCPolicyGroup -Name $Name
                     if ($policyGroup) {
-                        $PolicyGroupID = $policyGroup.Id
+                        $GroupId = $policyGroup.Id
                     } else {
                         throw
                     }
                 } catch {
                     throw "Could not find policy group with name: $name"
                 }
-                "$JCUrlBasePath/api/v2/policygroups/$PolicyGroupID/membership"
+                "$JCUrlBasePath/api/v2/policygroups/$GroupId/membership"
             }
             "ById" {
-                "$JCUrlBasePath/api/v2/policygroups/$PolicyGroupID/membership"
+                "$JCUrlBasePath/api/v2/policygroups/$GroupId/membership"
             }
         }
     }
@@ -49,12 +49,11 @@ Function Get-JCPolicyGroupMember {
         } else {
             $policyMemberList = New-Object System.Collections.ArrayList
             foreach ($policy in $response) {
-                # return the values by getting the policy individually
+                # Return the values by getting the policy individually
                 $policyResult = Get-JCPolicy -PolicyID $policy.id
                 $policyMemberList.Add($policyResult) | Out-Null
             }
         }
-
     }
     end {
         return $policyMemberList

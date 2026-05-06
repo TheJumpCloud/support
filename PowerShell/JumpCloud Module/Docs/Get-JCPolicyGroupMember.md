@@ -15,7 +15,7 @@ This function will return the policies that are members of the specified policy 
 
 ### ById
 ```
-Get-JCPolicyGroupMember -PolicyGroupID <String> [<CommonParameters>]
+Get-JCPolicyGroupMember -GroupId <String> [<CommonParameters>]
 ```
 
 ### ByName
@@ -47,14 +47,13 @@ This will return all policies that are members of the policy group with name: 'P
 
 ## PARAMETERS
 
-### -Name
-
-The Name of the JumpCloud policy group to query and return members of
+### -GroupId
+The ID of the JumpCloud policy group to query and return members of
 
 ```yaml
 Type: System.String
-Parameter Sets: ByName
-Aliases:
+Parameter Sets: ById
+Aliases: _id
 
 Required: True
 Position: Named
@@ -63,14 +62,14 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PolicyGroupID
+### -Name
 
-The ID of the JumpCloud policy group to query and return members of
+The Name of the JumpCloud policy group to query and return members of
 
 ```yaml
 Type: System.String
-Parameter Sets: ById
-Aliases: _id, id
+Parameter Sets: ByName
+Aliases:
 
 Required: True
 Position: Named

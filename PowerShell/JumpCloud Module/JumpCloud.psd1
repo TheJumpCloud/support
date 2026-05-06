@@ -102,7 +102,7 @@ FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget', 'Add-JCGsuiteMem
                'Remove-JCSystemGroupMember', 'Remove-JCSystemUser', 'Remove-JCUser',
                'Remove-JCUserGroup', 'Remove-JCUserGroupMember',
                'Send-JCPasswordReset', 'Set-JCCloudDirectory', 'Set-JCCommand',
-               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCPolicyGroup',
+               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCPolicyGroup', 'Set-JCPolicyGroupMember',
                'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer',
                'Set-JCSettingsFile', 'Set-JCSystem', 'Set-JCSystemUser', 'Set-JCUser',
                'Set-JCUserGroupLDAP', 'Update-JCDeviceFromCSV', 'Update-JCModule',

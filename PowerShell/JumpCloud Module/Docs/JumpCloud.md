@@ -272,6 +272,9 @@ Set-JCPolicy can display the available parameters per policy if a `PolicyName` o
 ### [Set-JCPolicyGroup](Set-JCPolicyGroup.md)
 This endpoint allows you to do a full update of the Policy Group.
 
+### [Set-JCPolicyGroupMember](Set-JCPolicyGroupMember.md)
+This endpoint allows you to manage the Policy members of a Policy Group.
+
 ### [Set-JCRadiusReplyAttribute](Set-JCRadiusReplyAttribute.md)
 Updates or adds Radius reply attributes to a JumpCloud user group.
 

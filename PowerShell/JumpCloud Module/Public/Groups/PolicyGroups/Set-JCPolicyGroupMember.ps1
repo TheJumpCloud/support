@@ -63,8 +63,9 @@ Function Set-JCPolicyGroupMember {
     Param(
         [Parameter(ParameterSetName='SetExpanded', Mandatory)]
         [Parameter(ParameterSetName='Set', Mandatory)]
-
-        [Alias('_id', 'id')]
+        # Removed 'id' alias to resolve conflict with the member ${Id} parameter below.
+        # Users can use -GroupId or -_id for the group, and -Id for the member.
+        [Alias('_id')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.
@@ -89,7 +90,7 @@ Function Set-JCPolicyGroupMember {
         [Parameter(ParameterSetName='SetViaIdentityExpanded')]
         [JumpCloud.SDK.V2.Category('Body')]
         [System.String]
-        # The ObjectID of graph object being added or removed as an association.
+        # The ObjectID of graph object (Member) being added or removed as an association.
         ${Id},
 
         [Parameter(ParameterSetName='SetExpanded')]
