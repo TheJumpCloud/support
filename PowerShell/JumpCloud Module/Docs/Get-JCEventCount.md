@@ -1,6 +1,6 @@
 ---
 external help file: JumpCloud-help.xml
-Module Name: JumpCloud
+Module Name: jumpcloud
 online version: https://github.com/TheJumpCloud/support/wiki/Get-JCEventCount
 schema: 2.0.0
 ---

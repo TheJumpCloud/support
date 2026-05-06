@@ -1,6 +1,6 @@
 ---
 external help file: JumpCloud-help.xml
-Module Name: JumpCloud
+Module Name: jumpcloud
 online version: https://github.com/TheJumpCloud/support/wiki/
 schema: 2.0.0
 ---
@@ -53,7 +53,7 @@ The ID of the JumpCloud policy group to query and return members of
 ```yaml
 Type: System.String
 Parameter Sets: ById
-Aliases: _id
+Aliases: id, _id
 
 Required: True
 Position: Named

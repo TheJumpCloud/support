@@ -6734,7 +6734,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, _id">
           <maml:name>GroupId</maml:name>
           <maml:description>
             <maml:para>The ID of the JumpCloud policy group to query and return members of</maml:para>
@@ -6766,7 +6766,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="_id">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, _id">
         <maml:name>GroupId</maml:name>
         <maml:description>
           <maml:para>The ID of the JumpCloud policy group to query and return members of</maml:para>

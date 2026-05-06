@@ -6,7 +6,7 @@ Function Get-JCPolicyGroupMember {
             Mandatory = $true,
             HelpMessage = "The ID of the JumpCloud policy group to query and return members of"
         )]
-        [Alias('_id')]
+        [Alias('id', '_id')]
         # Changed to $GroupId to maintain consistency across the module
         [System.String]$GroupId,
 
