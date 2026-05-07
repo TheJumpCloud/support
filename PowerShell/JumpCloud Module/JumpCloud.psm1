@@ -25,10 +25,6 @@ switch ($env:JCEnvironment) {
         $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.eu'
         $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.eu'
     }
-    'STAGING' {
-        $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.stg01'
-        $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.stg01'
-    }
     default {}
 }
 # set the JCEnvironment from the settings file if it exists
