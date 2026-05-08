@@ -97,26 +97,34 @@ function Connect-JCOnline () {
             switch ($env:JCEnvironment) {
                 'STANDARD' {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $env:JCEnvironment = 'STANDARD'
                 }
                 'STAGING' {
                     $global:JCUrlBasePath = "https://console.stg01.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.stg01"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.stg01"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.stg01"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.stg01"
                     $env:JCEnvironment = 'STAGING'
 
                 }
                 'EU' {
                     $global:JCUrlBasePath = "https://console.eu.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $env:JCEnvironment = 'EU'
                 }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $env:JCEnvironment = 'STANDARD'
                 }
