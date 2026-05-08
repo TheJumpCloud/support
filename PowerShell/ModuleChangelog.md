@@ -1,6 +1,6 @@
 ## 3.1.0
 
-Release Date: May 1, 2026
+Release Date: May 6, 2026
 
 #### RELEASE NOTES
 
@@ -10,6 +10,17 @@ Release Date: May 1, 2026
 - Improves test coverage and error handling for group and policy group management
 - Fixes test parameter usage to match SDK model (e.g., -Id, -Filter, .Name)
 - Minor bug fixes and documentation updates
+- Update the .reg file import to support additional type of registry key values
+```
+
+## 3.0.2
+
+Release Date: May 05, 2026
+
+#### RELEASE NOTES
+
+```
+Update the .reg file import to support additional type of registry key values
 ```
 
 ## 3.0.2

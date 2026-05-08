@@ -45,19 +45,24 @@ function Convert-RegToPSObject {
                     $valueObject = $($line.Split("=")).Trim("`"")
                     $valueName = $($valueObject[0]).Trim()
                     if ($valueObject[1].StartsWith("dword:")) {
-                        #DWORD
+                        # DWORD: decimal string (matches JumpCloud console / avoids JSON number -> int64 on API)
                         $customRegType = "DWORD"
-                        $customData = [int]"0x$(($valueObject[1]).Substring(6))"
+                        $dwordHex = ($valueObject[1]).Substring(6)
+                        $customData = [string]([uint32]('0x' + $dwordHex))
                     } elseif ($valueObject[1].StartsWith("hex(b):")) {
-                        #QWORD
+                        # QWORD: decimal string; full 64-bit range via uint64
                         $customRegType = "QWORD"
                         $value = ($valueObject[1]).Substring(7).split(",")
                         # Convert to value
                         $value = for ($i = $value.count - 1; $i -ge 0; $i--) {
                             $value[$i]
                         }
-                        $hexValue = '0x' + ($value -join "").trimstart('0')
-                        $customData = [int]$hexValue
+                        $hexDigits = ($value -join "").TrimStart('0')
+                        if ([string]::IsNullOrEmpty($hexDigits)) {
+                            $hexDigits = '0'
+                        }
+                        $hexValue = '0x' + $hexDigits
+                        $customData = [string]([uint64]$hexValue)
                     } elseif ($valueObject[1].StartsWith("hex(7):")) {
                         #MULTI_SZ
                         $customRegType = "multiString"
