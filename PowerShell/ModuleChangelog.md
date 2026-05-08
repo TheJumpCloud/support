@@ -1,3 +1,17 @@
+## 3.1.0
+
+Release Date: May 8, 2026
+
+#### RELEASE NOTES
+
+#### FEATURES:
+
+- Updates the `-JCEnvironment` parameter for `Connect-JCOnline` to support 'STAGING'
+- Configures global parameter values for Staging ApiHost (api.stg01) and ConsoleHost (console.stg01)
+- Updated module manifest and documentation
+
+---
+
 ## 3.0.2
 
 Release Date: January 22, 2026
