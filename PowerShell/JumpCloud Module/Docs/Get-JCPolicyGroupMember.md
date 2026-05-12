@@ -121,7 +121,7 @@ ObjectID of the Policy Group.
 ```yaml
 Type: System.String
 Parameter Sets: List
-Aliases: id,, _id, PolicyGroupID
+Aliases: PolicyGroupID
 
 Required: True
 Position: Named

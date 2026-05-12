@@ -2436,12 +2436,12 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key. Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update available. To prevent the module update check the '-force' parameter can be used.</maml:para>
+      <maml:para>By calling the Connect-JCOnline function you are setting the variable $JCAPIKEY within the global scope. By setting this variable in the global scope the variable $JCAPIKEY can be reused by other functions in the JumpCloud module. If you wish to change the API key to connect to another JumpCloud org simply call the Connect-JCOnline function and enter the alternative API key. Introduced in JumpCloud module version 1.2 the Connect-JCOnline function will also check to ensure you are running the latest version of the JumpCloud PowerShell module and offer to update the module if there is an update available. To prevent the module update check the '-force' parameter can be used. Use the '-JCEnvironment' parameter to specify your environment location (STANDARD or EU), STANDARD is the current default. You can also change the location in your PowerShell Module settings by using the 'Set-JCSettingsFile' function</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:description>
             <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -2468,11 +2468,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
           <maml:name>JCEnvironment</maml:name>
           <maml:description>
-            <maml:para>Specific to JumpCloud development team to connect to staging dev environment.</maml:para>
+            <maml:para>Specific to JumpCloud development team to connect to staging dev environment. More Information Here. (https://jumpcloud.com/support/jumpcloud-data-centers-login-urls-and-service-endpoints)</maml:para>
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">STANDARD</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">staging</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">STAGING</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">EU</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
@@ -2512,7 +2512,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="3" aliases="none">
         <maml:name>JCEnvironment</maml:name>
         <maml:description>
-          <maml:para>Specific to JumpCloud development team to connect to staging dev environment.</maml:para>
+          <maml:para>Specific to JumpCloud development team to connect to staging dev environment. More Information Here. (https://jumpcloud.com/support/jumpcloud-data-centers-login-urls-and-service-endpoints)</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -2521,7 +2521,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:description>
           <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -2593,6 +2593,13 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:remarks>
           <maml:para>Providing the JumpCloudAPIKey key and the intended JumpCloudOrg ID to connect to multi tenant admins can skip the JumpCloudOrgID connection screen and directly connect to an Org.</maml:para>
           <maml:para>Using the "-Force" parameter the module update check is skipped. The '-Force' parameter should be used when using the JumpCloud module in scripts or other automation environments.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 4 --------------------------</maml:title>
+        <dev:code>Connect-JCOnline -JumpCloudAPIKey eu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JCEnvironment 'EU'</dev:code>
+        <dev:remarks>
+          <maml:para>Use the "-JCEnvironment" parameter to change the environment location ("STANDARD" or "EU")</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -6932,7 +6939,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
       </command:syntaxItem>
       <command:syntaxItem>
         <maml:name>Get-JCPolicyGroupMember</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, , _id, PolicyGroupID">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="PolicyGroupID">
           <maml:name>GroupId</maml:name>
           <maml:description>
             <maml:para>ObjectID of the Policy Group.</maml:para>
@@ -6984,7 +6991,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, , _id, PolicyGroupID">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="PolicyGroupID">
         <maml:name>GroupId</maml:name>
         <maml:description>
           <maml:para>ObjectID of the Policy Group.</maml:para>
@@ -20552,7 +20559,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, , _id, PolicyGroupID">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="PolicyGroupID">
           <maml:name>GroupId</maml:name>
           <maml:description>
             <maml:para>ObjectID of the Policy Group.</maml:para>
@@ -20722,7 +20729,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, , _id, PolicyGroupID">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="PolicyGroupID">
           <maml:name>GroupId</maml:name>
           <maml:description>
             <maml:para>ObjectID of the Policy Group.</maml:para>
@@ -20856,7 +20863,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="id, , _id, PolicyGroupID">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="PolicyGroupID">
         <maml:name>GroupId</maml:name>
         <maml:description>
           <maml:para>ObjectID of the Policy Group.</maml:para>
@@ -21781,7 +21788,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>JCEnvironmentLocation</maml:name>
           <maml:description>
-            <maml:para>sets the System.Management.Automation.PSCustomObject Location=@{write=True; copy=True; value=STANDARD} settings for the System.Management.Automation.PSCustomObject JCEnvironment=@{Location=} feature</maml:para>
+            <maml:para>Sets the Environment Location settings to allow connection to the region-specific datacenters (https://jumpcloud.com/support/jumpcloud-data-centers-login-urls-and-service-endpoints)</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
           <dev:type>
@@ -21821,7 +21828,7 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>JCEnvironmentLocation</maml:name>
         <maml:description>
-          <maml:para>sets the System.Management.Automation.PSCustomObject Location=@{write=True; copy=True; value=STANDARD} settings for the System.Management.Automation.PSCustomObject JCEnvironment=@{Location=} feature</maml:para>
+          <maml:para>Sets the Environment Location settings to allow connection to the region-specific datacenters (https://jumpcloud.com/support/jumpcloud-data-centers-login-urls-and-service-endpoints)</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
         <dev:type>
@@ -21887,6 +21894,13 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <dev:code>PS C:\&gt; Set-JCSettingsFile -ParallelOverride $true</dev:code>
         <dev:remarks>
           <maml:para>Disables parallel processing of results in the JumpCloud PowerShell Module</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Set-JCSettingsFile -JCEnvironmentLocation "EU"</dev:code>
+        <dev:remarks>
+          <maml:para>Changes the location for the PowerShell Module to use the EU Datacenter</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
