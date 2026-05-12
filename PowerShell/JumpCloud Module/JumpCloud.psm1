@@ -19,11 +19,21 @@ if ($global:JCConfig['JCEnvironment'].Location) {
 switch ($env:JCEnvironment) {
     'STANDARD' {
         $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api'
+        $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api'
         $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console'
+        $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console'
     }
     'EU' {
         $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.eu'
+        $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.eu'
         $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.eu'
+        $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.eu'
+    }
+    'STAGING' {
+        $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.stg01'
+        $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.stg01'
+        $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.stg01'
+        $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.stg01'
     }
     default {}
 }

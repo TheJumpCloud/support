@@ -87,7 +87,7 @@ Specific to JumpCloud development team to connect to staging dev environment. [M
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: STANDARD, staging, EU
+Accepted values: STANDARD, STAGING, EU
 
 Required: False
 Position: 3
@@ -131,17 +131,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS

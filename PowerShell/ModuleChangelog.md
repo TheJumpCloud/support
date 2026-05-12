@@ -1,3 +1,28 @@
+## 3.1.0
+
+Release Date: May 12, 2026
+
+#### RELEASE NOTES
+
+```
+- Adds new SDK-based cmdlets: Get-JCSystemGroup, Get-JCUserGroup, Get-JCPolicyGroup, New-JCPolicyGroup, Remove-JCPolicyGroup, Get-JCPolicyGroupMember, Set-JCPolicyGroupMember
+- Adds and updates Pester tests for all new group and policy group cmdlets
+- Improves test coverage and error handling for group and policy group management
+- Fixes test parameter usage to match SDK model (e.g., -Id, -Filter, .Name)
+- Minor bug fixes and documentation updates
+- Update the .reg file import to support additional type of registry key values
+```
+
+## 3.0.2
+
+Release Date: May 05, 2026
+
+#### RELEASE NOTES
+
+```
+Update the .reg file import to support additional type of registry key values
+```
+
 ## 3.0.2
 
 Release Date: January 22, 2026
@@ -818,7 +843,7 @@ This release incorperates the "alternateEmail", "manager" and "managedAppleID" f
 [alternateEmail, manager, managedAppleID attributes added to module](https://github.com/TheJumpCloud/support/pull/353)
 
 ```
-SDKs should prompt to update on Connect-JConline
+SDKs should prompt to update on Connect-JCOnline
 ```
 
 #### IMPROVEMENTS:

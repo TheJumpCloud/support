@@ -1,16 +1,16 @@
-Function Get-JCGroup () {
+function Get-JCGroup () {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param
     (
-        [Parameter(ParameterSetName = 'Type', Position = 0, HelpMessage = 'The type of JumpCloud group you want to return. Note there are only two options - User and System.')]
-        [ValidateSet('User', 'System')]
+        [Parameter(ParameterSetName = 'Type', Position = 0, HelpMessage = 'The type of JumpCloud group you want to return. Valid options are User, System, and Policy.')]
+        [ValidateSet('User', 'System', 'Policy')]
         [string]$Type
     )
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $Type = 'User'
         }
-        If ($Type) {
+        if ($Type) {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter the group name"
             $attr.Mandatory = $false
@@ -26,7 +26,7 @@ Function Get-JCGroup () {
     begin {
         Write-Debug 'Verifying JCAPI Key'
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JConline
+            Connect-JCOnline
         }
 
         [int]$limit = '100'
@@ -38,12 +38,19 @@ Function Get-JCGroup () {
         $resultsArray = @()
 
         if ($param.IsSet) {
-            if ($Type -eq 'System') {
-                Write-Verbose 'Populating SystemGroupHash'
-                $SystemGroupHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
-            } elseif ($Type -eq 'User') {
-                Write-Verbose 'Populating UserGroupHash'
-                $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
+            switch ($Type) {
+                'System' {
+                    Write-Verbose 'Populating SystemGroupHash'
+                    $SystemGroupHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
+                }
+                'User' {
+                    Write-Verbose 'Populating UserGroupHash'
+                    $UserGroupHash = Get-DynamicHash -Object Group -GroupType User -returnProperties name
+                }
+                'Policy' {
+                    Write-Verbose 'Populating PolicyGroupHash'
+                    $PolicyGroupHash = Get-DynamicHash -Object Group -GroupType Policy -returnProperties name
+                }
             }
         }
     }
@@ -63,26 +70,22 @@ Function Get-JCGroup () {
             $count = ($resultsArray.results).Count
             Write-Debug "Results count equals $count"
         } elseif (($PSCmdlet.ParameterSetName -eq 'Type') -and !($param.IsSet)) {
-            if ($type -eq 'User') {
-                $limitURL = "$JCUrlBasePath/api/v2/groups?filter=type:eq:user_group"
-                if ($Parallel) {
-                    $resultsArray = Get-JCResults -URL $limitURL -Method "GET" -limit $limit -parallel $true
-                } else {
-                    $resultsArray = Get-JCResults -URL $limitURL -Method "GET" -limit $limit
-                }
-                $resultsArray = $resultsArray | Sort-Object name
-            } elseif ($type -eq 'System') {
-                $limitURL = "$JCUrlBasePath/api/v2/groups?filter=type:eq:system_group"
-                if ($Parallel) {
-                    $resultsArray = Get-JCResults -URL $limitURL -Method "GET" -limit $limit -parallel $true
-                } else {
-                    $resultsArray = Get-JCResults -URL $limitURL -Method "GET" -limit $limit
-                }
-                $resultsArray = $resultsArray | Sort-Object name
+            switch ($Type) {
+                'User' { $limitURL = "$JCUrlBasePath/api/v2/usergroups" }
+                'System' { $limitURL = "$JCUrlBasePath/api/v2/systemgroups" }
+                'Policy' { $limitURL = "$JCUrlBasePath/api/v2/policygroups" }
+                default { $limitURL = "$JCUrlBasePath/api/v2/groups" }
             }
+
+            if ($Parallel) {
+                $resultsArray = Get-JCResults -URL $limitURL -Method "GET" -limit $limit -parallel $true
+            } else {
+                $resultsArray = Get-JCResults -URL $limitURL -Method "GET" -limit $limit
+            }
+            $resultsArray = $resultsArray | Sort-Object name
         } elseif (($PSCmdlet.ParameterSetName -eq 'Type') -and ($param.IsSet)) {
             if ($Type -eq 'System') {
-                $GID = $SystemGroupHash.GetEnumerator().Where({ $_.Value.name -contains ($param.Value) }).Name
+                $GID = $SystemGroupHash.GetEnumerator().Where({ $_.Value.name -ceq ($param.Value) }).Name
                 if ($GID) {
                     $GURL = "$JCUrlBasePath/api/v2/systemgroups/$GID"
                     $resultsArray = Get-JCResults -URL $GURL -Method "GET" -limit $limit
@@ -90,9 +93,17 @@ Function Get-JCGroup () {
                     Write-Error "There is no $Type group named $($param.Value). NOTE: Group names are case sensitive."
                 }
             } elseif ($Type -eq 'User') {
-                $GID = $UserGroupHash.GetEnumerator().Where({ $_.Value.name -contains ($param.Value) }).Name
+                $GID = $UserGroupHash.GetEnumerator().Where({ $_.Value.name -ceq ($param.Value) }).Name
                 if ($GID) {
                     $GURL = "$JCUrlBasePath/api/v2/usergroups/$GID"
+                    $resultsArray = Get-JCResults -URL $GURL -Method "GET" -limit $limit
+                } else {
+                    Write-Error "There is no $Type group named $($param.Value). NOTE: Group names are case sensitive."
+                }
+            } elseif ($Type -eq 'Policy') {
+                $GID = $PolicyGroupHash.GetEnumerator().Where({ $_.Value.name -ceq ($param.Value) }).Name
+                if ($GID) {
+                    $GURL = "$JCUrlBasePath/api/v2/policygroups/$GID"
                     $resultsArray = Get-JCResults -URL $GURL -Method "GET" -limit $limit
                 } else {
                     Write-Error "There is no $Type group named $($param.Value). NOTE: Group names are case sensitive."

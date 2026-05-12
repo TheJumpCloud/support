@@ -14,8 +14,8 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>]
- [-parallelOverride <PSObject>] [-JCEnvironmentLocation <PSObject>] [<CommonParameters>]
+Set-JCSettingsFile [-JCEnvironmentLocation <PSObject>]
+ [-parallelOverride <PSObject>] [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -91,17 +91,14 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
-
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
-
 ## NOTES
 
 ## RELATED LINKS
