@@ -91,7 +91,7 @@ Function Get-JCPolicyGroupMember {
         
         [Parameter(ParameterSetName='List', Mandatory)]
         
-        [Alias('id,', '_id', 'PolicyGroupID')]
+        [Alias('id', '_id', 'PolicyGroupID')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.

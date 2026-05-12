@@ -64,7 +64,7 @@ Function Set-JCPolicyGroupMember {
         [Parameter(ParameterSetName='SetExpanded', Mandatory)]
         [Parameter(ParameterSetName='Set', Mandatory)]
         
-        [Alias('id,', '_id', 'PolicyGroupID')]
+        [Alias('id', '_id', 'PolicyGroupID')]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the Policy Group.

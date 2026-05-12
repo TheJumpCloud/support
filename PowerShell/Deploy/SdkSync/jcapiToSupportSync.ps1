@@ -47,7 +47,7 @@ $ApprovedFunctions = [Ordered]@{
             Destination       = '/Public/Groups/PolicyGroups';
             IdentityParameter = @{
                 SdkName = 'GroupId'
-                Aliases = @('id,', '_id', 'PolicyGroupID')
+                Aliases = @('id', '_id', 'PolicyGroupID')
             }
         },
         [PSCustomObject]@{
@@ -71,7 +71,7 @@ $ApprovedFunctions = [Ordered]@{
             Destination       = '/Public/Groups/PolicyGroups';
             IdentityParameter = @{
                 SdkName = 'GroupId'
-                Aliases = @('id,', '_id', 'PolicyGroupID')
+                Aliases = @('id', '_id', 'PolicyGroupID')
             }
         },
         [PSCustomObject]@{
