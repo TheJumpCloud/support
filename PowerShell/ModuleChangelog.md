@@ -1,3 +1,25 @@
+## 3.1.1
+
+Release Date: maio 14, 2026
+
+#### RELEASE NOTES
+
+```
+{{Fill in the Release Notes}}
+```
+
+#### FEATURES:
+
+{{Fill in the Features}}
+
+#### IMPROVEMENTS:
+
+{{Fill in the Improvements}}
+
+#### BUG FIXES:
+
+{{Fill in the Bug Fixes}}
+
 ## 3.1.0
 
 Release Date: May 12, 2026

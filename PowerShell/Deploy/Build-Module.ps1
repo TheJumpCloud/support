@@ -13,7 +13,18 @@ param (
     [Boolean]
     $ManualModuleVersion
 )
-. "$PSScriptRoot/Get-Config.ps1" -ModuleName:($ModuleName) -ModuleFolderName:("JumpCloud Module") -DeployFolder:("/PowerShell/Deploy")
+# Region: Load Configuration
+# Manually define variables to ensure they are passed correctly to the child script on all platforms
+$ModuleName = "JumpCloud"
+$ModuleFolderName = "JumpCloud Module"
+$DeployFolder = "/PowerShell/Deploy"
+
+# Resolve the path to Get-Config.ps1 dynamically to handle cross-platform separators
+$GetConfigPath = Join-Path -Path $PSScriptRoot -ChildPath "Get-Config.ps1"
+
+# Dot-source the config script with explicit parameters to initialize global variables
+. $GetConfigPath -ModuleName $ModuleName -ModuleFolderName $ModuleFolderName -DeployFolder $DeployFolder
+# EndRegion: Load Configuration
 # Region Checking PowerShell Gallery module version
 Write-Host ('[status]Check PowerShell Gallery for module version info')
 $PSGalleryInfo = Get-PSGalleryModuleVersion -Name:($ModuleName) -ReleaseType:($RELEASETYPE) #('Major', 'Minor', 'Patch')
