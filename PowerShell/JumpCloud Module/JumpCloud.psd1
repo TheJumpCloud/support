@@ -98,6 +98,7 @@ FunctionsToExport = @(
     'Get-JCGroup',
     'Get-JCOrganization',
     'Get-JCPolicy',
+    'Get-JCPolicyConfigMapping',
     'Get-JCPolicyGroup',
     'Get-JCPolicyGroupMember',
     'Get-JCPolicyGroupTemplate',
