@@ -78,6 +78,14 @@ function Connect-JCOnline () {
         $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
     process {
+        # Ensure settings file exists before using $JCConfig
+        $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
+        if (-not (Test-Path -Path $configFilePath)) {
+            New-JCSettingsFile
+        }
+        $global:JCConfig = Get-JCSettingsFile
+
         # Load color scheme
         $JCColorConfig = Get-JCColorConfig
         # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
