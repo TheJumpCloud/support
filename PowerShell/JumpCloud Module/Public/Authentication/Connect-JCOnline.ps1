@@ -9,6 +9,12 @@ function Connect-JCOnline () {
         [Switch]$force
     )
     dynamicparam {
+        # Determine the active auth method from settings (defaults to apiKey for back-compat)
+        $authMethod = if ($global:JCConfig -and $global:JCConfig.authPreference) {
+            $global:JCConfig.authPreference.Method
+        } else {
+            'apiKey'
+        }
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
@@ -34,11 +40,62 @@ function Connect-JCOnline () {
             'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
             'ValidateSet'                     = ('STANDARD', 'staging', 'EU');
         }
-        # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
-            $Param_JumpCloudApiKey.Add('Mandatory', $true);
+        $Param_JumpCloudClientId = @{
+            'Name'                            = 'JumpCloudClientId';
+            'Type'                            = [System.String];
+            'Position'                        = 4;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'HelpMessage'                     = 'Please enter your JumpCloud OAuth Client ID (used when authPreference is set to clientSecret).';
+        }
+        $Param_JumpCloudClientSecret = @{
+            'Name'                            = 'JumpCloudClientSecret';
+            'Type'                            = [System.String];
+            'Position'                        = 5;
+            'ValueFromPipelineByPropertyName' = $true;
+            'ValidateNotNullOrEmpty'          = $true;
+            'HelpMessage'                     = 'Please enter your JumpCloud OAuth Client Secret (used when authPreference is set to clientSecret).';
+        }
+        if ($authMethod -eq 'clientSecret') {
+            # Make ClientId / ClientSecret mandatory unless already cached in env
+            if ([System.String]::IsNullOrEmpty($env:JCClientId)) {
+                $Param_JumpCloudClientId.Add('Mandatory', $true)
+            } else {
+                $Param_JumpCloudClientId.Add('Default', $env:JCClientId)
+            }
+            if ([System.String]::IsNullOrEmpty($env:JCClientSecret)) {
+                $Param_JumpCloudClientSecret.Add('Mandatory', $true)
+            } else {
+                $Param_JumpCloudClientSecret.Add('Default', $env:JCClientSecret)
+            }
+
+            # JumpCloudApiKey is not used in this mode. Drop ValidateNotNullOrEmpty
+            # and empty Default ensures that the binder doesn't fall back to prompting.
+            $Param_JumpCloudApiKey.Remove('ValidateNotNullOrEmpty') | Out-Null
+            if (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                $Param_JumpCloudApiKey['Default'] = $env:JCApiKey
+            } else {
+                $Param_JumpCloudApiKey['Default'] = ''
+            }
+            # Same defensive treatment for OrgId when env is empty — avoid prompt fallback.
+            if ([System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                $Param_JumpCloudOrgId.Remove('ValidateNotNullOrEmpty') | Out-Null
+                $Param_JumpCloudOrgId['Default'] = ''
+            }
         } else {
-            $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
+            # apiKey mode (default)
+            if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                $Param_JumpCloudApiKey.Add('Mandatory', $true);
+            } else {
+                $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
+            }
+            # ClientId/Secret stay optional with env defaults if present
+            if (-not [System.String]::IsNullOrEmpty($env:JCClientId)) {
+                $Param_JumpCloudClientId.Add('Default', $env:JCClientId)
+            }
+            if (-not [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
+                $Param_JumpCloudClientSecret.Add('Default', $env:JCClientSecret)
+            }
         }
         # If the $env:JCOrgId is set then set the default value to be the env variable
         if (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
@@ -125,41 +182,73 @@ function Connect-JCOnline () {
                     $env:JCEnvironment = 'STANDARD'
                 }
             }
-            # If "$JumpCloudApiKey" is populated set $env:JCApiKey
-            if (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey)) {
-                $env:JCApiKey = $JumpCloudApiKey
-                $global:JCAPIKEY = $env:JCApiKey
+            # Branch by auth method
+            $activeAuthMethod = if ($JCConfig -and $JCConfig.authPreference) {
+                $JCConfig.authPreference.Method
+            } else {
+                'apiKey'
+            }
+            if ($activeAuthMethod -eq 'clientSecret') {
+                if (-not [System.String]::IsNullOrEmpty($JumpCloudClientId)) {
+                    $env:JCClientId = $JumpCloudClientId
+                    $global:JCClientId = $env:JCClientId
+                }
+                if (-not [System.String]::IsNullOrEmpty($JumpCloudClientSecret)) {
+                    $env:JCClientSecret = $JumpCloudClientSecret
+                    $global:JCClientSecret = $env:JCClientSecret
+                }
+                if ([System.String]::IsNullOrEmpty($env:JCClientId) -or [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
+                    throw 'ClientId and ClientSecret are required when authPreference is set to clientSecret. Pass -JumpCloudClientId and -JumpCloudClientSecret or run Set-JCSettingsFile -authPreferenceMethod apiKey to switch modes.'
+                }
+                $tokenInfo = New-JCBearerToken -ClientId $env:JCClientId -ClientSecret $env:JCClientSecret
+                Write-Verbose ("Bearer token issued, expires at: $($tokenInfo.ExpiresAt.ToString('o'))")
+            } else {
+                # apiKey path
+                if (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey)) {
+                    $env:JCApiKey = $JumpCloudApiKey
+                    $global:JCAPIKEY = $env:JCApiKey
+                }
             }
             # Set $env:JCOrgId in Set-JCOrganization
             try {
-                $Auth = if ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -ErrorVariable api_err
-                } elseif (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId) -ErrorVariable api_err
-                } elseif ([System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId) -ErrorVariable api_err
-                } elseif (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId) -and -not [System.String]::IsNullOrEmpty($env:JCOrgId) -and $JumpCloudOrgId -ne $env:JCOrgId) {
-                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($JumpCloudOrgId) -ErrorVariable api_err
-                } else {
-                    Write-Debug ('The $JumpCloudOrgId supplied matches existing $env:JCOrgId.')
-                    Set-JCOrganization -JumpCloudApiKey:($env:JCApiKey) -JumpCloudOrgId:($env:JCOrgId) -ErrorVariable api_err
+                $orgArgs = @{ ErrorVariable = 'api_err' }
+                if ($activeAuthMethod -ne 'clientSecret' -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                    $orgArgs['JumpCloudApiKey'] = $env:JCApiKey
                 }
+                $orgIdToUse = if (-not [System.String]::IsNullOrEmpty($JumpCloudOrgId)) {
+                    $JumpCloudOrgId
+                } elseif (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                    $env:JCOrgId
+                } else {
+                    $null
+                }
+                if (-not [System.String]::IsNullOrEmpty($orgIdToUse)) {
+                    $orgArgs['JumpCloudOrgId'] = $orgIdToUse
+                }
+                $Auth = Set-JCOrganization @orgArgs
             } catch {
-                Write-Verbose "Error: Unable to validate API Key"
+                Write-Verbose "Error: Unable to validate credentials"
             }
             if (-not [System.String]::IsNullOrEmpty($Auth)) {
                 # Each time a new org is selected get settings info
                 $global:JCSettingsUrl = $JCUrlBasePath + '/api/settings'
                 $global:JCSettings = Invoke-JCApi -Method:('GET') -Url:($JCSettingsUrl)
-                $global:JCOrgSettings = (Get-JcSdkOrganization -Id $env:JCOrgId).Settings
+
                 #EndRegion Set environment variables that can be used by other scripts
                 if (([System.String]::IsNullOrEmpty($JCOrgId)) -or ([System.String]::IsNullOrEmpty($env:JCOrgId))) {
                     Write-Error ('Incorrect JumpCloudOrgID OR no network connectivity. You can obtain your Organization Id below your Organization''s Contact Information on the Settings page.')
                     break
                 }
-                if (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey))) {
-                    Write-Error ('Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with "API Settings" accessible from the drop down in the top right hand corner of the screen')
-                    break
+                if ($activeAuthMethod -eq 'clientSecret') {
+                    if ([System.String]::IsNullOrEmpty($env:JCAccessToken)) {
+                        Write-Error ('Failed to obtain a bearer token from the JumpCloud OAuth endpoint. Verify your ClientId/ClientSecret and network connectivity.')
+                        break
+                    }
+                } else {
+                    if (([System.String]::IsNullOrEmpty($JCAPIKEY)) -or ([System.String]::IsNullOrEmpty($env:JCApiKey))) {
+                        Write-Error ('Incorrect API key OR no network connectivity. To locate your JumpCloud API key log into the JumpCloud admin portal. The API key is located with "API Settings" accessible from the drop down in the top right hand corner of the screen')
+                        break
+                    }
                 }
                 # Check for updates to the module and only prompt if user has not been prompted during the session already
                 if (!($force)) {
