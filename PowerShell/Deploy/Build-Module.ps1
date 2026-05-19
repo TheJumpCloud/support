@@ -5,7 +5,7 @@ param (
     $ReleaseType,
     [Parameter()]
     [String]
-    $ModuleName,
+    $ModuleName = "JumpCloud",
     [Parameter()]
     [string]
     $RequiredModulesRepo,
@@ -15,7 +15,6 @@ param (
 )
 # Region: Load Configuration
 # Manually define variables to ensure they are passed correctly to the child script on all platforms
-$ModuleName = "JumpCloud"
 $ModuleFolderName = "JumpCloud Module"
 $DeployFolder = "/PowerShell/Deploy"
 
@@ -54,3 +53,53 @@ if (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
     ($NewModuleChangelogRecord + ($ModuleChangelog | Out-String)).Trim() | Set-Content -Path:($FilePath_ModuleChangelog) -Force
 }
 # EndRegion Updating module change log
+
+# ====================================================================
+# Region: Orchestrating Required Build Functions (Joe's Feedback)
+# ====================================================================
+
+# Security guarantee: if the parameter is empty, the default is set.
+if (-not $ModuleName) {
+    $ModuleName = "JumpCloud"
+}
+
+Write-Host ('[status] Running synchronized SDK endpoints sync...')
+$SdkSyncPath = Join-Path -Path $PSScriptRoot -ChildPath "SdkSync"
+$SdkScriptPath = Join-Path -Path $SdkSyncPath -ChildPath "jcapiToSupportSync.ps1"
+if (Test-Path $SdkScriptPath) {
+    & $SdkScriptPath
+} else {
+    Write-Warning "SdkSync script not found at $SdkScriptPath"
+}
+
+Write-Host ('[status] Generating Module Help Files...')
+$BuildHelpPath = Join-Path -Path $PSScriptRoot -ChildPath "Build-HelpFiles.ps1"
+if (Test-Path $BuildHelpPath) {
+    $ModuleFolder = Split-Path -Parent $FilePath_psd1
+
+    # 1. Take a screenshot of where the terminal is now so you don't break the rest of the script.
+    $PreviousLocation = Get-Location
+
+    # 2. Navigate PowerShell 5.1 to the Docs folder so it can find the about_JumpCloud.md file.
+    Set-Location -Path (Join-Path -Path $ModuleFolder -ChildPath "Docs")
+
+    # 3. It runs the help script normally, just as it was doing before.
+    & $BuildHelpPath -ModuleName $ModuleName -ModulePath $ModuleFolder
+
+    # 4. Return the terminal to exactly where it was before.
+    Set-Location -Path $PreviousLocation
+} else {
+    Write-Warning "Build-HelpFiles script not found at $BuildHelpPath"
+}
+
+Write-Host ('[status] Autogenerating Pester Test Files...')
+$BuildTestsPath = Join-Path -Path $PSScriptRoot -ChildPath "Build-PesterTestFiles.ps1"
+if (Test-Path $BuildTestsPath) {
+    # Called without any parameters, as it discovers the paths on its own.
+    & $BuildTestsPath
+}
+ else {
+    Write-Warning "Build-PesterTestFiles script not found at $BuildTestsPath"
+}
+
+# EndRegion Orchestrating Required Build Functions
