@@ -13,12 +13,7 @@ function Invoke-JCApi {
     begin {
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
-        # Determine the active auth method from settings (defaults to apiKey for back-compat)
-        $authMethod = if ($global:JCConfig -and $global:JCConfig.authPreference) {
-            $global:JCConfig.authPreference.Method
-        } else {
-            'apiKey'
-        }
+        $authMethod = Get-JCActiveAuthMethod
         # Populate credentials if not set (branch by auth method)
         if ($authMethod -eq 'clientSecret') {
             if ([System.String]::IsNullOrEmpty($env:JCClientId) -or [System.String]::IsNullOrEmpty($env:JCClientSecret)) {

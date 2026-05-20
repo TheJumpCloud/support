@@ -16,12 +16,7 @@ function Set-JCOrganization {
             $env:JCOrgId = $JumpCloudOrgId
             $global:JCOrgId = $env:JCOrgId
         }
-        # Determine active auth method from settings
-        $authMethod = if ($global:JCConfig -and $global:JCConfig.authPreference) {
-            $global:JCConfig.authPreference.Method
-        } else {
-            'apiKey'
-        }
+        $authMethod = Get-JCActiveAuthMethod
         if ($authMethod -eq 'clientSecret') {
             # In clientSecret mode, credentials are provided by Connect-JCOnline as ClientId/ClientSecret.
             # The bearer token (and refreshable creds) live in $env:JCClientId / $env:JCClientSecret / $env:JCAccessToken.

@@ -2,13 +2,9 @@ function Get-JCAuthStatus {
     [CmdletBinding()]
     param ()
     process {
-        $method = if ($global:JCConfig -and $global:JCConfig.authPreference) {
-            $global:JCConfig.authPreference.Method
-        } else {
-            'apiKey'
-        }
+        $authMethod = Get-JCActiveAuthMethod
 
-        if ($method -eq 'clientSecret') {
+        if ($authMethod -eq 'clientSecret') {
             $maskedClientId = if (-not [System.String]::IsNullOrEmpty($env:JCClientId)) {
                 $idLen = $env:JCClientId.Length
                 if ($idLen -gt 12) {
@@ -30,7 +26,7 @@ function Get-JCAuthStatus {
             }
 
             return [PSCustomObject]@{
-                Method          = $method
+                Method          = $authMethod
                 Environment     = $env:JCEnvironment
                 OrgId           = $env:JCOrgId
                 OrgName         = $env:JCOrgName
@@ -44,7 +40,7 @@ function Get-JCAuthStatus {
             }
         } else {
             return [PSCustomObject]@{
-                Method      = $method
+                Method      = $authMethod
                 Environment = $env:JCEnvironment
                 OrgId       = $env:JCOrgId
                 OrgName     = $env:JCOrgName

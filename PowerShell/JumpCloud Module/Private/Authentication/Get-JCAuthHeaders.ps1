@@ -8,11 +8,7 @@ function Get-JCAuthHeaders {
             'x-org-id'     = "$($env:JCOrgId)"
         }
 
-        $authMethod = if ($global:JCConfig -and $global:JCConfig.authPreference) {
-            $global:JCConfig.authPreference.Method
-        } else {
-            'apiKey'
-        }
+        $authMethod = Get-JCActiveAuthMethod
 
         if ($authMethod -eq 'clientSecret') {
             $token = Get-JCAccessToken
