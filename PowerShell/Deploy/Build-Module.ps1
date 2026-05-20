@@ -77,16 +77,12 @@ $BuildHelpPath = Join-Path -Path $PSScriptRoot -ChildPath "Build-HelpFiles.ps1"
 if (Test-Path $BuildHelpPath) {
     $ModuleFolder = Split-Path -Parent $FilePath_psd1
 
-    # 1. Take a screenshot of where the terminal is now so you don't break the rest of the script.
     $PreviousLocation = Get-Location
 
-    # 2. Navigate PowerShell 5.1 to the Docs folder so it can find the about_JumpCloud.md file.
     Set-Location -Path (Join-Path -Path $ModuleFolder -ChildPath "Docs")
 
-    # 3. It runs the help script normally, just as it was doing before.
     & $BuildHelpPath -ModuleName $ModuleName -ModulePath $ModuleFolder
 
-    # 4. Return the terminal to exactly where it was before.
     Set-Location -Path $PreviousLocation
 } else {
     Write-Warning "Build-HelpFiles script not found at $BuildHelpPath"
@@ -102,4 +98,3 @@ if (Test-Path $BuildTestsPath) {
     Write-Warning "Build-PesterTestFiles script not found at $BuildTestsPath"
 }
 
-# EndRegion Orchestrating Required Build Functions
