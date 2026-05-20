@@ -54,11 +54,6 @@ if (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
 }
 # EndRegion Updating module change log
 
-# Security guarantee: if the parameter is empty, the default is set.
-if (-not $ModuleName) {
-    $ModuleName = "JumpCloud"
-}
-
 Write-Host ('[status] Running synchronized SDK endpoints sync...')
 $SdkSyncPath = Join-Path -Path $PSScriptRoot -ChildPath "SdkSync"
 $SdkScriptPath = Join-Path -Path $SdkSyncPath -ChildPath "jcapiToSupportSync.ps1"
