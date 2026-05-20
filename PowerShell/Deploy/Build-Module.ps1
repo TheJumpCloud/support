@@ -54,10 +54,6 @@ if (!(($ModuleChangelog | Select-Object -First 1) -match $ModuleVersion)) {
 }
 # EndRegion Updating module change log
 
-# ====================================================================
-# Region: Orchestrating Required Build Functions (Joe's Feedback)
-# ====================================================================
-
 # Security guarantee: if the parameter is empty, the default is set.
 if (-not $ModuleName) {
     $ModuleName = "JumpCloud"
