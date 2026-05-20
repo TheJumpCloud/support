@@ -89,8 +89,7 @@ $BuildTestsPath = Join-Path -Path $PSScriptRoot -ChildPath "Build-PesterTestFile
 if (Test-Path $BuildTestsPath) {
     # Called without any parameters, as it discovers the paths on its own.
     & $BuildTestsPath
-}
- else {
+} else {
     Write-Warning "Build-PesterTestFiles script not found at $BuildTestsPath"
 }
 
