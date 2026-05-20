@@ -3,18 +3,25 @@ function Connect-JCOnline () {
     param
     (
         [Parameter(
-            ParameterSetName = 'force',
-            HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.'
+            Mandatory = $false,
+            HelpMessage = 'Using the "-Force" parameter the module update check is skipped.'
         )]
-        [Switch]$force
+        [Switch]$force,
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Use the -select switch to select from stored API keys.'
+        )]
+        [Switch]$select
     )
     dynamicparam {
+        $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
+        # Can be interactive above
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
             'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
-            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateNotNullOrEmpty'          = $false;
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{
@@ -32,14 +39,21 @@ function Connect-JCOnline () {
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
-            'ValidateSet'                     = ('STANDARD', 'staging', 'EU');
+            'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
+        # Gets $select param value
+        if($BoundParams.ContainsKey('select') -or ([System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $BoundParams.ContainsKey('JumpCloudApiKey')))) {
+            $newKey = KeySelector
+            if(-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
+        }
+        if([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
+            throw "No API key selected";
         } else {
             $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
         }
+
         # If the $env:JCOrgId is set then set the default value to be the env variable
         if (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
             $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
@@ -74,7 +88,8 @@ function Connect-JCOnline () {
         return $RuntimeParameterDictionary
     }
     begin {
-        # Debug message for parameter call
+        # Debug message for parameter call]
+        Write-Debug -Message:('Parameter values:')
         $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
     process {
@@ -97,22 +112,34 @@ function Connect-JCOnline () {
             switch ($env:JCEnvironment) {
                 'STANDARD' {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $env:JCEnvironment = 'STANDARD'
                 }
-                'staging' {
-                    $global:JCUrlBasePath = "https://console.awsstg.jumpcloud.com"
+                'STAGING' {
+                    $global:JCUrlBasePath = "https://console.stg01.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.stg01"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.stg01"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.stg01"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.stg01"
+                    $env:JCEnvironment = 'STAGING'
+
                 }
                 'EU' {
                     $global:JCUrlBasePath = "https://console.eu.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.eu"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $env:JCEnvironment = 'EU'
                 }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
                     $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console"
                     $env:JCEnvironment = 'STANDARD'
                 }
@@ -243,4 +270,37 @@ function Connect-JCOnline () {
     }
     end {
     }
+}
+
+function KeySelector {
+    Unlock-Platform
+    $sufix_ = ".api.jc"
+    $keys = Get-VaultKeys -sufix $sufix_
+    if(($null -eq $keys) -or ($keys.Count -eq 0)) {
+        Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
+        Request-NewKey
+        $keys = Get-VaultKeys -sufix $sufix_
+    }
+    Write-Host "Select the JumpCloud Api Key. Press [Escape] to type a new key. Press [Backspace] to remove the selected key" -ForegroundColor Green
+    while (@($false, $null) -contains ($vaultKey = Find-Interactive -choices $keys -Callback {
+        param($param)
+        Remove-FromVault -Key $param;
+    })) {
+        $keys = Get-VaultKeys -sufix $sufix_
+        if (($null -eq $vaultKey) -or ($null -eq $keys) -or ($keys.Count -eq 0)) {
+            if($keys.Count -eq 0) {
+                Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
+            }
+            Request-NewKey
+        }
+        $keys = Get-VaultKeys -sufix $sufix_
+    }
+    $foundKey = Get-KeyFromVault -Key $vaultKey
+
+    if("" -eq $foundKey -or $null -eq $foundKey) {
+        Write-Host "Aborted. Exiting." -ForegroundColor Yellow
+        return $true
+    }
+    Clear-Console -LinesToClear 1
+    $foundKey
 }
