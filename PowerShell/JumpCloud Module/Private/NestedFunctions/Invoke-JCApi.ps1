@@ -13,21 +13,27 @@ function Invoke-JCApi {
     begin {
         # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
-        # Populate $env:JCApiKey if its not set
-        if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
-            Connect-JCOnline -force | Out-Null
+        $authMethod = Get-JCActiveAuthMethod
+        # Populate credentials if not set (branch by auth method)
+        if ($authMethod -eq 'clientSecret') {
+            if ([System.String]::IsNullOrEmpty($env:JCClientId) -or [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
+                Connect-JCOnline -force | Out-Null
+            }
+        } else {
+            if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                Connect-JCOnline -force | Out-Null
+            }
         }
         # Populate $env:JCOrgId if its not set
-        if (-not [System.String]::IsNullOrEmpty($env:JCApiKey) -and [System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*') {
-            Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey) | Out-Null
+        if ([System.String]::IsNullOrEmpty($env:JCOrgId) -and $Url -notlike '*/api/organizations*') {
+            if ($authMethod -eq 'clientSecret') {
+                Set-JCOrganization | Out-Null
+            } elseif (-not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                Set-JCOrganization -JumpCloudAPIKey:($env:JCApiKey) | Out-Null
+            }
         }
         #Set JC headers
-        $Headers = @{
-            'Content-Type' = 'application/json';
-            'Accept'       = 'application/json';
-            'x-api-key'    = "$($env:JCApiKey)";
-            'x-org-id'     = "$($env:JCOrgId)";
-        }
+        $Headers = Get-JCAuthHeaders
         # TODO: CUT-4439 need a dynamic list of endpoints that do not accept x-org-id
         # Organizations endpoint does not accept x-org-id in header
         if (

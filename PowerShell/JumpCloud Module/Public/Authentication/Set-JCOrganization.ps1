@@ -16,19 +16,30 @@ function Set-JCOrganization {
             $env:JCOrgId = $JumpCloudOrgId
             $global:JCOrgId = $env:JCOrgId
         }
-        # Set $env:JCApiKey in Connect-JCOnline
-        if ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey)) {
-            Connect-JCOnline
-        } elseif ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey))) {
-            Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey)
-        } elseif ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
-            Connect-JCOnline -JumpCloudApiKey:($env:JCApiKey)
-        } elseif ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -ne $env:JCApiKey) {
-            Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey)
+        $authMethod = Get-JCActiveAuthMethod
+        if ($authMethod -eq 'clientSecret') {
+            # In clientSecret mode, credentials are provided by Connect-JCOnline as ClientId/ClientSecret.
+            # The bearer token (and refreshable creds) live in $env:JCClientId / $env:JCClientSecret / $env:JCAccessToken.
+            if ([System.String]::IsNullOrEmpty($env:JCClientId) -or [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
+                Connect-JCOnline
+            }
+            $authReady = -not [System.String]::IsNullOrEmpty($env:JCClientId) -and -not [System.String]::IsNullOrEmpty($env:JCClientSecret)
         } else {
-            # Auth has been verified
+            # Set $env:JCApiKey in Connect-JCOnline
+            if ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                Connect-JCOnline
+            } elseif ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and [System.String]::IsNullOrEmpty($env:JCApiKey))) {
+                Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey)
+            } elseif ([System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) {
+                Connect-JCOnline -JumpCloudApiKey:($env:JCApiKey)
+            } elseif ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -ne $env:JCApiKey) {
+                Connect-JCOnline -JumpCloudApiKey:($JumpCloudApiKey)
+            } else {
+                # Auth has been verified
+            }
+            $authReady = (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -eq $env:JCApiKey
         }
-        if ((-not [System.String]::IsNullOrEmpty($JumpCloudApiKey) -and -not [System.String]::IsNullOrEmpty($env:JCApiKey)) -and $JumpCloudApiKey -eq $env:JCApiKey) {
+        if ($authReady) {
             Write-Verbose ("Parameter Set: $($PSCmdlet.ParameterSetName)")
             Write-Verbose ('Populating JCOrganizations')
             try {
@@ -39,8 +50,10 @@ function Set-JCOrganization {
             if (-not [System.String]::IsNullOrEmpty($Organizations)) {
                 if ($Organizations.Count -gt 1) {
                     # Set the JCProviderID
-                    $JCProviderHeaders = @{
-                        'x-api-key' = $env:JCApiKey
+                    $JCProviderHeaders = Get-JCAuthHeaders
+                    # /api/users/getSelf does not expect x-org-id when no org is selected yet
+                    if ($JCProviderHeaders.ContainsKey('x-org-id') -and [System.String]::IsNullOrEmpty($env:JCOrgId)) {
+                        $JCProviderHeaders.Remove('x-org-id') | Out-Null
                     }
                     $ProviderResponse = Invoke-RestMethod -Uri "$global:JCUrlBasePath/api/users/getSelf?fields=provider" -Method GET -Headers $JCProviderHeaders
                     if ($ProviderResponse) {
