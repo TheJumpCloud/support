@@ -1,6 +1,6 @@
-Function Get-JCResults {
+function Get-JCResults {
     [CmdletBinding()]
-    Param(
+    param(
         [Parameter(Mandatory = $true, HelpMessage = 'URL of Endpoint')][ValidateNotNullOrEmpty()]$URL,
         [Parameter(Mandatory = $true, HelpMessage = 'Method of WebRequest')][ValidateNotNullOrEmpty()]$method,
         [Parameter(Mandatory = $true, HelpMessage = 'Limit of WebRequest')][ValidateNotNullOrEmpty()]$limit,
@@ -8,12 +8,8 @@ Function Get-JCResults {
         [Parameter(Mandatory = $false, HelpMessage = 'Boolean: True to run in parallel, False to run in sequential; Default value: false')][bool]$parallel = $false
     )
     begin {
-        $hdrs = @{
-            'Content-Type' = 'application/json'
-            'Accept'       = 'application/json'
-            'X-API-KEY'    = $JCAPIKEY
-        }
-        if ($JCOrgID) {
+        $hdrs = Get-JCAuthHeaders
+        if (-not $hdrs.ContainsKey('x-org-id')) {
             $hdrs.Add('x-org-id', "$($JCOrgID)")
         }
 
@@ -82,7 +78,7 @@ Function Get-JCResults {
             } else {
                 # Add content to threadsafe object
                 $results = $content.results
-                ForEach ($result in $results) {
+                foreach ($result in $results) {
                     [void]$resultsArray.Add($result)
                 }
             }
@@ -133,7 +129,7 @@ Function Get-JCResults {
                             # Add content to threadsafe object
                             $content = $response.Content | ConvertFrom-Json
                             $results = $content.results
-                            ForEach ($result in $results) {
+                            foreach ($result in $results) {
                                 [void]$resultsArray.Add($result)
                             }
                         }
@@ -154,7 +150,7 @@ Function Get-JCResults {
                             # Add content to threadsafe object
                             $content = $response.Content | ConvertFrom-Json
                             $results = $content.results
-                            ForEach ($result in $results) {
+                            foreach ($result in $results) {
                                 [void]$resultsArray.Add($result)
                             }
                         }
