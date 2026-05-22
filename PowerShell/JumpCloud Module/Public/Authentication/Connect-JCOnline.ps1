@@ -9,9 +9,14 @@ function Connect-JCOnline () {
         [Switch]$force,
         [Parameter(
             Mandatory = $false,
-            HelpMessage = 'Use the -select switch to select from stored API keys.'
+            HelpMessage = 'Use the -select to select from stored API keys. Or informe an value with the same param'
         )]
-        [Switch]$select
+        [Switch]$Select,
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Vault Key Name.'
+        )]
+        [string]$Credential
     )
     dynamicparam {
         $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
@@ -42,14 +47,16 @@ function Connect-JCOnline () {
             'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        # Gets $select param value
-        if($BoundParams.ContainsKey('select') -or ([System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $BoundParams.ContainsKey('JumpCloudApiKey')))) {
+        # Gets $Select param value
+        if(($BoundParams.ContainsKey('Select') -and -not $BoundParams.ContainsKey('Credential')) -or ([System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $BoundParams.ContainsKey('JumpCloudApiKey')))) {
             $newKey = KeySelector
-            if(-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
         }
+        if($BoundParams.ContainsKey('Credential')) {
+            $newKey = KeySelector -keyName $BoundParams['Credential']
+        }
+        if(-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
         if([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
-            throw "No API key selected";
         } else {
             $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
         }
@@ -203,7 +210,7 @@ function Connect-JCOnline () {
                                 $downRepo += $site
                             }
                             # Clean up the http request by closing it.
-                            if ($HTTP_Response -eq $null) {
+                            if ($null -eq $HTTP_Response) {
                             } else {
                                 $HTTP_Response.Close()
                             }
@@ -273,34 +280,55 @@ function Connect-JCOnline () {
 }
 
 function KeySelector {
+    param(
+        [Parameter(Mandatory=$false)]
+        [string]$keyName
+    ) 
     Unlock-Platform
+    if(-not [System.String]::IsNullOrEmpty($keyName)) {
+        return Request-Key -vaultKey $keyName
+    }
+
     $sufix_ = ".api.jc"
     $keys = Get-VaultKeys -sufix $sufix_
     if(($null -eq $keys) -or ($keys.Count -eq 0)) {
         Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
-        Request-NewKey
+        Request-NewKey -sufix $sufix_
         $keys = Get-VaultKeys -sufix $sufix_
     }
+
     Write-Host "Select the JumpCloud Api Key. Press [Escape] to type a new key. Press [Backspace] to remove the selected key" -ForegroundColor Green
+    # Stays in selection loop until user selects a key or abort.
     while (@($false, $null) -contains ($vaultKey = Find-Interactive -choices $keys -Callback {
         param($param)
-        Remove-FromVault -Key $param;
+        return Confirm-Console -Message "Selected key: $param. Are you sure want to remove this key from vault?" -YesAction { Remove-FromVault -Key $param }
     })) {
         $keys = Get-VaultKeys -sufix $sufix_
         if (($null -eq $vaultKey) -or ($null -eq $keys) -or ($keys.Count -eq 0)) {
             if($keys.Count -eq 0) {
                 Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
             }
-            Request-NewKey
+            Request-NewKey -sufix $sufix_
         }
         $keys = Get-VaultKeys -sufix $sufix_
     }
+    Request-Key -vaultKey $vaultKey
+
+    Clear-Console -LinesToClear 1
+    $foundKey
+}
+
+function Request-Key {
+    param (
+        [Parameter(Mandatory=$false)]
+        [string]$vaultKey
+    )
     $foundKey = Get-KeyFromVault -Key $vaultKey
 
     if("" -eq $foundKey -or $null -eq $foundKey) {
         Write-Host "Aborted. Exiting." -ForegroundColor Yellow
-        return $true
+        throw "No key selected"
+    } else {
+        return $foundKey
     }
-    Clear-Console -LinesToClear 1
-    $foundKey
 }

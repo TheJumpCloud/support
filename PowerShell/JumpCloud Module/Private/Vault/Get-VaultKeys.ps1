@@ -11,7 +11,7 @@ function Get-VaultKeys() {
             $keys = [CredManager]::GetTargetList().Where({ $_.EndsWith($sufix) })
         } catch {
             Write-Host "Error retrieving keys: $_" -ForegroundColor Red
-            return null
+            return $null
         }
     } ElseIf($plat -eq "MacOS") {
         $keys = security dump-keychain | ForEach-Object {
