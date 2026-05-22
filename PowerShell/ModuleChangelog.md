@@ -1,3 +1,18 @@
+## 3.2.0
+
+Release Date: May 22, 2026
+
+#### RELEASE NOTES
+
+```
+Introduced support for IN based organizations with Connect-JCOnline
+```
+
+#### FEATURES:
+
+- Adds IN as a supported value for the `-JCEnvironment` parameter
+  - This now allows organizations based in the IN datacenter to run PowerShell commands
+
 ## 3.1.0
 
 Release Date: May 12, 2026
