@@ -3,12 +3,19 @@ function Unlock-Platform() {
         $plat = "Windows"
         $Definition = @"
         using System;
+        using System.ComponentModel;
         using System.Runtime.InteropServices;
         using System.Collections.Generic;
 
         public class CredManager {
+            private const int CRED_TYPE_GENERIC = 1;
+            private const int CRED_PERSIST_LOCAL_MACHINE = 2;
+
             [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             public static extern bool CredRead(string target, int type, int reservedFlag, out IntPtr credentialPtr);
+
+            [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            public static extern bool CredWrite(ref PCREDENTIAL userCredential, uint flags);
 
             [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             public static extern bool CredEnumerate(string filter, int flag, out int count, out IntPtr pCredentials);
@@ -52,12 +59,40 @@ function Unlock-Platform() {
 
             public static string GetCreds(string target) {
                 IntPtr credPtr;
-                if (CredRead(target, 1, 0, out credPtr)) {
-                    PCREDENTIAL cred = (PCREDENTIAL)Marshal.PtrToStructure(credPtr, typeof(PCREDENTIAL));
-                    string password = Marshal.PtrToStringUni(cred.credentialBlob, cred.credentialBlobSize / 2);
-                    return password;
+                if (CredRead(target, CRED_TYPE_GENERIC, 0, out credPtr)) {
+                    try {
+                        PCREDENTIAL cred = (PCREDENTIAL)Marshal.PtrToStructure(credPtr, typeof(PCREDENTIAL));
+                        return Marshal.PtrToStringUni(cred.credentialBlob, cred.credentialBlobSize / 2);
+                    } finally {
+                        CredFree(credPtr);
+                    }
                 }
                 return null;
+            }
+
+            public static void SetCreds(string target, string userName, string secret) {
+                IntPtr blobPtr = Marshal.StringToCoTaskMemUni(secret);
+                try {
+                    PCREDENTIAL cred = new PCREDENTIAL();
+                    cred.flags = 0;
+                    cred.type = CRED_TYPE_GENERIC;
+                    cred.targetName = target;
+                    cred.comment = null;
+                    cred.lastWritten = 0;
+                    cred.credentialBlobSize = (secret.Length + 1) * 2;
+                    cred.credentialBlob = blobPtr;
+                    cred.persist = CRED_PERSIST_LOCAL_MACHINE;
+                    cred.attributeCount = 0;
+                    cred.attributes = IntPtr.Zero;
+                    cred.targetAlias = null;
+                    cred.userName = userName;
+
+                    if (!CredWrite(ref cred, 0)) {
+                        throw new Win32Exception(Marshal.GetLastWin32Error());
+                    }
+                } finally {
+                    Marshal.FreeCoTaskMem(blobPtr);
+                }
             }
         }
 "@

@@ -6,7 +6,7 @@ function Get-VaultKeys() {
 
     $plat = $env:CONSOLE_PLATFORM
     If($plat -eq "Windows") {
-        $username = $env:USERNAME.Trim().ToLower().Replace(" ", "_")
+        # $username = $env:USERNAME.Trim().ToLower().Replace(" ", "_")
         try {
             $keys = [CredManager]::GetTargetList().Where({ $_.EndsWith($sufix) })
         } catch {

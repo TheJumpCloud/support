@@ -1,7 +1,7 @@
 function Request-NewKey() {
     param(
         [Parameter(Mandatory=$false)]
-        [string]$sufix_ = "api.jc"
+        [string]$sufix_ = ".api.jc"
     )
     Set-ToVault -Value (
         [System.Net.NetworkCredential]::new("", (Read-Host -Prompt "Type the api key" -AsSecureString)).Password

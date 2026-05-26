@@ -16,6 +16,8 @@ function Set-ToVault() {
     $value = $Value.Trim()
     if ($plat -eq "MacOS") {
         try {
+            # Not necessary to use same approach as MacOs
+            # MacOs is safe to use security command as above
             security add-generic-password -a $env:USER -s ($key_+$sufix) -w $value -T "" 2>$null
             if ($LASTEXITCODE -ne 0) {
                 throw "Failed to add key to Keychain."
@@ -25,10 +27,8 @@ function Set-ToVault() {
         }
     } elseif ($plat -eq "Windows") {
         try {
-            cmdkey /generic:($key_+$sufix) /user:($env:USERNAME) /pass:$value 2>$null
-            if ($LASTEXITCODE -ne 0) {
-                throw "Failed to add key to Credential Manager."
-            }
+            Unlock-Platform
+            [CredManager]::SetCreds(($key_ + $sufix), $env:USERNAME, $value)
         } catch {
             throw "Error adding key to Credential Manager: $_"
         }

@@ -4,8 +4,8 @@ function Get-KeyFromVault() {
         [Parameter(Mandatory=$true)]
         [string]$Key
     )
-    $plat = $env:CONSOLE_PLATFORM
     Unlock-Platform
+    $plat = $env:CONSOLE_PLATFORM
     if ($plat -eq "MacOS") {
         $serviceKey = security find-generic-password -s $Key -w
         if ($LASTEXITCODE -ne 0) {

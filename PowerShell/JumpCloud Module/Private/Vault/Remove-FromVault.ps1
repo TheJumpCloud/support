@@ -13,7 +13,7 @@ function Remove-FromVault() {
                 throw "Failed to delete key from Keychain."
             }
         } catch {
-            Write-Host "Error deleting key from Keychain: $_" -ForegroundColor Red
+            throw "Error deleting key from Keychain: $_"
         }
     } elseif ($plat -eq "Windows") {
         try {
