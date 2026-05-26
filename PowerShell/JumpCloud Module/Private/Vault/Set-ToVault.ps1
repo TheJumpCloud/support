@@ -21,7 +21,7 @@ function Set-ToVault() {
                 throw "Failed to add key to Keychain."
             }
         } catch {
-            Write-Host "Error adding key to Keychain: $_" -ForegroundColor Red
+            throw "Error adding key to Keychain: $_"
         }
     } elseif ($plat -eq "Windows") {
         try {

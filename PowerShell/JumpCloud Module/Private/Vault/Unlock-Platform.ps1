@@ -61,7 +61,7 @@ function Unlock-Platform() {
             }
         }
 "@
-        Add-Type -TypeDefinition $Definition -Language CSharp
+        if (-not ("CredManager" -as [type])) { Add-Type -TypeDefinition $Definition -Language CSharp }
     } elseif([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)) {
         $plat = "MacOS"
         # Will be asked all times, sadly too

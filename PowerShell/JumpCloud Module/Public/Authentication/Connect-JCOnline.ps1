@@ -12,6 +12,7 @@ function Connect-JCOnline () {
             HelpMessage = 'Use the -select to select from stored API keys. Or informe an value with the same param'
         )]
         [Switch]$Select,
+        # Its the key name, not the key value
         [Parameter(
             Mandatory = $false,
             HelpMessage = 'Vault Key Name.'
@@ -20,7 +21,9 @@ function Connect-JCOnline () {
     )
     dynamicparam {
         $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
-        # Can be interactive above
+        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+        $RawCommandLine = [string]$MyInvocation.Line
+        
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
@@ -47,13 +50,19 @@ function Connect-JCOnline () {
             'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        # Gets $Select param value
-        if(($BoundParams.ContainsKey('Select') -and -not $BoundParams.ContainsKey('Credential')) -or ([System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $BoundParams.ContainsKey('JumpCloudApiKey')))) {
+        # Priority for selecting key is: 1)  -JumpCloudApiKey parameter, 2) -Select parameter, 3) $env:JCApiKey
+        # Reformulated to get less confusing
+        $containsApiKey = $false
+        if($RawCommandLine -match 'JumpCloudApiKey') {$containsApiKey = $true}
+        $emp1 = $BoundParams.ContainsKey('Select') -and (-not $BoundParams.ContainsKey('Credential')) -and (-not $containsApiKey)
+        $emp2 = [System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $containsApiKey) -and (-not $BoundParams.ContainsKey('Credential'))
+        if($emp1 -or $emp2) {
             $newKey = KeySelector
         }
         if($BoundParams.ContainsKey('Credential')) {
             $newKey = KeySelector -keyName $BoundParams['Credential']
         }
+
         if(-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
         if([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
@@ -73,7 +82,6 @@ function Connect-JCOnline () {
         }
         # Build output
         # Build parameter array
-        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParamVarPrefix = 'Param_'
         Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
@@ -312,10 +320,12 @@ function KeySelector {
         }
         $keys = Get-VaultKeys -sufix $sufix_
     }
-    Request-Key -vaultKey $vaultKey
 
-    Clear-Console -LinesToClear 1
-    $foundKey
+    # $vaultKey is being declared above as the output of Find-Interactive, so it will be available here for
+    $foundKey = Request-Key -vaultKey $vaultKey
+
+    Clear-Console -LinesToClear 2
+    return $foundKey
 }
 
 function Request-Key {

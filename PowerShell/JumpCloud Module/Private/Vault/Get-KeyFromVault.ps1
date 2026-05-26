@@ -5,6 +5,7 @@ function Get-KeyFromVault() {
         [string]$Key
     )
     $plat = $env:CONSOLE_PLATFORM
+    Unlock-Platform
     if ($plat -eq "MacOS") {
         $serviceKey = security find-generic-password -s $Key -w
         if ($LASTEXITCODE -ne 0) {
@@ -16,5 +17,6 @@ function Get-KeyFromVault() {
         throw "Unsupported OS."
     }
 
+    Write-Host "Retrieved key from Credential Manager: $key" -ForegroundColor Green
     return $serviceKey
 }
