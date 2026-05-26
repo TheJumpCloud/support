@@ -14,8 +14,8 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-JCEnvironmentLocation <PSObject>]
- [-parallelOverride <PSObject>] [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
+Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>]
+ [-JCEnvironmentLocation <PSObject>] [-parallelOverride <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -50,6 +50,7 @@ Sets the Environment Location settings to allow connection to the [region-specif
 Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
 Aliases:
+Accepted values: STANDARD, STAGING, EU, IN
 
 Required: False
 Position: Named
