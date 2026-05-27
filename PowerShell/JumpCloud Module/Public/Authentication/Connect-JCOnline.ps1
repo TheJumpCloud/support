@@ -31,8 +31,8 @@ function Connect-JCOnline () {
             'Position'                        = 3;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
-            'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU');
+            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU", "IN", or "STANDARD".';
+            'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU', 'IN');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
@@ -119,6 +119,14 @@ function Connect-JCOnline () {
                     $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $env:JCEnvironment = 'EU'
+                }
+                'IN' {
+                    $global:JCUrlBasePath = "https://console.in.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.in"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.in"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.in"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.in"
+                    $env:JCEnvironment = 'IN'
                 }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
