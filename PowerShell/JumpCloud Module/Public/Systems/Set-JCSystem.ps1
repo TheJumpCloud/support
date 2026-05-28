@@ -1,55 +1,64 @@
-Function Set-JCSystem () {
+Function Set-JCSystem {
     [CmdletBinding()]
-
     param
     (
-
-        [Parameter(Mandatory, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The _id of the System which you want to remove from JumpCloud. The SystemID will be the 24 character string populated for the _id field. SystemID has an Alias of _id. This means you can leverage the PowerShell pipeline to populate this field automatically by calling a JumpCloud function that returns the SystemID. This is shown in EXAMPLE 2')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, Position = 0, HelpMessage = 'The _id of the System which you want to update in JumpCloud.')]
         [string]
         [Alias('_id', 'id')]
         $SystemID,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The system displayName. The displayName is set to the hostname of the system during agent installation. When the system hostname updates the displayName does not update.')]
-        [string]
-        $displayName,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][string]$displayName,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][string]$description,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][bool]$allowSshPasswordAuthentication,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][bool]$allowSshRootLogin,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][bool]$allowMultiFactorAuthentication,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][bool]$allowPublicKeyAuthentication,
+        [Parameter(ValueFromPipelineByPropertyName = $true)][bool]$systemInsights,
+        [Parameter(ValueFromPipelineByPropertyName = $false)]$primarySystemUser,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The system description. String param to set system description')]
-        [string]
-        $description,
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The number of custom attributes to add or update.')]
+        [int]$NumberOfCustomAttributes,
 
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for ssh password authentication.')]
-        [bool]
-        $allowSshPasswordAuthentication,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for ssh root login.')]
-        [bool]
-        $allowSshRootLogin,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for MFA during system login. Note this setting only applies systems running Linux or Mac.')]
-        [bool]
-        $allowMultiFactorAuthentication,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'A boolean $true/$false value to allow for public key authentication.')]
-        [bool]
-        $allowPublicKeyAuthentication,
-
-        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'Setting this value to $true will enable systemInsights and collect data for this system. Setting this value to $false will disable systemInsights and data collection for the system.')]
-        [bool]
-        $systemInsights,
-
-        [Parameter(ValueFromPipelineByPropertyName = $false, HelpMessage = 'A value indicating a JumpCloud users email, username or userID. This will add the user to the device associations')]
-        $primarySystemUser
+        [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The name of the custom attributes to remove.')]
+        [string[]][Alias('RemoveAttribute')]$RemoveCustomAttribute
     )
 
-    begin {
+    DynamicParam {
+        # Inicializa o dicionário nativo para evitar falhas de compilação no macOS
+        $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
+        if ($PSBoundParameters.ContainsKey('NumberOfCustomAttributes') -and $PSBoundParameters['NumberOfCustomAttributes'] -gt 0) {
+            [int]$NumberOfCustomAttributes = $PSBoundParameters['NumberOfCustomAttributes']
+
+            for ($ParamNumber = 1; $ParamNumber -le $NumberOfCustomAttributes; $ParamNumber++) {
+                $attr = New-Object System.Management.Automation.ParameterAttribute
+                $attr.Mandatory = $true
+                $attr.ValueFromPipelineByPropertyName = $true
+                $attrColl = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                $attrColl.Add($attr)
+                $param = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_name", [string], $attrColl)
+                $dict.Add("Attribute$ParamNumber`_name", $param)
+
+                $attr1 = New-Object System.Management.Automation.ParameterAttribute
+                $attr1.Mandatory = $true
+                $attr1.ValueFromPipelineByPropertyName = $true
+                $attrColl1 = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+                $attrColl1.Add($attr1)
+                $param1 = New-Object System.Management.Automation.RuntimeDefinedParameter("Attribute$ParamNumber`_value", [string], $attrColl1)
+                $dict.Add("Attribute$ParamNumber`_value", $param1)
+            }
+        }
+        # Sempre retorna o objeto (preenchido ou vazio), neutralizando o bug de binding do Mac
+        return $dict
+    }
+
+    begin {
         Write-Debug 'Verifying JCAPI Key'
         if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
             Connect-JCOnline
         }
 
         $hdrs = @{
-
             'Content-Type' = 'application/json'
             'Accept'       = 'application/json'
             'X-API-KEY'    = $JCAPIKEY
@@ -66,26 +75,25 @@ Function Set-JCSystem () {
         $body = @{ }
 
         foreach ($param in $PSBoundParameters.GetEnumerator()) {
-            if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.key) {
+            if ([System.Management.Automation.PSCmdlet]::CommonParameters -contains $param.Key) {
                 continue
             }
-            if ($param.key -eq 'SystemID', 'JCAPIKey') {
+            if ($param.Key -in ('SystemID', 'JCAPIKey', 'NumberOfCustomAttributes', 'RemoveCustomAttribute')) {
                 continue
             }
-            if ($param.key -eq 'systemInsights') {
+            if ($param.Key -like 'Attribute*') {
+                continue
+            }
+            if ($param.Key -eq 'systemInsights') {
                 $state = switch ($systemInsights) {
-                    true {
-                        'enabled'
-                    }
-                    false {
-                        'deferred'
-                    }
+                    true { 'enabled' }
+                    false { 'deferred' }
                 }
                 $body.add('systemInsights', @{'state' = $state })
                 continue
             }
-            if ($param.key -eq "primarySystemUser") {
-                $userInfo = $param.value
+            if ($param.Key -eq "primarySystemUser") {
+                $userInfo = $param.Value
                 if ($param.Value -eq $null -or $param.Value -eq "") {
                     $body.add("primarySystemUser.id", $null)
                     continue
@@ -102,10 +110,51 @@ Function Set-JCSystem () {
             $body.add($param.Key, $param.Value)
         }
 
+        if ($NumberOfCustomAttributes -or $RemoveCustomAttribute) {
+            $CurrentSystem = Get-JCSystem -SystemID $SystemID
+            $CurrentAttributesHash = @{ }
+            if ($CurrentSystem.attributes) {
+                foreach ($CurrentA in $CurrentSystem.attributes) {
+                    if ($CurrentA.name) { $CurrentAttributesHash.Add($CurrentA.name, $CurrentA.value) }
+                }
+            }
+
+            if ($NumberOfCustomAttributes -gt 0) {
+                for ($i = 1; $i -le $NumberOfCustomAttributes; $i++) {
+                    $nameKey = "Attribute$($i)_name"
+                    $valueKey = "Attribute$($i)_value"
+                    if ($PSBoundParameters.ContainsKey($nameKey)) {
+                        $attrName = $PSBoundParameters[$nameKey]
+                        $attrValue = $PSBoundParameters[$valueKey]
+                        if ($attrName) {
+                            $CurrentAttributesHash[$attrName] = $attrValue
+                        }
+                    }
+                }
+            }
+
+            if ($RemoveCustomAttribute) {
+                foreach ($Remove in $RemoveCustomAttribute) {
+                    if ($CurrentAttributesHash.ContainsKey($Remove)) {
+                        $CurrentAttributesHash.Remove($Remove)
+                    }
+                }
+            }
+
+            $UpdatedAttributeArrayList = New-Object System.Collections.ArrayList
+            foreach ($key in $CurrentAttributesHash.Keys) {
+                $temp = [pscustomobject]@{
+                    name  = $key
+                    value = $CurrentAttributesHash[$key]
+                }
+                $UpdatedAttributeArrayList.Add($temp) | Out-Null
+            }
+
+            $body.add('attributes', $UpdatedAttributeArrayList)
+        }
+
         $jsonbody = $body | ConvertTo-Json
-        Write-Debug $jsonbody
-        $URL = "$JCUrlBasePath/api/systems/$SystemID"
-        Write-Debug $URL
+        $URL = "$global:JCUrlBasePath/api/systems/$SystemID"
         $System = Invoke-RestMethod -Method PUT -Uri $URL -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
         $UpdatedSystems += $System

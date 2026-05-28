@@ -151,3 +151,21 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
         Remove-JCUser -UserID $NewUser._id -ByID -force
     }
 }
+
+Describe -Tag 'CUT-5149' "Set-JCSystem - Custom Attributes Live Behavior" {
+        BeforeAll {
+            . "$PSScriptRoot/../../../Public/Systems/Set-JCSystem.ps1"
+        }
+
+        It "Should add and remove custom attributes" {
+            $TargetSystemID = $PesterParams_SystemWindows._id
+
+            # 1. Executa e valida a Adição de Atributos na Sandbox Real
+            $UpdateAdd = Set-JCSystem -SystemID $TargetSystemID -NumberOfCustomAttributes 1 -Attribute1_name 'Environment' -Attribute1_value 'Production'
+            $UpdateAdd.attributes | Where-Object name -eq 'Environment' | Select-Object -ExpandProperty value | Should -Be 'Production'
+
+            # 2. Executa e valida a Remoção do Atributo na Sandbox Real
+            $UpdateRemove = Set-JCSystem -SystemID $TargetSystemID -RemoveCustomAttribute 'Environment'
+            $UpdateRemove.attributes.name | Should -NotContain 'Environment'
+        }
+    }
