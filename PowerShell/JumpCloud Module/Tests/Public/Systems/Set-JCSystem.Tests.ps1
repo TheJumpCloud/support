@@ -152,20 +152,37 @@ Describe -Tag:('JCSystem') "Set-JCSystem 2.18" {
     }
 }
 
-Describe -Tag 'CUT-5149' "Set-JCSystem - Custom Attributes Live Behavior" {
+Describe -Tag:('JCSystem') "Set-JCSystem - Custom Attributes Live Behavior" {
     BeforeAll {
         . "$PSScriptRoot/../../../Public/Systems/Set-JCSystem.ps1"
+        $TargetSystemID = $PesterParams_SystemWindows._id
     }
 
     It "Should add and remove custom attributes" {
-        $TargetSystemID = $PesterParams_SystemWindows._id
 
-        # 1. Executa e valida a Adição de Atributos na Sandbox Real
+        # 1. Addition of a custom attribute on a system
         $UpdateAdd = Set-JCSystem -SystemID $TargetSystemID -NumberOfCustomAttributes 1 -Attribute1_name 'Environment' -Attribute1_value 'Production'
         $UpdateAdd.attributes | Where-Object name -EQ 'Environment' | Select-Object -ExpandProperty value | Should -Be 'Production'
 
-        # 2. Executa e valida a Remoção do Atributo na Sandbox Real
+        # 2. Remove a custom attribute on a system
         $UpdateRemove = Set-JCSystem -SystemID $TargetSystemID -RemoveCustomAttribute 'Environment'
         $UpdateRemove.attributes.name | Should -Not -Contain 'Environment'
+    }
+    It "Existing Custom attributes should remain unchanged when adding new attributes" {
+        $firstEnvName = "Environment"
+        $secondEnvName = "SecondEnv"
+        # 1. Addition of a custom attribute on a system
+        $UpdateAdd = Set-JCSystem -SystemID $TargetSystemID -NumberOfCustomAttributes 1 -Attribute1_name $firstEnvName -Attribute1_value 'Production'
+        $UpdateAdd.attributes | Where-Object name -EQ $firstEnvName | Select-Object -ExpandProperty value | Should -Be 'Production'
+        # 2. Addition of a another custom attribute on a system
+        $UpdateAdd = Set-JCSystem -SystemID $TargetSystemID -NumberOfCustomAttributes 1 -Attribute1_name $secondEnvName -Attribute1_value 'ProductionEU'
+        $UpdateAdd.attributes | Where-Object name -EQ $firstEnvName | Select-Object -ExpandProperty value | Should -Be 'Production'
+        $UpdateAdd.attributes | Where-Object name -EQ $secondEnvName | Select-Object -ExpandProperty value | Should -Be 'ProductionEU'
+
+        # Removing just one attribute should retain the others:
+        $UpdateRemove = Set-JCSystem -SystemID $TargetSystemID -RemoveCustomAttribute $firstEnvName
+        $UpdateRemove.attributes.name | Should -Not -Contain $firstEnvName
+        $UpdateRemove.attributes.name | Should -Contain $secondEnvName
+
     }
 }
