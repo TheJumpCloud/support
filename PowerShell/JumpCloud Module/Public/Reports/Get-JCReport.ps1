@@ -93,6 +93,8 @@ function Get-JCReport {
                 } else {
                     if ($global:JCEnvironment -eq 'EU') {
                         $Results = Invoke-RestMethod -Uri "https://api.eu.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
+                    } elseif ($global:JCEnvironment -eq 'IN') {
+                        $Results = Invoke-RestMethod -Uri "https://api.in.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
                     } else {
                         $Results = Invoke-RestMethod -Uri "https://api.jumpcloud.com/insights/directory/v1/reports/$reportID/artifacts/$artifactID/content" -Method GET -Headers $headers
                     }
