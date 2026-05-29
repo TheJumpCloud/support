@@ -62,7 +62,11 @@ function Unlock-Platform() {
                 if (CredRead(target, CRED_TYPE_GENERIC, 0, out credPtr)) {
                     try {
                         PCREDENTIAL cred = (PCREDENTIAL)Marshal.PtrToStructure(credPtr, typeof(PCREDENTIAL));
-                        return Marshal.PtrToStringUni(cred.credentialBlob, cred.credentialBlobSize / 2);
+                        int charLen = cred.credentialBlobSize / 2;
+                        if (charLen > 0 && Marshal.ReadInt16(cred.credentialBlob, (charLen - 1) * 2) == 0) {
+                            charLen--;
+                        }
+                        return Marshal.PtrToStringUni(cred.credentialBlob, charLen);
                     } finally {
                         CredFree(credPtr);
                     }
@@ -71,15 +75,17 @@ function Unlock-Platform() {
             }
 
             public static void SetCreds(string target, string userName, string secret) {
-                IntPtr blobPtr = Marshal.StringToCoTaskMemUni(secret);
+                int byteCount = secret.Length * 2;
+                IntPtr blobPtr = Marshal.AllocCoTaskMem(byteCount);
                 try {
+                    Marshal.Copy(secret, 0, blobPtr, secret.Length);
                     PCREDENTIAL cred = new PCREDENTIAL();
                     cred.flags = 0;
                     cred.type = CRED_TYPE_GENERIC;
                     cred.targetName = target;
                     cred.comment = null;
                     cred.lastWritten = 0;
-                    cred.credentialBlobSize = (secret.Length + 1) * 2;
+                    cred.credentialBlobSize = byteCount;
                     cred.credentialBlob = blobPtr;
                     cred.persist = CRED_PERSIST_LOCAL_MACHINE;
                     cred.attributeCount = 0;

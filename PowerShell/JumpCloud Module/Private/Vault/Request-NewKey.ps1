@@ -8,6 +8,5 @@ function Request-NewKey() {
     ) -Key (
         Read-Host -Prompt "Type the name to be saved"
     ) -sufix $sufix_
-    $LinesToClear = $keys.Count + 2
-    Clear-Console -LinesToClear $LinesToClear
+    Clear-Console -LinesToClear 2
 }

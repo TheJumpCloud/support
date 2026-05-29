@@ -8,7 +8,9 @@ function Get-VaultKeys() {
     If($plat -eq "Windows") {
         # $username = $env:USERNAME.Trim().ToLower().Replace(" ", "_")
         try {
-            $keys = [CredManager]::GetTargetList().Where({ $_.EndsWith($sufix) })
+            # @() ensures a single matching credential is returned as a one-element array,
+            # not an unwrapped string (which breaks Find-Interactive choice indexing).
+            $keys = @([CredManager]::GetTargetList().Where({ $_.EndsWith($sufix) }))
         } catch {
             Write-Host "Error retrieving keys: $_" -ForegroundColor Red
             return $null
@@ -19,12 +21,16 @@ function Get-VaultKeys() {
                 $found = $matches[1]
                 if ($found.EndsWith($sufix)){return $found}
             }
-        } | Select-Object -Unique
+        } | Select-Object -Unique | ForEach-Object { ,$_ }
+        $keys = @($keys)
     } ElseIf($plat -eq "Linux") {
         throw "Unsupported OS."
     } Else {
         throw "Unsupported OS."
     }
 
-    return $keys
+    if ($null -eq $keys) {
+        return $null
+    }
+    return @($keys)
 }

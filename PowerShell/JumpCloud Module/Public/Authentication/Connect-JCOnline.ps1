@@ -23,7 +23,7 @@ function Connect-JCOnline () {
         $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $RawCommandLine = [string]$MyInvocation.Line
-        
+
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
@@ -291,17 +291,18 @@ function KeySelector {
     param(
         [Parameter(Mandatory=$false)]
         [string]$keyName
-    ) 
+    )
     Unlock-Platform
     if(-not [System.String]::IsNullOrEmpty($keyName)) {
         return Request-Key -vaultKey $keyName
     }
 
     $sufix_ = ".api.jc"
-    $keys = Get-VaultKeys -sufix $sufix_
+    $keys = @(Get-VaultKeys -sufix $sufix_)
     if(($null -eq $keys) -or ($keys.Count -eq 0)) {
-        Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
+        Write-Host "No keys found in the vault. Please add a new key." -ForegroundColor Yellow
         Request-NewKey -sufix $sufix_
+        Clear-Console -LinesToClear 1
         $keys = Get-VaultKeys -sufix $sufix_
     }
 
@@ -313,10 +314,16 @@ function KeySelector {
     })) {
         $keys = Get-VaultKeys -sufix $sufix_
         if (($null -eq $vaultKey) -or ($null -eq $keys) -or ($keys.Count -eq 0)) {
-            if($keys.Count -eq 0) {
+            $linesToClear = 0
+            if ($keys.Count -eq 0) {
                 Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
+                $linesToClear += 1
+            } else {
+                $linesToClear = $keys.Count
             }
             Request-NewKey -sufix $sufix_
+            # Lines are cleared after, because the user can see the names of already existing keys
+            Clear-Console -LinesToClear $linesToClear
         }
         $keys = Get-VaultKeys -sufix $sufix_
     }

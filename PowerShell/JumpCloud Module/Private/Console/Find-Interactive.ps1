@@ -1,9 +1,10 @@
 # Interactive function to display choices and handle user input for selection
 function Find-Interactive() {
     param (
-        [string[]]$choices,
-        [scriptblock]$Callback
+    [string[]]$choices,
+    [scriptblock]$Callback
     )
+    $choices = @($choices)
     $index = 0
     $running = $true
     $trigger = $false
