@@ -26,7 +26,7 @@ function New-JCSettingsFile {
                 'Calculated' = @{value = $false; write = $false; copy = $true }
             }
             'JCEnvironment' = @{
-                'Location' = @{value = $JCEnvironmentValue; write = $true; copy = $true }
+                'Location' = @{value = $JCEnvironmentValue; write = $true; copy = $true; validateSet = 'STANDARD STAGING EU IN' }
             }
             # TODO: in future version, add the updates hash and limit update frequency
             # 'updates'  = @{
