@@ -1,3 +1,30 @@
+## 3.2.1
+
+Release Date: May 29, 2026
+
+### RELEASE NOTES
+
+- Refactored build scripts to ensure full cross-platform compatibility (macOS, Linux, and Windows)
+- Standardized path resolution using `Join-Path` and dynamic `$PSScriptRoot` references
+- Improved variable initialization during the build process to prevent null reference errors in non-Windows environments
+- Added deployment documentation (`README.md`) to the `PowerShell/Deploy` directory
+
+### FEATURES
+
+- Added macOS and Linux support to the JumpCloud module deployment pipeline
+
+### IMPROVEMENTS
+
+- Replaced hardcoded backslash path separators with system-agnostic `Join-Path` logic
+- Standardized dot-sourcing of configuration scripts with explicit parameter passing
+
+### BUG FIXES
+
+- Fixed "Argument is null or empty" errors occurring during build execution on macOS/Linux
+- Resolved directory resolution failures in CI/CD environments (GitHub Actions)
+
+---
+
 ## 3.2.0
 
 Release Date: May 22, 2026

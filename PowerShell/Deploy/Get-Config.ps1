@@ -18,15 +18,15 @@ write-host $ScriptRoot
 
 $FolderPath_ModuleRootPath = (Get-Item -Path:($ScriptRoot)).Directory.parent.FullName
 $GitHubWikiUrl = 'https://github.com/TheJumpCloud/support/wiki/'
-$FilePath_ModuleChangelog = $FolderPath_ModuleRootPath + '/ModuleChangelog.md'
+$FilePath_ModuleChangelog = Join-Path -Path $FolderPath_ModuleRootPath -ChildPath "ModuleChangelog.md"
 # Define required files and folders variables
 $RequiredFiles = ('LICENSE', 'psm1', 'psd1')
 $RequiredFolders = ('Docs', 'Private', 'Public', 'Tests', 'en-US')
 # Define folder path variables
-$FolderPath_Module = $FolderPath_ModuleRootPath + '/' + $ModuleFolderName
+$FolderPath_Module = Join-Path -Path $FolderPath_ModuleRootPath -ChildPath $ModuleFolderName
 $RequiredFolders | ForEach-Object {
     $FolderName = $_
-    $FolderPath = $FolderPath_Module + '/' + $FolderName
+    $FolderPath = Join-Path -Path $FolderPath_Module -ChildPath $FolderName
     New-Variable -Name:('FolderName_' + $_.Replace('-', '')) -Value:($FolderName) -Force -Scope Global;
     New-Variable -Name:('FolderPath_' + $_.Replace('-', '')) -Value:($FolderPath) -Force -Scope Global
     write-host "New Variable: $('FolderPath_' + $_) with value: $($FolderPath)"
@@ -37,7 +37,7 @@ $RequiredFiles | ForEach-Object {
     } Else {
         $_
     }
-    $FilePath = $FolderPath_Module + '/' + $FileName
+    $FilePath = Join-Path -Path $FolderPath_Module -ChildPath $FileName
     New-Variable -Name:('FileName_' + $_) -Value:($FileName) -Force -Scope Global;
     New-Variable -Name:('FilePath_' + $_) -Value:($FilePath) -Force -Scope Global;
     write-host "New Variable: $('FilePath_' + $_) with value: $($FilePath)"
@@ -47,12 +47,12 @@ $Psd1 = Import-PowerShellDataFile -Path:($FilePath_psd1)
 Set-Variable $Psd1 -Scope Global
 # Get module function names
 $Functions_Public = If (Test-Path -Path:($FolderPath_Public)) {
-    Get-ChildItem -Path:($FolderPath_Public + '/' + '*.ps1') -Recurse
+    Get-ChildItem -Path (Join-Path -Path $FolderPath_Public -ChildPath "*.ps1") -Recurse
 }
 Set-Variable $Functions_Public -Scope Global
 $Functions_Private = If (Test-Path -Path:($FolderPath_Private)) {
-    Get-ChildItem -Path:($FolderPath_Private + '/' + '*.ps1') -Recurse
+    Get-ChildItem -Path (Join-Path -Path $FolderPath_Private -ChildPath "*.ps1") -Recurse
 }
 
 # Setup-Dependencies.ps1
-.("$PSScriptRoot/Setup-Dependencies.ps1") -RequiredModulesRepo:('PSGallery')
+. (Join-Path -Path $PSScriptRoot -ChildPath "Setup-Dependencies.ps1") -RequiredModulesRepo:('PSGallery')

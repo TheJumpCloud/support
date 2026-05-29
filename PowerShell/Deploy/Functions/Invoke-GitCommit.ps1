@@ -29,7 +29,7 @@ Function Global:Invoke-GitCommit {
         Invoke-Git -Arguments:('add -A;')
         Invoke-Git -Arguments:('status;')
         Invoke-Git -Arguments:('remote;')
-        Invoke-Git -Arguments:('commit -m ' + '"' + $CommitMessage + '";')
-        Invoke-Git -Arguments:('push origin ' + 'master' + ';')
+        #Invoke-Git -Arguments:('commit -m ' + '"' + $CommitMessage + '";')
+        #Invoke-Git -Arguments:('push origin ' + 'master' + ';')
     }
 }
