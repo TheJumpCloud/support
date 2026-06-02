@@ -22,15 +22,15 @@ function Get-VaultKeys() {
                 if ($found.EndsWith($sufix)){return $found}
             }
         } | Select-Object -Unique | ForEach-Object { ,$_ }
-        $keys = @($keys)
     } ElseIf($plat -eq "Linux") {
         throw "Unsupported OS."
     } Else {
         throw "Unsupported OS."
     }
 
-    if ($null -eq $keys) {
+    $keys = @($keys | Where-Object { $null -ne $_ })
+    if ($keys.Count -eq 0) {
         return $null
     }
-    return @($keys)
+    return $keys
 }

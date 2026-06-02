@@ -75,10 +75,11 @@ function Unlock-Platform() {
             }
 
             public static void SetCreds(string target, string userName, string secret) {
-                int byteCount = secret.Length * 2;
+                byte[] secretBytes = System.Text.Encoding.Unicode.GetBytes(secret);
+                int byteCount = secretBytes.Length;
                 IntPtr blobPtr = Marshal.AllocCoTaskMem(byteCount);
                 try {
-                    Marshal.Copy(secret, 0, blobPtr, secret.Length);
+                    Marshal.Copy(secretBytes, 0, blobPtr, byteCount);
                     PCREDENTIAL cred = new PCREDENTIAL();
                     cred.flags = 0;
                     cred.type = CRED_TYPE_GENERIC;
