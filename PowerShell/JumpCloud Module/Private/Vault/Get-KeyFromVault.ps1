@@ -17,6 +17,5 @@ function Get-KeyFromVault() {
         throw "Unsupported OS."
     }
 
-    Write-Host "Retrieved key from Credential Manager: $key" -ForegroundColor Green
     return $serviceKey
 }

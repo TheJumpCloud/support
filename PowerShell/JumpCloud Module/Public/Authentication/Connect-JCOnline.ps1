@@ -22,7 +22,6 @@ function Connect-JCOnline () {
     dynamicparam {
         $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        $RawCommandLine = [string]$MyInvocation.Line
 
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
@@ -53,7 +52,23 @@ function Connect-JCOnline () {
         # Priority for selecting key is: 1)  -JumpCloudApiKey parameter, 2) -Select parameter, 3) $env:JCApiKey
         # Reformulated to get less confusing
         $containsApiKey = $false
-        if($RawCommandLine -match 'JumpCloudApiKey') {$containsApiKey = $true}
+        $invocationStatement = $null
+        if ($MyInvocation.PSObject.Properties.Name -contains 'Statement') {
+            $invocationStatement = $MyInvocation.Statement
+        } else {
+            try {
+                $scriptPosition = [System.Management.Automation.InvocationInfo].GetProperty(
+                    'ScriptPosition',
+                    [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic
+                )
+                if ($scriptPosition) {
+                    $invocationStatement = $scriptPosition.GetValue($MyInvocation).Text
+                }
+            } catch { }
+        }
+        if (-not [System.String]::IsNullOrEmpty($invocationStatement) -and ($invocationStatement -match '(?i)-JumpCloudApiKey\b')) {
+            $containsApiKey = $true
+        }
         $emp1 = $BoundParams.ContainsKey('Select') -and (-not $BoundParams.ContainsKey('Credential')) -and (-not $containsApiKey)
         $emp2 = [System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $containsApiKey) -and (-not $BoundParams.ContainsKey('Credential'))
         if($emp1 -or $emp2) {
@@ -331,7 +346,7 @@ function KeySelector {
     # $vaultKey is being declared above as the output of Find-Interactive, so it will be available here for
     $foundKey = Request-Key -vaultKey $vaultKey
 
-    Clear-Console -LinesToClear 2
+    Clear-Console -LinesToClear 1
     return $foundKey
 }
 
