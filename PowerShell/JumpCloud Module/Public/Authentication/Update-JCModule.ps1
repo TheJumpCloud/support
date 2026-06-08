@@ -85,29 +85,33 @@ function Update-JCModule {
             }
         }
 
-        if (-not $InstalledSDKsPreUpdate) { return $false }   # nothing to compare
-        # Compare InstalledSDKs to the Up To Date List
-        $ComparedSDKs = Compare-Object -ReferenceObject $InstalledSDKsPreUpdate -DifferenceObject $SDKsUpToDate -Property Version, Name -IncludeEqual
-        # If multiple versions of an installed SDK exist, add to uninstall list - Here we deal with multiple versions
-        $groupCompare = $ComparedSDKs | Group-Object Name
-        foreach ($item in $groupCompare) {
-            # Latest Installed, Older Installed as well
-            if ('==' -in $item.group.sideIndicator) {
-                $SDKsToUninstall += $item.Group | Where-Object { $_.SideIndicator -ne '==' }
-            } elseif ($item.Count -gt 1 -and '==' -notin $item.group.sideIndicator) {
-                $SDKsToUninstall += $item.Group | Sort-Object -Property Version -Descending | Select-Object -Skip 1
+        # Only compare SDKs when some are installed; Compare-Object throws on a null reference.
+        # When none are installed we skip the SDK section entirely and fall through to the
+        # JumpCloud module update below (the prompt block self-skips on an empty update table).
+        if ($InstalledSDKsPreUpdate) {
+            # Compare InstalledSDKs to the Up To Date List
+            $ComparedSDKs = Compare-Object -ReferenceObject $InstalledSDKsPreUpdate -DifferenceObject $SDKsUpToDate -Property Version, Name -IncludeEqual
+            # If multiple versions of an installed SDK exist, add to uninstall list - Here we deal with multiple versions
+            $groupCompare = $ComparedSDKs | Group-Object Name
+            foreach ($item in $groupCompare) {
+                # Latest Installed, Older Installed as well
+                if ('==' -in $item.group.sideIndicator) {
+                    $SDKsToUninstall += $item.Group | Where-Object { $_.SideIndicator -ne '==' }
+                } elseif ($item.Count -gt 1 -and '==' -notin $item.group.sideIndicator) {
+                    $SDKsToUninstall += $item.Group | Sort-Object -Property Version -Descending | Select-Object -Skip 1
+                }
             }
-        }
-        # Compare InstalledSDKs to the Up To Date List, what remains should be our update list
-        $ComparedSDKsToUpdate = Compare-Object -ReferenceObject $SDKsToUninstall -DifferenceObject $SDKsToUpdate -Property Version, Name
-        # Update our update table to show the user:
-        foreach ($updateItem in $SDKUpdateTable) {
-            foreach ($uninstallItem in $SDKsToUninstall) {
-                if (($updateItem.'SDK Name' -eq $uninstallItem.Name) -and ($($updateItem.'Installed Version')) -eq $uninstallItem.Version) {
-                    if (!($SkipUninstallOld)) {
-                        $updateItem.'Update Action' = 'Uninstall'
-                    } else {
-                        $updateItem.'Update Action' = 'No Action'
+            # Compare InstalledSDKs to the Up To Date List, what remains should be our update list
+            $ComparedSDKsToUpdate = Compare-Object -ReferenceObject $SDKsToUninstall -DifferenceObject $SDKsToUpdate -Property Version, Name
+            # Update our update table to show the user:
+            foreach ($updateItem in $SDKUpdateTable) {
+                foreach ($uninstallItem in $SDKsToUninstall) {
+                    if (($updateItem.'SDK Name' -eq $uninstallItem.Name) -and ($($updateItem.'Installed Version')) -eq $uninstallItem.Version) {
+                        if (!($SkipUninstallOld)) {
+                            $updateItem.'Update Action' = 'Uninstall'
+                        } else {
+                            $updateItem.'Update Action' = 'No Action'
+                        }
                     }
                 }
             }

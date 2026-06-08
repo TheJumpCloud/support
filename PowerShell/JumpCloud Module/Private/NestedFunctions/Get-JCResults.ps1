@@ -9,9 +9,6 @@ function Get-JCResults {
     )
     begin {
         $hdrs = Get-JCAuthHeaders
-        if (-not $hdrs.ContainsKey('x-org-id')) {
-            $hdrs.Add('x-org-id', "$($JCOrgID)")
-        }
 
         if ($parallel) {
             $resultsArray = [System.Collections.Concurrent.ConcurrentBag[object]]::new()

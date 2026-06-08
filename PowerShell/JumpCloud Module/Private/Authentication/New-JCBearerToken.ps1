@@ -26,26 +26,29 @@ function New-JCBearerToken {
             Write-Verbose ('Requesting OAuth access token from: ' + $tokenUrl)
             $response = Invoke-RestMethod -Uri $tokenUrl -Method POST -Headers $authHeaders -Body $body -ContentType 'application/x-www-form-urlencoded'
         } catch {
+            # Capture the original failure: the inner try/catch below rebinds $_, which would
+            # otherwise corrupt the error we surface here.
+            $outerError = $_
             # Surface the OAuth error payload (error / error_description) when the server returned one.
             $oauthErrorDetail = ''
-            if ($_.Exception.Response) {
+            if ($outerError.Exception.Response) {
                 try {
-                    $errStream = $_.Exception.Response.GetResponseStream()
+                    $errStream = $outerError.Exception.Response.GetResponseStream()
                     if ($errStream) {
                         $reader = New-Object System.IO.StreamReader($errStream)
                         $oauthErrorDetail = $reader.ReadToEnd()
                         $reader.Close()
                     }
                 } catch {
-                    if ($_.ErrorDetails -and $_.ErrorDetails.Message) {
-                        $oauthErrorDetail = $_.ErrorDetails.Message
+                    if ($outerError.ErrorDetails -and $outerError.ErrorDetails.Message) {
+                        $oauthErrorDetail = $outerError.ErrorDetails.Message
                     }
                 }
             }
-            if (-not $oauthErrorDetail -and $_.ErrorDetails -and $_.ErrorDetails.Message) {
-                $oauthErrorDetail = $_.ErrorDetails.Message
+            if (-not $oauthErrorDetail -and $outerError.ErrorDetails -and $outerError.ErrorDetails.Message) {
+                $oauthErrorDetail = $outerError.ErrorDetails.Message
             }
-            $msg = "Failed to obtain OAuth access token from $tokenUrl. $($_.Exception.Message)"
+            $msg = "Failed to obtain OAuth access token from $tokenUrl. $($outerError.Exception.Message)"
             if ($oauthErrorDetail) {
                 $msg += " Response body: $oauthErrorDetail"
             }

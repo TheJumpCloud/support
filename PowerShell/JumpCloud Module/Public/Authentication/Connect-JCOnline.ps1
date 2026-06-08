@@ -75,9 +75,8 @@ function Connect-JCOnline () {
             } else {
                 $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
             }
-            if ([System.String]::IsNullOrEmpty($env:JCOrgId)) {
-                $Param_JumpCloudOrgId.Add('Mandatory', $true)
-            } else {
+            # OrgId is optional in apiKey mode; it auto-discovers via Set-JCOrganization when omitted.
+            if (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
                 $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId)
             }
         }
@@ -176,8 +175,19 @@ function Connect-JCOnline () {
                 if ([System.String]::IsNullOrEmpty($env:JCClientId) -or [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
                     throw 'ClientId and ClientSecret are required when authPreference is set to clientSecret. Pass -JumpCloudClientId and -JumpCloudClientSecret or run Set-JCSettingsFile -authPreferenceMethod apiKey to switch modes.'
                 }
-                $tokenInfo = New-JCBearerToken -ClientId $env:JCClientId -ClientSecret $env:JCClientSecret
-                Write-Verbose ("Bearer token issued, expires at: $($tokenInfo.ExpiresAt.ToString('o'))")
+                # Re-mint only when there is no valid cached token, or the caller passed fresh credentials.
+                $tokenStatus = Get-JCAccessToken
+                $explicitCreds = $PSBoundParameters.ContainsKey('JumpCloudClientId') -or $PSBoundParameters.ContainsKey('JumpCloudClientSecret')
+                if (-not $tokenStatus.IsValid -or $explicitCreds) {
+                    $tokenInfo = New-JCBearerToken -ClientId $env:JCClientId -ClientSecret $env:JCClientSecret
+                    Write-Verbose ("Bearer token issued, expires at: $($tokenInfo.ExpiresAt.ToString('o'))")
+                } else {
+                    Write-Verbose ("Reusing cached bearer token, expires at: $($tokenStatus.ExpiresAt.ToString('o'))")
+                }
+                # clientSecret sessions have no API key; set the global marker the connectivity gates
+                # check so downstream cmdlets don't treat the session as disconnected and re-invoke
+                # Connect-JCOnline on every call.
+                $global:JCAPIKEY = $env:JCAccessToken
             } else {
                 # apiKey path
                 if (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey)) {
