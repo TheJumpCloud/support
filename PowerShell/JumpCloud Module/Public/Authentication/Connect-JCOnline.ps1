@@ -184,10 +184,6 @@ function Connect-JCOnline () {
                 } else {
                     Write-Verbose ("Reusing cached bearer token, expires at: $($tokenStatus.ExpiresAt.ToString('o'))")
                 }
-                # clientSecret sessions have no API key; set the global marker the connectivity gates
-                # check so downstream cmdlets don't treat the session as disconnected and re-invoke
-                # Connect-JCOnline on every call.
-                $global:JCAPIKEY = $env:JCAccessToken
             } else {
                 # apiKey path
                 if (-not [System.String]::IsNullOrEmpty($JumpCloudApiKey)) {
