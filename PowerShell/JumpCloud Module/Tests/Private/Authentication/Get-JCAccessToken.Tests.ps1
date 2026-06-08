@@ -1,37 +1,39 @@
 Describe -Tag "JCAuth" -Name "Get-JCAccessToken Tests" {
-    It "Returns the current access token when it is still valid" {
+    It "Reports a valid token without minting a new one" {
         # Seed a valid token via New-JCBearerToken first
         New-JCBearerToken -ClientId $env:JCClientId -ClientSecret $env:JCClientSecret | Out-Null
         $tokenBefore = $env:JCAccessToken
-        $returned = Get-JCAccessToken
-        $returned | Should -Not -BeNullOrEmpty
-        $returned | Should -Be $tokenBefore
+        $info = Get-JCAccessToken
+        $info.AccessToken | Should -Be $tokenBefore
+        $info.IsValid | Should -Be $true
+        $info.IsExpired | Should -Be $false
+        # Pure "Get": calling it must not change the cached token
+        $env:JCAccessToken | Should -Be $tokenBefore
     }
-    It "Refreshes the token when ExpiresAt is in the past" {
-        # Force expiry
-        $env:JCAccessTokenExpiresAt = (Get-Date).AddSeconds(-10).ToString('o')
-        $oldToken = $env:JCAccessToken
-        $newToken = Get-JCAccessToken
-        $newToken | Should -Not -BeNullOrEmpty
-        # A new token should have been minted (env updated, expiry pushed forward)
-        ([datetime]::Parse($env:JCAccessTokenExpiresAt, $null, [System.Globalization.DateTimeStyles]::RoundtripKind)) | Should -BeGreaterThan (Get-Date)
+    It "Reports IsExpired/IsValid correctly when ExpiresAt is in the past" {
+        $savedExpiry = $env:JCAccessTokenExpiresAt
+        try {
+            $env:JCAccessTokenExpiresAt = (Get-Date).AddSeconds(-10).ToString('o')
+            $info = Get-JCAccessToken
+            $info.IsExpired | Should -Be $true
+            $info.IsValid | Should -Be $false
+        } finally {
+            $env:JCAccessTokenExpiresAt = $savedExpiry
+        }
     }
-    It "Throws when no token and no ClientId/ClientSecret are available" {
+    It "Does not throw and reports IsValid false when no token is present" {
         $savedToken = $env:JCAccessToken
         $savedExpiry = $env:JCAccessTokenExpiresAt
-        $savedClientId = $env:JCClientId
-        $savedClientSecret = $env:JCClientSecret
         try {
             $env:JCAccessToken = ''
             $env:JCAccessTokenExpiresAt = ''
-            $env:JCClientId = ''
-            $env:JCClientSecret = ''
-            { Get-JCAccessToken } | Should -Throw
+            $info = $null
+            { $info = Get-JCAccessToken } | Should -Not -Throw
+            $info.IsValid | Should -Be $false
+            [System.String]::IsNullOrEmpty($info.AccessToken) | Should -Be $true
         } finally {
             $env:JCAccessToken = $savedToken
             $env:JCAccessTokenExpiresAt = $savedExpiry
-            $env:JCClientId = $savedClientId
-            $env:JCClientSecret = $savedClientSecret
         }
     }
 }

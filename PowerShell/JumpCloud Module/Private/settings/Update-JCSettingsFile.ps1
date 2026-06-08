@@ -10,15 +10,14 @@ function Update-JCSettingsFile {
     begin {
         # Config should be in /PowerShell/JumpCloudModule/Config.json
         $ModuleRoot = (Get-Item -Path:($PSScriptRoot)).Parent.Parent.FullName
-        $configFilePath = join-path -path $ModuleRoot -childpath 'Config.json'
+        $configFilePath = Join-Path -Path $ModuleRoot -ChildPath 'Config.json'
 
-        if (test-path -path $configFilePath) {
-            # Get Contents
-            $config = Get-JCSettingsFile -Raw
-        } else {
-            # Create new file with default settings
-            New-JCSettingsFile
-        }
+        # Base the merge on the CURRENT release's defaults, not the file on disk. This makes the
+        # schema auto-update across upgrades: newly added settings keys and changed metadata
+        # (e.g. validateSet) come from New-JCSettingsFile, while user values are layered back on
+        # below for any property flagged copy = $true.
+        New-JCSettingsFile -force
+        $config = Get-JCSettingsFile -Raw
     }
 
     process {
@@ -29,7 +28,7 @@ function Update-JCSettingsFile {
                     foreach ($newProperty in $newSetting.value.psobject.properties) {
                         foreach ($copiedProperty in $copiedSetting.value.psobject.properties) {
                             # If the property names match & the new property is eligible to be copied, copy it
-                            if ( ($newProperty.name -eq $copiedProperty.name) -And ($newProperty.Value.copy -eq $true)) {
+                            if ( ($newProperty.name -eq $copiedProperty.name) -and ($newProperty.Value.copy -eq $true)) {
                                 # If the values are different, copy the values
                                 if ( $newProperty.value.value -ne $copiedProperty.value.value) {
                                     $config.$($newsetting.name).$($newProperty.name).value = $settings.$($copiedSetting.name).$($copiedProperty.name).value

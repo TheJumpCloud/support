@@ -293,26 +293,25 @@ function Connect-JCOnline () {
                 Write-Verbose "Error: Unable to set module authentication"
             }
             # set Argument Completer(s) which require authentication
-            # TODO: CUT-5088 — JumpCloud.SDK cmdlets require a mandatory -ApiKey, so they can't yet
-            # run under clientSecret auth without prompting. Skip the template completer in that
-            # mode; revisit when the SDK supports bearer-token auth.
-            if ($authMethod -ne 'clientSecret') {
-                $templates = Get-JcSdkPolicyTemplate
-                $global:TemplateNameList = New-Object System.Collections.ArrayList
-                foreach ($template in $templates) {
-                    $templateHashObject = [PSCustomObject]@{
-                        Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
-                        Id   = $template.Id
-                    }
-                    $TemplateNameList.Add($templateHashObject) | Out-Null
+            # Fetch policy templates through Invoke-JCApi (which builds auth headers via
+            # Get-JCAuthHeaders) so the completer works under both apiKey and clientSecret (bearer)
+            # auth. The SDK cmdlet Get-JcSdkPolicyTemplate requires a mandatory -ApiKey and cannot
+            # run under clientSecret auth without prompting (CUT-5088).
+            $templates = Invoke-JCApi -Method:('GET') -Url:('/api/v2/policytemplates') -Paginate:($true)
+            $global:TemplateNameList = New-Object System.Collections.ArrayList
+            foreach ($template in $templates) {
+                $templateHashObject = [PSCustomObject]@{
+                    Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
+                    Id   = $template.Id
                 }
+                $TemplateNameList.Add($templateHashObject) | Out-Null
+            }
 
-                Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
-                    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+            Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
+                param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
 
-                    $TypeFilter = $fakeBoundParameter.Name;
-                    $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
-                }
+                $TypeFilter = $fakeBoundParameter.Name;
+                $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
             }
 
         } catch {
