@@ -1,6 +1,6 @@
 ---
 external help file: JumpCloud-help.xml
-Module Name: JumpCloud
+Module Name: Jumpcloud
 online version: https://github.com/TheJumpCloud/support/wiki/Invoke-JCDeployment
 schema: 2.0.0
 ---

@@ -1,3 +1,11 @@
+## 3.3.0
+
+Release Date: Jun 09, 2026
+
+#### FEATURES:
+
+- Implement flat universal parameters for CUT-5149 custom attributes
+
 ## 3.2.0
 
 Release Date: May 22, 2026

@@ -1,6 +1,6 @@
 ---
 external help file: JumpCloud-help.xml
-Module Name: JumpCloud
+Module Name: Jumpcloud
 online version: https://github.com/TheJumpCloud/support/wiki/Set-JCSystem
 schema: 2.0.0
 ---
@@ -16,7 +16,7 @@ Updates an existing JumpCloud System
 Set-JCSystem [-SystemID] <String> [-displayName <String>] [-description <String>]
  [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>]
  [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
- [-systemInsights <Boolean>] [-primarySystemUser <Object>] [-SNumberOfCustomAttributes <Int32>]
+ [-systemInsights <Boolean>] [-primarySystemUser <Object>] [-NumberOfCustomAttributes <Int32>]
  [-RemoveCustomAttribute <String[]>] [<CommonParameters>]
 ```
 
@@ -134,6 +134,21 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -NumberOfCustomAttributes
+The number of custom attributes to add or update.
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -primarySystemUser
 A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations
 
@@ -156,21 +171,6 @@ The name of the custom attributes to remove.
 Type: System.String[]
 Parameter Sets: (All)
 Aliases: RemoveAttribute
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -SNumberOfCustomAttributes
-The number of custom attributes to add or update.
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
 
 Required: False
 Position: Named

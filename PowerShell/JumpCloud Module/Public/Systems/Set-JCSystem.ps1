@@ -32,7 +32,7 @@ Function Set-JCSystem {
         $primarySystemUser,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The number of custom attributes to add or update.')]
-        [int]$SNumberOfCustomAttributes,
+        [int]$NumberOfCustomAttributes,
 
         [Parameter(ValueFromPipelineByPropertyName = $true, HelpMessage = 'The name of the custom attributes to remove.')]
         [string[]][Alias('RemoveAttribute')]$RemoveCustomAttribute
