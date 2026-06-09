@@ -1,6 +1,6 @@
 ---
 external help file: JumpCloud-help.xml
-Module Name: Jumpcloud
+Module Name: JumpCloud
 online version: https://github.com/TheJumpCloud/support/wiki/New-JCUserGroup
 schema: 2.0.0
 ---

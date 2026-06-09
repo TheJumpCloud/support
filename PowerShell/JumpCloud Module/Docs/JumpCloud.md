@@ -1,16 +1,16 @@
 ---
-Module Name: Jumpcloud
+Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
 Help Version: 3.3.0
 Locale: en-Us
 ---
 
-# JumpCloud Module
+# Jumpcloud Module
 ## Description
 PowerShell functions to manage a JumpCloud Directory-as-a-Service
 
-## JumpCloud Cmdlets
+## Jumpcloud Cmdlets
 ### [Add-JCAssociation](Add-JCAssociation.md)
 Create an association between two object within the JumpCloud console.
 
