@@ -1,6 +1,6 @@
 ## 3.3.0
 
-Release Date: June 09, 2026
+Release Date: June 10, 2026
 
 #### FEATURES:
 
