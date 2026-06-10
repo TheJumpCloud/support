@@ -15,8 +15,8 @@ Describe -Tag:('JCDeviceFromCSV') 'New-JCDeviceUpdateTemplate' {
         $items = Get-ChildItem -Path $PWD | Where-Object { $_.FullName -Match "JCDeviceUpdateImport*" }
         $items | Should -Exist
 
-        $templateContent = Import-Csv -Path $items[0].FullName
-        $templateContent | Get-Member -Name "NumberOfCustomAttributes" | Should -Not -BeNullOrEmpty
+        $firstLine = Get-Content -Path $items[0].FullName -First 1
+        $firstLine | Should -Match "NumberOfCustomAttributes"
 
         $items | ForEach-Object { Remove-Item -Path $_.FullName }
     }

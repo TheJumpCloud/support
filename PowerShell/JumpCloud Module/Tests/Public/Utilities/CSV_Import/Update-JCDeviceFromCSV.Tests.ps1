@@ -2,6 +2,7 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
     BeforeEach {
         $NewUser = New-RandomUser -domain "delPrimarySystemUser.$(New-RandomString -NumberOfChars 5)" | New-JCUser
     }
+
     It 'Updates users from a CSV populated with all information' {
         $system = Get-JCSystem | Select-Object -First 1
         # Current system name
@@ -34,8 +35,8 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
 
         # Reset the system name
         Set-JCSystem -SystemID $system.id -displayName $currentSystemName
-
     }
+
     It 'Updates users from a CSV populated with a null value' {
         $system = Get-JCSystem | Select-Object -First 1
         $currentSystemName = $system.displayName
@@ -67,8 +68,8 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
 
         # Reset the system name
         Set-JCSystem -SystemID $system.id -displayName $currentSystemName
-
     }
+
     It 'Updates users from a CSV populated with an invalid primarySystemUser' {
         $system = Get-JCSystem | Select-Object -First 1
         $currentSystemName = $system.displayName
@@ -97,18 +98,21 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $UpdatedDevice.allowPublicKeyAuthentication | Should -Be $CSVData.allowPublicKeyAuthentication
         $UpdatedDevice.systemInsights | Should -Be '@{state=enabled}'
         $UpdatedDevice.primarySystemUser.id | Should -Be $system.primarySystemUser.id
+
         # Reset the system name
         Set-JCSystem -SystemID $system.id -displayName $currentSystemName
+    }
 
     It 'Updates a device from a CSV populated with custom attributes' {
         $system = Get-JCSystem | Select-Object -First 1
         $currentSystemName = $system.displayName
+        $currentDescription = $system.description
 
         # O [PSCustomObject] garante a exportação correta das colunas para o CSV
         $CSVData = [PSCustomObject]@{
             "DeviceID"                       = $system.id
             "displayName"                    = $currentSystemName
-            "description"                    = "PesterUpdateWithCustomAttributes"
+            "description"                    = $currentDescription
             "allowSshPasswordAuthentication" = $true
             "allowSshRootLogin"              = $true
             "allowMultiFactorAuthentication" = $false
@@ -125,10 +129,8 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
 
         $UpdatedDevice = Get-JCSystem -SystemID $system.id
         $UpdatedDevice.attributes | Should -Not -BeNullOrEmpty
+    }
 
-        Set-JCSystem -SystemID $system.id -displayName $currentSystemName
-    }
-    }
     AfterEach {
         Remove-JCUser -UserID $NewUser._id -force
     }
