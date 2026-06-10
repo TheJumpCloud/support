@@ -104,7 +104,8 @@ Describe -Tag:('JCDeviceFromCSV') 'Update-JCDeviceFromCSV' {
         $system = Get-JCSystem | Select-Object -First 1
         $currentSystemName = $system.displayName
 
-        $CSVData = @{
+        # O [PSCustomObject] garante a exportação correta das colunas para o CSV
+        $CSVData = [PSCustomObject]@{
             "DeviceID"                       = $system.id
             "displayName"                    = $currentSystemName
             "description"                    = "PesterUpdateWithCustomAttributes"

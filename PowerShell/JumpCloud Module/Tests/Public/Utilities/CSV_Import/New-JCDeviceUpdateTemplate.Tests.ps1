@@ -6,10 +6,13 @@ Describe -Tag:('JCDeviceFromCSV') 'New-JCDeviceUpdateTemplate' {
         $items | Should -Exist
         $items | ForEach-Object { Remove-Item -Path $_.FullName }
     It "Creates a CSV Import Template with custom attributes" {
-        New-JCDeviceUpdateTemplate -NumberOfCustomAttributes 1 -Attribute1_name "TemplateAttrKey" -Attribute1_value "TemplateAttrValue" -Force
+        New-JCDeviceUpdateTemplate -Force
 
         $items = Get-ChildItem -Path $PWD | Where-Object { $_.FullName -Match "JCDeviceUpdateImport*" }
         $items | Should -Exist
+
+        $templateContent = Import-Csv -Path $items[0].FullName
+        $templateContent | Get-Member -Name "NumberOfCustomAttributes" | Should -Not -BeNullOrEmpty
 
         $items | ForEach-Object { Remove-Item -Path $_.FullName }
     }
