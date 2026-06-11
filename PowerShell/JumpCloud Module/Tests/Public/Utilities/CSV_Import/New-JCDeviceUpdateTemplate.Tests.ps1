@@ -18,7 +18,7 @@ Describe -Tag:('JCDeviceFromCSV') 'New-JCDeviceUpdateTemplate' {
 
         # Valida se a coluna customizada foi incluída no cabeçalho do arquivo gerado
         $firstLine = Get-Content -Path $items[0].FullName -First 1
-        $firstLine | Should -Match "NumberOfCustomAttributes"
+        $firstLine | Should -Match "Attribute1_name"
 
         $items | ForEach-Object { Remove-Item -Path $_.FullName }
     }
