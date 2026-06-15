@@ -1,4 +1,4 @@
-Function New-JCSystemGroup () {
+function New-JCSystemGroup () {
     [CmdletBinding()]
     param
     (
@@ -6,8 +6,8 @@ Function New-JCSystemGroup () {
         [string]$GroupName
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JConline }
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{
@@ -33,7 +33,7 @@ Function New-JCSystemGroup () {
             $jsonbody = ConvertTo-Json $body
 
             try {
-                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI  -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                $NewGroup = Invoke-RestMethod -Method POST -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $Status = 'Created'
             } catch {
                 $Status = $_.ErrorDetails

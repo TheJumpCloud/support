@@ -16,8 +16,8 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
     )
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 

@@ -18,8 +18,8 @@ function Get-JCConfiguredTemplatePolicy {
         $Name
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
         Write-Debug 'Verifying JCProviderID Key'

@@ -1,4 +1,4 @@
-Function Remove-JCCommandTarget {
+function Remove-JCCommandTarget {
     [CmdletBinding(DefaultParameterSetName = 'SystemID')]
     param (
         [Parameter(Mandatory, ValueFromPipelineByPropertyName, ParameterSetName = 'SystemID', Position = 0, HelpMessage = 'The id value of the JumpCloud command. Use the command ''Get-JCCommand | Select-Object _id, name'' to find the "_id" value for all the JumpCloud commands in your tenant.')]
@@ -22,8 +22,8 @@ Function Remove-JCCommandTarget {
 
         Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -106,7 +106,7 @@ Function Remove-JCCommandTarget {
 
         try {
 
-            $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
+            $APIresults = Invoke-RestMethod -Method Post -Uri $URL -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
             $Status = 'Removed'
 
         } catch {
@@ -135,6 +135,6 @@ Function Remove-JCCommandTarget {
 
     end {
 
-        Return $resultsArray
+        return $resultsArray
     }
 }

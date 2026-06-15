@@ -1,4 +1,4 @@
-Function Set-JCUserGroupLDAP {
+function Set-JCUserGroupLDAP {
     [CmdletBinding(DefaultParameterSetName = 'GroupName')]
 
     param
@@ -32,8 +32,8 @@ Function Set-JCUserGroupLDAP {
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -67,7 +67,7 @@ Function Set-JCUserGroupLDAP {
 
         if ($LDAPServer.Count -gt 1) {
             Write-Error "More than 1 LDAP Server. Action aborted"
-            Return
+            return
         }
 
         $LDAPServerID = $LDAPServer.id
@@ -191,7 +191,7 @@ Function Set-JCUserGroupLDAP {
 
     end {
 
-        Return $resultsArray
+        return $resultsArray
 
     }
 }

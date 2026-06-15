@@ -1,4 +1,4 @@
-Function Add-JCSystemGroupMember () {
+function Add-JCSystemGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -52,8 +52,8 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
         [string]$GroupID
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -85,7 +85,7 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
 
         if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             if ($GroupNameHash.Values.name -notcontains ($GroupName)) {
-                Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud user groups."
+                throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud user groups."
             }
 
             $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name

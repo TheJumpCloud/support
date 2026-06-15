@@ -27,8 +27,8 @@ function Get-JCPolicyResult () {
 
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JCOnline }
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -52,8 +52,8 @@ function Get-JCPolicyResult () {
 
                 if ($Policy) {
                     $PolicyID = $Policy.id
-                } Else {
-                    Throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
+                } else {
+                    throw "Policy does not exist. Run 'Get-JCPolicy' to see a list of all your JumpCloud policies."
                 }
 
                 $URL = "$JCUrlBasePath/api/v2/policies/$PolicyID/policystatuses"

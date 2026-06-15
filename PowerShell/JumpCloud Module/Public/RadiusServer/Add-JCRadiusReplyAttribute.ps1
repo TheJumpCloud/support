@@ -1,4 +1,4 @@
-Function Add-JCRadiusReplyAttribute () {
+function Add-JCRadiusReplyAttribute () {
 
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
     param
@@ -29,11 +29,11 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
     )
 
 
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $NumberOfAttributes = 2
             $VLAN = 11
-        } ElseIf ([System.String]::IsNullOrEmpty($NumberOfAttributes)) {
+        } elseif ([System.String]::IsNullOrEmpty($NumberOfAttributes)) {
             $NumberOfAttributes = 0
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -87,7 +87,7 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
     begin {
 
         Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -111,7 +111,7 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
         $ResultsArray = @()
     }
 
-    Process {
+    process {
 
         if ($GroupNameHash.Values.name -contains ($GroupName)) {
             $Group_ID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name
@@ -124,7 +124,7 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
 
             $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
         } else {
-            Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+            throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
         }
 
         $replyAttributes = New-Object System.Collections.ArrayList
@@ -242,7 +242,7 @@ The value specified for the ''-VLAN'' parameter is populated for the value of **
                 $TagSplit = ($CurrentA.name -split ":")[0]
 
                 if (($VLANAttrHash).ContainsKey($TagSplit)) {
-                    Continue
+                    continue
                 }
 
                 else {

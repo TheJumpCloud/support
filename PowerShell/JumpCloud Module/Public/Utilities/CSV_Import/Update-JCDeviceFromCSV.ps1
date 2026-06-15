@@ -1,4 +1,4 @@
-Function Update-JCDeviceFromCSV () {
+function Update-JCDeviceFromCSV () {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
     (
@@ -25,8 +25,8 @@ Function Update-JCDeviceFromCSV () {
         Write-Verbose "$($PSCmdlet.ParameterSetName)"
         $systems = Get-DynamicHash -Object System -returnProperties displayName
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
-            Write-Verbose 'Verifying JCAPI Key'
-            if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Write-Verbose 'Verifying Connection to JumpCloud...'
+            if (Test-JCConnection) {
                 Connect-JCOnline
             }
             $Banner = @"
@@ -38,7 +38,7 @@ Function Update-JCDeviceFromCSV () {
                        /_/
                                                   Device Update
 "@
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
             Write-Host $Banner -ForegroundColor Green

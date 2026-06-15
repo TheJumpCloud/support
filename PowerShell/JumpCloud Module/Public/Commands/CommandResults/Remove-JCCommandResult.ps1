@@ -1,4 +1,4 @@
-Function Remove-JCCommandResult () {
+function Remove-JCCommandResult () {
     [CmdletBinding(DefaultParameterSetName = 'warn')]
 
     param
@@ -15,8 +15,8 @@ The CommandResultID will be the 24 character string populated for the _id field.
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JConline }
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JConline }
 
         Write-Debug 'Populating API headers'
         $hdrs = @{

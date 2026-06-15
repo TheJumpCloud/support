@@ -1,4 +1,4 @@
-Function Add-JCCommandTarget {
+function Add-JCCommandTarget {
     [CmdletBinding(DefaultParameterSetName = 'SystemID')]
     param (
 
@@ -51,8 +51,8 @@ Function Add-JCCommandTarget {
 
         Write-Verbose "parameter set: $($PSCmdlet.ParameterSetName)"
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -108,7 +108,7 @@ Function Add-JCCommandTarget {
                     Windows {
                         $SystemType = 'windows'
                     }
-                    Default {
+                    default {
                         $SystemType = 'linux'
                     }
                 }
@@ -166,7 +166,7 @@ Function Add-JCCommandTarget {
 
             try {
 
-                $APIresults = Invoke-RestMethod -Method Post -Uri  $URL  -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
+                $APIresults = Invoke-RestMethod -Method Post -Uri $URL -Header $hdrs -Body $jsonbody -UserAgent:(Get-JCUserAgent)
                 $Status = 'Added'
 
             } catch {
@@ -196,6 +196,6 @@ Function Add-JCCommandTarget {
 
     end {
 
-        Return $resultsArray
+        return $resultsArray
     }
 }

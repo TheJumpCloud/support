@@ -44,7 +44,7 @@ function Import-JCMSPFromCSV () {
             Write-Host ""
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($orgNameCheck.Name.Count) orgs"
 
-            $ExistingorgNameCheck = Get-JCSdkOrganization
+            $ExistingorgNameCheck = Get-JcSdkOrganization
 
             foreach ($Org in $orgNameCheck) {
                 if ($ExistingorgNameCheck.DisplayName -notcontains ($Org.Name)) {
@@ -73,8 +73,8 @@ function Import-JCMSPFromCSV () {
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
-            Write-Verbose 'Verifying JCAPI Key'
-            if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Write-Verbose 'Verifying Connection to JumpCloud...'
+            if (Test-JCConnection) {
                 Connect-JCOnline
             }
             if (-not $Env:JCProviderID) {

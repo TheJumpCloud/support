@@ -1,4 +1,4 @@
-Function Get-JCCommandTarget {
+function Get-JCCommandTarget {
     [CmdletBinding(DefaultParameterSetName = 'Systems')]
     param (
 
@@ -14,8 +14,8 @@ Function Get-JCCommandTarget {
 
     begin {
 
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 

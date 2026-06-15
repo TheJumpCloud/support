@@ -47,7 +47,7 @@ function Update-JCMSPFromCSV () {
             Write-Host -BackgroundColor Green -ForegroundColor Black "Validating $($orgNameCheck.name.Count) orgs"
 
             # get all orgs:
-            $ExistingOrgCheck = Get-JCSdkOrganization
+            $ExistingOrgCheck = Get-JcSdkOrganization
             # Check for orgs that do not exist:
             foreach ($Org in $orgNameCheck) {
                 if ($ExistingOrgCheck.id -contains ($Org.id)) {
@@ -77,8 +77,8 @@ function Update-JCMSPFromCSV () {
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
-            Write-Verbose 'Verifying JCAPI Key'
-            if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Write-Verbose 'Verifying Connection to JumpCloud...'
+            if (Test-JCConnection) {
                 Connect-JCOnline
             }
             if (-not $Env:JCProviderID) {

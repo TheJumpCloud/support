@@ -1,4 +1,4 @@
-Function Send-JCPasswordReset {
+function Send-JCPasswordReset {
     [CmdletBinding(DefaultParameterSetName = 'ByID')]
     param (
 
@@ -13,8 +13,8 @@ The UserID will be the 24 character string populated for the _id field.')]
 
     begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -151,7 +151,7 @@ The UserID will be the 24 character string populated for the _id field.')]
 
     end {
 
-        Return $resultsArrayList
+        return $resultsArrayList
 
     }
 }

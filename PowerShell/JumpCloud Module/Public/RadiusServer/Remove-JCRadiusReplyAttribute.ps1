@@ -14,8 +14,8 @@ function Remove-JCRadiusReplyAttribute {
 
     begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -52,7 +52,7 @@ function Remove-JCRadiusReplyAttribute {
             $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
 
         } else {
-            Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+            throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
         }
 
 
@@ -92,7 +92,7 @@ function Remove-JCRadiusReplyAttribute {
 
             $ResultsArray += $AttributeRemove
 
-            Break
+            break
 
         }
 
@@ -171,7 +171,7 @@ function Remove-JCRadiusReplyAttribute {
     }
 
     end {
-        Return $ResultsArray
+        return $ResultsArray
     }
 
 }

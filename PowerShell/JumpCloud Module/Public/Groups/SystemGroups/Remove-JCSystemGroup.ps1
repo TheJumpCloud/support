@@ -1,4 +1,4 @@
-Function Remove-JCSystemGroup () {
+function Remove-JCSystemGroup () {
     [CmdletBinding(DefaultParameterSetName = 'byName')]
     param
     (
@@ -26,8 +26,8 @@ Function Remove-JCSystemGroup () {
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -70,7 +70,7 @@ Function Remove-JCSystemGroup () {
                 }
                 $resultsArray += $FormattedResults
             } else {
-                Throw "Group does not exist. Run 'Get-JCGroup -type system' to see a list of all your JumpCloud system groups."
+                throw "Group does not exist. Run 'Get-JCGroup -type system' to see a list of all your JumpCloud system groups."
             }
         }
         if ($PSCmdlet.ParameterSetName -eq 'ById') {
@@ -91,7 +91,7 @@ Function Remove-JCSystemGroup () {
                 }
                 $resultsArray += $FormattedResults
             } else {
-                Throw "Group does not exist. Run 'Get-JCGroup -type system' to see a list of all your JumpCloud system groups."
+                throw "Group does not exist. Run 'Get-JCGroup -type system' to see a list of all your JumpCloud system groups."
             }
         }
     }

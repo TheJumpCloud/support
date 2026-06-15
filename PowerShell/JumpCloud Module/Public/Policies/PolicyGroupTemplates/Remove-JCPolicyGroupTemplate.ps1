@@ -1,4 +1,4 @@
-Function Remove-JCPolicyGroupTemplate {
+function Remove-JCPolicyGroupTemplate {
     [CmdletBinding()]
     param (
         [Parameter(
@@ -20,8 +20,8 @@ Function Remove-JCPolicyGroupTemplate {
         $Force
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
         Write-Debug 'Verifying JCProviderID Key'
@@ -53,7 +53,7 @@ Function Remove-JCPolicyGroupTemplate {
 
     }
     process {
-        if (-NOT [System.String]::IsNullOrEmpty($GroupTemplateID)) {
+        if (-not [System.String]::IsNullOrEmpty($GroupTemplateID)) {
             $URL = "https://console.jumpcloud.com/api/v2/providers/$ProviderID/policygrouptemplates/$GroupTemplateID"
             if (!$Force) {
                 Write-Warning "Are you sure you wish to delete policy group template: `'$($foundPolicyGroupTemplate.Name)`'?" -WarningAction Inquire

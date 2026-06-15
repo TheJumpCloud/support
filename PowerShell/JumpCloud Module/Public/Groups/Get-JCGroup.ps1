@@ -1,4 +1,4 @@
-Function Get-JCGroup () {
+function Get-JCGroup () {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param
     (
@@ -6,11 +6,11 @@ Function Get-JCGroup () {
         [ValidateSet('User', 'System')]
         [string]$Type
     )
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $Type = 'User'
         }
-        If ($Type) {
+        if ($Type) {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter the group name"
             $attr.Mandatory = $false
@@ -24,8 +24,8 @@ Function Get-JCGroup () {
         }
     }
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 

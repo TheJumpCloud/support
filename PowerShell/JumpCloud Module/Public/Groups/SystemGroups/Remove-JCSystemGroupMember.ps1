@@ -1,4 +1,4 @@
-Function Remove-JCSystemGroupMember () {
+function Remove-JCSystemGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
     param
     (
@@ -21,8 +21,8 @@ The SystemID will be the 24 character string populated for the _id field. System
         [string]$GroupID
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -53,7 +53,7 @@ The SystemID will be the 24 character string populated for the _id field. System
 
         if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             if ($GroupNameHash.Values.name -notcontains ($GroupName)) {
-                Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud user groups."
+                throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud user groups."
             }
 
             $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name

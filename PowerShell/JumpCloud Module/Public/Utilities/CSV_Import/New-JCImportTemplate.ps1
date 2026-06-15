@@ -1,4 +1,4 @@
-Function New-JCImportTemplate() {
+function New-JCImportTemplate() {
     [CmdletBinding()]
 
     param
@@ -35,7 +35,7 @@ Function New-JCImportTemplate() {
 
             $Heading2 = 'The CSV file will be created within the directory:'
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
 
@@ -46,7 +46,7 @@ Function New-JCImportTemplate() {
 
 
             while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N') {
-                $ConfirmFile = Read-Host  "Enter Y to confirm or N to change output location" #Confirm .csv file location creation
+                $ConfirmFile = Read-Host "Enter Y to confirm or N to change output location" #Confirm .csv file location creation
             }
 
             if ($ConfirmFile -eq 'Y') {
@@ -75,7 +75,7 @@ Function New-JCImportTemplate() {
             $ConfirmUpdateVsNew = 'N'
         } elseif ($type -eq 'Update') {
             $ConfirmUpdateVsNew = 'U'
-        } Else {
+        } else {
             Write-Host "`nDo you want to create an import CSV template for creating new users or for updating existing users?"
             Write-Host 'Enter "N" for to create a template for ' -NoNewline
             Write-Host -ForegroundColor Yellow 'new users'
@@ -84,7 +84,7 @@ Function New-JCImportTemplate() {
 
 
             while ($ConfirmUpdateVsNew -ne 'N' -and $ConfirmUpdateVsNew -ne 'U') {
-                $ConfirmUpdateVsNew = Read-Host  "Enter N for 'new users' or U for 'updating users'"
+                $ConfirmUpdateVsNew = Read-Host "Enter N for 'new users' or U for 'updating users'"
             }
         }
 
@@ -182,12 +182,12 @@ Function New-JCImportTemplate() {
 
 
                 while ($ConfirmUserPop -ne 'Y' -and $ConfirmUserPop -ne 'N') {
-                    $ConfirmUserPop = Read-Host  "Enter Y for Yes or N for No"
+                    $ConfirmUserPop = Read-Host "Enter Y for Yes or N for No"
                 }
 
                 if ($ConfirmUserPop -eq 'Y') {
-                    Write-Verbose 'Verifying JCAPI Key'
-                    if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+                    Write-Verbose 'Verifying Connection to JumpCloud...'
+                    if (Test-JCConnection) {
                         Connect-JConline
                     }
                     $ExistingUsers = Get-DynamicHash -Object User -returnProperties username
@@ -200,7 +200,7 @@ Function New-JCImportTemplate() {
                 Write-Host "`nWould you like to update users email addresses?"
 
                 while ($ConfirmEmailAddress -ne 'Y' -and $ConfirmEmailAddress -ne 'N') {
-                    $ConfirmEmailAddress = Read-Host  "Enter Y for Yes or N for No"
+                    $ConfirmEmailAddress = Read-Host "Enter Y for Yes or N for No"
                 }
 
                 if ($ConfirmEmailAddress -eq 'Y') {
@@ -217,7 +217,7 @@ Function New-JCImportTemplate() {
 
 
             while ($ConfirmLDAPAttributes -ne 'Y' -and $ConfirmLDAPAttributes -ne 'N') {
-                $ConfirmLDAPAttributes = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmLDAPAttributes = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmLDAPAttributes -eq 'Y') {
@@ -247,7 +247,7 @@ Function New-JCImportTemplate() {
 
 
             while ($ConfirmLDAPLocationAttributes -ne 'Y' -and $ConfirmLDAPLocationAttributes -ne 'N') {
-                $ConfirmLDAPLocationAttributes = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmLDAPLocationAttributes = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmLDAPLocationAttributes -eq 'Y') {
@@ -272,10 +272,10 @@ Function New-JCImportTemplate() {
 
             Write-Host "`nDo you want to add extended user telephony attributes available over JumpCloud LDAP to your users during import?"
             Write-Host 'Extended user telephony attributes include: ' -NoNewline
-            Write-Host  'mobile_number, home_number, work_number, work_mobile_number, work_fax_number' -ForegroundColor Yellow
+            Write-Host 'mobile_number, home_number, work_number, work_mobile_number, work_fax_number' -ForegroundColor Yellow
 
             while ($ConfirmLDAPTelephonyAttributes -ne 'Y' -and $ConfirmLDAPTelephonyAttributes -ne 'N') {
-                $ConfirmLDAPTelephonyAttributes = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmLDAPTelephonyAttributes = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmLDAPTelephonyAttributes -eq 'Y') {
@@ -292,10 +292,10 @@ Function New-JCImportTemplate() {
 
             Write-Host "`nDo you want to set unix UID/GUID values during import?"
             Write-Host 'UID/GUID value attributes include: ' -NoNewline
-            Write-Host  'unix_uid, unix_guid' -ForegroundColor Yellow
+            Write-Host 'unix_uid, unix_guid' -ForegroundColor Yellow
 
             while ($ConfirmUIDGUIDAttributes -ne 'Y' -and $ConfirmUIDGUIDAttributes -ne 'N') {
-                $ConfirmUIDGUIDAttributes = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmUIDGUIDAttributes = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmUIDGUIDAttributes -eq 'Y') {
@@ -308,9 +308,9 @@ Function New-JCImportTemplate() {
             }
 
             Write-Host "`nDo you want to require MFA to user?"
-            Write-Host  'enable_user_portal_multifactor, EnrollmentDays' -ForegroundColor Yellow
+            Write-Host 'enable_user_portal_multifactor, EnrollmentDays' -ForegroundColor Yellow
             while ($MFAOption -ne 'Y' -and $MFAOption -ne 'N') {
-                $MFAOption = Read-Host  "Enter Y for Yes or N for No"
+                $MFAOption = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($MFAOption -eq 'Y') {
@@ -322,7 +322,7 @@ Function New-JCImportTemplate() {
             Write-Host "`nDo you want to bind the user to LDAP during import"
             Write-Host -ForegroundColor Yellow 'Ldap_Binding_User, Ldapserver_id'
             while ($ConfirmLDAPBind -ne 'Y' -and $ConfirmLDAPBind -ne 'N') {
-                $ConfirmLDAPBind = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmLDAPBind = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmLDAPBind -eq 'Y') {
@@ -334,7 +334,7 @@ Function New-JCImportTemplate() {
             Write-Host "`nDo you want to bind your users to existing JumpCloud systems during import?"
 
             while ($ConfirmSystem -ne 'Y' -and $ConfirmSystem -ne 'N') {
-                $ConfirmSystem = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmSystem = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmSystem -eq 'Y') {
@@ -346,9 +346,9 @@ Function New-JCImportTemplate() {
 
                 $SystemsName = 'JCSystems_' + $date + '.csv'
 
-                $ExistingSystems | Export-Csv -path "$ExportLocation/$SystemsName" -NoTypeInformation
+                $ExistingSystems | Export-Csv -Path "$ExportLocation/$SystemsName" -NoTypeInformation
 
-                Write-Host 'Creating file '  -NoNewline
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $SystemsName -ForegroundColor Yellow -NoNewline
                 Write-Host ' with all existing systems in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
@@ -362,11 +362,11 @@ Function New-JCImportTemplate() {
             Write-Host 'Do you want to add the users to JumpCloud user groups during import?'
 
             while ($ConfirmGroups -ne 'Y' -and $ConfirmGroups -ne 'N') {
-                $ConfirmGroups = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmGroups = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmGroups -eq 'Y') {
-                [int]$GroupNumber = Read-Host  "What is the maximum number of groups you want to add a single user to during import? ENTER A NUMBER"
+                [int]$GroupNumber = Read-Host "What is the maximum number of groups you want to add a single user to during import? ENTER A NUMBER"
                 [int]$NewGroup = 0
                 [int]$GroupID = 1
                 $GroupsArray = @()
@@ -391,19 +391,19 @@ Function New-JCImportTemplate() {
             Write-Host 'Do you want to add any custom attributes to your users during import? Note, customAttribute values must be unique'
 
             while ($ConfirmAttributes -ne 'Y' -and $ConfirmAttributes -ne 'N') {
-                $ConfirmAttributes = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmAttributes = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmAttributes -eq 'Y') {
-                [int]$AttributeNumber = Read-Host  "What is the maximum number of custom attributes you want to add to a single user during import? ENTER A NUMBER"
+                [int]$AttributeNumber = Read-Host "What is the maximum number of custom attributes you want to add to a single user during import? ENTER A NUMBER"
                 [int]$NewAttribute = 0
                 [int]$AttributeID = 1
                 $NewAttributeArrayList = New-Object System.Collections.ArrayList
 
                 while ($NewAttribute -ne $AttributeNumber) {
                     $temp = New-Object PSObject
-                    $temp | Add-Member -MemberType NoteProperty -Name AttributeName  -Value "Attribute$AttributeID`_name"
-                    $temp | Add-Member -MemberType NoteProperty -Name AttributeValue  -Value "Attribute$AttributeID`_value"
+                    $temp | Add-Member -MemberType NoteProperty -Name AttributeName -Value "Attribute$AttributeID`_name"
+                    $temp | Add-Member -MemberType NoteProperty -Name AttributeValue -Value "Attribute$AttributeID`_value"
                     $NewAttributeArrayList.Add($temp) | Out-Null
                     $NewAttribute ++
                     $AttributeID ++
@@ -442,24 +442,24 @@ Function New-JCImportTemplate() {
         if ($PSCmdlet.ParameterSetName -eq 'force') {
             if (!$ExportPath ) {
                 Write-Host ""
-                $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             } else {
                 Write-Warning "The file $fileName already exists, overwriting..."
-                $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             }
-        } Else {
+        } else {
             if (!$ExportPath ) {
                 Write-Host ""
-                $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file'  -NoNewline
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file' -NoNewline
                 Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
@@ -467,22 +467,22 @@ Function New-JCImportTemplate() {
                 Write-Host ""
                 Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
                 Write-Host ""
-                $CSVheader | Export-Csv -path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             }
             Write-Host ""
-            Write-Host "Do you want to open the file" -NoNewLine
+            Write-Host "Do you want to open the file" -NoNewline
             Write-Host " $FileName`?" -ForegroundColor Yellow
 
             while ($Open -ne 'Y' -and $Open -ne 'N') {
-                $Open = Read-Host  "Enter Y for Yes or N for No"
+                $Open = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($Open -eq 'Y') {
-                Invoke-Item -path "$ExportLocation/$FileName"
+                Invoke-Item -Path "$ExportLocation/$FileName"
 
             }
             if ($Open -eq 'N') {

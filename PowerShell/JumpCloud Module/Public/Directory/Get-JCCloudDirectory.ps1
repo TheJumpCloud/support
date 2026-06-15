@@ -11,7 +11,7 @@ function Get-JCCloudDirectory () {
         [String]$ID
     )
 
-    DynamicParam {
+    dynamicparam {
         if ($Name -or $ID) {
             # Create the dictionary
             $RuntimeParameterDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -40,8 +40,8 @@ function Get-JCCloudDirectory () {
         }
     }
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 

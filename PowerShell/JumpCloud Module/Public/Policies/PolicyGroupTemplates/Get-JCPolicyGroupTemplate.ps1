@@ -1,4 +1,4 @@
-Function Get-JCPolicyGroupTemplate {
+function Get-JCPolicyGroupTemplate {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
     param (
         [Parameter(
@@ -18,8 +18,8 @@ Function Get-JCPolicyGroupTemplate {
     )
     begin {
 
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
         Write-Debug 'Verifying JCProviderID Key'

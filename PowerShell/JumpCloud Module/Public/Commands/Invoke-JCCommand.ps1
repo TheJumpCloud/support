@@ -1,4 +1,4 @@
-Function Invoke-JCCommand () {
+function Invoke-JCCommand () {
     [CmdletBinding(DefaultParameterSetName = 'NoVariables')]
 
     param
@@ -11,13 +11,13 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
         [int]$NumberOfVariables
     )
 
-    DynamicParam {
+    dynamicparam {
         $ParameterSetName = $PSCmdlet.ParameterSetName
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $ParameterSetName = 'Variables'
             $NumberOfVariables = 2
         }
-        If ($ParameterSetName -eq 'Variables') {
+        if ($ParameterSetName -eq 'Variables') {
             $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
             [int]$NewParams = 0
@@ -54,8 +54,8 @@ You can leverage the pipeline and Parameter Binding to populate the -trigger Par
     }
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JCOnline }
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JCOnline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{

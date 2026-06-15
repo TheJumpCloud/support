@@ -1,4 +1,4 @@
-Function New-JCDeviceUpdateTemplate {
+function New-JCDeviceUpdateTemplate {
     [CmdletBinding()]
 
     param
@@ -29,7 +29,7 @@ Function New-JCDeviceUpdateTemplate {
 
             $Heading2 = 'The CSV file will be created within the directory:'
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
 
@@ -40,7 +40,7 @@ Function New-JCDeviceUpdateTemplate {
 
 
             while ($ConfirmFile -ne 'Y' -and $ConfirmFile -ne 'N') {
-                $ConfirmFile = Read-Host  "Enter Y to confirm or N to change output location" #Confirm .csv file location creation
+                $ConfirmFile = Read-Host "Enter Y to confirm or N to change output location" #Confirm .csv file location creation
             }
 
             if ($ConfirmFile -eq 'Y') {
@@ -106,12 +106,12 @@ Function New-JCDeviceUpdateTemplate {
 
 
             while ($ConfirmDevicePop -ne 'Y' -and $ConfirmDevicePop -ne 'N') {
-                $ConfirmDevicePop = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmDevicePop = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmDevicePop -eq 'Y') {
-                Write-Verbose 'Verifying JCAPI Key'
-                if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+                Write-Verbose 'Verifying Connection to JumpCloud...'
+                if (Test-JCConnection) {
                     Connect-JCOnline
                 }
                 $systems = Get-DynamicHash -Object System -returnProperties displayName, description, allowSshPasswordAuthentication, allowSshRootLogin, allowMultiFactorAuthentication, allowPublicKeyAuthentication, systemInsights, hostname
@@ -124,7 +124,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to update device descriptions?"
 
             while ($ConfirmDeviceDescription -ne 'Y' -and $ConfirmDeviceDescription -ne 'N') {
-                $ConfirmDeviceDescription = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmDeviceDescription = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmDeviceDescription -eq 'Y') {
@@ -137,7 +137,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to update allowing SSH Password Authentication?"
 
             while ($ConfirmSshPasswordAuth -ne 'Y' -and $ConfirmSshPasswordAuth -ne 'N') {
-                $ConfirmSshPasswordAuth = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmSshPasswordAuth = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmSshPasswordAuth -eq 'Y') {
@@ -150,7 +150,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to update allowing SSH Root Login?"
 
             while ($ConfirmSshRootLogin -ne 'Y' -and $ConfirmSshRootLogin -ne 'N') {
-                $ConfirmSshRootLogin = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmSshRootLogin = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmSshRootLogin -eq 'Y') {
@@ -163,7 +163,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to update allowing MFA?"
 
             while ($ConfirmMFA -ne 'Y' -and $ConfirmMFA -ne 'N') {
-                $ConfirmMFA = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmMFA = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmMFA -eq 'Y') {
@@ -176,7 +176,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to update allowing Public Key Authentication?"
 
             while ($ConfirmPublicKeyAuth -ne 'Y' -and $ConfirmPublicKeyAuth -ne 'N') {
-                $ConfirmPublicKeyAuth = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmPublicKeyAuth = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmPublicKeyAuth -eq 'Y') {
@@ -189,7 +189,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to update enabling System Insights?"
 
             while ($ConfirmSystemInsights -ne 'Y' -and $ConfirmSystemInsights -ne 'N') {
-                $ConfirmSystemInsights = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmSystemInsights = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmSystemInsights -eq 'Y') {
@@ -202,7 +202,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host "`nWould you like to set a primary system user?"
 
             while ($ConfirmPrimarySystemUser -ne 'Y' -and $ConfirmPrimarySystemUser -ne 'N') {
-                $ConfirmPrimarySystemUser = Read-Host  "Enter Y for Yes or N for No"
+                $ConfirmPrimarySystemUser = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($ConfirmPrimarySystemUser -eq 'Y') {
@@ -234,23 +234,23 @@ Function New-JCDeviceUpdateTemplate {
             if (!$ExportPath ) {
                 Write-Host ""
                 $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             } else {
                 Write-Warning "The file $fileName already exists, overwriting..."
                 $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
             }
-        } Else {
+        } else {
             if (!$ExportPath ) {
                 Write-Host ""
                 $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file'  -NoNewline
+                Write-Host 'Creating file' -NoNewline
                 Write-Host " $fileName" -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
@@ -259,7 +259,7 @@ Function New-JCDeviceUpdateTemplate {
                 Write-Warning "The file $fileName already exists do you want to overwrite it?" -WarningAction Inquire
                 Write-Host ""
                 $CSVheader | Export-Csv -Path "$ExportLocation/$FileName" -NoTypeInformation
-                Write-Host 'Creating file '  -NoNewline
+                Write-Host 'Creating file ' -NoNewline
                 Write-Host $FileName -ForegroundColor Yellow -NoNewline
                 Write-Host ' in the location' -NoNewline
                 Write-Host " $ExportLocation" -ForegroundColor Yellow
@@ -269,7 +269,7 @@ Function New-JCDeviceUpdateTemplate {
             Write-Host " $FileName`?" -ForegroundColor Yellow
 
             while ($Open -ne 'Y' -and $Open -ne 'N') {
-                $Open = Read-Host  "Enter Y for Yes or N for No"
+                $Open = Read-Host "Enter Y for Yes or N for No"
             }
 
             if ($Open -eq 'Y') {

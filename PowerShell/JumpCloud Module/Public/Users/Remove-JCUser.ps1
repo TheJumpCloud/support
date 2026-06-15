@@ -33,7 +33,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         [ValidateSet('NULL', 'Automatic', 'User')]
         [string]$CascadeManager
     )
-    DynamicParam {
+    dynamicparam {
         # Create a dynamic parameter to get the -CascadeManagerId
         if ($PSBoundParameters['CascadeManager'] -eq 'User') {
             $paramDictionary = New-Object -Type System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -49,8 +49,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         }
     }
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
         Write-Debug 'Populating API headers'
@@ -67,7 +67,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         $deletedArray = @()
         # If $cascadeManager and $force are used, throw an error
         if ($CascadeManager -and $force) {
-            Throw "Cannot use -CascadeManager and -Force together. Please use one or the other."
+            throw "Cannot use -CascadeManager and -Force together. Please use one or the other."
         }
 
         $UserHash = Get-DynamicHash -Object User -returnProperties 'username', 'manager'
@@ -85,7 +85,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 } else {
                     Write-Error "UserId $($CascadeManagerValue) does not exist. Please enter a valid UserID."
                     # Throw the script
-                    Throw
+                    throw
                 }
             } else {
                 # Validate if the Username is a JC User from the $UserHash
@@ -98,7 +98,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 } else {
                     Write-Error "Username $($CascadeManagerValue) does not exist. Please enter a valid Username."
                     # Throw the script
-                    Throw
+                    throw
                 }
             }
         }
@@ -108,7 +108,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             if ($UserHash.Values.username -contains ($Username)) {
                 $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name
             } else {
-                Throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+                throw "Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
         } elseif ($PSCmdlet.ParameterSetName -eq 'UserID') {
             # Validate if the Id is a JC User from the $UserHash
@@ -118,7 +118,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             } else {
                 Write-Error "UserId $($UserID) does not exist. Please enter a valid UserID."
                 # Throw the script
-                Throw
+                throw
             }
         }
         # Check if the user is a manager
@@ -139,7 +139,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
         if (!$force) {
             if ($PSBoundParameters['CascadeManager'] -and $isManager) {
                 Write-Debug "Switching on $CascadeManager"
-                Switch ($CascadeManager) {
+                switch ($CascadeManager) {
 
                     'NULL' {
                         $URI = "$JCUrlBasePath/api/systemusers/$($UserID)?cascade_manager=null"
@@ -197,7 +197,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $Status = 'Not Deleted'
                             } else {
                                 Write-Error "Please enter Y or N"
-                                Throw
+                                throw
                             }
 
                         } elseif ($cascade_manager -eq 'N') {
@@ -221,12 +221,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                     $Status = 'Not Deleted'
                                 } else {
                                     Write-Error "Please enter Y or N"
-                                    Throw
+                                    throw
                                 }
                             } else {
                                 Write-Error "User does not exist. Please enter a valid UserID."
                                 # Throw the script
-                                Throw
+                                throw
                             }
                         }
                     } else {
@@ -250,12 +250,12 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                                 $Status = 'Not Deleted'
                             } else {
                                 Write-Error "Please enter Y or N"
-                                Throw
+                                throw
                             }
                         } else {
                             Write-Error "User does not exist. Please enter a valid UserID."
                             # Throw the script
-                            Throw
+                            throw
                         }
                     }
                 } elseif ($cascade_manager -eq 'N') {
@@ -275,11 +275,11 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                         $Status = 'Not Deleted'
                     } else {
                         Write-Error "Please enter Y or N"
-                        Throw
+                        throw
                     }
                 } else {
                     Write-Error "Please enter Y or N"
-                    Throw
+                    throw
                 }
             } else {
                 $URI = "$JCUrlBasePath/api/systemusers/$($UserID)?cascade_manager=null"
@@ -297,7 +297,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $Status = 'Not Deleted'
                 } else {
                     Write-Error "Please enter Y or N"
-                    Throw
+                    throw
                 }
             }
         }

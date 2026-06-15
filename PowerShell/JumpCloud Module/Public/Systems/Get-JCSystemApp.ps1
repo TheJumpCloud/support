@@ -16,8 +16,8 @@ function Get-JCSystemApp () {
         [switch]$SearchAllSystems
     )
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
         $Parallel = $JCConfig.parallel.Calculated
@@ -38,7 +38,7 @@ function Get-JCSystemApp () {
             All {
                 if ($SystemId -or $SystemOS) {
                     if ($SystemID -and $SystemOS) {
-                        Throw "Cannot specify both SystemID and SystemOS"
+                        throw "Cannot specify both SystemID and SystemOS"
                     }
                     # Get the OS Type
                     if ($SystemID) {
@@ -268,10 +268,10 @@ function Get-JCSystemApp () {
                 Write-Debug "Search $name"
                 if ($name) {
                     if ($version) {
-                        Throw 'You cannot specify software version when using -search for a software name'
+                        throw 'You cannot specify software version when using -search for a software name'
                     } elseif ($SystemId) {
                         $OSType = Get-JcSdkSystem -Id $SystemID | Select-Object -ExpandProperty OSFamily
-                        Switch ($OSType) {
+                        switch ($OSType) {
                             "Windows" {
                                 $result = Get-JcSdkSystemInsightProgram -Filter @("system_id:eq:$SystemID")
                                 if ($result) {
@@ -334,7 +334,7 @@ function Get-JCSystemApp () {
                     }
 
                 } else {
-                    Throw "You must specify a software name and/or systemId when using -search"
+                    throw "You must specify a software name and/or systemId when using -search"
                 }
             }
 

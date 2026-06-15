@@ -1,4 +1,4 @@
-Function Invoke-JCDeployment () {
+function Invoke-JCDeployment () {
     [CmdletBinding()]
 
     param
@@ -16,8 +16,8 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JConline }
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JConline }
 
         Write-Verbose 'Populating API headers'
         $hdrs = @{
@@ -41,7 +41,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
             if ( -not $DeploymentCommand) {
                 Write-Error "$CommandID is not a valid CommandID. Run command 'Get-JCCommand | Select name, _id' to see a list of your commands"
 
-                Exit
+                exit
 
             }
         }
@@ -51,7 +51,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
             Write-Error $_.ErrorDetails
 
-            Exit
+            exit
 
         }
 
@@ -77,11 +77,11 @@ The CommandID will be the 24 character string populated for the _id field.')]
                     n {
 
                         Write-Output "Exited due to system associations"
-                        Exit
+                        exit
 
                     }
                     default {
-                        write-warning "$ConfirmPrompt is not a valid choice"
+                        Write-Warning "$ConfirmPrompt is not a valid choice"
                         Start-Sleep -Seconds 1
                         $ConfirmPrompt = $false
                     }
@@ -94,14 +94,14 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
                 if ($GroupTargets.GroupID.count -gt 0) {
 
-                    $GroupsRemove = $GroupTargets | % { Remove-JCCommandTarget -CommandID  $CommandID -GroupID $_.GroupID }
+                    $GroupsRemove = $GroupTargets | ForEach-Object { Remove-JCCommandTarget -CommandID $CommandID -GroupID $_.GroupID }
 
                 }
 
                 $SystemTargets = Get-JCCommandTarget -CommandID $CommandID
 
                 if ($SystemTargets.SystemID.count -gt 0) {
-                    $SystemRemove = $SystemTargets   | Remove-JCCommandTarget -CommandID $CommandID
+                    $SystemRemove = $SystemTargets | Remove-JCCommandTarget -CommandID $CommandID
                 }
 
             }
@@ -113,7 +113,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
                 Write-Error "`nDeployment command: '$($DeploymentCommand.name)' has $($NoTargets.SystemID.count) existing system associations. Exiting`n"
 
                 Write-Output "Exited due to system associations"
-                Exit
+                exit
 
             }
 
@@ -128,10 +128,10 @@ The CommandID will be the 24 character string populated for the _id field.')]
         $trigger = Get-Date -Format MMddyyTHHmmss
 
         # Get existing data, type, Shell from command
-        $ExistingCommand = Get-JCSDKCommand -Id $CommandID
+        $ExistingCommand = Get-JcSdkCommand -Id $CommandID
 
         # set command w/ origional type and new trigger
-        $Command = Set-JCSDKCommand -ID $CommandID -launchType trigger -trigger $trigger -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
+        $Command = Set-JcSdkCommand -Id $CommandID -LaunchType trigger -Trigger $trigger -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
 
         $DeploymentInfo = Import-Csv $CSVFilePath
 
@@ -188,7 +188,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
             $resultsArray += $SingleResult
 
         }
-        $null = Set-JCSDKCommand -ID $CommandID -launchType manual -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
+        $null = Set-JcSdkCommand -Id $CommandID -LaunchType manual -Command $ExistingCommand.Command1 -CommandType $ExistingCommand.CommandType -Shell $ExistingCommand.Shell -Name $ExistingCommand.Name
     }
 
     end {

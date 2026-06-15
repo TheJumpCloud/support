@@ -1,4 +1,4 @@
-Function Add-JCUserGroupMember () {
+function Add-JCUserGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -45,8 +45,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -80,7 +80,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             if ($GroupNameHash.Values.name -notcontains ($GroupName)) {
-                Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+                throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
             }
 
             if ($UserNameHash.Values.username -contains ($Username)) {

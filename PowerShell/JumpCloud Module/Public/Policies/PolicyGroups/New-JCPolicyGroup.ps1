@@ -24,7 +24,7 @@ Function New-JCPolicyGroup {
         $Description
     )
     begin {
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 

@@ -1,4 +1,4 @@
-Function Get-JCUserGroupMember () {
+function Get-JCUserGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
 
     param
@@ -10,8 +10,8 @@ Function Get-JCUserGroupMember () {
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -70,7 +70,7 @@ Function Get-JCUserGroupMember () {
                 }
 
                 else {
-                    Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+                    throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
                 }
 
             }

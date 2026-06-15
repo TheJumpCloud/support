@@ -1,4 +1,4 @@
-Function Remove-JCUserGroupMember () {
+function Remove-JCUserGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -23,8 +23,8 @@ The UserID will be the 24 character string populated for the _id field. UserID h
         [string]$UserID
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -57,11 +57,11 @@ The UserID will be the 24 character string populated for the _id field. UserID h
 
         if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             if ($GroupNameHash.Values.name -notcontains ($GroupName)) {
-                Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+                throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
             }
 
             if ($UserNameHash.Values.username -notcontains ($Username)) {
-                Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
+                throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
             }
 
             $GroupID = $GroupNameHash.GetEnumerator().Where({ $_.Value.name -contains ($GroupName) }).Name

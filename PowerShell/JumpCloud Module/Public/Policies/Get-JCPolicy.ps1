@@ -1,4 +1,4 @@
-Function Get-JCPolicy () {
+function Get-JCPolicy () {
     [CmdletBinding(DefaultParameterSetName = 'ReturnAll')]
 
     param
@@ -25,8 +25,8 @@ Function Get-JCPolicy () {
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -51,17 +51,17 @@ Function Get-JCPolicy () {
                 "$JCUrlBasePath/api/v2/policies"
             }
             "ByID" {
-                ForEach ($Item In $PolicyID) {
+                foreach ($Item in $PolicyID) {
                     "$JCUrlBasePath/api/v2/policies/$Item"
                 }
             }
             "Name" {
-                ForEach ($Item In $Name) {
+                foreach ($Item in $Name) {
                     "$JCUrlBasePath/api/v2/policies?sort=name&filter=name%3Aeq%3A$Item"
                 }
             }
         }
-        ForEach ($URL In $URLs) {
+        foreach ($URL in $URLs) {
             if ($URL -match "name&filter") {
                 $Result = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
                 # search does not return values now need to return the policy by ID after matching name
@@ -78,9 +78,9 @@ Function Get-JCPolicy () {
             }
         }
     }
-    End {
-        If ($Results) {
-            Return $Results | Select-Object -Property "name", "id", "templateID", "values", "template", "notes"
+    end {
+        if ($Results) {
+            return $Results | Select-Object -Property "name", "id", "templateID", "values", "template", "notes"
         }
     }
 }

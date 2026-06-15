@@ -12,8 +12,8 @@ function Get-JCBackup {
     )
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JCOnline }
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JCOnline }
 
         if ($All) {
 
@@ -47,7 +47,7 @@ function Get-JCBackup {
 
     process {
 
-        If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
+        if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) { Clear-Host }
 
         $StartTime = Get-Date -Format:('yyyyMMddTHHmmss')
 

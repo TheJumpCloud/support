@@ -25,7 +25,7 @@ function Set-JCPolicyGroup {
         [System.String]$Description
     )
     begin {
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
         if ($PSBoundParameters["PolicyGroupID"]) {

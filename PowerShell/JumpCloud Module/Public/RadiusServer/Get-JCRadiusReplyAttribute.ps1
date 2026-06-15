@@ -1,4 +1,4 @@
-Function Get-JCRadiusReplyAttribute () {
+function Get-JCRadiusReplyAttribute () {
 
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
     param
@@ -15,8 +15,8 @@ Function Get-JCRadiusReplyAttribute () {
 
     begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -45,7 +45,7 @@ Function Get-JCRadiusReplyAttribute () {
             $CurrentAttributes = Get-JCGroup -Type User -Name $GroupName | Select-Object @{Name = "RadiusAttributes"; Expression = { $_.attributes.radius.reply } } | Select-Object -ExpandProperty RadiusAttributes
 
         } else {
-            Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+            throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
         }
 
 

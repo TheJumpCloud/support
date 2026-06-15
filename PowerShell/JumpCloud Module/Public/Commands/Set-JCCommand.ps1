@@ -1,4 +1,4 @@
-Function Set-JCCommand {
+function Set-JCCommand {
     [CmdletBinding()]
 
     param (
@@ -34,14 +34,14 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     )
 
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $launchType = 'trigger'
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
 
-        If ($launchType -eq "trigger") {
+        if ($launchType -eq "trigger") {
             $attr = New-Object System.Management.Automation.ParameterAttribute
             $attr.HelpMessage = "Enter a trigger name. Triggers must be unique"
             $attr.ValueFromPipelineByPropertyName = $true
@@ -59,8 +59,8 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JConline }
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JConline }
 
         $hdrs = @{
 
@@ -115,7 +115,7 @@ The CommandID will be the 24 character string populated for the _id field.')]
 
     end {
 
-        Return $NewCommandsArray
+        return $NewCommandsArray
 
     }
 }

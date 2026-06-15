@@ -1,4 +1,4 @@
-Function Get-JCSystemGroupMember () {
+function Get-JCSystemGroupMember () {
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
 
     param
@@ -10,8 +10,8 @@ Function Get-JCSystemGroupMember () {
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -67,7 +67,7 @@ Function Get-JCSystemGroupMember () {
                 }
 
                 else {
-                    Throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud System groups."
+                    throw "Group does not exist. Run 'Get-JCGroup -type System' to see a list of all your JumpCloud System groups."
                 }
 
             }

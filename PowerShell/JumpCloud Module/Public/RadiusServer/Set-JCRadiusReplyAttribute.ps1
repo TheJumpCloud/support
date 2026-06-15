@@ -1,4 +1,4 @@
-Function Set-JCRadiusReplyAttribute () {
+function Set-JCRadiusReplyAttribute () {
 
     [CmdletBinding(DefaultParameterSetName = 'ByGroup')]
     param
@@ -35,11 +35,11 @@ If an invalid attribute is configured on a user group this will prevent users wi
     )
 
 
-    DynamicParam {
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+    dynamicparam {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $NumberOfAttributes = 2
             $VLAN = 11
-        } ElseIf ([System.String]::IsNullOrEmpty($NumberOfAttributes)) {
+        } elseif ([System.String]::IsNullOrEmpty($NumberOfAttributes)) {
             $NumberOfAttributes = 0
         }
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
@@ -92,8 +92,8 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
     begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -130,7 +130,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
 
             $ExistingAttributes = $GroupInfo | Select-Object -ExpandProperty attributes
         } else {
-            Throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
+            throw "Group does not exist. Run 'Get-JCGroup -type User' to see a list of all your JumpCloud user groups."
         }
 
         $replyAttributes = New-Object System.Collections.ArrayList
@@ -248,7 +248,7 @@ If an invalid attribute is configured on a user group this will prevent users wi
                 $TagSplit = ($CurrentA.name -split ":")[0]
 
                 if (($VLANAttrHash).ContainsKey($TagSplit)) {
-                    Continue
+                    continue
                 }
 
                 else {

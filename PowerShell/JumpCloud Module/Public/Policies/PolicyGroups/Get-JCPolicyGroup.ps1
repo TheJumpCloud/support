@@ -16,7 +16,7 @@ Function Get-JCPolicyGroup {
         $PolicyGroupID
     )
     begin {
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
         $URL = switch ($PSCmdlet.ParameterSetName) {

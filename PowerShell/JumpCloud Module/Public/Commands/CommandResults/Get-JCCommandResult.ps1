@@ -24,8 +24,8 @@ function Get-JCCommandResult () {
         [Switch]$TotalCount
     )
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -57,7 +57,7 @@ function Get-JCCommandResult () {
         switch ($PSCmdlet.ParameterSetName) {
             TotalCount {
                 $CountURL = "$JCUrlBasePath/api/commandresults?limit=1&skip=0"
-                $results = Invoke-RestMethod -Method GET -Uri  $CountURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
+                $results = Invoke-RestMethod -Method GET -Uri $CountURL -Headers $hdrs -UserAgent:(Get-JCUserAgent)
                 $null = $resultsArrayList.Add($results.totalCount)
             }#End TotalCount
             ReturnAll {
@@ -82,7 +82,7 @@ function Get-JCCommandResult () {
                 # If -ByCommandID is specified and an object is piped into the function, the object will be converted to string
                 if ($CommandID -match "@{") {
                     Write-Debug "Command from pipeline..."
-                    $Match = Select-String "_id=(\S*)[};]" -inputobject $CommandID
+                    $Match = Select-String "_id=(\S*)[};]" -InputObject $CommandID
                     # Get the CommandID via regex
                     $CommandID = $Match.matches.groups[1].value
                     Write-Debug "Match: $($Match.matches.groups[1].value)"
@@ -95,7 +95,7 @@ function Get-JCCommandResult () {
                     Write-Debug "Parallel validated..."
                     $GetJCUserAgent = Get-JCUserAgent
                     # Iterate through all the CommandResults objects
-                    $resultsArray | Foreach-Object -Parallel {
+                    $resultsArray | ForEach-Object -Parallel {
                         # If the workflowId for the CommandResult does not match the CommandID, skip
                         $CommandID = $using:CommandID
                         if ($_.workflowId -ne $CommandID) {
@@ -127,7 +127,7 @@ function Get-JCCommandResult () {
                     # After parallel loop is complete, sort final object by requestTime
                     $resultsArrayList = $resultsArrayList | Sort-Object -Property requestTime
                 } else {
-                    $resultsArray | Foreach-Object {
+                    $resultsArray | ForEach-Object {
                         if ($_.workflowId -ne $CommandID) {
                             return
                         }
@@ -187,7 +187,7 @@ function Get-JCCommandResult () {
                 $results = Get-JCCommandResult
                 if ($Parallel) {
                     $UserAgent = Get-JCUserAgent
-                    $results | Foreach-Object -Parallel {
+                    $results | ForEach-Object -Parallel {
                         $resultsArrayList = $using:resultsArrayList
                         $JCUrlBasePath = $using:JCUrlBasePath
                         $URL = "$JCUrlBasePath/api/commandresults/$($_._id)"
@@ -217,7 +217,7 @@ function Get-JCCommandResult () {
                         $null = $resultsArrayList.Add($FormattedResults)
                     }
                 } else {
-                    $results | Foreach-Object {
+                    $results | ForEach-Object {
                         $result = Get-JCCommandResult -ID $_._id
                         $null = $resultsArrayList.Add($result)
                     }
@@ -228,19 +228,19 @@ function Get-JCCommandResult () {
     end {
         switch ($PSCmdlet.ParameterSetName) {
             ReturnAll {
-                Return $resultsArrayList
+                return $resultsArrayList
             }
             TotalCount {
-                Return  $resultsArrayList
+                return  $resultsArrayList
             }
             ByCommandID {
-                Return  $resultsArrayList
+                return  $resultsArrayList
             }
             ByID {
-                Return  $resultsArrayList
+                return  $resultsArrayList
             }
             Detailed {
-                Return  $resultsarrayList
+                return  $resultsarrayList
             }
         }
     }

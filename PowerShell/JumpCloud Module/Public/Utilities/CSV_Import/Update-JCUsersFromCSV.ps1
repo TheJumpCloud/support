@@ -1,4 +1,4 @@
-Function Update-JCUsersFromCSV () {
+function Update-JCUsersFromCSV () {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
     param
     (
@@ -97,8 +97,8 @@ Function Update-JCUsersFromCSV () {
 
         if ($PSCmdlet.ParameterSetName -eq 'GUI') {
 
-            Write-Verbose 'Verifying JCAPI Key'
-            if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Write-Verbose 'Verifying Connection to JumpCloud...'
+            if (Test-JCConnection) {
                 Connect-JCOnline
             }
 
@@ -112,7 +112,7 @@ Function Update-JCUsersFromCSV () {
                                                   User Update
 "@
 
-            If (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
+            if (!(Get-PSCallStack | Where-Object { $_.Command -match 'Pester' })) {
                 Clear-Host
             }
             Write-Host $Banner -ForegroundColor Green
@@ -142,7 +142,7 @@ Function Update-JCUsersFromCSV () {
 
                 $employeeIdentifierDup = $employeeIdentifierCheck | Group-Object employeeIdentifier
 
-                ForEach ($U in $employeeIdentifierDup) {
+                foreach ($U in $employeeIdentifierDup) {
                     if ($U.count -gt 1) {
 
                         Write-Warning "Duplicate employeeIdentifier: $($U.name) in import file. employeeIdentifier must be unique. To resolve eliminate the duplicate employeeIdentifiers."
@@ -192,7 +192,7 @@ Function Update-JCUsersFromCSV () {
 
             $GroupArrayList = New-Object System.Collections.ArrayList
 
-            ForEach ($User in $UpdateUsers) {
+            foreach ($User in $UpdateUsers) {
 
                 $Groups = $User | Get-Member -Name Group* | Select-Object Name
 
@@ -294,13 +294,13 @@ Function Update-JCUsersFromCSV () {
 
         foreach ($UserUpdate in $UpdateUsers) {
             $UniqueAttrValues = @()
-            $UpdateParamsAttrValidate = $UserUpdate.psobject.properties | Where-Object { ($_.Name -match "Attribute") } |  Select-Object Name, Value
+            $UpdateParamsAttrValidate = $UserUpdate.psobject.properties | Where-Object { ($_.Name -match "Attribute") } | Select-Object Name, Value
             foreach ($Param in $UpdateParamsAttrValidate) {
-                If (($Param.Name -match "_name") -And (![string]::IsNullOrEmpty($Param.Value))) {
+                if (($Param.Name -match "_name") -and (![string]::IsNullOrEmpty($Param.Value))) {
                     $matchingValueField = $Param.Name.Replace("_name", "_value")
                     $matchingValue = $UpdateParamsAttrValidate | Where-Object { ($_.Name -eq $matchingValueField) }
                     if ([string]::IsNullOrEmpty($matchingValue.Value)) {
-                        Throw "A Custom Attribute name: $($Param.Name):$($Param.Value) was specified but is missing a corresponding value: $($matchingValue.Name):$($matchingValue.Value). Null attribute values are not supported"
+                        throw "A Custom Attribute name: $($Param.Name):$($Param.Value) was specified but is missing a corresponding value: $($matchingValue.Name):$($matchingValue.Value). Null attribute values are not supported"
                     } else {
                         $UniqueAttrValues += $matchingValue.Value
                     }
@@ -342,7 +342,7 @@ Function Update-JCUsersFromCSV () {
             $CustomGroupArrayList = $Null
 
             # Get all the custom attributes that are not null
-            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" }
+            $CustomAttributes = $UserUpdate | Get-Member | Where-Object Name -Like "*Attribute*" | Where-Object { $_.Definition -notlike "*=" -and $_.Definition -notlike "*null" }
 
             # Sort the attributes by number and name
             $CustomAttributes = $CustomAttributes | Sort-Object {
@@ -470,7 +470,7 @@ Function Update-JCUsersFromCSV () {
 
                                 try {
                                     $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id
-                                    Write-Verbose  "$($SystemAdd.Status)"
+                                    Write-Verbose "$($SystemAdd.Status)"
                                     $SystemAddStatus = $SystemAdd.Status
                                 } catch {
                                     $SystemAddStatus = $_.ErrorDetails
@@ -480,7 +480,7 @@ Function Update-JCUsersFromCSV () {
                         }
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
+                        $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -notlike "*=" -and $_.Definition -notlike "*null" } | Select-Object Name
 
                         foreach ($Group in $CustomGroups) {
                             $GetGroup = [pscustomobject]@{
@@ -539,7 +539,7 @@ Function Update-JCUsersFromCSV () {
                 }
 
                 catch {
-                    If ($_.ErrorDetails) {
+                    if ($_.ErrorDetails) {
                         $Status = $_.ErrorDetails
                     } elseif ($_.Exception) {
                         $Status = $_.Exception.Message
@@ -655,7 +655,7 @@ Function Update-JCUsersFromCSV () {
 
                                 try {
                                     $SystemAdd = Add-JCSystemUser -SystemID $UserUpdate.SystemID -UserID $NewUser._id
-                                    Write-Verbose  "$($SystemAdd.Status)"
+                                    Write-Verbose "$($SystemAdd.Status)"
                                     $SystemAddStatus = $SystemAdd.Status
                                 } catch {
                                     $SystemAddStatus = $_.ErrorDetails
@@ -669,7 +669,7 @@ Function Update-JCUsersFromCSV () {
 
                         $CustomGroupArrayList = New-Object System.Collections.ArrayList
 
-                        $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -NotLike "*=" -and $_.Definition -NotLike "*null" } | Select-Object Name
+                        $CustomGroups = $UserUpdate | Get-Member | Where-Object Name -Like "*Group*" | Where-Object { $_.Definition -notlike "*=" -and $_.Definition -notlike "*null" } | Select-Object Name
 
                         foreach ($Group in $CustomGroups) {
                             $GetGroup = [pscustomobject]@{
@@ -730,7 +730,7 @@ Function Update-JCUsersFromCSV () {
                 }
 
                 catch {
-                    If ($_.ErrorDetails) {
+                    if ($_.ErrorDetails) {
                         $Status = $_.ErrorDetails
                     } elseif ($_.Exception) {
                         $Status = $_.Exception.Message

@@ -1,4 +1,4 @@
-Function Set-JCUser () {
+function Set-JCUser () {
 
     [CmdletBinding(DefaultParameterSetName = 'Username')]
     param
@@ -254,13 +254,13 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
     )
 
-    DynamicParam {
+    dynamicparam {
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $enable_user_portal_multifactor = $true
             $NumberOfCustomAttributes = 2
         }
-        If ($enable_user_portal_multifactor -eq $True) {
+        if ($enable_user_portal_multifactor -eq $True) {
             # Set the dynamic parameters' name
             $ParamName = 'EnrollmentDays'
             # Create the collection of attributes
@@ -281,7 +281,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
         }
 
-        If ($NumberOfCustomAttributes) {
+        if ($NumberOfCustomAttributes) {
 
             [int]$NewParams = 0
             [int]$ParamNumber = 1
@@ -319,8 +319,8 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
     begin {
         Write-Debug "Parameter set $($PSCmdlet.ParameterSetName)"
 
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -385,7 +385,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
             else {
-                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+                throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
 
         }
@@ -426,7 +426,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
 
                 foreach ($ExitingNumber in $UserObjectCheck.phoneNumbers) {
                     if ($UpdatedNumbers.ContainsKey($ExitingNumber.type)) {
-                        Continue
+                        continue
                     } else {
                         $Number = @{ }
                         if ($ExitingNumber.number) {
@@ -483,7 +483,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 foreach ($WorkParam in $ExistingWorkHash.GetEnumerator()) {
 
                     if ($WorkAddressParams.ContainsKey($WorkParam.key)) {
-                        Continue
+                        continue
                     }
 
                     else {
@@ -512,7 +512,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 foreach ($HomeParam in $ExistingHomeHash.GetEnumerator()) {
 
                     if ($HomeAddressParams.ContainsKey($HomeParam.key)) {
-                        Continue
+                        continue
                     }
 
                     else {
@@ -590,7 +590,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
+                if ((($suspended -eq $true) -and ($state -eq "ACTIVATED")) -or (($suspended -eq $false) -and ($state -eq "SUSPENDED"))) {
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
                 } elseif ($suspended -eq $true) {
                     $body['state'] = 'SUSPENDED'
@@ -615,7 +615,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
             else {
-                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+                throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
 
         }
@@ -758,7 +758,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
+                if ((($suspended -eq $true) -and ($state -eq "ACTIVATED")) -or (($suspended -eq $false) -and ($state -eq "SUSPENDED"))) {
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
                 } elseif ($suspended -eq $true) {
                     $body['state'] = 'SUSPENDED'
@@ -785,7 +785,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
             else {
-                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+                throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
 
         }
@@ -884,7 +884,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                     $body.Add('mfa', $mfa)
                 }
 
-                if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
+                if ((($suspended -eq $true) -and ($state -eq "ACTIVATED")) -or (($suspended -eq $false) -and ($state -eq "SUSPENDED"))) {
                     throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
                 } elseif ($suspended -eq $true) {
                     $body['state'] = 'SUSPENDED'
@@ -911,7 +911,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
             }
 
             else {
-                Throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
+                throw "$Username does not exist. Run 'Get-JCUser | Select-Object username' to see a list of all your JumpCloud users."
             }
 
         }
@@ -987,7 +987,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
+            if ((($suspended -eq $true) -and ($state -eq "ACTIVATED")) -or (($suspended -eq $false) -and ($state -eq "SUSPENDED"))) {
                 throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
             } elseif ($suspended -eq $true) {
                 $body['state'] = 'SUSPENDED'
@@ -1140,7 +1140,7 @@ UserID has an Alias of _id. This means you can leverage the PowerShell pipeline 
                 $body.Add('mfa', $mfa)
             }
 
-            if ((($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
+            if ((($suspended -eq $true) -and ($state -eq "ACTIVATED")) -or (($suspended -eq $false) -and ($state -eq "SUSPENDED"))) {
                 throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
             } elseif ($suspended -eq $true) {
                 $body['state'] = 'SUSPENDED'

@@ -1,4 +1,4 @@
-Function Set-JCSystemUser () {
+function Set-JCSystemUser () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -49,8 +49,8 @@ Function Set-JCSystemUser () {
     )
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -85,11 +85,11 @@ Function Set-JCSystemUser () {
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             if (!$HostNameHash.containsKey($SystemID)) {
-                Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."
+                throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."
             }
 
             if ($UserNameHash.Values.username -notcontains ($Username)) {
-                Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
+                throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
             }
 
             $UserID = $UserNameHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name

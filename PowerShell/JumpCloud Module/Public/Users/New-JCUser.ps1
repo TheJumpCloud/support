@@ -1,4 +1,4 @@
-Function New-JCUser () {
+function New-JCUser () {
 
     [CmdletBinding(DefaultParameterSetName = 'NoAttributes')]
     param
@@ -162,32 +162,32 @@ Function New-JCUser () {
         [string]$recoveryEmail
 
     )
-    DynamicParam {
+    dynamicparam {
         # Build parameter array
         $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
-        If ((Get-PSCallStack).Command -like '*MarkdownHelp') {
+        if ((Get-PSCallStack).Command -like '*MarkdownHelp') {
             $enable_user_portal_multifactor = $true
             $NumberOfCustomAttributes = 2
         }
-        If ($enable_user_portal_multifactor) {
+        if ($enable_user_portal_multifactor) {
             New-DynamicParameter -Name:('enrollmentDays') -Type:([Int]) -ValueFromPipelineByPropertyName -HelpMessage:('A dynamic parameter that can be set only if -enable_user_portal_multifactor is set to true. This will specify the enrollment period for users for enrolling into MFA via the users console. The default is 7 days if this value is not specified.') -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
         }
-        If ($NumberOfCustomAttributes) {
+        if ($NumberOfCustomAttributes) {
             [int]$NewParams = 0
             [int]$ParamNumber = 1
-            While ($NewParams -ne $NumberOfCustomAttributes) {
+            while ($NewParams -ne $NumberOfCustomAttributes) {
                 New-DynamicParameter -Name:("Attribute$ParamNumber`_name") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute name') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
                 New-DynamicParameter -Name:("Attribute$ParamNumber`_value") -Type:([System.String]) -Mandatory -HelpMessage:('Enter an attribute value') -ValueFromPipelineByPropertyName -RuntimeParameterDictionary:($RuntimeParameterDictionary) | Out-Null
                 $NewParams++
                 $ParamNumber++
             }
         }
-        Return $RuntimeParameterDictionary
+        return $RuntimeParameterDictionary
     }
     begin {
 
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) { Connect-JCOnline }
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) { Connect-JCOnline }
 
         $hdrs = @{
 
@@ -361,7 +361,7 @@ Function New-JCUser () {
             }
         }
 
-        if ((($suspended -eq $true) -And ($state -eq "STAGED")) -Or (($suspended -eq $true) -And ($state -eq "ACTIVATED")) -Or (($suspended -eq $false) -And ($state -eq "SUSPENDED"))) {
+        if ((($suspended -eq $true) -and ($state -eq "STAGED")) -or (($suspended -eq $true) -and ($state -eq "ACTIVATED")) -or (($suspended -eq $false) -and ($state -eq "SUSPENDED"))) {
             throw "Cannot save conflicting state and suspended fields. (state=$state suspended=$suspended)"
         } elseif ($suspended -eq $true) {
             $body['state'] = 'SUSPENDED'
@@ -379,7 +379,7 @@ Function New-JCUser () {
             }
         }
 
-        If ($NewAttributes) { $body.add('attributes', $NewAttributes) }
+        if ($NewAttributes) { $body.add('attributes', $NewAttributes) }
 
         $jsonbody = $body | ConvertTo-Json
 

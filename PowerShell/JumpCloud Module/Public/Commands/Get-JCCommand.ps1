@@ -40,8 +40,8 @@ CommandID has an Alias of _id. This means you can leverage the PowerShell pipeli
         $ByID
     )
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 

@@ -1,4 +1,4 @@
-Function Add-JCSystemUser () {
+function Add-JCSystemUser () {
     [CmdletBinding(DefaultParameterSetName = 'ByName')]
 
     param
@@ -55,8 +55,8 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
     )
 
     begin {
-        Write-Verbose 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
@@ -92,11 +92,11 @@ SystemID has an Alias of _id. This means you can leverage the PowerShell pipelin
     process {
         if ($PSCmdlet.ParameterSetName -eq 'ByName') {
             if (!$HostNameHash.containsKey($SystemID)) {
-                Throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."
+                throw "SystemID does not exist. Run 'Get-JCsystem | select Hostname, _id' to see a list of all your JumpCloud systems and the associated _id."
             }
 
             if ($UserHash.Values.username -notcontains ($Username)) {
-                Throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
+                throw "Username does not exist. Run 'Get-JCUser | select username' to see a list of all your JumpCloud users."
             }
 
             $UserID = $UserHash.GetEnumerator().Where({ $_.Value.username -contains ($Username) }).Name

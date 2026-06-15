@@ -1,14 +1,14 @@
-Function Get-JCPolicyTargetGroup {
+function Get-JCPolicyTargetGroup {
     [CmdletBinding(DefaultParameterSetName = 'ById')]
     param (
         [Parameter(ParameterSetName = 'ByName', HelpMessage = 'Use the -ByName parameter when you want to query a specific policy. The -ByName SwitchParameter will set the ParameterSet to ''ByName'' which queries one JumpCloud policy at a time.')][Switch]$ByName,
         [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ById', HelpMessage = 'The PolicyID of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('_id', 'id')][String]$PolicyID,
         [Parameter(Mandatory = $True, ValueFromPipelineByPropertyName = $True, Position = 0, ParameterSetName = 'ByName', HelpMessage = 'The Name of the JumpCloud policy you wish to query.')][ValidateNotNullOrEmpty()][Alias('Name')][String]$PolicyName
     )
-    Begin {
+    begin {
 
-        Write-Verbose 'Verifying JCAPI Key'
-        If ($JCAPIKEY.length -ne 40) {
+        Write-Verbose 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 
@@ -32,7 +32,7 @@ Function Get-JCPolicyTargetGroup {
         Write-Verbose 'Populating SystemGroupNameHash'
         $SystemGroupNameHash = Get-DynamicHash -Object Group -GroupType System -returnProperties name
     }
-    Process {
+    process {
         switch ($PSCmdlet.ParameterSetName) {
             'ByName' {
                 $Policy = Get-JCPolicy -Name:($PolicyName)
@@ -41,17 +41,17 @@ Function Get-JCPolicyTargetGroup {
                 $Policy = Get-JCPolicy -PolicyID:($PolicyID)
             }
         }
-        If ($Policy) {
+        if ($Policy) {
             $PolicyId = $Policy.id
             $PolicyName = $Policy.Name
             $URL = $URL_Template -f $JCUrlBasePath, $PolicyID
             $Results = Invoke-JCApi -Method:('GET') -Paginate:($true) -Url:($URL)
-            ForEach ($Result In $Results) {
+            foreach ($Result in $Results) {
                 # Try-catch block to handle the case where policy group is not assigned a a device group
-                Try {
+                try {
                     $GroupID = $Result.id
                     $GroupName = $SystemGroupNameHash[$GroupID].name
-                } Catch {
+                } catch {
                     $GroupID = $null
                     $GroupName = $null
                 }
@@ -63,12 +63,12 @@ Function Get-JCPolicyTargetGroup {
                 }
                 $resultsArrayList.Add($OutputObject) | Out-Null
             } # end foreach
-        } Else {
-            Throw ('Policy provided does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
+        } else {
+            throw ('Policy provided does not exist. Run "Get-JCPolicy" to see a list of all your JumpCloud policies.')
         }
     } # end process
-    End {
-        Return $resultsArrayList
+    end {
+        return $resultsArrayList
 
     }
 }

@@ -1,4 +1,4 @@
-Function Set-JCSystem () {
+function Set-JCSystem () {
     [CmdletBinding()]
 
     param
@@ -43,8 +43,8 @@ Function Set-JCSystem () {
 
     begin {
 
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JCOnline
         }
 

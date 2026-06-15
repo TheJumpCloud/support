@@ -303,14 +303,18 @@ function Connect-JCOnline () {
             # Get-JCAuthHeaders) so the completer works under both apiKey and clientSecret (bearer)
             # auth. The SDK cmdlet Get-JcSdkPolicyTemplate requires a mandatory -ApiKey and cannot
             # run under clientSecret auth without prompting (CUT-5088).
-            $templates = Invoke-JCApi -Method:('GET') -Url:('/api/v2/policytemplates') -Paginate:($true)
-            $global:TemplateNameList = New-Object System.Collections.ArrayList
-            foreach ($template in $templates) {
-                $templateHashObject = [PSCustomObject]@{
-                    Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
-                    Id   = $template.Id
+            # Only fetch once per session; Connect-JCOnline can run repeatedly (e.g. on reconnect),
+            # and re-fetching the completer list on every call adds needless API calls/debug noise.
+            if (-not $global:TemplateNameList) {
+                $templates = Invoke-JCApi -Method:('GET') -Url:('/api/v2/policytemplates') -Paginate:($true)
+                $global:TemplateNameList = New-Object System.Collections.ArrayList
+                foreach ($template in $templates) {
+                    $templateHashObject = [PSCustomObject]@{
+                        Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
+                        Id   = $template.Id
+                    }
+                    $TemplateNameList.Add($templateHashObject) | Out-Null
                 }
-                $TemplateNameList.Add($templateHashObject) | Out-Null
             }
 
             Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {

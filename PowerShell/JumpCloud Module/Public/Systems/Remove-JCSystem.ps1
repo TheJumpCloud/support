@@ -1,4 +1,4 @@
-Function Remove-JCSystem () {
+function Remove-JCSystem () {
     [CmdletBinding(DefaultParameterSetName = 'warn')]
 
     param
@@ -15,8 +15,8 @@ The SystemID will be the 24 character string populated for the _id field. System
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+        Write-Debug 'Verifying Connection to JumpCloud...'
+        if (Test-JCConnection) {
             Connect-JConline
         }
 
