@@ -236,29 +236,30 @@ function Connect-JCOnline () {
                 # 'JCOrgId'   = $Auth.JCOrgId;
                 # 'JCOrgName' = $Auth.JCOrgName;
                 # }
+                # set Argument Completer(s) which require authentication
+                try {
+                    $templates = Get-JcSdkPolicyTemplate
+                    $global:TemplateNameList = New-Object System.Collections.ArrayList
+                    foreach ($template in $templates) {
+                        $templateHashObject = [PSCustomObject]@{
+                            Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
+                            Id   = $template.Id
+                        }
+                        $TemplateNameList.Add($templateHashObject) | Out-Null
+                    }
+
+                    Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
+                        param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+
+                        $TypeFilter = $fakeBoundParameter.Name;
+                        $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
+                    }
+                } catch {
+                    $global:TemplateNameList = $null
+                    Write-Verbose "Policy template tab completion unavailable: $($_.Exception.Message)"
+                }
             } else {
                 Write-Verbose "Error: Unable to set module authentication"
-            }
-            # set Argument Completer(s) which require authentication
-            try {
-                $templates = Get-JcSdkPolicyTemplate
-                $global:TemplateNameList = New-Object System.Collections.ArrayList
-                foreach ($template in $templates) {
-                    $templateHashObject = [PSCustomObject]@{
-                        Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
-                        Id   = $template.Id
-                    }
-                    $TemplateNameList.Add($templateHashObject) | Out-Null
-                }
-
-                Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
-                    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-
-                    $TypeFilter = $fakeBoundParameter.Name;
-                    $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
-                }
-            } catch {
-                Write-Verbose "Policy template tab completion unavailable: $($_.Exception.Message)"
             }
 
         } catch {
