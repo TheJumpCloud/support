@@ -1,3 +1,13 @@
+## 3.2.1
+
+Release Date: June 23, 2026
+
+#### RELEASE NOTES
+
+```
+Update the argument completer within Connect-JCOnline to an optional parameter.
+```
+
 ## 3.2.0
 
 Release Date: May 22, 2026
