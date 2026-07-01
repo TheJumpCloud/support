@@ -312,7 +312,7 @@ function KeySelector {
         return Request-Key -vaultKey $keyName
     }
 
-    $sufix_ = ".api.jc"
+    $sufix_ = $script:sufix
     $keys = Get-VaultKeys -sufix $sufix_
     if(($null -eq $keys) -or ($keys.Count -eq 0)) {
         Write-Host "No keys found in the vault. Please add a new key." -ForegroundColor Yellow

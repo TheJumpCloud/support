@@ -9,7 +9,7 @@ function Unlock-Platform() {
 
         public class CredManager {
             private const int CRED_TYPE_GENERIC = 1;
-            private const int CRED_PERSIST_LOCAL_MACHINE = 2;
+            private const int CRED_PERSIST_ENTERPRISE = 3;
 
             [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             public static extern bool CredRead(string target, int type, int reservedFlag, out IntPtr credentialPtr);
@@ -44,13 +44,14 @@ function Unlock-Platform() {
                 IntPtr pCredentials;
                 List<string> targets = new List<string>();
 
-                // Filtro null traz todas as credenciais genéricas (type 1)
+                // CredEnumerate with a null filter returns all credential types.
                 if (CredEnumerate(null, 0, out count, out pCredentials)) {
                     for (int i = 0; i < count; i++) {
-                        // Calcula o endereço de cada item no array de ponteiros
                         IntPtr pCurrent = Marshal.ReadIntPtr(pCredentials, i * IntPtr.Size);
                         PCREDENTIAL cred = (PCREDENTIAL)Marshal.PtrToStructure(pCurrent, typeof(PCREDENTIAL));
-                        targets.Add(cred.targetName);
+                        if (cred.type == CRED_TYPE_GENERIC) {
+                            targets.Add(cred.targetName);
+                        }
                     }
                     CredFree(pCredentials);
                 }
@@ -88,7 +89,7 @@ function Unlock-Platform() {
                     cred.lastWritten = 0;
                     cred.credentialBlobSize = byteCount;
                     cred.credentialBlob = blobPtr;
-                    cred.persist = CRED_PERSIST_LOCAL_MACHINE;
+                    cred.persist = CRED_PERSIST_ENTERPRISE;
                     cred.attributeCount = 0;
                     cred.attributes = IntPtr.Zero;
                     cred.targetAlias = null;
@@ -119,4 +120,7 @@ function Unlock-Platform() {
     }
 
     $env:CONSOLE_PLATFORM = $plat
+
+    $config = if ($global:JCConfig) { $global:JCConfig } else { Get-JCSettingsFile }
+    $script:sufix = if ($config.vault.Suffix) { $config.vault.Suffix } else { '.api.jc' }
 }
