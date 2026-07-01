@@ -95,11 +95,11 @@ Clear-Console -LinesToClear $LinesToClear
 
     Context 'Invocation' {
         It 'Should complete without error for LinesToClear <LinesToClear>' -TestCases @(
-            @{ LinesToClear = 0 }
-            @{ LinesToClear = 1 }
-            @{ LinesToClear = 10 }
+            @{ LinesToClear = 0; CurrentLine = 5; BufferWidth = 80 }
+            @{ LinesToClear = 1; CurrentLine = 5; BufferWidth = 80 }
+            @{ LinesToClear = 10; CurrentLine = 15; BufferWidth = 80 }
         ) {
-            { Clear-Console -LinesToClear $LinesToClear } | Should -Not -Throw
+            { Invoke-ClearConsoleTest -CurrentLine $CurrentLine -BufferWidth $BufferWidth -LinesToClear $LinesToClear } | Should -Not -Throw
         }
     }
 }
