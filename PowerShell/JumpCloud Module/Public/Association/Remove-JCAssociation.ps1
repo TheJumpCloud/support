@@ -28,6 +28,16 @@ Function Remove-JCAssociation {
         $PSBoundParameters.GetEnumerator() | Where-Object { -not [System.String]::IsNullOrEmpty($_.Value) } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
         # Add action
         ($FunctionParameters).Add('Action', $Action) | Out-Null
+        # Skip dynamic group associations - resources cannot be manually removed from dynamic groups
+        $TargetTypeValue = If ($FunctionParameters['TargetType'] -is [array]) {
+            $FunctionParameters['TargetType'] | Select-Object -First 1
+        } Else {
+            $FunctionParameters['TargetType']
+        }
+        If (Test-JCDynamicGroupMembership -TargetType:($TargetTypeValue) -TargetId:($FunctionParameters['TargetId']) -TargetName:($FunctionParameters['TargetName'])) {
+            Write-Verbose ('Skipping removal of association with dynamic group. Resources cannot be manually removed from dynamic groups.')
+            Return
+        }
         # Run the command
         $Results += Invoke-JCAssociation @FunctionParameters
     }
