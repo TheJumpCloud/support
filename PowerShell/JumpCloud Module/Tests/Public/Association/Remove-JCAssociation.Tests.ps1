@@ -2,7 +2,8 @@ Describe -Tag:('JCAssociation') 'Remove-JCAssociation dynamic group tests' {
     It 'Skips dynamic group associations when piping Get-JCAssociation into Remove-JCAssociation' {
         $suffix = [guid]::NewGuid().ToString('N').Substring(0, 8)
         $domain = "dynassoc.$suffix"
-        $user = New-RandomUser -domain $domain | New-JCUser
+        $companyValue = "PesterDynCo-$suffix"
+        $user = New-RandomUser -domain $domain | New-JCUser -company $companyValue
         $user | Should -Not -BeNullOrEmpty
 
         $dynamicGroupName = "Pester-DynamicGroup-$suffix"
@@ -12,17 +13,50 @@ Describe -Tag:('JCAssociation') 'Remove-JCAssociation dynamic group tests' {
         $dynamicGroup.Result | Should -Be 'Created'
         $staticGroup.Result | Should -Be 'Created'
 
-        $escapedDomain = [regex]::Escape($domain)
-        $memberQueryFilter = '[{"email":{"$regex": ".*@' + $escapedDomain + '$"}}]'
-
         try {
-            $null = Set-JCUserGroup -Id $dynamicGroup.id `
-                -MembershipMethod 'DYNAMIC_AUTOMATED' `
-                -MemberQueryType 'Filter' `
-                -Name $dynamicGroupName `
-                -MemberQueryFilters @($memberQueryFilter)
+            $existingGroup = Get-JCUserGroup -Id $dynamicGroup.id
+            $headers = @{
+                'Content-Type' = 'application/json'
+                'Accept'       = 'application/json'
+                'X-API-KEY'    = $JCAPIKEY
+            }
+            if ($JCOrgID) {
+                $headers['x-org-id'] = "$($JCOrgID)"
+            }
 
-            $null = Add-JCUserGroupMember -GroupID $staticGroup.id -UserID $user.id
+            $groupUpdateBody = [ordered]@{
+                id                      = $dynamicGroup.id
+                name                    = $dynamicGroupName
+                type                    = 'user_group'
+                description             = 'Dynamic group for Pester test'
+                memberSuggestionsNotify = $false
+                membershipMethod        = 'DYNAMIC_AUTOMATED'
+                attributes              = @{}
+                memberQuery             = [ordered]@{
+                    queryType = 'FilterQuery'
+                    filters   = @(
+                        [ordered]@{
+                            field    = 'company'
+                            operator = 'eq'
+                            value    = $companyValue
+                        }
+                    )
+                }
+            }
+            if ($existingGroup.email) { $groupUpdateBody.email = $existingGroup.email }
+            if ($existingGroup.attributes) {
+                $groupUpdateBody.attributes = ($existingGroup.attributes | ConvertTo-Json -Depth 5 | ConvertFrom-Json)
+            }
+
+            $uri = "$JCUrlBasePath/api/v2/usergroups/$($dynamicGroup.id)"
+            try {
+                Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -Body ($groupUpdateBody | ConvertTo-Json -Depth 6) -UserAgent:(Get-JCUserAgent)
+            } catch {
+                $errorMessage = if ($_.ErrorDetails.Message) { $_.ErrorDetails.Message } else { $_.Exception.Message }
+                throw "Failed to configure dynamic user group: $errorMessage"
+            }
+
+            Add-JCUserGroupMember -GroupID $staticGroup.id -UserID $user.id
 
             $dynamicMembershipFound = $false
             for ($attempt = 0; $attempt -lt 12 -and -not $dynamicMembershipFound; $attempt++) {
