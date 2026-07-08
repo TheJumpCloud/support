@@ -1,3 +1,11 @@
+## 3.3.0
+
+Release Date: July 8, 2026
+
+#### FEATURES:
+
+- Update for `Set-JCSystem` to allow for adding/ modifying/ removing custom attributes
+
 ## 3.2.0
 
 Release Date: May 22, 2026
