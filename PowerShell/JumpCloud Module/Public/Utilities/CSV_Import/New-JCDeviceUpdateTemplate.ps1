@@ -9,7 +9,6 @@ Function New-JCDeviceUpdateTemplate {
         [Switch]
         $Force,
 
-        # CUT-5149: Universal parameter to define the number of custom attributes via CLI.
         [Parameter(Mandatory = $false, HelpMessage = 'Number of custom attributes columns to seed in the template.')]
         [int]$NumberOfCustomAttributes = 0
     )
