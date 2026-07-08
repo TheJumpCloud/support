@@ -63,7 +63,7 @@ Function Set-JCSystem {
                 $dict.Add("Attribute$ParamNumber`_value", $param1)
             }
         }
-        # Sempre retorna o objeto (preenchido ou vazio), neutralizando o bug de binding do Mac
+        # return dynamic parameters
         return $dict
     }
 
