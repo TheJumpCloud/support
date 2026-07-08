@@ -4,7 +4,7 @@ Release Date: June 11, 2026
 
 #### FEATURES:
 
-- Implement flat universal parameters for CUT-5149 custom attributes
+- Update for `Set-JCSystem` to allow for adding/ modifying/ removing custom attributes
 
 ## 3.2.0
 
