@@ -39,7 +39,7 @@ Function Set-JCSystem {
     )
 
     DynamicParam {
-        # Inicializa o dicionário nativo para evitar falhas de compilação no macOS
+        # Initializes dynamic parameter list
         $dict = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
         if ($PSBoundParameters.ContainsKey('NumberOfCustomAttributes') -and $PSBoundParameters['NumberOfCustomAttributes'] -gt 0) {
