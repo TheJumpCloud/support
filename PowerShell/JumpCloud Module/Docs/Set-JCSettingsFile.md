@@ -50,7 +50,6 @@ Sets the Environment Location settings to allow connection to the [region-specif
 Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
 Aliases:
-Accepted values: STANDARD, STAGING, EU, IN
 
 Required: False
 Position: Named
