@@ -12,7 +12,7 @@
 RootModule = 'JumpCloud.psm1'
 
 # Version number of this module.
-ModuleVersion = '3.3.0'
+ModuleVersion = '3.2.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -103,12 +103,12 @@ FunctionsToExport = 'Add-JCAssociation', 'Add-JCCommandTarget', 'Add-JCGsuiteMem
                'Remove-JCSystemGroupMember', 'Remove-JCSystemUser', 'Remove-JCUser',
                'Remove-JCUserGroup', 'Remove-JCUserGroupMember',
                'Send-JCPasswordReset', 'Set-JCCloudDirectory', 'Set-JCCommand',
-               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCPolicyGroupMember',
-               'Set-JCRadiusReplyAttribute', 'Set-JCRadiusServer',
-               'Set-JCSettingsFile', 'Set-JCSystem', 'Set-JCSystemUser', 'Set-JCUser',
-               'Set-JCUserGroupLDAP', 'Update-JCDeviceFromCSV', 'Update-JCModule',
-               'Update-JCMSPFromCSV', 'Update-JCUsersFromCSV', 'Set-JCUserGroup',
-               'Set-JCSystemGroup', 'Set-JCPolicyGroup'
+               'Set-JCOrganization', 'Set-JCPolicy', 'Set-JCPolicyGroup',
+               'Set-JCPolicyGroupMember', 'Set-JCRadiusReplyAttribute',
+               'Set-JCRadiusServer', 'Set-JCSettingsFile', 'Set-JCSystem',
+               'Set-JCSystemGroup', 'Set-JCSystemUser', 'Set-JCUser',
+               'Set-JCUserGroup', 'Set-JCUserGroupLDAP', 'Update-JCDeviceFromCSV',
+               'Update-JCModule', 'Update-JCMSPFromCSV', 'Update-JCUsersFromCSV'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

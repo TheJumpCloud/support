@@ -13,8 +13,7 @@ A guided walk through that creates a JumpCloud Device Import CSV file on your lo
 ## SYNTAX
 
 ```
-New-JCDeviceUpdateTemplate [-Force] [-NumberOfCustomAttributes <Int32>]
- [<CommonParameters>]
+New-JCDeviceUpdateTemplate [-Force] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -37,21 +36,6 @@ When selected this option will forcefully replace existing files in the current 
 
 ```yaml
 Type: System.Management.Automation.SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -NumberOfCustomAttributes
-Number of custom attributes columns to seed in the template.
-
-```yaml
-Type: System.Int32
 Parameter Sets: (All)
 Aliases:
 
