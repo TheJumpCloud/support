@@ -16,8 +16,8 @@ Updates an existing JumpCloud System
 Set-JCSystem [-SystemID] <String> [-displayName <String>] [-description <String>]
  [-allowSshPasswordAuthentication <Boolean>] [-allowSshRootLogin <Boolean>]
  [-allowMultiFactorAuthentication <Boolean>] [-allowPublicKeyAuthentication <Boolean>]
- [-systemInsights <Boolean>] [-primarySystemUser <Object>] [-NumberOfCustomAttributes <Int32>]
- [-RemoveCustomAttribute <String[]>] [<CommonParameters>]
+ [-systemInsights <Boolean>] [-primarySystemUser <Object>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -134,21 +134,6 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -NumberOfCustomAttributes
-The number of custom attributes to add or update.
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -primarySystemUser
 A string value indicating a JumpCloud users email, username or userID. This will add the user to the device associations
 
@@ -161,21 +146,6 @@ Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -RemoveCustomAttribute
-The name of the custom attributes to remove.
-
-```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases: RemoveAttribute
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -221,8 +191,6 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### System.String
 ### System.Boolean
-### System.Int32
-### System.String[]
 ## OUTPUTS
 
 ### System.Object
