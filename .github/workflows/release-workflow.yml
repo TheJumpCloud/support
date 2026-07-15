@@ -45,20 +45,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  Setup-Build-Dependencies:
+  Build-Nuspec-Nupkg:
     needs: ["Filter-Branch", "Check-PR-Labels"]
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Setup PowerShell Module Cache
-        id: cacher
-        uses: actions/cache@v4
-        with:
-          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
-          key: PS-Dependencies
       - name: Install dependencies
-        if: steps.cacher.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -87,16 +80,6 @@ jobs:
                   }
               }
           }
-
-  Build-Nuspec-Nupkg:
-    needs: Setup-Build-Dependencies
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: 'C:\Users\runneradmin\Documents\PowerShell\Modules\'
-          key: PS-Dependencies
       - name: Build Nuspec
         shell: pwsh
         run: |
@@ -129,7 +112,7 @@ jobs:
           retention-days: 1
 
   Manual-Approval-Release:
-    needs: ["Check-PR-Labels", "Setup-Build-Dependencies"]
+    needs: ["Check-PR-Labels", "Build-Nuspec-Nupkg"]
     environment: PublishToPSGallery
     runs-on: ubuntu-latest
     steps:
