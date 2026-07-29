@@ -95,7 +95,6 @@ function Connect-JCOnline () {
         } else {
             $Param_JCEnvironment.Add('Default', 'STANDARD');
         }
-        # Build output
         # Build parameter array
         $ParamVarPrefix = 'Param_'
         Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
@@ -316,7 +315,12 @@ function KeySelector {
     $keys = Get-VaultKeys -sufix $sufix_
     if(($null -eq $keys) -or ($keys.Count -eq 0)) {
         Write-Host "No keys found in the vault. Please add a new key." -ForegroundColor Yellow
-        Request-NewKey -sufix $sufix_
+        $tempKey =Request-NewKey -sufix $sufix_
+        if($tempKey) {
+            Clear-Console -LinesToClear 1
+            return $tempKey 
+        }
+
         Clear-Console -LinesToClear 1
         $keys = Get-VaultKeys -sufix $sufix_
     }
@@ -336,7 +340,12 @@ function KeySelector {
             } else {
                 $linesToClear = $keys.Count
             }
-            Request-NewKey -sufix $sufix_
+            $tempKey =Request-NewKey -sufix $sufix_
+            if($tempKey) {
+                Clear-Console -LinesToClear ($linesToClear + 1)
+                return $tempKey 
+            }
+
             # Lines are cleared after, because the user can see the names of already existing keys
             Clear-Console -LinesToClear $linesToClear
         }
