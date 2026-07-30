@@ -16,7 +16,7 @@ automate=false   # set to true if running via a JumpCloud command (recommended)
 # do not edit below
 #######
 
-version=1.0.2
+version=1.0.3
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -56,7 +56,7 @@ fi
 datestamp=$(date "+%Y%m%d")
 hostDir="/var/tmp/"
 baseDir="${hostDir}JumpCloudLogCollect"
-mkdir -p {$baseDir/jumpcloudLogs,$baseDir/jumpcloudInfo,$baseDir/systemLogs,$baseDir/systemInfo,$baseDir/userLogs}
+mkdir -p "$baseDir"/{jumpcloudLogs,jumpcloudInfo,systemLogs,systemInfo,userLogs}
 sysId=$(grep -o '"systemKey": *"[^"]*"' /opt/jc/jcagent.conf | grep -o '"[^"]*"$' | sed 's/\"//g')
 
 # Setup Log output for Log Collection Script
@@ -65,19 +65,47 @@ collectionLog() {
     echo "$1" | tee -a "$collectionLogFile"
 }
 
+
 # Also redirect standard errors to the collectionLog file
 exec 2> >(tee -a "$collectionLogFile" >&2)
+
+# Check whether a command is available on this system
+commandExists() {
+    command -v "$1" &> /dev/null
+}
 
 
 ## Collect logs and information
 
+collectionLog "Log Collection Version: $version"
+
 # system information and logs
 collectionLog "Gathering system information."
-hostnamectl 2>&1 > $baseDir/systemInfo/sysInfo.txt
-/opt/jc/bin/jcosqueryi --line "select * from users" > $baseDir/systemInfo/osq_usersList.txt
-last > $baseDir/systemInfo/last.txt
+if commandExists hostnamectl; then
+    hostnamectl >  $baseDir/systemInfo/sysInfo.txt 2>&1 
+else
+    collectionLog "hostnamectl not found; skipping system info collection."
+fi
 
-LOGS=(
+/opt/jc/bin/jcosqueryi --line "select * from users" > $baseDir/systemInfo/osq_usersList.txt
+
+if commandExists wtmpdb; then
+    wtmpdb last > $baseDir/systemInfo/last.txt
+elif commandExists last; then
+    last > $baseDir/systemInfo/last.txt
+else
+    collectionLog "Neither 'wtmpdb' nor 'last' found; skipping login history collection."
+fi
+
+jcOptLogs=(
+    "version.txt"
+    "policyConf.json"
+    "managedUsers.json"
+    "packageUpgradeBackup.json"
+
+)
+
+sysLogs=(
     "syslog"
     "auth.log"
     "dmsg"
@@ -89,14 +117,18 @@ LOGS=(
 )
 
 collectionLog "Collecting system logs"
-for LOG in "${LOGS[@]}"; do
+for LOG in "${sysLogs[@]}"; do
     if [ -f /var/log/${LOG} ]; then
         cp /var/log/$LOG $baseDir/systemLogs/
         collectionLog "Collected /var/log/$LOG"
     fi
 done
 
-iptables -L > $baseDir/systemInfo/firewall_rules.txt
+if commandExists iptables; then
+    iptables -L > $baseDir/systemInfo/firewall_rules.txt
+else
+    collectionLog "iptables not found; skipping firewall rules collection."
+fi
 
 # List JumpCloud services currently running using systemd
 collectionLog "Checking running JumpCloud services"
@@ -113,12 +145,29 @@ ps -aufx | grep -i 'jumpcloud' | grep -v grep >> $jumpcloudServices
 collectionLog "Collecting managed usernames"
 grep -o '\"username\":\"[^\"]*' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/jumpcloudInfo/managedUsers.txt
 
-cat /opt/jc/policyConf.json | json_pp > $baseDir/jumpcloudInfo/policyConf.json
+if commandExists json_pp; then
+    cat /opt/jc/policyConf.json | json_pp > $baseDir/jumpcloudInfo/policyConf.json
+else
+    collectionLog "json_pp not found; copying policyConf.json without formatting."
+    cp /opt/jc/policyConf.json $baseDir/jumpcloudInfo/policyConf.json
+fi
 
 collectionLog "Collecting JumpCloud Logs"
 cp /var/log/jc* $baseDir/jumpcloudLogs/
 cp -R /var/log/jumpcloud $baseDir/jumpcloudLogs/
+
 cp /opt/jc/jcagentInstall.log $baseDir/jumpcloudLogs/
+
+for logFile in "${jcOptLogs[@]}"; do
+    if [ -f "/opt/jc/$logFile" ]; then
+        cp "/opt/jc/$logFile" $baseDir/jumpcloudInfo/
+        collectionLog "Collected $logFile"
+    else
+        collectionLog "File $logFile not found; skipping."
+    fi
+done
+
+
 cp /opt/jc/version.txt $baseDir/jumpcloudInfo/
 cp -R /opt/jc/policies $baseDir/jumpcloudInfo/
 
@@ -127,30 +176,34 @@ if [ -f /etc/jcagent-proxy.conf ]; then
     collectionLog "Proxy configuration file detected; collecting /etc/jcagent-proxy.conf"
     cp /etc/jcagent-proxy.conf $baseDir/jumpcloudLogs/
 else
-    collectionLog "No proxy configuration file (/etc/jcagent-proxy.conf) found"
+    collectionLog "No proxy configuration file (/etc/jcagent-proxy.conf) found; skipping."
 fi
 
-# Password Manager logs
-for USER in $(ls /home/); do
-    homeDir="/home/$USER"
-    mkdir $baseDir/userLogs/$USER
+
+# User level logs
+for homeDir in /home/*; do
+    [ -d "$homeDir" ] || continue
+    USER=$(basename "$homeDir")
+
+    mkdir -p $baseDir/userLogs/$USER
 
     # Password Manager logs
-    if [ -d /home/$USER/.config/JumpCloud\ Password\ Manager/logs ]; then
-        cp -R /home/$USER/.config/JumpCloud\ Password\ Manager/logs $baseDir/userLogs/$USER/PWM
+    if [ -d "$homeDir/.config/JumpCloud Password Manager/logs" ]; then
+        cp -R "$homeDir/.config/JumpCloud Password Manager/logs" $baseDir/userLogs/$USER/PWM
     fi
 
-    if [ -d /home/$USER/.config/JumpCloud\ Password\ Manager/data/daemon/log ]; then
-        cp -R /home/$USER/.config/JumpCloud\ Password\ Manager/data/daemon/log $baseDir/userLogs/$USER/PWM_Daemon
+    if [ -d "$homeDir/.config/JumpCloud Password Manager/data/daemon/log" ]; then
+        cp -R "$homeDir/.config/JumpCloud Password Manager/data/daemon/log" $baseDir/userLogs/$USER/PWM_Daemon
     fi
 
     # Remote Assist logs
-    if [ -d $homeDir/.config/JumpCloud-Remote-Assist/logs ]; then 
-        cp -R $homeDir/.config/JumpCloud-Remote-Assist/logs/* $baseDir/jumpcloudLogs/RemoteAssist
+    if [ -d "$homeDir/.config/JumpCloud-Remote-Assist/logs" ]; then 
+        mkdir -p $baseDir/jumpcloudLogs/RemoteAssist
+        cp -R "$homeDir/.config/JumpCloud-Remote-Assist/logs/"* $baseDir/jumpcloudLogs/RemoteAssist
     fi
 
     # list JumpCloud Device Certificate
-    if command -v certutil &> /dev/null; then
+    if commandExists certutil; then
         jcDeviceCert=$(certutil -d "sql:$homeDir/.pki/nssdb" -L 2>/dev/null | grep "JumpCloud Device Trust Certificate" | sed 's/ \+u,u,u$//' | sed 's/ \+CTu,CTu,CTu$//')
         if [ -n "$jcDeviceCert" ]; then
             certutil -d "sql:$homeDir/.pki/nssdb" -L -n "$jcDeviceCert" > "$baseDir/userLogs/$USER/deviceCert.txt"
@@ -164,6 +217,7 @@ for USER in $(ls /home/); do
     fi
 
 done
+
 
 ## Package up the archive - execute bit for owner appears to be required for readability on macOS
 
