@@ -99,7 +99,6 @@ fi
 
 jcOptLogs=(
     "version.txt"
-    "policyConf.json"
     "managedUsers.json"
     "packageUpgradeBackup.json"
 
@@ -168,8 +167,8 @@ for logFile in "${jcOptLogs[@]}"; do
 done
 
 
-cp /opt/jc/version.txt $baseDir/jumpcloudInfo/
 cp -R /opt/jc/policies $baseDir/jumpcloudInfo/
+
 
 ## gather proxy configuration if present
 if [ -f /etc/jcagent-proxy.conf ]; then
