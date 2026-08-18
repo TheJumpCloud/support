@@ -3,18 +3,32 @@ function Connect-JCOnline () {
     param
     (
         [Parameter(
-            ParameterSetName = 'force',
-            HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.'
+            Mandatory = $false,
+            HelpMessage = 'Using the "-Force" parameter the module update check is skipped.'
         )]
-        [Switch]$force
+        [Switch]$force,
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Use the -select to select from stored API keys. Or informe an value with the same param'
+        )]
+        [Switch]$Select,
+        # Its the key name, not the key value
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Vault Key Name.'
+        )]
+        [string]$Credential
     )
     dynamicparam {
+        $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
+        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
             'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
-            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateNotNullOrEmpty'          = $false;
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{
@@ -35,11 +49,42 @@ function Connect-JCOnline () {
             'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU', 'IN');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
+        # Priority for selecting key is: 1)  -JumpCloudApiKey parameter, 2) -Select parameter, 3) $env:JCApiKey
+        # Reformulated to get less confusing
+        $containsApiKey = $false
+        $invocationStatement = $null
+        if ($MyInvocation.PSObject.Properties.Name -contains 'Statement') {
+            $invocationStatement = $MyInvocation.Statement
+        } else {
+            try {
+                $scriptPosition = [System.Management.Automation.InvocationInfo].GetProperty(
+                    'ScriptPosition',
+                    [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic
+                )
+                if ($scriptPosition) {
+                    $invocationStatement = $scriptPosition.GetValue($MyInvocation).Text
+                }
+            } catch { }
+        }
+        if (-not [System.String]::IsNullOrEmpty($invocationStatement) -and ($invocationStatement -match '(?i)-JumpCloudApiKey\b')) {
+            $containsApiKey = $true
+        }
+        $emp1 = $BoundParams.ContainsKey('Select') -and (-not $BoundParams.ContainsKey('Credential')) -and (-not $containsApiKey)
+        $emp2 = [System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $containsApiKey) -and (-not $BoundParams.ContainsKey('Credential'))
+        if($emp1 -or $emp2) {
+            $newKey = KeySelector
+        }
+        if($BoundParams.ContainsKey('Credential')) {
+            $newKey = KeySelector -keyName $BoundParams['Credential']
+        }
+
+        if(-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
+        if([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
         } else {
             $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
         }
+
         # If the $env:JCOrgId is set then set the default value to be the env variable
         if (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
             $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
@@ -50,9 +95,7 @@ function Connect-JCOnline () {
         } else {
             $Param_JCEnvironment.Add('Default', 'STANDARD');
         }
-        # Build output
         # Build parameter array
-        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParamVarPrefix = 'Param_'
         Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
@@ -74,7 +117,8 @@ function Connect-JCOnline () {
         return $RuntimeParameterDictionary
     }
     begin {
-        # Debug message for parameter call
+        # Debug message for parameter call]
+        Write-Debug -Message:('Parameter values:')
         $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
     process {
@@ -196,7 +240,7 @@ function Connect-JCOnline () {
                                 $downRepo += $site
                             }
                             # Clean up the http request by closing it.
-                            if ($HTTP_Response -eq $null) {
+                            if ($null -eq $HTTP_Response) {
                             } else {
                                 $HTTP_Response.Close()
                             }
@@ -267,5 +311,78 @@ function Connect-JCOnline () {
         }
     }
     end {
+    }
+}
+
+function KeySelector {
+    param(
+        [Parameter(Mandatory=$false)]
+        [string]$keyName
+    )
+    Unlock-Platform
+    if(-not [System.String]::IsNullOrEmpty($keyName)) {
+        return Request-Key -vaultKey $keyName
+    }
+
+    $sufix_ = $script:sufix
+    $keys = Get-VaultKeys -sufix $sufix_
+    if(($null -eq $keys) -or ($keys.Count -eq 0)) {
+        Write-Host "No keys found in the vault. Please add a new key." -ForegroundColor Yellow
+        $tempKey =Request-NewKey -sufix $sufix_
+        if($tempKey) {
+            Clear-Console -LinesToClear 1
+            return $tempKey 
+        }
+
+        Clear-Console -LinesToClear 1
+        $keys = Get-VaultKeys -sufix $sufix_
+    }
+
+    Write-Host "Select the JumpCloud Api Key. Press [Escape] to type a new key. Press [Backspace] to remove the selected key" -ForegroundColor Green
+    # Stays in selection loop until user selects a key or abort.
+    while (@($false, $null) -contains ($vaultKey = Find-Interactive -choices $keys -Callback {
+        param($param)
+        return Confirm-Console -Message "Selected key: $param. Are you sure want to remove this key from vault?" -YesAction { Remove-FromVault -Key $param }
+    })) {
+        $keys = Get-VaultKeys -sufix $sufix_
+        if (($null -eq $vaultKey) -or ($null -eq $keys) -or ($keys.Count -eq 0)) {
+            $linesToClear = 0
+            if ($keys.Count -eq 0) {
+                Write-Host "No keys found in vault. Please add a new key." -ForegroundColor Yellow
+                $linesToClear += 1
+            } else {
+                $linesToClear = $keys.Count
+            }
+            $tempKey =Request-NewKey -sufix $sufix_
+            if($tempKey) {
+                Clear-Console -LinesToClear ($linesToClear + 1)
+                return $tempKey 
+            }
+
+            # Lines are cleared after, because the user can see the names of already existing keys
+            Clear-Console -LinesToClear $linesToClear
+        }
+        $keys = Get-VaultKeys -sufix $sufix_
+    }
+
+    # $vaultKey is being declared above as the output of Find-Interactive, so it will be available here for
+    $foundKey = Request-Key -vaultKey $vaultKey
+
+    Clear-Console -LinesToClear 1
+    return $foundKey
+}
+
+function Request-Key {
+    param (
+        [Parameter(Mandatory=$false)]
+        [string]$vaultKey
+    )
+    $foundKey = Get-KeyFromVault -Key $vaultKey
+
+    if("" -eq $foundKey -or $null -eq $foundKey) {
+        Write-Host "Aborted. Exiting." -ForegroundColor Yellow
+        throw "No key selected"
+    } else {
+        return $foundKey
     }
 }
