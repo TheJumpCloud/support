@@ -2441,7 +2441,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:description>
             <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -2522,7 +2522,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:description>
           <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
@@ -9414,7 +9414,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCSystemApp</command:noun>
       <maml:description>
-        <maml:para>Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.</maml:para>
+        <maml:para>Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function uses the search query endpoint to return software results, similar to the report feature.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -9619,7 +9619,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemApp -Name 'jumpcloud' -Search</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -Name 'jumpcloud'</dev:code>
         <dev:remarks>
           <maml:para>Returns any 'jumpcloud' software installed in all the OS systems (Windows/Linux/macOS)</maml:para>
         </dev:remarks>
