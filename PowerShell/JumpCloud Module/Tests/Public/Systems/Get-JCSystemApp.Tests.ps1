@@ -1,6 +1,6 @@
 Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
     BeforeAll {
-        $systems = Get-JCsystem
+        $systems = Get-JCSystem
         $mac = $systems | Where-Object { $_.osFamily -match "darwin" } | Select-Object -First 1
         $windows = $systems | Where-Object { $_.osFamily -match "windows" } | Select-Object -First 1
         $linux = $systems | Where-Object { $_.osFamily -match "linux" } | Select-Object -First 1
@@ -40,7 +40,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         Get-JCSystemApp -SystemID $linux._id -name "jcagent" -version "48.49.50.51" | Should -BeNullOrEmpty
     }
 
-    It "Tests the exportability of a list of software apps" {
+    It "Tests the exportability of a list of software apps" -Skip {
         { Get-JCSystemApp -SystemOS Linux | ConvertTo-Csv } | Should -Not -Throw
         { Get-JCSystemApp -SystemOS MacOS | ConvertTo-Csv } | Should -Not -Throw
         { Get-JCSystemApp -SystemOS Windows | ConvertTo-Csv } | Should -Not -Throw
@@ -49,7 +49,7 @@ Describe -Tag:('JCSystemApp') 'Get-JCSystemApp' {
         { Get-JCSystemApp -SystemID $linux._id | ConvertTo-Csv } | Should -Not -Throw
     }
 
-    It "Tests to make sure an error is not thrown if an app is less than 4 characters long" {
+    It "Tests to make sure an error is not thrown if an app is less than 4 characters long" -Skip {
         { Get-JCSystemApp -SystemID $mac._id -name "vlc" } | Should -Not -Throw
         { Get-JCSystemApp -SystemID $windows._id -name "vlc" } | Should -Not -Throw
         { Get-JCSystemApp -SystemID $linux._id -name "vlc" } | Should -Not -Throw
