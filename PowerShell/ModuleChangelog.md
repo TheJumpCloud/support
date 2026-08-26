@@ -1,3 +1,50 @@
+## 3.4.0
+
+Release Date: August 26, 2026
+
+#### RELEASE NOTES
+
+```
+Adds secure credential selection in Connect-JCOnline using stored vault keys, including -Select and -Credential.
+```
+
+#### FEATURES:
+
+- Adds `-Select` and `-Credential` parameters to `Connect-JCOnline` to choose or reference stored API keys instead of passing the key inline
+
+## 3.3.0
+
+Release Date: July 15, 2026
+
+#### FEATURES:
+
+- Update for `Set-JCSystem` to allow for adding/ modifying/ removing custom attributes
+
+## 3.2.1
+
+Release Date: June 23, 2026
+
+#### RELEASE NOTES
+
+```
+Update the argument completer within Connect-JCOnline to an optional parameter.
+```
+
+## 3.2.0
+
+Release Date: May 22, 2026
+
+#### RELEASE NOTES
+
+```
+Introduced support for IN based organizations with Connect-JCOnline
+```
+
+#### FEATURES:
+
+- Adds IN as a supported value for the `-JCEnvironment` parameter
+  - This now allows organizations based in the IN datacenter to run PowerShell commands
+
 ## 3.1.0
 
 Release Date: May 12, 2026
