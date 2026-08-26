@@ -10,7 +10,7 @@ Adds secure credential selection in Connect-JCOnline using stored vault keys, in
 
 #### FEATURES:
 
-- Adds `-Select` and `-Credential` parameters to `Connect-JCOnline` to choose or reference stored API keys instead of passing the key inline
+- Adds `-Select` and `-Credential` parameters to `Connect-JCOnline` to choose or reference stored API keys instead of passing the key inline.
 
 ## 3.3.0
 
