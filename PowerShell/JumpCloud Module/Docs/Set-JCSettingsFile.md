@@ -14,8 +14,8 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-JCEnvironmentLocation <PSObject>]
- [-parallelOverride <PSObject>] [-moduleBannerMessageCount <PSObject>] [<CommonParameters>]
+Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>]
+ [-JCEnvironmentLocation <PSObject>] [-parallelOverride <PSObject>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -43,6 +43,8 @@ function Invoke-JCApi {
             if ([System.String]::IsNullOrEmpty($global:JCUrlBasePath)) {
                 if ($env:JCEnvironment -eq 'EU') {
                     $JCUrlBasePath = 'https://console.eu.jumpcloud.com'
+                } elseif ($env:JCEnvironment -eq 'IN') {
+                    $JCUrlBasePath = 'https://console.in.jumpcloud.com'
                 } else {
                     $JCUrlBasePath = 'https://console.jumpcloud.com'
                 }

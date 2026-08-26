@@ -29,6 +29,12 @@ switch ($env:JCEnvironment) {
         $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.eu'
         $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.eu'
     }
+    'IN' {
+        $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.in'
+        $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.in'
+        $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.in'
+        $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = 'console.in'
+    }
     'STAGING' {
         $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.stg01'
         $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = 'api.stg01'

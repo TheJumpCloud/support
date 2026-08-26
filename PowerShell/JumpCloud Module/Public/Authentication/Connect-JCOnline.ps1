@@ -45,8 +45,8 @@ function Connect-JCOnline () {
             'Position'                        = 3;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
-            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU" or "STANDARD".';
-            'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU');
+            'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU", "IN", or "STANDARD".';
+            'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU', 'IN');
         }
         # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
         # Priority for selecting key is: 1)  -JumpCloudApiKey parameter, 2) -Select parameter, 3) $env:JCApiKey
@@ -164,6 +164,14 @@ function Connect-JCOnline () {
                     $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.eu"
                     $env:JCEnvironment = 'EU'
                 }
+                'IN' {
+                    $global:JCUrlBasePath = "https://console.in.jumpcloud.com"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.in"
+                    $PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api.in"
+                    $Global:PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.in"
+                    $PSDefaultParameterValues['*-JcSdk*:ConsoleHost'] = "console.in"
+                    $env:JCEnvironment = 'IN'
+                }
                 default {
                     $global:JCUrlBasePath = "https://console.jumpcloud.com"
                     $Global:PSDefaultParameterValues['*-JcSdk*:ApiHost'] = "api"
@@ -272,25 +280,30 @@ function Connect-JCOnline () {
                 # 'JCOrgId'   = $Auth.JCOrgId;
                 # 'JCOrgName' = $Auth.JCOrgName;
                 # }
+                # set Argument Completer(s) which require authentication
+                try {
+                    $templates = Get-JcSdkPolicyTemplate
+                    $global:TemplateNameList = New-Object System.Collections.ArrayList
+                    foreach ($template in $templates) {
+                        $templateHashObject = [PSCustomObject]@{
+                            Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
+                            Id   = $template.Id
+                        }
+                        $TemplateNameList.Add($templateHashObject) | Out-Null
+                    }
+
+                    Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
+                        param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+
+                        $TypeFilter = $fakeBoundParameter.Name;
+                        $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
+                    }
+                } catch {
+                    $global:TemplateNameList = $null
+                    Write-Verbose "Policy template tab completion unavailable: $($_.Exception.Message)"
+                }
             } else {
                 Write-Verbose "Error: Unable to set module authentication"
-            }
-            # set Argument Completer(s) which require authentication
-            $templates = Get-JcSdkPolicyTemplate
-            $global:TemplateNameList = New-Object System.Collections.ArrayList
-            foreach ($template in $templates) {
-                $templateHashObject = [PSCustomObject]@{
-                    Name = ("$($template.osmetafamily) $($template.displayname)").Replace(' ', '_')
-                    Id   = $template.Id
-                }
-                $TemplateNameList.Add($templateHashObject) | Out-Null
-            }
-
-            Register-ArgumentCompleter -CommandName New-JCpolicy -ParameterName TemplateName -ScriptBlock {
-                param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
-
-                $TypeFilter = $fakeBoundParameter.Name;
-                $TemplateNameList.Name | Where-Object { $_ -like "${TypeFilter}*" } | Where-Object { $_ -like "${wordToComplete}*" } | Sort-Object -Unique | ForEach-Object { $_ }
             }
 
         } catch {
