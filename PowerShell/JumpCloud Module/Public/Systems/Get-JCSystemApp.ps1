@@ -10,7 +10,7 @@ function Get-JCSystemApp () {
         [string]$name,
         [Parameter(Mandatory = $false, HelpMessage = 'The version of the application you want to search for ex. 1.1.2')][ValidateNotNullorEmpty()]
         [string]$version,
-        [Parameter(Mandatory = $false, HelpMessage = 'The operator to use for the version search ex. equals, not_equals, contains, not_contains, starts_with, ends_with')]
+        [Parameter(Mandatory = $false, HelpMessage = 'The operator to use for the version search, default is equals. Acceptable Values: equals, not_equals, contains, not_contains, starts_with, ends_with')]
         [ValidateSet('equals', 'not_equals', 'contains', 'not_contains', 'starts_with', 'ends_with')][ValidateNotNullorEmpty()]
         [string]$versionOperator = 'equals'
     )
