@@ -1,3 +1,17 @@
+## 3.4.0
+
+Release Date: August 20, 2026
+
+#### RELEASE NOTES
+
+```
+Reworked the `Get-JCSystemApp` function to no longer use SystemInsights and instead uses the search query endpoint to return relevant information
+```
+
+#### FEATURES:
+
+- The functionality of `Get-JCSystemApp` has been changed. The function no longer uses SystemInsights tables to return data, it is instead using the search query endpoint to gather the data. It is not as verbose as the previous iteration however it is much faster and still returns relevant information
+
 ## 3.3.0
 
 Release Date: July 15, 2026
