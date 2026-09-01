@@ -14,8 +14,9 @@ Updates the JumpCloud Module Settings File
 ## SYNTAX
 
 ```
-Set-JCSettingsFile [-moduleBannerMessageCount <PSObject>]
- [-parallelOverride <PSObject>] [-JCEnvironmentLocation <PSObject>] [<CommonParameters>]
+Set-JCSettingsFile [-vaultSuffix <PSObject>]
+ [-moduleBannerMessageCount <PSObject>] [-JCEnvironmentLocation <PSObject>] [-parallelOverride <PSObject>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -90,15 +91,34 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -vaultSuffix
+
+sets the System.Management.Automation.PSCustomObject Suffix=@{copy=True; value=.api.jc; write=True} settings for the System.Management.Automation.PSCustomObject vault=@{Suffix=} feature
+
+```yaml
+Type: System.Management.Automation.PSObject
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
