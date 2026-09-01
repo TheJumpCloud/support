@@ -92,6 +92,7 @@ Accept wildcard characters: False
 ```
 
 ### -vaultSuffix
+
 sets the System.Management.Automation.PSCustomObject Suffix=@{copy=True; value=.api.jc; write=True} settings for the System.Management.Automation.PSCustomObject vault=@{Suffix=} feature
 
 ```yaml
@@ -107,14 +108,17 @@ Accept wildcard characters: False
 ```
 
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
