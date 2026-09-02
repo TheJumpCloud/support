@@ -1,17 +1,13 @@
 #!/bin/bash
 
-
-
 automate=false   # set to true if running via a JumpCloud command (recommended)
 days=2           # number of days of OS logs to gather
-
-
 
 #######
 # do not edit below
 #######
 
-version=1.2.9
+version=1.3.0
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -72,6 +68,19 @@ exec 2> >(tee -a "$collectionLogFile" >&2)
 
 collectionLog "Log Collection Version: $version"
 
+# Cache function for MDM query
+MDM_INFO_CACHE=""
+get_mdm_info() {
+    local uid="$1"
+    if [[ -z "$MDM_INFO_CACHE" ]]; then
+        if [[ -n "$uid" ]]; then
+            MDM_INFO_CACHE=$(launchctl asuser "$uid" /usr/libexec/mdmclient QueryDeviceInformation 2>/dev/null)
+        else
+            MDM_INFO_CACHE=$(/usr/libexec/mdmclient QueryDeviceInformation 2>/dev/null)
+        fi
+    fi
+    echo "$MDM_INFO_CACHE"
+}
 
 ## Change directory to save log archive depending on active user state
 if [[ $(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }') ]]; then
@@ -84,7 +93,6 @@ else
 fi
 
 collectionLog "Gathering all JumpCloud agent and process Logs..."
-
 
 ## gather JumpCloud system logs (agent, install, patch management)
 for f in /var/log/jc*.log*
@@ -119,7 +127,6 @@ log show --last ${days}d --predicate="eventMessage CONTAINS[c] 'jumpcloud'" > $b
 log show --last ${days}d --debug --info --style compact --predicate 'senderImagePath CONTAINS[c] "JCLoginPlugin"' > $baseDir/systemLogs/SSAP_LoginWindow_events.log
 log show --last ${days}d --predicate="process CONTAINS[c] 'DurtService' || process CONTAINS[c] 'JumpCloudGo'" > $baseDir/systemLogs/JumpCloudGo_events.log
 
-
 ## pull patch management logs
 collectionLog "Gathering MDM profiles & OS Patch Management settings"
 
@@ -128,7 +135,6 @@ softwareupdate --list > $baseDir/systemLogs/patchManagement/SoftwareUpdateList.t
 
 ## pull patch management related log entries from the system logs
 log show --last ${days}d --debug --predicate='eventMessage CONTAINS[c] "SoftwareUpdateMacController"' > $baseDir/systemLogs/patchManagement/SoftwareUpdateMacController.log
-
 
 patchFiles=(
     "/Library/Preferences/com.apple.SoftwareUpdate.plist"
@@ -143,11 +149,9 @@ for patchFile in "${patchFiles[@]}"; do
     fi
 done
 
-
 if [ -e /Library/Preferences/com.jumpcloud.Nudge.json ]; then
     cp /Library/Preferences/com.jumpcloud.Nudge.json $baseDir/systemLogs/patchManagement/com.jumpcloud.Nudge.json
 fi
-
 
 ## Only run if a user is actually logged in
 if [[ $localuser ]]; then
@@ -161,8 +165,27 @@ if [[ $localuser ]]; then
     ## list jumpcloud services currently running on the system
     sudo -u $localuser launchctl print system | grep -i 'jumpcloud' > $baseDir/systemInfo/activeJumpCloudServices.txt
 
-    ## Collect SoftwareUpdateDeviceID relating to DDM / MDM based patch management.
-    sudo launchctl asuser "$USER_ID" /usr/libexec/mdmclient QueryDeviceInformation | grep "SoftwareUpdateDeviceID" | sort -u > $baseDir/systemLogs/patchManagement/SoftwareUpdateDeviceID.txt
+    ## Retrieve cached MDM Query output
+    rawMdmData=$(get_mdm_info "$USER_ID")
+
+    ## Collect SoftwareUpdateDeviceID relating to DDM / MDM based patch management
+    echo "$rawMdmData" | grep "SoftwareUpdateDeviceID" | sort -u > $baseDir/systemLogs/patchManagement/SoftwareUpdateDeviceID.txt
+
+    ## Collect Active Managed User details
+    mdmUserUuid=$(echo "$rawMdmData" \
+        | awk '/ActiveManagedUsers/,/;/ {print $NF}' \
+        | sed -e '1d;$d' -e 's/"//g' -e 's/;//g' \
+        | head -n 1)
+
+    if [[ -n "$mdmUserUuid" ]]; then
+        mdmUsername=$(dscl . -search /Users GeneratedUID "$mdmUserUuid" 2>/dev/null | awk '{print $1}' | head -n 1)
+        {
+            collectionLog "MDM Managed Short Name: ${mdmUsername:-Unknown}"
+            collectionLog "MDM Managed User UUID:  $mdmUserUuid"
+        } > $baseDir/systemInfo/mdmManagedUser.txt
+    else
+        collectionLog "No ActiveManagedUsers currently listed by MDM." > $baseDir/systemInfo/mdmManagedUser.txt
+    fi
 
 else
     collectionLog "No user is currently logged in. Skipping user-specific information."
@@ -179,7 +202,6 @@ diagCertPath="/Library/Logs/DiagnosticReports/Certificate*"
 if [ -d /Library/Logs/DiagnosticReports/ ]; then
     collectionLog "Gathering CertificateService diagnostic reports"
 
-    # Check if any file matches the pattern
     if ls $diagCertPath 1>/dev/null 2>&1; then
         cp $diagCertPath "$baseDir/DiagnosticReports/"
         collectionLog "Successfully copied CertificateService reports."
@@ -187,7 +209,6 @@ if [ -d /Library/Logs/DiagnosticReports/ ]; then
         collectionLog "No CertificateService diagnostic reports found to copy."
     fi
 fi
-
 
 ## list secure tokens and filesystem information
 collectionLog "Gathering filesystem and secure token information"
@@ -199,11 +220,11 @@ collectionLog "Finding managed users"
 grep -o '\"username\":\"[^\"]*\"' /opt/jc/managedUsers.json | cut -d '"' -f 4 > $baseDir/systemInfo/managedUsers.txt
 
 ## descend into managed user's homedirs (requires full disk access) and gather JumpCloud logs
-for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
+for u in $(cat $baseDir/systemInfo/managedUsers.txt); do
     collectionLog "Pulling logs from user $u"
     managedUserDir=$(dscl . -read /Users/${u} | awk '/NFSHomeDirectory/ {print $2}')
     collectionLog "User "$u" Home Directory: $managedUserDir"
-    mkdir $baseDir/userLogs/$u
+    mkdir -p $baseDir/userLogs/$u
 
     if [ -d $managedUserDir/Library/Logs/JumpCloud\ Password\ Manager ]; then
         cp -r /Users/$u/Library/Logs/JumpCloud\ Password\ Manager $baseDir/userLogs/$u/
@@ -230,16 +251,14 @@ for u in $(cat $baseDir/SystemInfo/managedUsers.txt); do
         echo "$jcDeviceCert" | openssl x509 -text > $baseDir/userLogs/$u/deviceCert.txt
         collectionLog "JumpCloud Device Trust Certificate found and processed for $u"
     else
-    # Certificate not found
-        echo "A JumpCloud Device Trust Certificate was not found for the user: "$u" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/userLogs/$u/deviceCert.txt
+        collectionLog "A JumpCloud Device Trust Certificate was not found for the user: "$u" - If expected, check and confirm Device Certificates is enabled for the organisation." > $baseDir/userLogs/$u/deviceCert.txt
     fi
 
 done
 
 # check for and gather remote assist logs from root homedir
-
 if [ -d /var/root/Library/Logs/JumpCloud-Remote-Assist ]; then
-    mkdir $baseDir/userLogs/root
+    mkdir -p $baseDir/userLogs/root
     cp -r /var/root/Library/Logs/JumpCloud-Remote-Assist $baseDir/userLogs/root/
 fi
 
