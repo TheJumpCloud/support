@@ -186,6 +186,39 @@ if [[ $localuser ]]; then
     else
         collectionLog "No ActiveManagedUsers currently listed by MDM." > $baseDir/systemInfo/mdmManagedUser.txt
     fi
+    
+    
+    ## Collect ADE / AutoSetup Account short name
+    adeUsername=$(
+        printf '%s\n' "$rawMdmData" |
+            awk '
+                /AutoSetupAdminAccounts[[:space:]]*=/ {
+                    inAccounts = 1
+                    next
+                }
+
+                inAccounts && /^[[:space:]]*\);/ {
+                    exit
+                }
+
+                inAccounts && /^[[:space:]]*shortName[[:space:]]*=/ {
+                    value = $0
+                    sub(/^[^=]*=[[:space:]]*/, "", value)
+                    gsub(/[;"]/, "", value)
+                    print value
+                    exit
+                }
+            '
+    )
+
+    if [[ -n "$adeUsername" ]]; then
+        collectionLog "ADE / AutoSetup Account Short Name: $adeUsername" \
+            > "$baseDir/systemInfo/adeManagedUser.txt"
+    else
+        collectionLog "No ADE / AutoSetup Account short name found." \
+            > "$baseDir/systemInfo/adeManagedUser.txt"
+    fi
+
 
 else
     collectionLog "No user is currently logged in. Skipping user-specific information."
