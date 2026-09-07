@@ -58,11 +58,13 @@ function Connect-JCOnline () {
             } else {
                 $Param_JumpCloudClientId.Add('Default', $env:JCClientId)
             }
-            if ([System.String]::IsNullOrEmpty($env:JCClientSecret)) {
-                $Param_JumpCloudClientSecret.Add('Mandatory', $true)
-            } else {
+            if (-not [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
                 $Param_JumpCloudClientSecret.Add('Default', $env:JCClientSecret)
             }
+            # ClientSecret is intentionally never made a mandatory dynamic parameter: PowerShell's
+            # automatic mandatory-parameter prompt echoes [String] values in plain text. When it's
+            # missing we prompt for it manually below with Read-Host -AsSecureString so it's masked
+            # as typed (security review: client secret must have a masked entry path).
             if ([System.String]::IsNullOrEmpty($env:JCOrgId)) {
                 $Param_JumpCloudOrgId.Add('Mandatory', $true)
             } else {
@@ -170,6 +172,11 @@ function Connect-JCOnline () {
                 }
                 if (-not [System.String]::IsNullOrEmpty($JumpCloudClientSecret)) {
                     $env:JCClientSecret = $JumpCloudClientSecret
+                    $global:JCClientSecret = $env:JCClientSecret
+                } elseif ([System.String]::IsNullOrEmpty($env:JCClientSecret)) {
+                    # Not supplied via parameter and not cached - prompt with masked input.
+                    $secureJumpCloudClientSecret = Read-Host -Prompt 'Please enter your JumpCloud OAuth Client Secret' -AsSecureString
+                    $env:JCClientSecret = [System.Net.NetworkCredential]::new('', $secureJumpCloudClientSecret).Password
                     $global:JCClientSecret = $env:JCClientSecret
                 }
                 if ([System.String]::IsNullOrEmpty($env:JCClientId) -or [System.String]::IsNullOrEmpty($env:JCClientSecret)) {
