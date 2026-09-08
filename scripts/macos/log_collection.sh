@@ -171,6 +171,8 @@ if [[ $localuser ]]; then
     ## Collect SoftwareUpdateDeviceID relating to DDM / MDM based patch management
     echo "$rawMdmData" | grep "SoftwareUpdateDeviceID" | sort -u > $baseDir/systemLogs/patchManagement/SoftwareUpdateDeviceID.txt
 
+
+    collectionLog "Gathering MDM user information"
     ## Collect Active Managed User details
     mdmUserUuid=$(echo "$rawMdmData" \
         | awk '/ActiveManagedUsers/,/;/ {print $NF}' \
@@ -187,7 +189,7 @@ if [[ $localuser ]]; then
         collectionLog "No ActiveManagedUsers currently listed by MDM." > $baseDir/systemInfo/mdmManagedUser.txt
     fi
     
-    
+
     ## Collect ADE / AutoSetup Account short name
     adeUsername=$(
         printf '%s\n' "$rawMdmData" |
