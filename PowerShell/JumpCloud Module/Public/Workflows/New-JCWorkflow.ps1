@@ -22,7 +22,7 @@ function New-JCWorkflow {
             }
 
             # Send POST request to JumpCloud API
-            $result = Invoke-JCApi -Method POST -Endpoint 'workflows' -Body $body
+            $result = Invoke-JCApi -Method POST -Url '/api/v2/workflows' -Body ($body | ConvertTo-Json -Compress)
 
             return $result
         }

@@ -11,9 +11,13 @@ function Get-JCWorkflow {
         $Name
     )
 
+    begin {
+        Connect-JCOnline -Force | Out-Null
+    }
+
     process {
         try {
-            $workflows = Invoke-JCApi -Method GET -Endpoint 'workflows'
+            $workflows = Invoke-JCApi -Method GET -Url '/api/v2/workflows'
 
             if (-not $workflows) {
                 return $null

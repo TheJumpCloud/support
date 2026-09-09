@@ -1,11 +1,14 @@
 BeforeAll {
-    # Loads the main function in the test
-    . "$PSScriptRoot/../../../Public/Workflows/Get-JCWorkflow.ps1"
+    Remove-Module JumpCloud -ErrorAction SilentlyContinue
+    Remove-Item Function:\global:Invoke-JCApi -ErrorAction SilentlyContinue
+    Remove-Item Function:\global:Connect-JCOnline -ErrorAction SilentlyContinue
 
-    # Defines the helper command in the session to enable Pester to perform the mock.
-    if (-not (Get-Command -Name 'Invoke-JCApi' -ErrorAction SilentlyContinue)) {
-        function global:Invoke-JCApi {}
-    }
+    $env:JCApiKey = 'pester-test-api-key'
+    $env:JCOrgId = 'pester-test-org-id'
+
+    Import-Module "$PSScriptRoot/../../../JumpCloud.psd1" -Force
+
+    Mock -ModuleName 'JumpCloud' Connect-JCOnline { } -ParameterFilter { $Force -eq $true }
 }
 
 Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
