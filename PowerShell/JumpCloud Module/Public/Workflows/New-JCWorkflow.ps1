@@ -24,6 +24,10 @@ function New-JCWorkflow {
         $Description
     )
 
+    begin {
+        Connect-JCOnline -Force | Out-Null
+    }
+
     process {
         try {
             # Construct request body payload
