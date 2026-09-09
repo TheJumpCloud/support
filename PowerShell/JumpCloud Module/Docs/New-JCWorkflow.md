@@ -8,7 +8,8 @@ schema: 2.0.0
 # New-JCWorkflow
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+Creates a new JumpCloud workflow.
 
 ## SYNTAX
 
@@ -18,16 +19,26 @@ New-JCWorkflow [-Name] <String> [[-Description] <String>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+New-JCWorkflow creates a workflow in the connected organization using the JumpCloud Workflows API.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> New-JCWorkflow -Name 'Onboarding Workflow'
 ```
 
-{{ Add example description here }}
+Creates a workflow with the specified name.
+
+### Example 2
+
+```powershell
+PS C:\> New-JCWorkflow -Name 'Onboarding Workflow' -Description 'Automates onboarding tasks'
+```
+
+Creates a workflow with the specified name and description.
 
 ## PARAMETERS
 
@@ -40,7 +51,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -55,7 +66,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -66,10 +77,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### None
 ## OUTPUTS
 
-### System.Object
 ## NOTES
 
 ## RELATED LINKS

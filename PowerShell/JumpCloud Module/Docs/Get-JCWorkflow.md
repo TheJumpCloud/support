@@ -8,7 +8,8 @@ schema: 2.0.0
 # Get-JCWorkflow
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+
+Returns JumpCloud workflows for the connected organization.
 
 ## SYNTAX
 
@@ -28,21 +29,32 @@ Get-JCWorkflow [-Name <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+
+Get-JCWorkflow returns all workflows in the connected organization. Use the `-Id` or `-Name` parameters to return a specific workflow.
 
 ## EXAMPLES
 
 ### Example 1
+
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Get-JCWorkflow
 ```
 
-{{ Add example description here }}
+Returns all workflows in the connected organization.
+
+### Example 2
+
+```powershell
+PS C:\> Get-JCWorkflow -Id '673dd658ac4a0658c780f9ff'
+```
+
+Returns the workflow with the specified id.
 
 ## PARAMETERS
 
 ### -Id
-{{ Fill Id Description }}
+
+The id of the workflow to return.
 
 ```yaml
 Type: System.String
@@ -57,7 +69,8 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-{{ Fill Name Description }}
+
+The name of the workflow to return.
 
 ```yaml
 Type: System.String
@@ -76,10 +89,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.String
 ## OUTPUTS
 
-### System.Object
 ## NOTES
 
 ## RELATED LINKS

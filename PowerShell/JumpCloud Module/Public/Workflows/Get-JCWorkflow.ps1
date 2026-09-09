@@ -1,3 +1,21 @@
+<#
+.SYNOPSIS
+Returns JumpCloud workflows for the connected organization.
+.DESCRIPTION
+Get-JCWorkflow returns all workflows in the connected organization. Use the -Id or -Name parameters to return a specific workflow.
+.EXAMPLE
+PS C:\> Get-JCWorkflow
+
+Returns all workflows in the connected organization.
+.EXAMPLE
+PS C:\> Get-JCWorkflow -Id '673dd658ac4a0658c780f9ff'
+
+Returns the workflow with the specified id.
+.PARAMETER Id
+The id of the workflow to return.
+.PARAMETER Name
+The name of the workflow to return.
+#>
 function Get-JCWorkflow {
     [CmdletBinding(DefaultParameterSetName = 'ByAll')]
     param (

@@ -1,3 +1,17 @@
+<#
+.SYNOPSIS
+Creates a new JumpCloud workflow.
+.DESCRIPTION
+New-JCWorkflow creates a workflow in the connected organization using the JumpCloud Workflows API.
+.EXAMPLE
+PS C:\> New-JCWorkflow -Name 'Onboarding Workflow'
+
+Creates a workflow with the specified name.
+.EXAMPLE
+PS C:\> New-JCWorkflow -Name 'Onboarding Workflow' -Description 'Automates onboarding tasks'
+
+Creates a workflow with the specified name and description.
+#>
 function New-JCWorkflow {
     [CmdletBinding()]
     param (

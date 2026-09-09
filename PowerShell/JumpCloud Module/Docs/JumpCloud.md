@@ -148,7 +148,7 @@ This endpoint returns the details of a User Group.
 Returns the User Group members of a JumpCloud User Group.
 
 ### [Get-JCWorkflow](Get-JCWorkflow.md)
-{{ Fill in the Synopsis }}
+Returns JumpCloud workflows for the connected organization.
 
 ### [Import-JCCommand](Import-JCCommand.md)
 Imports a Mac, Linux or Windows JumpCloud Command into the JumpCloud admin portal from a URL
@@ -206,7 +206,7 @@ Creates a JumpCloud User
 Creates a JumpCloud User Group
 
 ### [New-JCWorkflow](New-JCWorkflow.md)
-{{ Fill in the Synopsis }}
+Creates a new JumpCloud workflow.
 
 ### [Remove-JCAssociation](Remove-JCAssociation.md)
 Remove an association between two object within the JumpCloud console.

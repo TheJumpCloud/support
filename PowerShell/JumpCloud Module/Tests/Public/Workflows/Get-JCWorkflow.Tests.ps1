@@ -3,12 +3,22 @@ BeforeAll {
     Remove-Item Function:\global:Invoke-JCApi -ErrorAction SilentlyContinue
     Remove-Item Function:\global:Connect-JCOnline -ErrorAction SilentlyContinue
 
-    $env:JCApiKey = 'pester-test-api-key'
-    $env:JCOrgId = 'pester-test-org-id'
+    if ([string]::IsNullOrEmpty($env:JCApiKey)) {
+        $script:AddedTestEnvVars = $true
+        $env:JCApiKey = 'pester-test-api-key'
+        $env:JCOrgId = 'pester-test-org-id'
+    }
 
     Import-Module "$PSScriptRoot/../../../JumpCloud.psd1" -Force
 
     Mock -ModuleName 'JumpCloud' Connect-JCOnline { } -ParameterFilter { $Force -eq $true }
+}
+
+AfterAll {
+    if ($script:AddedTestEnvVars) {
+        Remove-Item Env:JCApiKey -ErrorAction SilentlyContinue
+        Remove-Item Env:JCOrgId -ErrorAction SilentlyContinue
+    }
 }
 
 Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {

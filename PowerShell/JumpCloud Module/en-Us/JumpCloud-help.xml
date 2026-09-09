@@ -11852,11 +11852,11 @@ Get-JCUser -Username cClemons</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCWorkflow</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Returns JumpCloud workflows for the connected organization.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>Get-JCWorkflow returns all workflows in the connected organization. Use the `-Id` or `-Name` parameters to return a specific workflow.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -11864,7 +11864,7 @@ Get-JCUser -Username cClemons</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="workflow_id">
           <maml:name>Id</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Id Description }}</maml:para>
+            <maml:para>The id of the workflow to return.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -11880,7 +11880,7 @@ Get-JCUser -Username cClemons</dev:code>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>Name</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Name Description }}</maml:para>
+            <maml:para>The name of the workflow to return.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -11896,7 +11896,7 @@ Get-JCUser -Username cClemons</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="workflow_id">
         <maml:name>Id</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Id Description }}</maml:para>
+          <maml:para>The id of the workflow to return.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -11908,7 +11908,7 @@ Get-JCUser -Username cClemons</dev:code>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
         <maml:name>Name</maml:name>
         <maml:description>
-          <maml:para>{{ Fill Name Description }}</maml:para>
+          <maml:para>The name of the workflow to return.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -11919,26 +11919,8 @@ Get-JCUser -Username cClemons</dev:code>
       </command:parameter>
 
     </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>System.String</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
+    <command:inputTypes />
+    <command:returnValues />
     <maml:alertSet>
       <maml:alert>
         <maml:para></maml:para>
@@ -11947,9 +11929,16 @@ Get-JCUser -Username cClemons</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; Get-JCWorkflow</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Returns all workflows in the connected organization.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-JCWorkflow -Id '673dd658ac4a0658c780f9ff'</dev:code>
+        <dev:remarks>
+          <maml:para>Returns the workflow with the specified id.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -15736,16 +15725,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       <command:verb>New</command:verb>
       <command:noun>JCWorkflow</command:noun>
       <maml:description>
-        <maml:para>{{ Fill in the Synopsis }}</maml:para>
+        <maml:para>Creates a new JumpCloud workflow.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>{{ Fill in the Description }}</maml:para>
+      <maml:para>New-JCWorkflow creates a workflow in the connected organization using the JumpCloud Workflows API.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>New-JCWorkflow</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Name</maml:name>
           <maml:description>
             <maml:para>The name of the workflow.</maml:para>
@@ -15757,7 +15746,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>Description</maml:name>
           <maml:description>
             <maml:para>The description of the workflow.</maml:para>
@@ -15773,7 +15762,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>Description</maml:name>
         <maml:description>
           <maml:para>The description of the workflow.</maml:para>
@@ -15785,7 +15774,7 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Name</maml:name>
         <maml:description>
           <maml:para>The name of the workflow.</maml:para>
@@ -15799,26 +15788,8 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
       </command:parameter>
 
     </command:parameters>
-    <command:inputTypes>
-      <command:inputType>
-        <dev:type>
-          <maml:name>None</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:inputType>
-    </command:inputTypes>
-    <command:returnValues>
-      <command:returnValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-        </dev:type>
-        <maml:description>
-          <maml:para></maml:para>
-        </maml:description>
-      </command:returnValue>
-    </command:returnValues>
+    <command:inputTypes />
+    <command:returnValues />
     <maml:alertSet>
       <maml:alert>
         <maml:para></maml:para>
@@ -15827,9 +15798,16 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; {{ Add example code here }}</dev:code>
+        <dev:code>PS C:\&gt; New-JCWorkflow -Name 'Onboarding Workflow'</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Creates a workflow with the specified name.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; New-JCWorkflow -Name 'Onboarding Workflow' -Description 'Automates onboarding tasks'</dev:code>
+        <dev:remarks>
+          <maml:para>Creates a workflow with the specified name and description.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>

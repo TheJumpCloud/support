@@ -1,24 +1,17 @@
 ## 3.4.0
 
-Release Date: setembro 09, 2026
+Release Date: September 09, 2026
 
 #### RELEASE NOTES
 
 ```
-{{Fill in the Release Notes}}
+Adds support for managing JumpCloud Workflows through Get-JCWorkflow and New-JCWorkflow.
 ```
 
 #### FEATURES:
 
-{{Fill in the Features}}
-
-#### IMPROVEMENTS:
-
-{{Fill in the Improvements}}
-
-#### BUG FIXES:
-
-{{Fill in the Bug Fixes}}
+- Adds `Get-JCWorkflow` to return workflows by id, name, or for the entire organization
+- Adds `New-JCWorkflow` to create workflows in the connected organization
 
 ## 3.3.0
 
