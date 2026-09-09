@@ -8,7 +8,7 @@ BeforeAll {
     }
 }
 
-Describe 'Get-JCWorkflow' {
+Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
     Context 'Validating Acceptance Criteria' {
 
         It 'Should return all workflows in a given org with no parameters specified' {
