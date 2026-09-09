@@ -1,34 +1,66 @@
 BeforeAll {
-    # Dot-source function file into the test session
-    . "$PSScriptRoot/../../../Public/Workflows/New-JCWorkflow.ps1"
+    # Dot-source the main function file for testing
+    . "$PSScriptRoot/../../../Public/Workflows/Get-JCWorkflow.ps1"
 
-    # Define dummy helper function with supported API parameters
+    # Define helper command in session to allow Pester mocking
     if (-not (Get-Command -Name 'Invoke-JCApi' -ErrorAction SilentlyContinue)) {
-        function global:Invoke-JCApi {
-            param(
-                $Method,
-                $Endpoint,
-                $Body
-            )
-        }
+        function global:Invoke-JCApi {}
     }
 }
 
-Describe 'New-JCWorkflow' -Tag 'JCWorkflow' {
+Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
     Context 'Validating Acceptance Criteria' {
 
-        It 'Should create a new workflow and return the created object' {
-            # Mock successful API response
-            Mock Invoke-JCApi {
-                return @{ id = '789'; name = 'New Workflow'; description = 'My automated workflow' }
+        It 'Should return all workflows in a given org with no parameters specified' {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
+                return @(
+                    @{ id = '123'; name = 'Workflow Alpha' },
+                    @{ id = '456'; name = 'Workflow Beta' }
+                )
             }
 
-            # Execute cmdlet
-            $result = New-JCWorkflow -Name 'New Workflow' -Description 'My automated workflow'
+            $result = Get-JCWorkflow
+            $result.Count | Should -Be 2
+        }
 
-            # Validate output object properties
-            $result.id | Should -Be '789'
-            $result.name | Should -Be 'New Workflow'
+        It 'Should return workflow by ID' {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
+                return @(
+                    @{ id = '123'; name = 'Workflow Alpha' },
+                    @{ id = '456'; name = 'Workflow Beta' }
+                )
+            }
+
+            $result = Get-JCWorkflow -Id '123'
+            $result.id | Should -Be '123'
+        }
+
+        It 'Should return workflow by Name' {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
+                return @(
+                    @{ id = '123'; name = 'Workflow Alpha' },
+                    @{ id = '456'; name = 'Workflow Beta' }
+                )
+            }
+
+            $result = Get-JCWorkflow -Name 'Workflow Beta'
+            $result.name | Should -Be 'Workflow Beta'
+        }
+
+        It 'Should return $null when no workflows exist' {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi { return $null }
+
+            $result = Get-JCWorkflow
+            $result | Should -BeNullOrEmpty
+        }
+
+        It 'Should return $null when ID or Name does not exist' {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
+                return @( @{ id = '123'; name = 'Workflow Alpha' } )
+            }
+
+            (Get-JCWorkflow -Id '999') | Should -BeNullOrEmpty
+            (Get-JCWorkflow -Name 'NonExistent') | Should -BeNullOrEmpty
         }
     }
 }

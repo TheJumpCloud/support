@@ -1,8 +1,8 @@
 BeforeAll {
-    # Carrega a função principal no teste
+    # Loads the main function in the test
     . "$PSScriptRoot/../../../Public/Workflows/Get-JCWorkflow.ps1"
 
-    # Define o comando auxiliar na sessão para permitir que o Pester faça o Mock
+    # Defines the helper command in the session to enable Pester to perform the mock.
     if (-not (Get-Command -Name 'Invoke-JCApi' -ErrorAction SilentlyContinue)) {
         function global:Invoke-JCApi {}
     }
@@ -12,7 +12,7 @@ Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
     Context 'Validating Acceptance Criteria' {
 
         It 'Should return all workflows in a given org with no parameters specified' {
-            Mock Invoke-JCApi {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
                 return @(
                     @{ id = '123'; name = 'Workflow Alpha' },
                     @{ id = '456'; name = 'Workflow Beta' }
@@ -24,7 +24,7 @@ Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
         }
 
         It 'Should return workflow by ID' {
-            Mock Invoke-JCApi {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
                 return @(
                     @{ id = '123'; name = 'Workflow Alpha' },
                     @{ id = '456'; name = 'Workflow Beta' }
@@ -36,7 +36,7 @@ Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
         }
 
         It 'Should return workflow by Name' {
-            Mock Invoke-JCApi {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
                 return @(
                     @{ id = '123'; name = 'Workflow Alpha' },
                     @{ id = '456'; name = 'Workflow Beta' }
@@ -48,14 +48,14 @@ Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
         }
 
         It 'Should return $null when no workflows exist' {
-            Mock Invoke-JCApi { return $null }
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi { return $null }
 
             $result = Get-JCWorkflow
             $result | Should -BeNullOrEmpty
         }
 
         It 'Should return $null when ID or Name does not exist' {
-            Mock Invoke-JCApi {
+            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
                 return @( @{ id = '123'; name = 'Workflow Alpha' } )
             }
 
