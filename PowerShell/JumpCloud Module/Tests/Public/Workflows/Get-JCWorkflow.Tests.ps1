@@ -1,79 +1,44 @@
-BeforeAll {
-    Remove-Module JumpCloud -ErrorAction SilentlyContinue
-    Remove-Item Function:\global:Invoke-JCApi -ErrorAction SilentlyContinue
-    Remove-Item Function:\global:Connect-JCOnline -ErrorAction SilentlyContinue
+Describe -Tag:('JCWorkflow') 'Get-JCWorkflow' {
+    BeforeAll {
+        $limitURL = "$JCUrlBasePath/api/v2/roles"
+        $roles = Get-JCResults -URL $limitURL -method 'GET' -limit 100
+        $executionRoleId = ($roles | Select-Object -First 1).id
 
-    if ([string]::IsNullOrEmpty($env:JCApiKey)) {
-        $script:AddedTestEnvVars = $true
-        $env:JCApiKey = 'pester-test-api-key'
-        $env:JCOrgId = 'pester-test-org-id'
+        $workflowDsl = @{
+            schedule = @{
+                on = @{
+                    one = @{
+                        with = @{
+                            source = 'external'
+                        }
+                    }
+                }
+            }
+            do       = @()
+        }
+
+        $workflowName = "pester-get-workflow-$(Get-Random)"
+        $PesterParams_Workflow = New-JCWorkflow -Name $workflowName -ExecutionRoleId $executionRoleId -Dsl $workflowDsl -Description 'Pester workflow for Get-JCWorkflow tests'
     }
 
-    Import-Module "$PSScriptRoot/../../../JumpCloud.psd1" -Force
-
-    Mock -ModuleName 'JumpCloud' Connect-JCOnline { } -ParameterFilter { $Force -eq $true }
-}
-
-AfterAll {
-    if ($script:AddedTestEnvVars) {
-        Remove-Item Env:JCApiKey -ErrorAction SilentlyContinue
-        Remove-Item Env:JCOrgId -ErrorAction SilentlyContinue
+    AfterAll {
+        if ($PesterParams_Workflow.id) {
+            Invoke-JCApi -Method DELETE -Url "/api/v2/workflows/$($PesterParams_Workflow.id)"
+        }
     }
-}
 
-Describe 'Get-JCWorkflow' -Tag 'JCWorkflow' {
-    Context 'Validating Acceptance Criteria' {
+    It 'Gets all JumpCloud workflows' {
+        $AllWorkflows = Get-JCWorkflow
+        $AllWorkflows.Count | Should -BeGreaterThan 0
+    }
 
-        It 'Should return all workflows in a given org with no parameters specified' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @(
-                    @{ id = '123'; name = 'Workflow Alpha' },
-                    @{ id = '456'; name = 'Workflow Beta' }
-                )
-            }
+    It 'Gets a single JumpCloud workflow declaring -Id' {
+        $SingleResult = Get-JCWorkflow -Id $PesterParams_Workflow.id
+        $SingleResult.id | Should -Be $PesterParams_Workflow.id
+    }
 
-            $result = Get-JCWorkflow
-            $result.Count | Should -Be 2
-        }
-
-        It 'Should return workflow by ID' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @(
-                    @{ id = '123'; name = 'Workflow Alpha' },
-                    @{ id = '456'; name = 'Workflow Beta' }
-                )
-            }
-
-            $result = Get-JCWorkflow -Id '123'
-            $result.id | Should -Be '123'
-        }
-
-        It 'Should return workflow by Name' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @(
-                    @{ id = '123'; name = 'Workflow Alpha' },
-                    @{ id = '456'; name = 'Workflow Beta' }
-                )
-            }
-
-            $result = Get-JCWorkflow -Name 'Workflow Beta'
-            $result.name | Should -Be 'Workflow Beta'
-        }
-
-        It 'Should return $null when no workflows exist' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi { return $null }
-
-            $result = Get-JCWorkflow
-            $result | Should -BeNullOrEmpty
-        }
-
-        It 'Should return $null when ID or Name does not exist' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @( @{ id = '123'; name = 'Workflow Alpha' } )
-            }
-
-            (Get-JCWorkflow -Id '999') | Should -BeNullOrEmpty
-            (Get-JCWorkflow -Name 'NonExistent') | Should -BeNullOrEmpty
-        }
+    It 'Gets a single JumpCloud workflow by name' {
+        $SingleResult = Get-JCWorkflow -Name $PesterParams_Workflow.name
+        $SingleResult.name | Should -Be $PesterParams_Workflow.name
     }
 }

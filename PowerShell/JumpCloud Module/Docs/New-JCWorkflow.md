@@ -14,8 +14,8 @@ Creates a new JumpCloud workflow.
 ## SYNTAX
 
 ```
-New-JCWorkflow [-Name] <String> [[-Description] <String>]
- [<CommonParameters>]
+New-JCWorkflow [-Name] <String> [-ExecutionRoleId] <String> [-Dsl] <Object> [[-Description] <String>]
+ [[-Status] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,6 +51,36 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Dsl
+The workflow DSL object required by the JumpCloud Workflows API.
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExecutionRoleId
+The role id that the workflow should run as.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -68,6 +98,21 @@ Aliases:
 Required: True
 Position: 1
 Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Status
+The workflow status. Valid values are active and inactive.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: Active
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

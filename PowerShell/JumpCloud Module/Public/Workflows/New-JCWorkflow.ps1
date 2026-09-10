@@ -4,13 +4,19 @@ Creates a new JumpCloud workflow.
 .DESCRIPTION
 New-JCWorkflow creates a workflow in the connected organization using the JumpCloud Workflows API.
 .EXAMPLE
-PS C:\> New-JCWorkflow -Name 'Onboarding Workflow'
+PS C:\> New-JCWorkflow -Name 'Onboarding Workflow' -ExecutionRoleId 'role-id' -Dsl $workflowDsl
 
-Creates a workflow with the specified name.
+Creates a workflow with the specified name, execution role, and DSL.
 .EXAMPLE
-PS C:\> New-JCWorkflow -Name 'Onboarding Workflow' -Description 'Automates onboarding tasks'
+PS C:\> New-JCWorkflow -Name 'Onboarding Workflow' -Description 'Automates onboarding tasks' -ExecutionRoleId 'role-id' -Dsl $workflowDsl
 
-Creates a workflow with the specified name and description.
+Creates a workflow with the specified name, description, execution role, and DSL.
+.PARAMETER Dsl
+The workflow DSL object required by the JumpCloud Workflows API.
+.PARAMETER ExecutionRoleId
+The role id that the workflow should run as.
+.PARAMETER Status
+The workflow status. Valid values are active and inactive.
 #>
 function New-JCWorkflow {
     [CmdletBinding()]
@@ -19,9 +25,22 @@ function New-JCWorkflow {
         [System.String]
         $Name,
 
+        [Parameter(Mandatory = $true, HelpMessage = 'The role id that the workflow should run as.')]
+        [System.String]
+        $ExecutionRoleId,
+
+        [Parameter(Mandatory = $true, HelpMessage = 'The workflow DSL object required by the JumpCloud Workflows API.')]
+        [System.Object]
+        $Dsl,
+
         [Parameter(Mandatory = $false, HelpMessage = 'The description of the workflow.')]
         [System.String]
-        $Description
+        $Description,
+
+        [Parameter(Mandatory = $false, HelpMessage = 'The workflow status.')]
+        [ValidateSet('active', 'inactive')]
+        [System.String]
+        $Status = 'active'
     )
 
     begin {
@@ -30,17 +49,18 @@ function New-JCWorkflow {
 
     process {
         try {
-            # Construct request body payload
             $body = @{
-                name = $Name
+                name                = $Name
+                dsl                 = $Dsl
+                execution_role_id   = $ExecutionRoleId
+                status              = $Status
             }
 
             if ($PSBoundParameters.ContainsKey('Description')) {
                 $body.description = $Description
             }
 
-            # Send POST request to JumpCloud API
-            $result = Invoke-JCApi -Method POST -Url '/api/v2/workflows' -Body ($body | ConvertTo-Json -Compress)
+            $result = Invoke-JCApi -Method POST -Url '/api/v2/workflows' -Body ($body | ConvertTo-Json -Compress -Depth 20)
 
             return $result
         }

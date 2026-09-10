@@ -2,7 +2,7 @@
 .SYNOPSIS
 Returns JumpCloud workflows for the connected organization.
 .DESCRIPTION
-Get-JCWorkflow returns all workflows in the connected organization. Use the -Id or -Name parameters to return a specific workflow.
+Get-JCWorkflow returns all workflows in the connected organization. Use the -Id parameter to return a single workflow from the GET endpoint. Use the -Name parameter to search workflows returned from the LIST endpoint.
 .EXAMPLE
 PS C:\> Get-JCWorkflow
 
@@ -30,26 +30,48 @@ function Get-JCWorkflow {
     )
 
     begin {
-        Connect-JCOnline -Force | Out-Null
+        Write-Debug 'Verifying JCAPI Key'
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
+        }
+
+        [int]$limit = 100
+        Write-Debug "Setting limit to $limit"
+
+        $Parallel = $JCConfig.parallel.Calculated
     }
 
     process {
         try {
-            $workflows = Invoke-JCApi -Method GET -Url '/api/v2/workflows'
+            switch ($PSCmdlet.ParameterSetName) {
+                'ById' {
+                    $URL = "$JCUrlBasePath/api/v2/workflows/$Id"
+                    Write-Debug $URL
+                    return Get-JCResults -URL $URL -method 'GET' -limit $limit
+                }
+                'ByName' {
+                    $URL = "$JCUrlBasePath/api/v2/workflows"
+                    Write-Debug $URL
 
-            if (-not $workflows) {
-                return $null
+                    if ($Parallel) {
+                        $workflows = Get-JCResults -URL $URL -method 'GET' -limit $limit -parallel $true
+                    } else {
+                        $workflows = Get-JCResults -URL $URL -method 'GET' -limit $limit
+                    }
+
+                    return ($workflows | Where-Object { $_.name -eq $Name })
+                }
+                default {
+                    $URL = "$JCUrlBasePath/api/v2/workflows"
+                    Write-Debug $URL
+
+                    if ($Parallel) {
+                        return Get-JCResults -URL $URL -method 'GET' -limit $limit -parallel $true
+                    } else {
+                        return Get-JCResults -URL $URL -method 'GET' -limit $limit
+                    }
+                }
             }
-
-            if ($PSCmdlet.ParameterSetName -eq 'ById' -and $Id) {
-                return ($workflows | Where-Object { $_.id -eq $Id })
-            }
-
-            if ($PSCmdlet.ParameterSetName -eq 'ByName' -and $Name) {
-                return ($workflows | Where-Object { $_.name -eq $Name })
-            }
-
-            return $workflows
         }
         catch {
             Write-Error $_

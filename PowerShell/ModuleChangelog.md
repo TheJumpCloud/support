@@ -10,8 +10,8 @@ Adds support for managing JumpCloud Workflows through Get-JCWorkflow and New-JCW
 
 #### FEATURES:
 
-- Adds `Get-JCWorkflow` to return workflows by id, name, or for the entire organization
-- Adds `New-JCWorkflow` to create workflows in the connected organization
+- Adds `Get-JCWorkflow` to return workflows using the JumpCloud Workflows LIST and GET API endpoints
+- Adds `New-JCWorkflow` to create workflows with the required DSL and execution role parameters
 
 ## 3.3.0
 

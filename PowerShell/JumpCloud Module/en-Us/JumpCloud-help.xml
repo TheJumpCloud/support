@@ -15746,7 +15746,31 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>ExecutionRoleId</maml:name>
+          <maml:description>
+            <maml:para>The role id that the workflow should run as.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>Dsl</maml:name>
+          <maml:description>
+            <maml:para>The workflow DSL object required by the JumpCloud Workflows API.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>Description</maml:name>
           <maml:description>
             <maml:para>The description of the workflow.</maml:para>
@@ -15758,14 +15782,50 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+          <maml:name>Status</maml:name>
+          <maml:description>
+            <maml:para>The workflow status. Valid values are active and inactive.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Active</dev:defaultValue>
+        </command:parameter>
 
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>Description</maml:name>
         <maml:description>
           <maml:para>The description of the workflow.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>Dsl</maml:name>
+        <maml:description>
+          <maml:para>The workflow DSL object required by the JumpCloud Workflows API.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>ExecutionRoleId</maml:name>
+        <maml:description>
+          <maml:para>The role id that the workflow should run as.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -15787,6 +15847,18 @@ PS C:\&gt;  New-JCPolicy -TemplateName darwin_Login_Window_Text -Values $policyV
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>Status</maml:name>
+        <maml:description>
+          <maml:para>The workflow status. Valid values are active and inactive.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Active</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes />
     <command:returnValues />

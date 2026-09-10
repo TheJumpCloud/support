@@ -1,57 +1,41 @@
-BeforeAll {
-    Remove-Module JumpCloud -ErrorAction SilentlyContinue
-    Remove-Item Function:\global:Invoke-JCApi -ErrorAction SilentlyContinue
-    Remove-Item Function:\global:Connect-JCOnline -ErrorAction SilentlyContinue
+Describe -Tag:('JCWorkflow') 'New-JCWorkflow' {
+    BeforeAll {
+        $limitURL = "$JCUrlBasePath/api/v2/roles"
+        $roles = Get-JCResults -URL $limitURL -method 'GET' -limit 100
+        $PesterParams_ExecutionRoleId = ($roles | Select-Object -First 1).id
 
-    if ([string]::IsNullOrEmpty($env:JCApiKey)) {
-        $script:AddedTestEnvVars = $true
-        $env:JCApiKey = 'pester-test-api-key'
-        $env:JCOrgId = 'pester-test-org-id'
+        $PesterParams_WorkflowDsl = @{
+            schedule = @{
+                on = @{
+                    one = @{
+                        with = @{
+                            source = 'external'
+                        }
+                    }
+                }
+            }
+            do       = @()
+        }
     }
 
-    Import-Module "$PSScriptRoot/../../../JumpCloud.psd1" -Force
+    It 'Creates a new JumpCloud workflow' {
+        $workflowName = "pester-new-workflow-$(Get-Random)"
+        $NewWorkflow = New-JCWorkflow -Name $workflowName -ExecutionRoleId $PesterParams_ExecutionRoleId -Dsl $PesterParams_WorkflowDsl
 
-    Mock -ModuleName 'JumpCloud' Connect-JCOnline { } -ParameterFilter { $Force -eq $true }
-}
+        $NewWorkflow.name | Should -Be $workflowName
+        $NewWorkflow.execution_role_id | Should -Be $PesterParams_ExecutionRoleId
 
-AfterAll {
-    if ($script:AddedTestEnvVars) {
-        Remove-Item Env:JCApiKey -ErrorAction SilentlyContinue
-        Remove-Item Env:JCOrgId -ErrorAction SilentlyContinue
+        Invoke-JCApi -Method DELETE -Url "/api/v2/workflows/$($NewWorkflow.id)"
     }
-}
 
-Describe 'New-JCWorkflow' -Tag 'JCWorkflow' {
-    Context 'Validating Acceptance Criteria' {
+    It 'Creates a new JumpCloud workflow with a description' {
+        $workflowName = "pester-new-workflow-desc-$(Get-Random)"
+        $workflowDescription = 'Pester workflow description'
+        $NewWorkflow = New-JCWorkflow -Name $workflowName -Description $workflowDescription -ExecutionRoleId $PesterParams_ExecutionRoleId -Dsl $PesterParams_WorkflowDsl
 
-        It 'Should create a workflow with the specified name' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @{ id = '123'; name = 'Workflow Alpha' }
-            }
+        $NewWorkflow.name | Should -Be $workflowName
+        $NewWorkflow.description | Should -Be $workflowDescription
 
-            $result = New-JCWorkflow -Name 'Workflow Alpha'
-            $result.name | Should -Be 'Workflow Alpha'
-        }
-
-        It 'Should create a workflow with name and description' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @{ id = '456'; name = 'Workflow Beta'; description = 'Test description' }
-            }
-
-            $result = New-JCWorkflow -Name 'Workflow Beta' -Description 'Test description'
-            $result.description | Should -Be 'Test description'
-        }
-
-        It 'Should call Invoke-JCApi with POST method and workflows URL' {
-            Mock -ModuleName 'JumpCloud' Invoke-JCApi {
-                return @{ id = '789'; name = 'Workflow Gamma' }
-            }
-
-            New-JCWorkflow -Name 'Workflow Gamma' | Out-Null
-
-            Should -Invoke -ModuleName 'JumpCloud' Invoke-JCApi -ParameterFilter {
-                $Method -eq 'POST' -and $Url -eq '/api/v2/workflows'
-            } -Times 1 -Exactly
-        }
+        Invoke-JCApi -Method DELETE -Url "/api/v2/workflows/$($NewWorkflow.id)"
     }
 }
