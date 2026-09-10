@@ -44,10 +44,7 @@ function New-JCWorkflow {
     )
 
     begin {
-        Write-Debug 'Verifying JCAPI Key'
-        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
-            Connect-JCOnline -Force | Out-Null
-        }
+        Connect-JCOnline -Force | Out-Null
 
         $hdrs = @{
             'Content-Type' = 'application/json'
