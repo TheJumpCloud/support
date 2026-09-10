@@ -4,6 +4,10 @@ Describe -Tag:('JCWorkflow') 'New-JCWorkflow' {
         $roles = Get-JCResults -URL $limitURL -method 'GET' -limit 100
         $PesterParams_ExecutionRoleId = ($roles | Select-Object -First 1).id
 
+        if (-not $PesterParams_ExecutionRoleId) {
+            throw 'No execution role id found from GET /api/v2/roles'
+        }
+
         $PesterParams_WorkflowDsl = @{
             schedule = @{
                 on = @{
@@ -14,7 +18,19 @@ Describe -Tag:('JCWorkflow') 'New-JCWorkflow' {
                     }
                 }
             }
-            do       = @()
+            do       = @(
+                @{
+                    getUsers = @{
+                        call = 'jc_operation'
+                        with = @{
+                            operationId = 'getApiSystemusers'
+                            queryParams = @{
+                                limit = 1
+                            }
+                        }
+                    }
+                }
+            )
         }
     }
 

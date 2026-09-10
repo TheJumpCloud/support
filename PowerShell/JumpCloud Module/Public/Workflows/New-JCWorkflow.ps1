@@ -44,7 +44,22 @@ function New-JCWorkflow {
     )
 
     begin {
-        Connect-JCOnline -Force | Out-Null
+        Write-Debug 'Verifying JCAPI Key'
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline -Force | Out-Null
+        }
+
+        $hdrs = @{
+            'Content-Type' = 'application/json'
+            'Accept'       = 'application/json'
+            'X-API-KEY'    = $JCAPIKEY
+        }
+
+        if ($JCOrgID) {
+            $hdrs.Add('x-org-id', "$($JCOrgID)")
+        }
+
+        $URI = "$JCUrlBasePath/api/v2/workflows"
     }
 
     process {
@@ -60,7 +75,8 @@ function New-JCWorkflow {
                 $body.description = $Description
             }
 
-            $result = Invoke-JCApi -Method POST -Url '/api/v2/workflows' -Body ($body | ConvertTo-Json -Compress -Depth 20)
+            $jsonbody = $body | ConvertTo-Json -Depth 20 -Compress
+            $result = Invoke-RestMethod -Method POST -Uri $URI -Body $jsonbody -Headers $hdrs -UserAgent:(Get-JCUserAgent)
 
             return $result
         }

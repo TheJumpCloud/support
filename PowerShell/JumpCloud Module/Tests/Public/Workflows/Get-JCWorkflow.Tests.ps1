@@ -4,6 +4,10 @@ Describe -Tag:('JCWorkflow') 'Get-JCWorkflow' {
         $roles = Get-JCResults -URL $limitURL -method 'GET' -limit 100
         $executionRoleId = ($roles | Select-Object -First 1).id
 
+        if (-not $executionRoleId) {
+            throw 'No execution role id found from GET /api/v2/roles'
+        }
+
         $workflowDsl = @{
             schedule = @{
                 on = @{
@@ -14,7 +18,19 @@ Describe -Tag:('JCWorkflow') 'Get-JCWorkflow' {
                     }
                 }
             }
-            do       = @()
+            do       = @(
+                @{
+                    getUsers = @{
+                        call = 'jc_operation'
+                        with = @{
+                            operationId = 'getApiSystemusers'
+                            queryParams = @{
+                                limit = 1
+                            }
+                        }
+                    }
+                }
+            )
         }
 
         $workflowName = "pester-get-workflow-$(Get-Random)"
@@ -22,7 +38,7 @@ Describe -Tag:('JCWorkflow') 'Get-JCWorkflow' {
     }
 
     AfterAll {
-        if ($PesterParams_Workflow.id) {
+        if ($PesterParams_Workflow -and $PesterParams_Workflow.id) {
             Invoke-JCApi -Method DELETE -Url "/api/v2/workflows/$($PesterParams_Workflow.id)"
         }
     }
