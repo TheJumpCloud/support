@@ -1,118 +1,125 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: https://github.com/TheJumpCloud/support/wiki/
+online version:
 schema: 2.0.0
 ---
 
 # New-JCWorkflow
 
 ## SYNOPSIS
-
 Creates a new JumpCloud workflow.
 
 ## SYNTAX
 
 ```
 New-JCWorkflow [-Name] <String> [-ExecutionRoleId] <String> [-Dsl] <Object> [[-Description] <String>]
- [[-Status] <String>] [<CommonParameters>]
+ [[-Status] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-New-JCWorkflow creates a workflow in the connected organization using the JumpCloud Workflows API.
+New-JCWorkflow creates a new workflow in the connected JumpCloud organization.
 
 ## EXAMPLES
 
-### Example 1
-
-```powershell
-PS C:\> New-JCWorkflow -Name 'Onboarding Workflow'
+### EXAMPLE 1
+```
+$dsl = @{ trigger = @{ type = 'external' }; actions = @( @{ type = 'getApiSystemusers' } ) }
+PS C:\> New-JCWorkflow -Name "My Workflow" -ExecutionRoleId "64a2f2...123" -Dsl $dsl
 ```
 
-Creates a workflow with the specified name.
-
-### Example 2
-
-```powershell
-PS C:\> New-JCWorkflow -Name 'Onboarding Workflow' -Description 'Automates onboarding tasks'
-```
-
-Creates a workflow with the specified name and description.
+Creates a new active workflow named "My Workflow".
 
 ## PARAMETERS
-
-### -Description
-The description of the workflow.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Dsl
-The workflow DSL object required by the JumpCloud Workflows API.
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExecutionRoleId
-The role id that the workflow should run as.
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Name
 The name of the workflow.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: True
 Position: 1
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -ExecutionRoleId
+The Role ID used to identify the workflow execution.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Dsl
+JSON definition of the workflow DSL.
+
+```yaml
+Type: Object
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 3
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Description
+The description of the workflow.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -Status
-The workflow status. Valid values are active and inactive.
+Status of the workflow.
+Valid values are 'active' or 'inactive'.
+Default is 'active'.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 5
 Default value: Active
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -1,51 +1,49 @@
 ---
 external help file: JumpCloud-help.xml
 Module Name: JumpCloud
-online version: https://github.com/TheJumpCloud/support/wiki/
+online version:
 schema: 2.0.0
 ---
 
 # Get-JCWorkflow
 
 ## SYNOPSIS
-
 Returns JumpCloud workflows for the connected organization.
 
 ## SYNTAX
 
 ### ByAll (Default)
 ```
-Get-JCWorkflow [<CommonParameters>]
+Get-JCWorkflow [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### ById
 ```
-Get-JCWorkflow [-Id <String>] [<CommonParameters>]
+Get-JCWorkflow -Id <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCWorkflow [-Name <String>] [<CommonParameters>]
+Get-JCWorkflow -Name <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-
-Get-JCWorkflow returns all workflows in the connected organization. Use the `-Id` or `-Name` parameters to return a specific workflow.
+Get-JCWorkflow returns all workflows in the connected organization.
+Use the -Id parameter to return a single workflow from the GET endpoint.
+Use the -Name parameter to search workflows returned from the LIST endpoint.
 
 ## EXAMPLES
 
-### Example 1
-
-```powershell
-PS C:\> Get-JCWorkflow
+### EXAMPLE 1
+```
+Get-JCWorkflow
 ```
 
 Returns all workflows in the connected organization.
 
-### Example 2
-
-```powershell
-PS C:\> Get-JCWorkflow -Id '673dd658ac4a0658c780f9ff'
+### EXAMPLE 2
+```
+Get-JCWorkflow -Id '673dd658ac4a0658c780f9ff'
 ```
 
 Returns the workflow with the specified id.
@@ -53,15 +51,14 @@ Returns the workflow with the specified id.
 ## PARAMETERS
 
 ### -Id
-
 The id of the workflow to return.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ById
 Aliases: workflow_id
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -69,18 +66,32 @@ Accept wildcard characters: False
 ```
 
 ### -Name
-
 The name of the workflow to return.
 
 ```yaml
-Type: System.String
+Type: String
 Parameter Sets: ByName
 Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: ActionPreference
+Parameter Sets: (All)
+Aliases: proga
 
 Required: False
 Position: Named
 Default value: None
-Accept pipeline input: True (ByPropertyName)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
