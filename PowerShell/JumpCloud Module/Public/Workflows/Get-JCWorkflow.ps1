@@ -19,12 +19,12 @@ The name of the workflow to return.
 function Get-JCWorkflow {
     [CmdletBinding(DefaultParameterSetName = 'ByAll')]
     param (
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ById')]
         [Alias('workflow_id')]
         [System.String]
         $Id,
 
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'ByName')]
         [System.String]
         $Name
     )
@@ -45,11 +45,13 @@ function Get-JCWorkflow {
         try {
             switch ($PSCmdlet.ParameterSetName) {
                 'ById' {
+                    # Endpoint GET único por ID via Invoke-JCApi
                     $URL = "$JCUrlBasePath/api/v2/workflows/$Id"
                     Write-Debug $URL
-                    return Get-JCResults -URL $URL -method 'GET' -limit $limit
+                    return Invoke-JCApi -Method 'GET' -Url $URL
                 }
                 'ByName' {
+                    # Endpoint LIST paginado via Get-JCResults + filtro por Nome
                     $URL = "$JCUrlBasePath/api/v2/workflows"
                     Write-Debug $URL
 
@@ -62,6 +64,7 @@ function Get-JCWorkflow {
                     return ($workflows | Where-Object { $_.name -eq $Name })
                 }
                 default {
+                    # Endpoint LIST paginado via Get-JCResults
                     $URL = "$JCUrlBasePath/api/v2/workflows"
                     Write-Debug $URL
 
