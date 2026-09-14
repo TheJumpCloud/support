@@ -1,3 +1,11 @@
+## 3.1.1
+
+Release Date: Sep 14, 2026
+```
+- Added validation on Remove-JCAssociation
+- Skips dynamic bounded elements on remove association
+```
+
 ## 3.1.0
 
 Release Date: May 12, 2026
