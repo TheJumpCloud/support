@@ -1,6 +1,5 @@
 Function New-JCDeviceUpdateTemplate {
     [CmdletBinding()]
-
     param
     (
         [Parameter(
@@ -8,7 +7,10 @@ Function New-JCDeviceUpdateTemplate {
             HelpMessage = 'Parameter to force populate CSV with all headers when creating an update template. When selected this option will forcefully replace existing files in the current working directory',
             Mandatory = $false)]
         [Switch]
-        $Force
+        $Force,
+
+        [Parameter(Mandatory = $false, HelpMessage = 'Number of custom attributes columns to seed in the template.')]
+        [int]$NumberOfCustomAttributes = 0
     )
 
     begin {
@@ -76,8 +78,16 @@ Function New-JCDeviceUpdateTemplate {
                 allowPublicKeyAuthentication   = $null
                 systemInsights                 = $null
                 primarySystemUser              = $null
-
             }
+
+            # CUT-5149: Dynamically inserts columns in Force mode if the parameter was sent.
+            if ($NumberOfCustomAttributes -gt 0) {
+                for ($i = 1; $i -le $NumberOfCustomAttributes; $i++) {
+                    $CSV.Add("Attribute$($i)_name", $null)
+                    $CSV.Add("Attribute$($i)_value", $null)
+                }
+            }
+
             $fileName = 'JCDeviceUpdateImport_' + $date + '.csv'
             Write-Debug $fileName
             $CSVheader = New-Object psobject -Property $Csv
@@ -210,6 +220,22 @@ Function New-JCDeviceUpdateTemplate {
             }
 
             elseif ($ConfirmPrimarySystemUser -eq 'N') {
+            }
+
+            # CUT-5149: Assistente interativo por perguntas para incluir colunas de Custom Attributes
+            if ($NumberOfCustomAttributes -eq 0) {
+                Write-Host "`nHow many custom attributes columns would you like to seed in the template?"
+                $InputAttributes = Read-Host "Enter a number (0 for none)"
+                if ($InputAttributes -match '^\d+$') {
+                    $NumberOfCustomAttributes = [int]$InputAttributes
+                }
+            }
+
+            if ($NumberOfCustomAttributes -gt 0) {
+                for ($i = 1; $i -le $NumberOfCustomAttributes; $i++) {
+                    $CSV.Add("Attribute$($i)_name", $null)
+                    $CSV.Add("Attribute$($i)_value", $null)
+                }
             }
 
             $CSVheader = New-Object psobject -Property $Csv

@@ -2441,10 +2441,22 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Connect-JCOnline</maml:name>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>The name of an API key stored in the local vault. The value is the name the key was saved under, not the API key itself.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
           <maml:name>JumpCloudApiKey</maml:name>
           <maml:description>
-            <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
+            <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. This parameter is mandatory when no key is available from the vault or from the $env:JCApiKey environment variable.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -2474,6 +2486,7 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
             <command:parameterValue required="false" command:variableLength="false">STANDARD</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">STAGING</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">EU</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">IN</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -2494,9 +2507,32 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
 
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Select</maml:name>
+          <maml:description>
+            <maml:para>Select an API key from the keys stored in the local vault.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>The name of an API key stored in the local vault. The value is the name the key was saved under, not the API key itself.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>force</maml:name>
         <maml:description>
@@ -2521,10 +2557,11 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
         <maml:name>JumpCloudApiKey</maml:name>
         <maml:description>
-          <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.</maml:para>
+          <maml:para>Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console. This parameter is mandatory when no key is available from the vault or from the $env:JCApiKey environment variable.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -2546,6 +2583,18 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Select</maml:name>
+        <maml:description>
+          <maml:para>Select an API key from the keys stored in the local vault.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
@@ -2600,6 +2649,20 @@ PS C:\&gt; $BackupJcOrganizationResults.User</dev:code>
         <dev:code>Connect-JCOnline -JumpCloudAPIKey eu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JCEnvironment 'EU'</dev:code>
         <dev:remarks>
           <maml:para>Use the "-JCEnvironment" parameter to change the environment location ("STANDARD" or "EU")</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 5 --------------------------</maml:title>
+        <dev:code>Connect-JCOnline -Select</dev:code>
+        <dev:remarks>
+          <maml:para>Use the "-Select" parameter to pick an API key that was previously stored in the local vault. When no keys are stored you are prompted to enter and optionally save a new key.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 6 --------------------------</maml:title>
+        <dev:code>Connect-JCOnline -Credential 'MyOrgKey'</dev:code>
+        <dev:remarks>
+          <maml:para>Use the "-Credential" parameter to connect with a stored key by name, without being prompted to select one.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
@@ -9413,7 +9476,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>JCSystemApp</command:noun>
       <maml:description>
-        <maml:para>Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.</maml:para>
+        <maml:para>Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function uses the search query endpoint to return software results, similar to the report feature.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
@@ -9422,31 +9485,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
     <command:syntax>
       <command:syntaxItem>
         <maml:name>Get-JCSystemApp</maml:name>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>name</maml:name>
-          <maml:description>
-            <maml:para>The name of the application you want to search for ex. (Jumpcloud, Slack). Name will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied. This field is case sensitive.</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-          <maml:name>Search</maml:name>
-          <maml:description>
-            <maml:para>Search for a specific application by from all systems in the org ex. (Get-JCSystemApp -Search -Name "Jumpcloud") THIS PARAMETER DOES NOT TAKE INPUT</maml:para>
-          </maml:description>
-          <dev:type>
-            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>False</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>SystemID</maml:name>
           <maml:description>
             <maml:para>The System Id of the JumpCloud system you want to search for applications</maml:para>
@@ -9458,15 +9497,16 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
           <maml:name>SystemOS</maml:name>
           <maml:description>
             <maml:para>The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, macOs, Linux))</maml:para>
           </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">Windows</command:parameterValue>
-            <command:parameterValue required="false" command:variableLength="false">macOS</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">MacOS</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">Linux</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Android</command:parameterValue>
           </command:parameterValueGroup>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -9475,7 +9515,19 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+          <maml:name>name</maml:name>
+          <maml:description>
+            <maml:para>The name of the application you want to search for ex. (Jumpcloud, Slack). Name will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied. This field is case sensitive.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>version</maml:name>
           <maml:description>
             <maml:para>The version of the application you want to search for ex. 1.1.2. Note: on Windows/ Linux devices, this parameter will filter on the 'version' property, for macOS applications this parameter will filter on the 'bundleShortVersion' property.</maml:para>
@@ -9487,10 +9539,31 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+          <maml:name>versionOperator</maml:name>
+          <maml:description>
+            <maml:para>The operator to use for the version search ex. equals, not_equals, contains, not_contains, starts_with, ends_with</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">equals</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">not_equals</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">contains</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">not_contains</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">starts_with</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">ends_with</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>name</maml:name>
         <maml:description>
           <maml:para>The name of the application you want to search for ex. (Jumpcloud, Slack). Name will always query the "name" property from system insights. Note, for macOS systems, ".app" will be applied. This field is case sensitive.</maml:para>
@@ -9503,19 +9576,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
 
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
-        <maml:name>Search</maml:name>
-        <maml:description>
-          <maml:para>Search for a specific application by from all systems in the org ex. (Get-JCSystemApp -Search -Name "Jumpcloud") THIS PARAMETER DOES NOT TAKE INPUT</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>False</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>SystemID</maml:name>
         <maml:description>
           <maml:para>The System Id of the JumpCloud system you want to search for applications</maml:para>
@@ -9527,7 +9588,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="1" aliases="none">
         <maml:name>SystemOS</maml:name>
         <maml:description>
           <maml:para>The type (windows, mac, linux) of the JumpCloud Command you wish to search ex. (Windows, macOs, Linux))</maml:para>
@@ -9539,10 +9600,22 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>version</maml:name>
         <maml:description>
           <maml:para>The version of the application you want to search for ex. 1.1.2. Note: on Windows/ Linux devices, this parameter will filter on the 'version' property, for macOS applications this parameter will filter on the 'bundleShortVersion' property.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>versionOperator</maml:name>
+        <maml:description>
+          <maml:para>The operator to use for the version search ex. equals, not_equals, contains, not_contains, starts_with, ends_with</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
@@ -9608,7 +9681,7 @@ $reportContent = Get-JCReport -reportID $lastReport.id -type 'csv'</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 5 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-JCSystemApp -Name 'jumpcloud' -Search</dev:code>
+        <dev:code>PS C:\&gt; Get-JCSystemApp -Name 'jumpcloud'</dev:code>
         <dev:remarks>
           <maml:para>Returns any 'jumpcloud' software installed in all the OS systems (Windows/Linux/macOS)</maml:para>
         </dev:remarks>
@@ -12917,6 +12990,18 @@ SystemID                 CommandID                Status
           </dev:type>
           <dev:defaultValue>False</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>NumberOfCustomAttributes</maml:name>
+          <maml:description>
+            <maml:para>Number of custom attributes columns to seed in the template.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
 
       </command:syntaxItem>
     </command:syntax>
@@ -12932,6 +13017,18 @@ SystemID                 CommandID                Status
           <maml:uri />
         </dev:type>
         <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>NumberOfCustomAttributes</maml:name>
+        <maml:description>
+          <maml:para>Number of custom attributes columns to seed in the template.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
 
     </command:parameters>
@@ -21822,6 +21919,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
 
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>vaultSuffix</maml:name>
+          <maml:description>
+            <maml:para>sets the System.Management.Automation.PSCustomObject Suffix=@{copy=True; value=.api.jc; write=True} settings for the System.Management.Automation.PSCustomObject vault=@{Suffix=} feature</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Management.Automation.PSObject</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
@@ -21862,6 +21971,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>vaultSuffix</maml:name>
+        <maml:description>
+          <maml:para>sets the System.Management.Automation.PSCustomObject Suffix=@{copy=True; value=.api.jc; write=True} settings for the System.Management.Automation.PSCustomObject vault=@{Suffix=} feature</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
     </command:parameters>
     <command:inputTypes>
       <command:inputType>
@@ -22010,6 +22131,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+          <maml:name>NumberOfCustomAttributes</maml:name>
+          <maml:description>
+            <maml:para>The number of custom attributes to add or update.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>primarySystemUser</maml:name>
           <maml:description>
@@ -22023,6 +22156,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
 
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="RemoveAttribute">
+          <maml:name>RemoveCustomAttribute</maml:name>
+          <maml:description>
+            <maml:para>The name of the custom attributes to remove.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
           <maml:name>systemInsights</maml:name>
           <maml:description>
@@ -22110,6 +22255,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none">
+        <maml:name>NumberOfCustomAttributes</maml:name>
+        <maml:description>
+          <maml:para>The number of custom attributes to add or update.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>primarySystemUser</maml:name>
         <maml:description>
@@ -22123,6 +22280,18 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
 
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="RemoveAttribute">
+        <maml:name>RemoveCustomAttribute</maml:name>
+        <maml:description>
+          <maml:para>The name of the custom attributes to remove.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="0" aliases="_id, id">
         <maml:name>SystemID</maml:name>
         <maml:description>
@@ -22160,6 +22329,22 @@ PS C:\&gt;  Set-JCPolicy -PolicyName "macOS - Login Window Policy" -Values $poli
       <command:inputType>
         <dev:type>
           <maml:name>System.Boolean</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Int32</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
