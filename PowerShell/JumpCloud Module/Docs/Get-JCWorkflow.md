@@ -14,17 +14,17 @@ Returns JumpCloud workflows for the connected organization.
 
 ### ByAll (Default)
 ```
-Get-JCWorkflow [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-JCWorkflow [<CommonParameters>]
 ```
 
 ### ById
 ```
-Get-JCWorkflow -Id <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-JCWorkflow -Id <String> [<CommonParameters>]
 ```
 
 ### ByName
 ```
-Get-JCWorkflow -Name <String> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-JCWorkflow -Name <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -54,7 +54,7 @@ Returns the workflow with the specified id.
 The id of the workflow to return.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ById
 Aliases: workflow_id
 
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 The name of the workflow to return.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: ByName
 Aliases:
 
@@ -77,20 +77,6 @@ Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -ProgressAction
-
-```yaml
-Type: ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

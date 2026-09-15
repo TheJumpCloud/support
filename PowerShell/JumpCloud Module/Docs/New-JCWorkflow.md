@@ -14,7 +14,7 @@ Creates a new JumpCloud workflow.
 
 ```
 New-JCWorkflow [-Name] <String> [-ExecutionRoleId] <String> [-Dsl] <Object> [[-Description] <String>]
- [[-Status] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-Status] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,31 +32,16 @@ Creates a new active workflow named "My Workflow".
 
 ## PARAMETERS
 
-### -Name
-The name of the workflow.
+### -Description
+The description of the workflow.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -ExecutionRoleId
-The Role ID used to identify the workflow execution.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 2
+Required: False
+Position: 4
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -66,7 +51,7 @@ Accept wildcard characters: False
 JSON definition of the workflow DSL.
 
 ```yaml
-Type: Object
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
@@ -77,16 +62,31 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Description
-The description of the workflow.
+### -ExecutionRoleId
+The Role ID used to identify the workflow execution.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: 4
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Name
+The name of the workflow.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -98,7 +98,7 @@ Valid values are 'active' or 'inactive'.
 Default is 'active'.
 
 ```yaml
-Type: String
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
@@ -106,20 +106,6 @@ Required: False
 Position: 5
 Default value: Active
 Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -ProgressAction
-
-```yaml
-Type: ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
