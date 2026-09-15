@@ -77,7 +77,7 @@ function Get-JCWorkflow {
             }
         }
         catch {
-            Write-Error $_
+            throw $_
         }
     }
 }

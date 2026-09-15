@@ -73,7 +73,7 @@ function New-JCWorkflow {
             return Invoke-JCApi -Method 'POST' -Url $URL -Body $jsonBody
         }
         catch {
-            Write-Error $_
+            throw $_
         }
     }
 }
