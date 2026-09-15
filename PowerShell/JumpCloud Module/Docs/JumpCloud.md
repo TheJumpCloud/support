@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 3.3.0
+Help Version: 3.4.0
 Locale: en-Us
 ---
 
@@ -147,6 +147,9 @@ This endpoint returns the details of a User Group.
 ### [Get-JCUserGroupMember](Get-JCUserGroupMember.md)
 Returns the User Group members of a JumpCloud User Group.
 
+### [Get-JCWorkflow](Get-JCWorkflow.md)
+Returns JumpCloud workflows for the connected organization.
+
 ### [Import-JCCommand](Import-JCCommand.md)
 Imports a Mac, Linux or Windows JumpCloud Command into the JumpCloud admin portal from a URL
 
@@ -201,6 +204,9 @@ Creates a JumpCloud User
 
 ### [New-JCUserGroup](New-JCUserGroup.md)
 Creates a JumpCloud User Group
+
+### [New-JCWorkflow](New-JCWorkflow.md)
+Creates a new JumpCloud workflow.
 
 ### [Remove-JCAssociation](Remove-JCAssociation.md)
 Remove an association between two object within the JumpCloud console.
