@@ -27,6 +27,7 @@ function New-JCWorkflow {
         $Name,
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [Alias('WorkflowRole', 'role_id')]
         [System.String]
         $ExecutionRoleId,
 
@@ -69,7 +70,6 @@ function New-JCWorkflow {
 
             $jsonBody = $body | ConvertTo-Json -Depth 10 -Compress
 
-            # Use Invoke-JCApi to ensure x-api-key authentication headers are passed correctly
             return Invoke-JCApi -Method 'POST' -Url $URL -Body $jsonBody
         }
         catch {
