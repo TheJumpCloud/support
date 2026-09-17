@@ -1,29 +1,24 @@
-## 3.4.1
-
-Release Date: Sep 14, 2026
-
-#### RELEASE NOTES
-
-```
-- Added validation on Remove-JCAssociation
-- Skips dynamic bounded elements on remove association
-```
-
 ## 3.4.0
 
-Release Date: August 26, 2026
+Release Date: September 17, 2026
 
 #### RELEASE NOTES
 
 ```
 Adds secure credential selection in Connect-JCOnline using stored vault keys, including -Select and -Credential.
 Reworked the `Get-JCSystemApp` function to no longer use SystemInsights and instead uses the search query endpoint to return relevant information
+Fixes bug with Remove-JCAssociation
 ```
 
 #### FEATURES:
 
 - Adds `-Select` and `-Credential` parameters to `Connect-JCOnline` to choose or reference stored API keys instead of passing the key inline.
 - The functionality of `Get-JCSystemApp` has been changed. The function no longer uses SystemInsights tables to return data, it is instead using the search query endpoint to gather the data. It is not as verbose as the previous iteration however it is much faster and still returns relevant information
+
+#### BUG FIXES:
+
+- Added validation on Remove-JCAssociation
+- Skips dynamic bounded elements on remove association
 
 ## 3.3.0
 
