@@ -1,5 +1,6 @@
-Function Update-JCDeviceFromCSV () {
+Function Update-JCDeviceFromCSV {
     [CmdletBinding(DefaultParameterSetName = 'GUI')]
+    [Alias('Update-JCSystemFromCSV')]
     param
     (
         [Parameter(Mandatory,
@@ -89,12 +90,12 @@ Function Update-JCDeviceFromCSV () {
                 throw "DeviceID: $($DeviceUpdate.DeviceID) does not exist in JumpCloud. Please validate that this device exists in JumpCloud"
             }
 
-            # Get the names of the properties to keep. Exclude DeviceID and hostname
+            # Retrieves the names of the properties to keep, ignoring DeviceID and hostname.
             $devicePropertiesToKeep = $DeviceUpdate.psobject.properties | Where-Object {
                 $_.MemberType -eq "NoteProperty" -and $_.Name -ne "DeviceID" -and $_.Name -ne "hostname"
             } | Select-Object -ExpandProperty Name
 
-            # Create a new PSCustomObject with only those properties
+            # Creates the dynamic parameter table by mapping boolean strings and empty fields.
             $DeviceParams = $DeviceUpdate | Select-Object -Property $devicePropertiesToKeep
             $DeviceHash = @{}
             $DeviceParams.psobject.properties | ForEach-Object {
@@ -108,6 +109,13 @@ Function Update-JCDeviceFromCSV () {
                     $DeviceHash[$_.Name] = $_.Value
                 }
             }
+
+            # Injection for CUT-5149: Dynamically calculates the number of Custom Attributes in the current line's CSV.
+            [int]$AttrCount = $DeviceUpdate.psobject.properties | Where-Object { $_.Name -match "Attribute\d+_name" -and $_.Value } | Measure-Object | Select-Object -ExpandProperty Count
+            if ($AttrCount -gt 0) {
+                $DeviceHash['NumberOfCustomAttributes'] = $AttrCount
+            }
+
             $UpdatedDevice = Set-JCSystem @DeviceHash -SystemID $DeviceUpdate.DeviceID
             $ResultsArrayList.Add($UpdatedDevice) | Out-Null
         }

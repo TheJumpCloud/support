@@ -1,21 +1,35 @@
-Function Test-JCDynamicGroupMembership {
+function Test-JCDynamicGroupMembership {
     [CmdletBinding()]
-    Param(
-        [Parameter(Mandatory = $false)][System.String]$TargetType
+    param(
+        [Parameter(Mandatory = $true)][System.String]$Type
+        , [Parameter(Mandatory = $true)][System.String]$Id
         , [Parameter(Mandatory = $false)][System.String]$TargetId
-        , [Parameter(Mandatory = $false)][System.String]$TargetName
     )
-    If ($TargetType -notin @('user_group', 'system_group')) {
-        Return $false
+    if ($Type -notin @('user_group', 'system_group')) {
+        throw "Invalid target type. Please specify either 'user_group' or 'system_group'."
     }
-    $TargetGroup = If ($TargetId) {
-        Get-JCObject -Type:($TargetType) -Id:($TargetId)
-    } ElseIf ($TargetName) {
-        Get-JCObject -Type:($TargetType) -Name:($TargetName)
+
+    $TargetGroup = if ($Type -eq 'user_group') {
+        Get-JCUserGroup -Id:($Id)
+    } else {
+        Get-JCSystemGroup -Id:($Id)
     }
-    If (-not $TargetGroup) {
-        Return $false
+
+    if (-not $TargetGroup) {
+        return $false
     }
-    $MembershipMethod = $TargetGroup.MembershipMethod
-    Return ($MembershipMethod -match '^DYNAMIC_')
+
+    $Exemptions = $TargetGroup.MemberQueryExemptions;
+
+    if ($Exemptions -and $Exemptions.Count -gt 0) {
+        $Exemption = $Exemptions | Where-Object { $_.id -eq $TargetId }
+        if ($Exemption) {
+            return $false
+        } else {
+            return $true
+        }
+    } else {
+        return $true
+    }
+    throw "Unable to determine if the target group is a dynamic group. Please check the group and try again."
 }
