@@ -50,7 +50,7 @@ Describe -Tag:('JCAssociation') 'Remove-JCAssociation dynamic group tests' {
 
             $uri = "$JCUrlBasePath/api/v2/usergroups/$($dynamicGroup.id)"
             try {
-                Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -Body ($groupUpdateBody | ConvertTo-Json -Depth 6) -UserAgent:(Get-JCUserAgent)
+                Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -Body ($groupUpdateBody | ConvertTo-Json -Depth 6)
             } catch {
                 $errorMessage = if ($_.ErrorDetails.Message) { $_.ErrorDetails.Message } else { $_.Exception.Message }
                 throw "Failed to configure dynamic user group: $errorMessage"
@@ -80,13 +80,13 @@ Describe -Tag:('JCAssociation') 'Remove-JCAssociation dynamic group tests' {
             $remainingAssociations.targetId | Should -Not -Contain $staticGroup.id
         } finally {
             if ($user.id) {
-                Remove-JCUser -UserID $user.id -Force -ErrorAction SilentlyContinue
+                Remove-JCUser -UserID $user.id -force -ErrorAction SilentlyContinue
             }
             if ($dynamicGroup.id) {
-                Remove-JCUserGroup -GroupID $dynamicGroup.id -Force -ErrorAction SilentlyContinue
+                Remove-JCUserGroup -GroupID $dynamicGroup.id -force -ErrorAction SilentlyContinue
             }
             if ($staticGroup.id) {
-                Remove-JCUserGroup -GroupID $staticGroup.id -Force -ErrorAction SilentlyContinue
+                Remove-JCUserGroup -GroupID $staticGroup.id -force -ErrorAction SilentlyContinue
             }
         }
     }

@@ -15,14 +15,11 @@ function Remove-JCAssociation {
     }
     begin {
         Connect-JCOnline -force | Out-Null
-        # Debug message for parameter call
         $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
     process {
-        # For DynamicParam with a default value set that value and then convert the DynamicParam inputs into new variables for the script to use
         Invoke-Command -ScriptBlock:($ScriptBlock_DefaultDynamicParamProcess) -ArgumentList:($PsBoundParameters, $PSCmdlet, $RuntimeParameterDictionary) -NoNewScope
-        # Create hash table to store variables
         $FunctionParameters = [ordered]@{}
 
         #check if $PSBoundParameters is array of objects or a single object and convert to array if not
@@ -33,7 +30,6 @@ function Remove-JCAssociation {
         $jc_list | ForEach-Object {
             # Add input parameters from function in to hash table and filter out unnecessary parameters
             $_.GetEnumerator() | Where-Object { -not [System.String]::IsNullOrEmpty($_.Value) } | ForEach-Object { $FunctionParameters.Add($_.Key, $_.Value) | Out-Null }
-            # Add action
             ($FunctionParameters).Add('Action', $Action) | Out-Null
 
             @('TargetType', 'TargetId', 'Id', 'Type') | ForEach-Object {
@@ -50,13 +46,12 @@ function Remove-JCAssociation {
             $CleanTargetId = $FunctionParameters['targetid']
             $CleanId = $FunctionParameters['id']
 
-            Write-Host $FunctionParameters
+            # Write-Host $FunctionParameters
             if (Test-JCDynamicGroupMembership -Type:($CleanType) -TargetId:($CleanTargetId) -Id:($CleanId)) {
                 Write-Verbose ('Skipping removal of association with dynamic group. Dynamic associations cannot be manually removed from dynamic groups.')
                 return
             }
 
-            # Run the command
             $Results += Invoke-JCAssociation @FunctionParameters
         }
     }
