@@ -52,62 +52,62 @@ COMPLEX PARAMETER PROPERTIES
 To create the parameters described below, construct a hash table containing the appropriate properties. For information on hash tables, run Get-Help about_Hash_Tables.
 
 INPUTOBJECT <IJumpCloudApiIdentity>: Identity Parameter
-  [AccountId <String>]: 
-  [ActivedirectoryId <String>]: 
-  [AdministratorId <String>]: 
-  [AgentId <String>]: 
-  [AppleMdmId <String>]: 
+  [AccountId <String>]:
+  [ActivedirectoryId <String>]:
+  [AdministratorId <String>]:
+  [AgentId <String>]:
+  [AppleMdmId <String>]:
   [ApplicationId <String>]: ObjectID of the Application.
-  [ApprovalFlowId <String>]: 
+  [ApprovalFlowId <String>]:
   [CommandId <String>]: ObjectID of the Command.
-  [CustomEmailType <String>]: 
-  [DeviceId <String>]: 
+  [CustomEmailType <String>]:
+  [DeviceId <String>]:
   [GroupId <String>]: ObjectID of the Policy Group.
   [GsuiteId <String>]: ObjectID of the G Suite instance.
   [Id <String>]: ObjectID of this Active Directory instance.
-  [JobId <String>]: 
+  [JobId <String>]:
   [LdapserverId <String>]: ObjectID of the LDAP Server.
   [Office365Id <String>]: ObjectID of the Office 365 instance.
   [PolicyId <String>]: ObjectID of the Policy.
-  [ProviderId <String>]: 
-  [PushEndpointId <String>]: 
+  [ProviderId <String>]:
+  [PushEndpointId <String>]:
   [RadiusserverId <String>]: ObjectID of the Radius Server.
   [SoftwareAppId <String>]: ObjectID of the Software App.
   [SystemId <String>]: ObjectID of the System.
   [UserId <String>]: ObjectID of the User.
-  [WorkdayId <String>]: 
+  [WorkdayId <String>]:
 .Link
 https://github.com/TheJumpCloud/jcapi-powershell/tree/master/SDKs/PowerShell/JumpCloud.SDK.V2/docs/exports/Get-JcSdkSystemGroup.md
 #>
-Function Get-JCSystemGroup {
+function Get-JCSystemGroup {
     [OutputType([JumpCloud.SDK.V2.Models.ISystemGroup])]
-    [CmdletBinding(DefaultParameterSetName='List', PositionalBinding=$false)]
-    Param(
-        [Parameter(ParameterSetName='Get', Mandatory)]
+    [CmdletBinding(DefaultParameterSetName = 'List', PositionalBinding = $false)]
+    param(
+        [Parameter(ParameterSetName = 'Get', Mandatory)]
         [JumpCloud.SDK.V2.Category('Path')]
         [System.String]
         # ObjectID of the System Group.
         ${Id},
-        
-        [Parameter(ParameterSetName='GetViaIdentity', Mandatory, ValueFromPipeline)]
+
+        [Parameter(ParameterSetName = 'GetViaIdentity', Mandatory, ValueFromPipeline)]
         [JumpCloud.SDK.V2.Category('Path')]
         [JumpCloud.SDK.V2.Models.IJumpCloudApiIdentity]
         # Identity Parameter
         ${InputObject},
-        
-        [Parameter(ParameterSetName='List')]
+
+        [Parameter(ParameterSetName = 'List')]
         [AllowEmptyCollection()]
         [JumpCloud.SDK.V2.Category('Query')]
-        [JumpCloud.SDK.V2.Runtime.Info(PossibleTypes=([System.String]))]
+        [JumpCloud.SDK.V2.Runtime.Info(PossibleTypes = ([System.String]))]
         [System.Collections.Generic.List[System.String]]
         # The comma separated fields included in the returned records.
         # If omitted, the default list of fields will be returned.
         ${Fields},
-        
-        [Parameter(ParameterSetName='List')]
+
+        [Parameter(ParameterSetName = 'List')]
         [AllowEmptyCollection()]
         [JumpCloud.SDK.V2.Category('Query')]
-        [JumpCloud.SDK.V2.Runtime.Info(PossibleTypes=([System.String]))]
+        [JumpCloud.SDK.V2.Runtime.Info(PossibleTypes = ([System.String]))]
         [System.Collections.Generic.List[System.String]]
         # A filter to apply to the query.
         #
@@ -124,24 +124,27 @@ Function Get-JCSystemGroup {
         #
         # **EX:** `GET /api/v2/groups?filter=name:eq:Test+Group`
         ${Filter},
-        
-        [Parameter(ParameterSetName='List')]
+
+        [Parameter(ParameterSetName = 'List')]
         [AllowEmptyCollection()]
         [JumpCloud.SDK.V2.Category('Query')]
-        [JumpCloud.SDK.V2.Runtime.Info(PossibleTypes=([System.String]))]
+        [JumpCloud.SDK.V2.Runtime.Info(PossibleTypes = ([System.String]))]
         [System.Collections.Generic.List[System.String]]
         # The comma separated fields used to sort the collection.
         # Default sort is ascending, prefix with `-` to sort descending.
         ${Sort}
     )
-    Begin {
-        Connect-JCOnline -force | Out-Null
+    begin {
+        Write-Verbose 'Verifying JCAPI Key'
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
+        }
         $Results = @()
     }
-    Process {
+    process {
         $Results = JumpCloud.SDK.V2\Get-JcSdkSystemGroup @PSBoundParameters
     }
-    End {
-        Return $Results
+    end {
+        return $Results
     }
 }

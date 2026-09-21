@@ -14,7 +14,10 @@ function Remove-JCAssociation {
         return $RuntimeParameterDictionary
     }
     begin {
-        Connect-JCOnline -force | Out-Null
+        Write-Verbose 'Verifying JCAPI Key'
+        if ([System.String]::IsNullOrEmpty($JCAPIKEY)) {
+            Connect-JCOnline
+        }
         $PSBoundParameters | Out-DebugParameter | Write-Debug
         $Results = @()
     }
