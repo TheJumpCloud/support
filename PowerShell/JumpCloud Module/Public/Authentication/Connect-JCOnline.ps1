@@ -1,26 +1,42 @@
 function Connect-JCOnline () {
-    [CmdletBinding()]
+    # PositionalBinding=$false is required: otherwise the positional API key binds to the static
+    # [string]$Credential param before dynamicparam runs, which incorrectly triggers vault lookup.
+    [CmdletBinding(PositionalBinding = $false)]
     param
     (
         [Parameter(
-            ParameterSetName = 'force',
-            HelpMessage = 'Using the "-Force" parameter the module update check is skipped. The ''-Force'' parameter should be used when using the JumpCloud module in scripts or other automation environments.'
+            Mandatory = $false,
+            HelpMessage = 'Using the "-Force" parameter the module update check is skipped.'
         )]
-        [Switch]$force
+        [Switch]$force,
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Use the -select to select from stored API keys. Or informe an value with the same param'
+        )]
+        [Switch]$Select,
+        # Vault key name (named-only). Not the API key value — use -JumpCloudApiKey or positional for that.
+        [Parameter(
+            Mandatory = $false,
+            HelpMessage = 'Vault Key Name.'
+        )]
+        [string]$Credential
     )
     dynamicparam {
+        $BoundParams = $PSCmdlet.MyInvocation.BoundParameters
+        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
-            'Position'                        = 1;
+            'Position'                        = 0;
             'ValueFromPipelineByPropertyName' = $true;
-            'ValidateNotNullOrEmpty'          = $true;
+            'ValidateNotNullOrEmpty'          = $false;
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
         }
         $Param_JumpCloudOrgId = @{
             'Name'                            = 'JumpCloudOrgId';
             'Type'                            = [System.String];
-            'Position'                        = 2;
+            'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
@@ -28,18 +44,31 @@ function Connect-JCOnline () {
         $Param_JCEnvironment = @{
             'Name'                            = 'JCEnvironment';
             'Type'                            = [System.String];
-            'Position'                        = 3;
+            'Position'                        = 2;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU", "IN", or "STANDARD".';
             'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU', 'IN');
         }
-        # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
+        # Key selection priority:
+        # 1) -JumpCloudApiKey (named or positional)  2) -Credential (vault by name)
+        # 3) -Select (interactive vault)  4) $env:JCApiKey  5) make JumpCloudApiKey mandatory
+        # Vault is opt-in via -Select/-Credential only.
+        # Also requires PositionalBinding=$false so a positional API key is not stolen by $Credential.
+        if ($BoundParams.ContainsKey('Select') -and (-not $BoundParams.ContainsKey('Credential'))) {
+            $newKey = KeySelector
+        }
+        if ($BoundParams.ContainsKey('Credential')) {
+            $newKey = KeySelector -keyName $BoundParams['Credential']
+        }
+
+        if (-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
         if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
         } else {
             $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
         }
+
         # If the $env:JCOrgId is set then set the default value to be the env variable
         if (-not [System.String]::IsNullOrEmpty($env:JCOrgId)) {
             $Param_JumpCloudOrgId.Add('Default', $env:JCOrgId);
@@ -50,9 +79,7 @@ function Connect-JCOnline () {
         } else {
             $Param_JCEnvironment.Add('Default', 'STANDARD');
         }
-        # Build output
         # Build parameter array
-        $RuntimeParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
         $ParamVarPrefix = 'Param_'
         Get-Variable -Scope:('Local') | Where-Object { $_.Name -like '*' + $ParamVarPrefix + '*' } | Sort-Object { [int]$_.Value.Position } | ForEach-Object {
             # Add RuntimeDictionary to each parameter
@@ -74,7 +101,8 @@ function Connect-JCOnline () {
         return $RuntimeParameterDictionary
     }
     begin {
-        # Debug message for parameter call
+        # Debug message for parameter call]
+        Write-Debug -Message:('Parameter values:')
         $PSBoundParameters | Out-DebugParameter | Write-Debug
     }
     process {
@@ -196,7 +224,7 @@ function Connect-JCOnline () {
                                 $downRepo += $site
                             }
                             # Clean up the http request by closing it.
-                            if ($HTTP_Response -eq $null) {
+                            if ($null -eq $HTTP_Response) {
                             } else {
                                 $HTTP_Response.Close()
                             }

@@ -88,6 +88,10 @@ function Set-JCSettingsFile {
         # Set the env variable for JCEnvironment
         $env:JCEnvironment = $config.'JCEnvironment'.'Location'.value
         $global:JCEnvironment = $env:JCEnvironment
+
+        if ($config.PSObject.Properties.Name -contains 'vault') {
+            $script:sufix = $config.'vault'.'Suffix'.'value'
+        }
     }
 
     end {

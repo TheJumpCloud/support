@@ -14,8 +14,8 @@ The Connect-JCOnline function sets the global variable $JCAPIKEY
 ## SYNTAX
 
 ```
-Connect-JCOnline [-force] [-JumpCloudApiKey] <String>
- [[-JumpCloudOrgId] <String>] [[-JCEnvironment] <String>] [<CommonParameters>]
+Connect-JCOnline [-force] [-Select] [[-Credential] <String>]
+ [[-JumpCloudApiKey] <String>] [[-JumpCloudOrgId] <String>] [[-JCEnvironment] <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -60,7 +60,40 @@ Connect-JCOnline -JumpCloudAPIKey eu8792c9d4y2398is1tb6h0b83ebf0e92s97t382 -JCEn
 
 Use the "-JCEnvironment" parameter to change the environment location ("STANDARD" or "EU")
 
+### Example 5
+
+```powershell
+Connect-JCOnline -Select
+```
+
+Use the "-Select" parameter to pick an API key that was previously stored in the local vault. When no keys are stored you are prompted to enter and optionally save a new key.
+
+### Example 6
+
+```powershell
+Connect-JCOnline -Credential 'MyOrgKey'
+```
+
+Use the "-Credential" parameter to connect with a stored key by name, without being prompted to select one.
+
 ## PARAMETERS
+
+### -Credential
+
+The name of an API key stored in the local vault.
+The value is the name the key was saved under, not the API key itself.
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -force
 
@@ -100,13 +133,14 @@ Accept wildcard characters: False
 
 Please enter your JumpCloud API key.
 This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.
+This parameter is mandatory when no key is available from the vault or from the $env:JCApiKey environment variable.
 
 ```yaml
 Type: System.String
 Parameter Sets: (All)
 Aliases:
 
-Required: True
+Required: False
 Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
@@ -130,15 +164,34 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Select
+
+Select an API key from the keys stored in the local vault.
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### CommonParameters
+
 This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
 ### System.String
+
 ## OUTPUTS
 
 ### System.Object
+
 ## NOTES
 
 ## RELATED LINKS
