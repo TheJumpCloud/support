@@ -3,6 +3,7 @@
 Updates an existing JumpCloud workflow.
 .DESCRIPTION
 Set-JCWorkflow updates an existing workflow in the connected JumpCloud organization.
+If optional parameters (like Dsl or ExecutionRoleId) are omitted, their existing values are preserved.
 .EXAMPLE
 PS C:\> Set-JCWorkflow -Id '673dd658ac4a0658c780f9ff' -Name "Updated Workflow Name"
 .PARAMETER Id
@@ -21,7 +22,7 @@ Status of the workflow. Valid values are 'active' or 'inactive'.
 function Set-JCWorkflow {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [Alias('workflow_id')]
         [System.String]
         $Id,
@@ -57,23 +58,42 @@ function Set-JCWorkflow {
     }
 
     process {
+        # Validar se ao menos um campo editável foi fornecido
+        $updatableParams = @('Name', 'ExecutionRoleId', 'Dsl', 'Description', 'Status')
+        $hasUpdate = $updatableParams | Where-Object { $PSBoundParameters.ContainsKey($_) }
+        if (-not $hasUpdate) {
+            throw "No update parameters specified. Please specify at least one property to update (e.g., -Name, -Status, -Dsl)."
+        }
+
         try {
+            # Read current workflow state to allow partial updates over PUT
+            $current = Get-JCWorkflow -Id $Id
+            if (-not $current) {
+                throw "Workflow with ID '$Id' was not found."
+            }
+
             $URL = "$JCUrlBasePath/api/v2/workflows/$Id"
             Write-Debug $URL
 
-            $body = @{}
-            if ($PSBoundParameters.ContainsKey('Name')) { $body.Add('name', $Name) }
-            if ($PSBoundParameters.ContainsKey('ExecutionRoleId')) { $body.Add('execution_role_id', $ExecutionRoleId) }
-            if ($PSBoundParameters.ContainsKey('Dsl')) { $body.Add('dsl', $Dsl) }
-            if ($PSBoundParameters.ContainsKey('Description')) { $body.Add('description', $Description) }
-            if ($PSBoundParameters.ContainsKey('Status')) { $body.Add('status', $Status) }
+            $body = @{
+                name              = if ($PSBoundParameters.ContainsKey('Name')) { $Name } else { $current.name }
+                description       = if ($PSBoundParameters.ContainsKey('Description')) { $Description } else { $current.description }
+                execution_role_id = if ($PSBoundParameters.ContainsKey('ExecutionRoleId')) { $ExecutionRoleId } else { $current.execution_role_id }
+                dsl               = if ($PSBoundParameters.ContainsKey('Dsl')) { $Dsl } else { $current.dsl }
+            }
+
+            if ($PSBoundParameters.ContainsKey('Status')) {
+                $body.Add('status', $Status)
+            } elseif ($null -ne $current.status) {
+                $body.Add('status', $current.status)
+            }
 
             $jsonBody = $body | ConvertTo-Json -Depth 10 -Compress
 
             return Invoke-JCApi -Method 'PUT' -Url $URL -Body $jsonBody
         }
         catch {
-            throw $_
+            throw "Failed to update workflow '$Id': $_"
         }
     }
 }

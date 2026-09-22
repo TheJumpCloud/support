@@ -23,7 +23,7 @@ Describe -Tag('JCWorkflow') 'Set-JCWorkflow 1.0' {
             do = @( @{ getSystemUsers = @{ call = "jc_operation"; with = @{ operationId = "getApiSystemusers"; queryParams = @{ limit = 10 } } } } )
         }
 
-        # Create initial workflow for update test
+        # Create initial workflow for update tests
         $script:initialName = "Pester_Set_Initial_$(Get-Random)"
         $script:testWorkflow = New-JCWorkflow -Name $script:initialName -ExecutionRoleId $script:roleId -Dsl $script:dsl
     }
@@ -40,8 +40,8 @@ Describe -Tag('JCWorkflow') 'Set-JCWorkflow 1.0' {
         }
     }
 
-    It "Updates an existing workflow when required parameters are specified" {
-        $updatedName = "Pester_Set_Updated_$(Get-Random)"
+    It "Updates full workflow when all required parameters are specified" {
+        $updatedName = "Pester_Set_Full_$(Get-Random)"
         $result = Set-JCWorkflow -Id $script:testWorkflow.id -Name $updatedName -ExecutionRoleId $script:roleId -Dsl $script:dsl
 
         $result | Should -Not -BeNullOrEmpty
@@ -49,7 +49,24 @@ Describe -Tag('JCWorkflow') 'Set-JCWorkflow 1.0' {
         $result.name | Should -Be $updatedName
     }
 
-    It "Throws an error when parameters or ID are invalid" {
-        { Set-JCWorkflow -Id "invalid-id-99999" -Name "Should Fail" } | Should -Throw
+    It "Updates only the name and preserves dsl (partial update)" {
+        $partialName = "Pester_Partial_$(Get-Random)"
+        $result = Set-JCWorkflow -Id $script:testWorkflow.id -Name $partialName
+
+        $result | Should -Not -BeNullOrEmpty
+        $result.name | Should -Be $partialName
+
+        # Confirm state preservation on the remote workflow
+        $after = Get-JCWorkflow -Id $script:testWorkflow.id
+        $after.name | Should -Be $partialName
+        $after.dsl | Should -Not -BeNullOrEmpty
+    }
+
+    It "Throws when no update parameters are provided" {
+        { Set-JCWorkflow -Id $script:testWorkflow.id } | Should -Throw "*No update parameters specified*"
+    }
+
+    It "Throws an error when ID is invalid" {
+        { Set-JCWorkflow -Id "invalid-id-99999" -Name "Should Fail" } | Should -Throw "*Failed to update workflow*"
     }
 }
