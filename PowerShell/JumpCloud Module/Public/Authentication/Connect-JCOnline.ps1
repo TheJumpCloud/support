@@ -1,5 +1,7 @@
 function Connect-JCOnline () {
-    [CmdletBinding()]
+    # PositionalBinding=$false is required: otherwise the positional API key binds to the static
+    # [string]$Credential param before dynamicparam runs, which incorrectly triggers vault lookup.
+    [CmdletBinding(PositionalBinding = $false)]
     param
     (
         [Parameter(
@@ -12,7 +14,7 @@ function Connect-JCOnline () {
             HelpMessage = 'Use the -select to select from stored API keys. Or informe an value with the same param'
         )]
         [Switch]$Select,
-        # Its the key name, not the key value
+        # Vault key name (named-only). Not the API key value — use -JumpCloudApiKey or positional for that.
         [Parameter(
             Mandatory = $false,
             HelpMessage = 'Vault Key Name.'
@@ -26,7 +28,7 @@ function Connect-JCOnline () {
         $Param_JumpCloudApiKey = @{
             'Name'                            = 'JumpCloudApiKey';
             'Type'                            = [System.String];
-            'Position'                        = 1;
+            'Position'                        = 0;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $false;
             'HelpMessage'                     = 'Please enter your JumpCloud API key. This can be found in the JumpCloud admin console within "API Settings" accessible from the drop down icon next to the admin email address in the top right corner of the JumpCloud admin console.';
@@ -34,7 +36,7 @@ function Connect-JCOnline () {
         $Param_JumpCloudOrgId = @{
             'Name'                            = 'JumpCloudOrgId';
             'Type'                            = [System.String];
-            'Position'                        = 2;
+            'Position'                        = 1;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Organization Id can be found in the Settings page within the admin console. Only needed for multi tenant admins.';
@@ -42,44 +44,26 @@ function Connect-JCOnline () {
         $Param_JCEnvironment = @{
             'Name'                            = 'JCEnvironment';
             'Type'                            = [System.String];
-            'Position'                        = 3;
+            'Position'                        = 2;
             'ValueFromPipelineByPropertyName' = $true;
             'ValidateNotNullOrEmpty'          = $true;
             'HelpMessage'                     = 'Enter the region for your JumpCloud organization; "EU", "IN", or "STANDARD".';
             'ValidateSet'                     = ('STANDARD', 'STAGING', 'EU', 'IN');
         }
-        # If the $env:JCApiKey is not set then make the JumpCloudApiKey mandatory else set the default value to be the env variable
-        # Priority for selecting key is: 1)  -JumpCloudApiKey parameter, 2) -Select parameter, 3) $env:JCApiKey
-        # Reformulated to get less confusing
-        $containsApiKey = $false
-        $invocationStatement = $null
-        if ($MyInvocation.PSObject.Properties.Name -contains 'Statement') {
-            $invocationStatement = $MyInvocation.Statement
-        } else {
-            try {
-                $scriptPosition = [System.Management.Automation.InvocationInfo].GetProperty(
-                    'ScriptPosition',
-                    [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic
-                )
-                if ($scriptPosition) {
-                    $invocationStatement = $scriptPosition.GetValue($MyInvocation).Text
-                }
-            } catch { }
-        }
-        if (-not [System.String]::IsNullOrEmpty($invocationStatement) -and ($invocationStatement -match '(?i)-JumpCloudApiKey\b')) {
-            $containsApiKey = $true
-        }
-        $emp1 = $BoundParams.ContainsKey('Select') -and (-not $BoundParams.ContainsKey('Credential')) -and (-not $containsApiKey)
-        $emp2 = [System.String]::IsNullOrEmpty($env:JCApiKey) -and (-not $containsApiKey) -and (-not $BoundParams.ContainsKey('Credential'))
-        if($emp1 -or $emp2) {
+        # Key selection priority:
+        # 1) -JumpCloudApiKey (named or positional)  2) -Credential (vault by name)
+        # 3) -Select (interactive vault)  4) $env:JCApiKey  5) make JumpCloudApiKey mandatory
+        # Vault is opt-in via -Select/-Credential only.
+        # Also requires PositionalBinding=$false so a positional API key is not stolen by $Credential.
+        if ($BoundParams.ContainsKey('Select') -and (-not $BoundParams.ContainsKey('Credential'))) {
             $newKey = KeySelector
         }
-        if($BoundParams.ContainsKey('Credential')) {
+        if ($BoundParams.ContainsKey('Credential')) {
             $newKey = KeySelector -keyName $BoundParams['Credential']
         }
 
-        if(-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
-        if([System.String]::IsNullOrEmpty($env:JCApiKey)) {
+        if (-not [System.String]::IsNullOrEmpty($newKey)) { $env:JCApiKey = $newKey }
+        if ([System.String]::IsNullOrEmpty($env:JCApiKey)) {
             $Param_JumpCloudApiKey.Add('Mandatory', $true);
         } else {
             $Param_JumpCloudApiKey.Add('Default', $env:JCApiKey);
