@@ -1,6 +1,6 @@
 ## 3.4.0
 
-Release Date: September 23, 2026
+Release Date: September 28, 2026
 
 #### RELEASE NOTES
 

@@ -50,6 +50,15 @@ Describe -Tag('JCWorkflow') 'Invoke-JCWorkflow 1.0' {
         $result | Should -Not -BeNullOrEmpty
     }
 
+    It "Accepts workflow object via pipeline" {
+        $result = $script:testWorkflow | Invoke-JCWorkflow
+        $result | Should -Not -BeNullOrEmpty
+    }
+
+    It "Supports -WhatIf parameter" {
+        { Invoke-JCWorkflow -Id $script:testWorkflow.id -WhatIf } | Should -Not -Throw
+    }
+
     It "Throws when workflow ID or Name is invalid" {
         { Invoke-JCWorkflow -Id "invalid-id-99999" } | Should -Throw "*Failed to invoke workflow*"
         { Invoke-JCWorkflow -Name "NonExistentWorkflowName_99999" } | Should -Throw "*was not found*"

@@ -33,15 +33,19 @@ function Invoke-JCWorkflow {
     }
 
     process {
-        try {
-            if ($PSCmdlet.ParameterSetName -eq 'ByName') {
-                $workflow = Get-JCWorkflow -Name $Name
-                if (-not $workflow) {
-                    throw "Workflow with Name '$Name' was not found."
-                }
-                $Id = $workflow.id
+        # Lookup Name outside of the main API try-catch block
+        if ($PSCmdlet.ParameterSetName -eq 'ByName') {
+            $workflow = Get-JCWorkflow -Name $Name
+            if (-not $workflow) {
+                throw "Workflow with Name '$Name' was not found."
             }
+            if ((@($workflow).Count) -gt 1) {
+                throw "Multiple workflows found with Name '$Name'. Use -Id instead."
+            }
+            $Id = $workflow.id
+        }
 
+        try {
             $URL = "$JCUrlBasePath/api/v2/workflows/$Id/runs"
             Write-Debug $URL
 
