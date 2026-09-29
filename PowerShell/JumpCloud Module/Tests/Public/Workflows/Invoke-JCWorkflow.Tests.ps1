@@ -56,7 +56,8 @@ Describe -Tag('JCWorkflow') 'Invoke-JCWorkflow 1.0' {
     }
 
     It "Supports -WhatIf parameter" {
-        { Invoke-JCWorkflow -Id $script:testWorkflow.id -WhatIf } | Should -Not -Throw
+        $result = Invoke-JCWorkflow -Id $script:testWorkflow.id -WhatIf
+        $result | Should -BeNullOrEmpty
     }
 
     It "Throws when workflow ID or Name is invalid" {
