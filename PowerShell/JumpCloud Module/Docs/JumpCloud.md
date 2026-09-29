@@ -2,7 +2,7 @@
 Module Name: JumpCloud
 Module Guid: 31c023d1-a901-48c4-90a3-082f91b31646
 Download Help Link: https://github.com/TheJumpCloud/support/wiki
-Help Version: 3.3.0
+Help Version: 3.4.0
 Locale: en-Us
 ---
 
@@ -120,7 +120,7 @@ Returns scheduled userstate changes by state or returns a user's scheduled users
 Returns all JumpCloud Systems within a JumpCloud tenant or a single JumpCloud System using the -ByID Parameter.
 
 ### [Get-JCSystemApp](Get-JCSystemApp.md)
-Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function queries separate system insights tables to get data for macOS/windows/linux devices.
+Returns the applications/programs/linux packages installed on JumpCloud managed system(s). This function uses the search query endpoint to return software results, similar to the report feature.
 
 ### [Get-JCSystemGroup](Get-JCSystemGroup.md)
 This endpoint returns the details of a System Group.

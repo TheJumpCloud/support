@@ -35,6 +35,13 @@ Describe -Tag:('JCOnline') 'Connect-JCOnline Tests' {
             # $Connect.JCOrgId | Should -Be $env:JCOrgId
             # $Connect.JCOrgId | Should -Be $PesterParams_Org.OrgID
         }
+        It ('Should connect using a positional JumpCloudApiKey with -Force (no vault selection).') {
+            # Regression: static $Credential stole the positional API key and triggered vault KeySelector
+            Remove-Item Env:\JCApiKey -ErrorAction SilentlyContinue
+            Remove-Item Env:\JCOrgId -ErrorAction SilentlyContinue
+            { Connect-JCOnline $PesterParams_ApiKey -force } | Should -Not -Throw
+            $PesterParams_ApiKey | Should -Be $env:JCApiKey
+        }
         It ('Should connect using the JumpCloudOrgId parameter.') {
             $Connect = Connect-JCOnline -JumpCloudOrgId:($PesterParams_ApiKey) -force
             $PesterParams_ApiKey | Should -Be $env:JCApiKey

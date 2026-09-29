@@ -21,8 +21,16 @@ function Get-JCSettingsFile {
     }
 
     process {
+        $rawConfig = Get-Content -Path $configFilePath | ConvertFrom-Json
+
+        if (-not ($rawConfig.PSObject.Properties.Name -contains 'vault')) {
+            $rawConfig | Add-Member -NotePropertyName 'vault' -NotePropertyValue ([PSCustomObject]@{
+                    Suffix = [PSCustomObject]@{ value = '.api.jc'; write = $true; copy = $true }
+                })
+            $rawConfig | ConvertTo-Json | Out-File -FilePath $configFilePath
+        }
+
         if (-Not $raw) {
-            $rawConfig = Get-Content -Path $configFilePath | ConvertFrom-Json
             $config = @{}
             foreach ($item in $rawConfig.psobject.Properties) {
                 # $config.$item
@@ -34,7 +42,7 @@ function Get-JCSettingsFile {
             }
         } else {
             # Get Contents
-            $config = Get-Content -Path $configFilePath | ConvertFrom-Json
+            $config = $rawConfig
         }
     }
 
