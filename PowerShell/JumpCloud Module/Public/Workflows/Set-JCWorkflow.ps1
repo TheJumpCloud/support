@@ -58,7 +58,7 @@ function Set-JCWorkflow {
     }
 
     process {
-        # Validar se ao menos um campo editável foi fornecido
+        # # Validate that at least one updatable parameter was specified
         $updatableParams = @('Name', 'ExecutionRoleId', 'Dsl', 'Description', 'Status')
         $hasUpdate = $updatableParams | Where-Object { $PSBoundParameters.ContainsKey($_) }
         if (-not $hasUpdate) {
