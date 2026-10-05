@@ -29,13 +29,15 @@ Describe -Tag('JCWorkflow') 'Invoke-JCWorkflow 1.0' {
     }
 
     AfterAll {
-        if ($script:testWorkflow.id) {
-            try {
-                InModuleScope 'JumpCloud' {
-                    Invoke-JCApi -Method DELETE -Url "$JCUrlBasePath/api/v2/workflows/$($script:testWorkflow.id)"
+        # Cleanup any test workflows that failed to delete during tests
+        InModuleScope 'JumpCloud' {
+            $leftovers = Invoke-JCApi -Method GET -Url "$JCUrlBasePath/api/v2/workflows"
+            foreach ($w in $leftovers.results) {
+                if ($w.name -match "^Pester_Remove_") {
+                    try {
+                        Invoke-JCApi -Method DELETE -Url "$JCUrlBasePath/api/v2/workflows/$($w.id)"
+                    } catch { }
                 }
-            } catch {
-                # Ignore cleanup errors
             }
         }
     }

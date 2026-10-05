@@ -55,7 +55,8 @@ function Remove-JCWorkflow {
             $URL = "$JCUrlBasePath/api/v2/workflows/$Id"
             Write-Debug $URL
 
-            if ($Force -or $PSCmdlet.ShouldProcess("Workflow ID: $Id", "Remove Workflow")) {
+            if ($Force -and -not $WhatIfPreference) { $ConfirmPreference = 'None' }
+            if ($PSCmdlet.ShouldProcess("Workflow ID: $Id", "Remove Workflow")) {
                 return Invoke-JCApi -Method 'DELETE' -Url $URL
             }
         }
