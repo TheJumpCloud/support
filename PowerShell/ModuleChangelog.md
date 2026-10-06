@@ -1,11 +1,11 @@
 ## 3.4.0
 
-Release Date: October 05, 2026
+Release Date: October 06, 2026
 
 #### RELEASE NOTES
 
 ```
-Adds support for managing JumpCloud Workflows through Get-JCWorkflow, New-JCWorkflow, Set-JCWorkflow, and Invoke-JCWorkflow.
+Adds support for managing JumpCloud Workflows through Get-JCWorkflow, New-JCWorkflow, Set-JCWorkflow, Invoke-JCWorkflow and Get-JCWorkflowRun.
 ```
 
 #### FEATURES:
@@ -15,6 +15,7 @@ Adds support for managing JumpCloud Workflows through Get-JCWorkflow, New-JCWork
 - Adds `Set-JCWorkflow` to update existing workflows with support for partial updates
 - Adds `Invoke-JCWorkflow` to manually trigger workflow execution runs by ID or Name
 - Adds `Remove-JCWorkflow` to delete workflows by ID or Name
+- Adds Get-JCWorkflowRun to retrieve workflow execution runs for all workflows or by ID or Name
 
 ## 3.3.0
 
