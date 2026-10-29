@@ -343,10 +343,13 @@ function Gather-Logs {
 
                     # Getting JumpCloud ProgramData logs
                     $programDataRoot = "C:\ProgramData\JumpCloud"
-                    $includePatterns = @("*.log", "*.log.*", "*.txt", "*.json", "*.conf")
+                    # Migration tool: include corrupt state files it moved aside, and skip entries its
+                    # folder lockdown renamed aside as untrusted
+                    $includePatterns = @("*.log", "*.log.*", "*.txt", "*.json", "*.conf", "migrations.json.corrupt-*")
                     $excludePatterns = @("*.key", "*.pem", "*.pfx", "*.crt")
                     $programDataFiles = @(Get-ChildItem -Path $programDataRoot -Recurse -File -ErrorAction SilentlyContinue | Where-Object {
                         $fileName = $_.Name
+                        $_.FullName -notlike "*.untrusted-*" -and
                         -not ($excludePatterns | Where-Object { $fileName -like $_ }) -and
                         ($includePatterns | Where-Object { $fileName -like $_ })
                     })
@@ -382,6 +385,69 @@ function Gather-Logs {
                         } catch {
                             $copyLog += "FAILED: $($file.FullName) - $($_.Exception.Message)"
                         }
+                    }
+
+                    # Getting profile directories, including ones no longer in ProfileList (e.g. migration revert backups)
+                    $profileListKey = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
+                    $profileDirs = @(Get-ChildItem $profileListKey -ErrorAction SilentlyContinue |
+                        ForEach-Object { (Get-ItemProperty -Path $_.PSPath -ErrorAction SilentlyContinue).ProfileImagePath })
+                    $profilesDirectory = (Get-ItemProperty -Path $profileListKey -ErrorAction SilentlyContinue).ProfilesDirectory
+                    if ($profilesDirectory) {
+                        $profileDirs += Get-ChildItem -Path $profilesDirectory -Directory -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+                    }
+                    $profileDirs = @($profileDirs | Where-Object { $_ } | ForEach-Object { $_.TrimEnd('\') } | Sort-Object -Unique)
+
+                    # Getting migration tool restoreSettings results and logs, prefixed with the profile folder name
+                    foreach ($profileDir in $profileDirs) {
+                        $migrationToolDir = "$profileDir\AppData\Local\JumpCloud\MigrationTool"
+                        $matchedFiles = @(Get-ChildItem -Path "$migrationToolDir\*-associations-results.json" -File -ErrorAction SilentlyContinue)
+                        $matchedFiles += Get-ChildItem -Path "$migrationToolDir\logs\*.log" -File -ErrorAction SilentlyContinue
+                        foreach ($file in $matchedFiles) {
+                            try {
+                                $destName = "$tempDir\$(Split-Path $profileDir -Leaf)-$($file.Name)"
+                                Copy-LogFile -Path $file.FullName -Destination $destName
+                                $copyLog += "SUCCESS: $($file.FullName) -> $destName"
+                            } catch {
+                                $copyLog += "FAILED: $($file.FullName) - $($_.Exception.Message)"
+                            }
+                        }
+                    }
+
+                    # Getting migration tool revert backup manifests ({profile}.ADMU\revert-manifest.json)
+                    $revertManifests = @($profileDirs | Where-Object { $_ -like "*.ADMU" } |
+                        ForEach-Object { Get-Item -Path "$_\revert-manifest.json" -Force -ErrorAction SilentlyContinue })
+                    foreach ($file in $revertManifests) {
+                        try {
+                            $destName = "$tempDir\$(Split-Path $file.DirectoryName -Leaf)-$($file.Name)"
+                            Copy-LogFile -Path $file.FullName -Destination $destName
+                            $copyLog += "SUCCESS: $($file.FullName) -> $destName"
+                        } catch {
+                            $copyLog += "FAILED: $($file.FullName) - $($_.Exception.Message)"
+                        }
+                    }
+
+                    # Listing migration tool registry hive backups (too large and sensitive to copy)
+                    try {
+                        $hivePatterns = foreach ($profileDir in $profileDirs) {
+                            "$profileDir\NTUSER.DAT.BAK"
+                            "$profileDir\NTUSER_original_*.DAT"
+                            "$profileDir\AppData\Local\Microsoft\Windows\UsrClass.dat.bak"
+                            "$profileDir\AppData\Local\Microsoft\Windows\UsrClass_original_*.dat"
+                            if ($profileDir -like "*.ADMU") {
+                                "$profileDir\NTUSER.DAT"
+                                "$profileDir\AppData\Local\Microsoft\Windows\UsrClass.dat"
+                            }
+                        }
+                        $hiveBackups = @($hivePatterns | ForEach-Object { Get-ChildItem -Path $_ -File -Force -ErrorAction SilentlyContinue } |
+                            Sort-Object FullName |
+                            Select-Object @{ Name = "Path"; Expression = { $_.FullName } },
+                                @{ Name = "SizeMB"; Expression = { "{0:N2}" -f ($_.Length / 1MB) } },
+                                LastWriteTime)
+                        $hiveBackupContent = if ($hiveBackups) { $hiveBackups | Format-Table -AutoSize | Out-String -Width 4096 } else { "No migration tool hive backups found.`r`n" }
+                        $hiveBackupContent | Out-File -FilePath "$tempDir\MigrationToolHiveBackups.txt"
+                        $copyLog += "SUCCESS: Listed $($hiveBackups.Count) migration tool hive backups to MigrationToolHiveBackups.txt"
+                    } catch {
+                        $copyLog += "FAILED: Listing migration tool hive backups - $($_.Exception.Message)"
                     }
 
                     # Getting local security policy export
