@@ -1,6 +1,6 @@
 ########################### Settings ###########################
 # set to $true if running via a JumpCloud command (recommended)
-$automate = $false
+$automate = $true
 
 ##################### Do Not Modify Below ######################
 
