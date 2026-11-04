@@ -413,6 +413,23 @@ function Gather-Logs {
                         }
                     }
 
+                    # Getting tray app logs and App Store window settings, prefixed with the profile folder name
+                    # (older tray versions wrote these to ProgramData, which is gathered above)
+                    foreach ($profileDir in $profileDirs) {
+                        $trayDir = "$profileDir\AppData\Local\JumpCloud\Tray"
+                        $matchedFiles = @(Get-ChildItem -Path "$trayDir\tray*.log" -File -ErrorAction SilentlyContinue)
+                        $matchedFiles += Get-ChildItem -Path "$trayDir\app-store-window.json" -File -ErrorAction SilentlyContinue
+                        foreach ($file in $matchedFiles) {
+                            try {
+                                $destName = "$tempDir\$(Split-Path $profileDir -Leaf)-Tray-$($file.Name)"
+                                Copy-LogFile -Path $file.FullName -Destination $destName
+                                $copyLog += "SUCCESS: $($file.FullName) -> $destName"
+                            } catch {
+                                $copyLog += "FAILED: $($file.FullName) - $($_.Exception.Message)"
+                            }
+                        }
+                    }
+
                     # Getting migration tool revert backup manifests ({profile}.ADMU\revert-manifest.json)
                     $revertManifests = @($profileDirs | Where-Object { $_ -like "*.ADMU" } |
                         ForEach-Object { Get-Item -Path "$_\revert-manifest.json" -Force -ErrorAction SilentlyContinue })
