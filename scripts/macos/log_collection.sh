@@ -7,7 +7,7 @@ days=2           # number of days of OS logs to gather
 # do not edit below
 #######
 
-version=1.3.0
+version=1.4.0
 
 ## verify script is running as root.
 if [ $(/usr/bin/id -u) -ne 0 ]
@@ -25,6 +25,7 @@ then
 - JumpCloud logging recorded in the macOS system logs for the past ${days} days
 - Currently installed configuration profiles
 - MDM triggered software installations for the past ${days} days (Appstore, VPP and Custom Software)
+- Applications reported by local macOS metadata as VPP licensed
 - FileVault and secure token information (no passwords or secrets are collected)
 - Usernames of JumpCloud managed users
 If you agree to this, enter 'Y', or any other key to cancel: " -n 1 -r
@@ -188,7 +189,7 @@ if [[ $localuser ]]; then
     else
         collectionLog "No ActiveManagedUsers currently listed by MDM." > $baseDir/systemInfo/mdmManagedUser.txt
     fi
-    
+
 
     ## Collect ADE / AutoSetup Account short name
     adeUsername=$(
@@ -230,6 +231,20 @@ fi
 collectionLog "Gathering software installation logs"
 log show --last ${days}d --predicate="process CONTAINS[c] 'appstored'" > $baseDir/systemLogs/appstored.log
 cp /var/log/install.log* $baseDir/systemLogs/
+
+## collect applications with VPP-licensed receipt metadata
+## this does not confirm current license assignment
+collectionLog "Collecting applications reported as VPP licensed"
+
+for app in /Applications/*.app; do
+    [[ -d "$app" ]] || continue
+
+    if [[ "$(/usr/bin/mdls -raw \
+        -name kMDItemAppStoreReceiptIsVPPLicensed \
+        "$app" 2>/dev/null)" == "1" ]]; then
+        printf '%s\n' "$app"
+    fi
+done > "$baseDir/systemInfo/vppLicensedApplications.txt"
 
 ## gather CertificateService diagnostic data
 diagCertPath="/Library/Logs/DiagnosticReports/Certificate*"
